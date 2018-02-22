@@ -1,0 +1,31 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  adapter: postgresql
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *default
+  host: localhost
+  database: log_store_development
+  username: postgres
+  password:
+
+test:
+  <<: *default
+  host: localhost
+  database: log_store_test
+  username: postgres
+  password:
+
+production:
+  <<: *default
+  host: localhost
+  database: log_store_production
+  username: postgres
+  password:
