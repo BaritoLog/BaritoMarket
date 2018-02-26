@@ -35,4 +35,20 @@ RSpec.describe Forwarder, type: :model do
     end
   end
 
+  it 'copy kafka broker & zookeeper hosts from group' do
+    forwarder = FactoryGirl.create(:forwarder)
+    expect(forwarder.kafka_broker_hosts).to eq(forwarder.group.kafka_broker_hosts)
+    expect(forwarder.zookeeper_hosts).to eq(forwarder.group.zookeeper_hosts)
+
+    new_hosts = 'new-hosts'
+    new_hosts_2 = 'new-hosts-2'
+
+    group = FactoryGirl.create(:group, kafka_broker_hosts: new_hosts, zookeeper_hosts: new_hosts_2)
+    forwarder.group = group
+    forwarder.save
+
+    expect(forwarder.kafka_broker_hosts).to eq(new_hosts)
+    expect(forwarder.zookeeper_hosts).to eq(new_hosts_2)
+  end
+
 end

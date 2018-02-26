@@ -69,6 +69,6 @@ class ForwardersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def forwarder_params
-      params.require(:forwarder).permit(:name, :host, :logstore_group_id, :store_id, :kafka_broker_hosts, :zookeeper_hosts, :kafka_topics, :heartbeat_url)
+      params.require(:forwarder).permit(:name, :host, :group_id, :store_id, :kafka_broker_hosts, :zookeeper_hosts, :kafka_topics, :heartbeat_url)
     end
 end

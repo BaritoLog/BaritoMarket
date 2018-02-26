@@ -21,19 +21,11 @@
   </div>
   <div class="field">
     <%= f.label :group_id %><br>
-    <%= f.number_field :group_id %>
+    <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
   </div>
   <div class="field">
     <%= f.label :store_id %><br>
-    <%= f.number_field :store_id %>
-  </div>
-  <div class="field">
-    <%= f.label :kafka_broker_hosts %><br>
-    <%= f.text_field :kafka_broker_hosts %>
-  </div>
-  <div class="field">
-    <%= f.label :zookeeper_hosts %><br>
-    <%= f.text_field :zookeeper_hosts %>
+    <%= f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' } %>
   </div>
   <div class="field">
     <%= f.label :kafka_topics %><br>
