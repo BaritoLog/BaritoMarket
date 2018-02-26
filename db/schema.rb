@@ -11,10 +11,63 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220065143) do
+ActiveRecord::Schema.define(version: 20180226073013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "forwarders", force: :cascade do |t|
+    t.string   "name"
+    t.string   "host"
+    t.integer  "group_id"
+    t.integer  "store_id"
+    t.string   "kafka_broker_hosts"
+    t.string   "zookeeper_hosts"
+    t.string   "kafka_topics"
+    t.string   "heartbeat_url"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string   "name"
+    t.string   "receiver_host"
+    t.string   "zookeeper_hosts"
+    t.string   "kafka_broker_hosts"
+    t.string   "receiver_heartbeat_url"
+    t.string   "kafka_manager_host"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "service_configs", force: :cascade do |t|
+    t.string   "ip_address"
+    t.json     "config_json"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "group_id"
+    t.integer  "store_id"
+    t.string   "produce_url"
+    t.string   "kibana_host"
+    t.string   "kafka_topics"
+    t.integer  "kafka_topic_partition"
+    t.string   "heartbeat_url"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  create_table "stores", force: :cascade do |t|
+    t.string   "name"
+    t.string   "elasticsearch_host"
+    t.string   "kibana_host"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",      default: "", null: false

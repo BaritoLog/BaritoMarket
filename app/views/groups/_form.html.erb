@@ -1,0 +1,41 @@
+<%= form_for(@group) do |f| %>
+  <% if @group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h2>
+
+      <ul>
+      <% @group.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :receiver_host %><br>
+    <%= f.text_field :receiver_host %>
+  </div>
+  <div class="field">
+    <%= f.label :zookeeper_hosts %><br>
+    <%= f.text_field :zookeeper_hosts %>
+  </div>
+  <div class="field">
+    <%= f.label :kafka_broker_hosts %><br>
+    <%= f.text_field :kafka_broker_hosts %>
+  </div>
+  <div class="field">
+    <%= f.label :receiver_heartbeat_url %><br>
+    <%= f.text_field :receiver_heartbeat_url %>
+  </div>
+  <div class="field">
+    <%= f.label :kafka_manager_host %><br>
+    <%= f.text_field :kafka_manager_host %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

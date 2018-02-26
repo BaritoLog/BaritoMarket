@@ -1,0 +1,49 @@
+<%= form_for(@forwarder) do |f| %>
+  <% if @forwarder.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@forwarder.errors.count, "error") %> prohibited this forwarder from being saved:</h2>
+
+      <ul>
+      <% @forwarder.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :host %><br>
+    <%= f.text_field :host %>
+  </div>
+  <div class="field">
+    <%= f.label :group_id %><br>
+    <%= f.number_field :group_id %>
+  </div>
+  <div class="field">
+    <%= f.label :store_id %><br>
+    <%= f.number_field :store_id %>
+  </div>
+  <div class="field">
+    <%= f.label :kafka_broker_hosts %><br>
+    <%= f.text_field :kafka_broker_hosts %>
+  </div>
+  <div class="field">
+    <%= f.label :zookeeper_hosts %><br>
+    <%= f.text_field :zookeeper_hosts %>
+  </div>
+  <div class="field">
+    <%= f.label :kafka_topics %><br>
+    <%= f.text_field :kafka_topics %>
+  </div>
+  <div class="field">
+    <%= f.label :heartbeat_url %><br>
+    <%= f.text_field :heartbeat_url %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

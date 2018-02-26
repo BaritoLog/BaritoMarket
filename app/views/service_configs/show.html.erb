@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Ip address:</strong>
+  <%= @service_config.ip_address %>
+</p>
+
+<p>
+  <strong>Config json:</strong>
+  <%= @service_config.config_json %>
+</p>
+
+<%= link_to 'Edit', edit_service_config_path(@service_config) %> |
+<%= link_to 'Back', service_configs_path %>

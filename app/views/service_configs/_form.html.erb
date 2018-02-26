@@ -1,0 +1,25 @@
+<%= form_for(@service_config) do |f| %>
+  <% if @service_config.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@service_config.errors.count, "error") %> prohibited this service_config from being saved:</h2>
+
+      <ul>
+      <% @service_config.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :ip_address %><br>
+    <%= f.text_field :ip_address %>
+  </div>
+  <div class="field">
+    <%= f.label :config_json %><br>
+    <%= f.text_field :config_json %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

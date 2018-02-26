@@ -1,0 +1,2 @@
+module ServiceConfigsHelper
+end

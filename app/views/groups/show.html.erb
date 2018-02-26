@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Id:</strong>
+  <%= @group.id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @group.name %>
+</p>
+
+<p>
+  <strong>Receiver host:</strong>
+  <%= @group.receiver_host %>
+</p>
+
+<p>
+  <strong>Zookeeper hosts:</strong>
+  <%= @group.zookeeper_hosts %>
+</p>
+
+<p>
+  <strong>Kafka broker hosts:</strong>
+  <%= @group.kafka_broker_hosts %>
+</p>
+
+<p>
+  <strong>Receiver heartbeat url:</strong>
+  <%= @group.receiver_heartbeat_url %>
+</p>
+
+<p>
+  <strong>Kafka manager host:</strong>
+  <%= @group.kafka_manager_host %>
+</p>
+
+<%= link_to 'Edit', edit_group_path(@group) %> |
+<%= link_to 'Back', groups_path %>

@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @service.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @service.description %>
+</p>
+
+<p>
+  <strong>Group:</strong>
+  <%= @service.group_id %>
+</p>
+
+<p>
+  <strong>Store:</strong>
+  <%= @service.store_id %>
+</p>
+
+<p>
+  <strong>Produce url:</strong>
+  <%= @service.produce_url %>
+</p>
+
+<p>
+  <strong>Kibana host:</strong>
+  <%= @service.kibana_host %>
+</p>
+
+<p>
+  <strong>Kafka topics:</strong>
+  <%= @service.kafka_topics %>
+</p>
+
+<p>
+  <strong>Kafka topic partition:</strong>
+  <%= @service.kafka_topic_partition %>
+</p>
+
+<p>
+  <strong>Heartbeat url:</strong>
+  <%= @service.heartbeat_url %>
+</p>
+
+<%= link_to 'Edit', edit_service_path(@service) %> |
+<%= link_to 'Back', services_path %>

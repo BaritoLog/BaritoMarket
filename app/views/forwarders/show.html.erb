@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @forwarder.name %>
+</p>
+
+<p>
+  <strong>Host:</strong>
+  <%= @forwarder.host %>
+</p>
+
+<p>
+  <strong>Group:</strong>
+  <%= @forwarder.group_id %>
+</p>
+
+<p>
+  <strong>Store:</strong>
+  <%= @forwarder.store_id %>
+</p>
+
+<p>
+  <strong>Kafka broker hosts:</strong>
+  <%= @forwarder.kafka_broker_hosts %>
+</p>
+
+<p>
+  <strong>Zookeeper hosts:</strong>
+  <%= @forwarder.zookeeper_hosts %>
+</p>
+
+<p>
+  <strong>Kafka topics:</strong>
+  <%= @forwarder.kafka_topics %>
+</p>
+
+<p>
+  <strong>Heartbeat url:</strong>
+  <%= @forwarder.heartbeat_url %>
+</p>
+
+<%= link_to 'Edit', edit_forwarder_path(@forwarder) %> |
+<%= link_to 'Back', forwarders_path %>

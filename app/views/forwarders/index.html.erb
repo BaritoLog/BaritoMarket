@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Forwarders</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Host</th>
+      <th>Group</th>
+      <th>Store</th>
+      <th>Kafka broker hosts</th>
+      <th>Zookeeper hosts</th>
+      <th>Kafka topics</th>
+      <th>Heartbeat url</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @forwarders.each do |forwarder| %>
+      <tr>
+        <td><%= forwarder.name %></td>
+        <td><%= forwarder.host %></td>
+        <td><%= forwarder.group_id %></td>
+        <td><%= forwarder.store_id %></td>
+        <td><%= forwarder.kafka_broker_hosts %></td>
+        <td><%= forwarder.zookeeper_hosts %></td>
+        <td><%= forwarder.kafka_topics %></td>
+        <td><%= forwarder.heartbeat_url %></td>
+        <td><%= link_to 'Show', forwarder %></td>
+        <td><%= link_to 'Edit', edit_forwarder_path(forwarder) %></td>
+        <td><%= link_to 'Destroy', forwarder, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Forwarder', new_forwarder_path %>

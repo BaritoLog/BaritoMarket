@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  host: MyString
+  logstore_group_id: 1
+  store_id: 1
+  kafka_broker_hosts: MyString
+  zookeeper_hosts: MyString
+  kafka_topics: MyString
+  heartbeat_url: MyString
+
+two:
+  name: MyString
+  host: MyString
+  logstore_group_id: 1
+  store_id: 1
+  kafka_broker_hosts: MyString
+  zookeeper_hosts: MyString
+  kafka_topics: MyString
+  heartbeat_url: MyString

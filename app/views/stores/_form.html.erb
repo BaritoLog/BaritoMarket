@@ -1,0 +1,29 @@
+<%= form_for(@store) do |f| %>
+  <% if @store.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@store.errors.count, "error") %> prohibited this store from being saved:</h2>
+
+      <ul>
+      <% @store.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :elasticsearch_host %><br>
+    <%= f.text_field :elasticsearch_host %>
+  </div>
+  <div class="field">
+    <%= f.label :kibana_host %><br>
+    <%= f.text_field :kibana_host %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
