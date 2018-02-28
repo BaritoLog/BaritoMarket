@@ -21,11 +21,15 @@
   </div>
   <div class="field">
     <%= f.label :group_id %><br>
-    <%= f.number_field :group_id %>
+    <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
   </div>
   <div class="field">
     <%= f.label :store_id %><br>
-    <%= f.number_field :store_id %>
+    <%= f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' } %>
+  </div>
+  <div class="field">
+    <%= f.label :forwarder_id %><br>
+    <%= f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: '' } %>
   </div>
   <div class="field">
     <%= f.label :produce_url %><br>
