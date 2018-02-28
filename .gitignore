@@ -14,3 +14,4 @@
 vendor
 tmp
 bin
+database.yml
