@@ -52,6 +52,10 @@ RSpec.describe Service, type: :model do
       expect(service.kibana_host).to eq(service.store.kibana_host)
     end
 
+    it 'copy kafka topic partition from group' do
+      service = FactoryGirl.create(:service)
+      expect(service.kafka_topic_partition).to eq(service.group.kafka_topic_partition)
+    end
   end
 
 end

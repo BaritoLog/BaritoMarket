@@ -69,6 +69,6 @@ class ServicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
-      params.require(:service).permit(:name, :description, :group_id, :store_id, :produce_url, :kibana_host, :kafka_topic, :kafka_topic_partition, :heartbeat_url)
+      params.require(:service).permit(:name, :description, :group_id, :store_id, :forwarder_id, :produce_url, :kibana_host, :kafka_topic, :kafka_topic_partition, :heartbeat_url)
     end
 end
