@@ -5,7 +5,7 @@ class Service < ActiveRecord::Base
   belongs_to :store, required: true
   belongs_to :forwarder, required: true
 
-  after_create :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder, :copy_kibana_host_from_store, :copy_kafka_topic_partiion_from_group
+  after_create :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder, :copy_kibana_host_from_store, :copy_kafka_topic_partition_from_group
 
   private
   def copy_kafka_topics_from_forwarder
@@ -25,7 +25,7 @@ class Service < ActiveRecord::Base
     update_column(:kibana_host, self.store.kibana_host)
   end
 
-  def copy_kafka_topic_partiion_from_group
+  def copy_kafka_topic_partition_from_group
     update_column(:kafka_topic_partition, self.group.kafka_topic_partition)
   end
 end

@@ -69,6 +69,6 @@ class GroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.require(:group).permit(:id, :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :receiver_heartbeat_url, :kafka_manager_host)
+      params.require(:group).permit(:id, :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :kafka_topic_partition, :receiver_heartbeat_url, :kafka_manager_host)
     end
 end
