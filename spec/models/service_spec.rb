@@ -25,4 +25,12 @@ RSpec.describe Service, type: :model do
       expect(group).to_not be_valid
     end
   end
+
+  context 'when service created' do
+    it 'copy kafka topics from forwarder' do
+      service = FactoryGirl.create(:service)
+      expect(service.kafka_topics).to eq(service.forwarder.kafka_topics)
+    end
+  end
+
 end
