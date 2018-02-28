@@ -12,20 +12,20 @@ default: &default
 development:
   <<: *default
   host: localhost
-  database: log_store_development
+  database: barito_development
   username: postgres
   password:
 
 test:
   <<: *default
   host: localhost
-  database: log_store_test
+  database: barito_test
   username: postgres
   password:
 
 production:
   <<: *default
   host: localhost
-  database: log_store_production
+  database: barito_production
   username: postgres
   password:
