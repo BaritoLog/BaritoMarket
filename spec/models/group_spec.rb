@@ -30,4 +30,11 @@ RSpec.describe Group, type: :model do
     end
   end
 
+  context 'kafka_topic_partition' do
+    it 'must be presence' do
+      group = FactoryGirl.build(:group, kafka_topic_partition: nil)
+      expect(group).to_not be_valid
+    end
+  end
+
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180228041606) do
+ActiveRecord::Schema.define(version: 20180228082448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,8 +36,9 @@ ActiveRecord::Schema.define(version: 20180228041606) do
     t.string   "kafka_broker_hosts"
     t.string   "receiver_heartbeat_url"
     t.string   "kafka_manager_host"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "kafka_topic_partition",  default: 0, null: false
   end
 
   create_table "service_configs", force: :cascade do |t|
