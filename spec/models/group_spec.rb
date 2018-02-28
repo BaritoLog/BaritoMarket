@@ -35,6 +35,11 @@ RSpec.describe Group, type: :model do
       group = FactoryGirl.build(:group, kafka_topic_partition: nil)
       expect(group).to_not be_valid
     end
+
+    it 'greater than or equal to kafka broker host number' do
+      group = FactoryGirl.build(:group, kafka_broker_hosts: 'host,host2', kafka_topic_partition: 1)
+      expect(group).to_not be_valid
+    end
   end
 
 end
