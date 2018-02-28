@@ -32,16 +32,8 @@
     <%= f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: '' } %>
   </div>
   <div class="field">
-    <%= f.label :produce_url %><br>
-    <%= f.text_field :produce_url %>
-  </div>
-  <div class="field">
     <%= f.label :kibana_host %><br>
     <%= f.text_field :kibana_host %>
-  </div>
-  <div class="field">
-    <%= f.label :kafka_topics %><br>
-    <%= f.text_field :kafka_topics %>
   </div>
   <div class="field">
     <%= f.label :kafka_topic_partition %><br>
