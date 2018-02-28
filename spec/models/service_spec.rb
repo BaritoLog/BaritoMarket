@@ -47,6 +47,11 @@ RSpec.describe Service, type: :model do
       expect(service.store).to eq(service.forwarder.store)
     end
 
+    it 'copy kibana host from store' do
+      service = FactoryGirl.create(:service)
+      expect(service.kibana_host).to eq(service.store.kibana_host)
+    end
+
   end
 
 end
