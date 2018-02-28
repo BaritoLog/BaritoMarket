@@ -5,7 +5,7 @@ class Service < ActiveRecord::Base
   belongs_to :store, required: true
   belongs_to :forwarder, required: true
 
-  after_create :copy_kafka_topics_from_forwarder, :generate_produce_url
+  after_create :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder
 
   private
   def copy_kafka_topics_from_forwarder
@@ -16,4 +16,9 @@ class Service < ActiveRecord::Base
     produce_url = "http://#{self.group.receiver_host}/gp/#{self.group_id}/st/#{self.store_id}/fw/#{self.forwarder_id}/sv/#{self.id}/produce/#{self.kafka_topics}"
     update_column(:produce_url, produce_url)
   end
+
+  def setup_forwarder
+    self.forwarder.set_group_and_store(self.group, self.store)
+  end
+
 end

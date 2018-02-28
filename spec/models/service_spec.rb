@@ -40,6 +40,13 @@ RSpec.describe Service, type: :model do
 
       expect(service.produce_url).to eq('http://some-host:with-port/gp/1/st/2/fw/3/sv/4/produce/kafka-topics')
     end
+
+    it 'setup forwarder' do
+      service = FactoryGirl.create(:service)
+      expect(service.group).to eq(service.forwarder.group)
+      expect(service.store).to eq(service.forwarder.store)
+    end
+
   end
 
 end
