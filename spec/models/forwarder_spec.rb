@@ -16,39 +16,39 @@ RSpec.describe Forwarder, type: :model do
 
   context 'name' do
     it 'must be presence' do
-      group = FactoryGirl.build(:forwarder, name: '')
-      expect(group).to_not be_valid
+      forwarder = FactoryGirl.build(:forwarder, name: '')
+      expect(forwarder).to_not be_valid
     end
   end
 
   context 'host' do
     it 'must be presence' do
-      group = FactoryGirl.build(:forwarder, host: '')
-      expect(group).to_not be_valid
+      forwarder = FactoryGirl.build(:forwarder, host: '')
+      expect(forwarder).to_not be_valid
     end
   end
 
   context 'kafka_topics' do
     it 'must be presence' do
-      group = FactoryGirl.build(:forwarder, kafka_topics: '')
-      expect(group).to_not be_valid
+      forwarder = FactoryGirl.build(:forwarder, kafka_topics: '')
+      expect(forwarder).to_not be_valid
     end
   end
 
-  it 'copy kafka broker & zookeeper hosts from group' do
-    forwarder = FactoryGirl.create(:forwarder)
-    expect(forwarder.kafka_broker_hosts).to eq(forwarder.group.kafka_broker_hosts)
-    expect(forwarder.zookeeper_hosts).to eq(forwarder.group.zookeeper_hosts)
+  describe '#set_group_and_store' do
+    it 'set group, store, kafka_broker_hosts, and zookeeper_hosts' do
+      group = FactoryGirl.build(:group, kafka_broker_hosts: 'broker-host', zookeeper_hosts: 'zookeeper-host')
+      store = FactoryGirl.build(:store)
+      forwarder = FactoryGirl.build(:forwarder)
 
-    new_hosts = 'new-hosts'
-    new_hosts_2 = 'new-hosts-2'
+      forwarder.set_group_and_store(group, store)
 
-    group = FactoryGirl.create(:group, kafka_broker_hosts: new_hosts, zookeeper_hosts: new_hosts_2)
-    forwarder.group = group
-    forwarder.save
+      expect(forwarder.group).to eq(group)
+      expect(forwarder.store).to eq(store)
 
-    expect(forwarder.kafka_broker_hosts).to eq(new_hosts)
-    expect(forwarder.zookeeper_hosts).to eq(new_hosts_2)
+      expect(forwarder.kafka_broker_hosts).to eq('broker-host')
+      expect(forwarder.zookeeper_hosts).to eq('zookeeper-host')
+    end
   end
 
 end

@@ -20,14 +20,6 @@
     <%= f.text_field :host %>
   </div>
   <div class="field">
-    <%= f.label :group_id %><br>
-    <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
-  </div>
-  <div class="field">
-    <%= f.label :store_id %><br>
-    <%= f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' } %>
-  </div>
-  <div class="field">
     <%= f.label :kafka_topics %><br>
     <%= f.text_field :kafka_topics %>
   </div>

@@ -1,15 +1,16 @@
 class Forwarder < ActiveRecord::Base
-  validates_presence_of :name, :host, :group_id, :store_id, :kafka_topics
+  validates_presence_of :name, :host, :kafka_topics
 
-  belongs_to :group, required: true
-  belongs_to :store, required: true
+  belongs_to :group
+  belongs_to :store
 
-  after_save :set_kafka_and_zookeeper
+  def set_group_and_store(group, store)
+    self.group = group
+    self.store = store
 
-  private
+    self.kafka_broker_hosts = group.kafka_broker_hosts
+    self.zookeeper_hosts = group.zookeeper_hosts
 
-  def set_kafka_and_zookeeper
-    update_column(:kafka_broker_hosts, self.group.kafka_broker_hosts)
-    update_column(:zookeeper_hosts, self.group.zookeeper_hosts)
+    self.save!
   end
 end
