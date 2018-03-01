@@ -6,11 +6,12 @@ Rails.application.routes.draw do
   resources :databags
   resources :stores
   resources :groups
-
-  devise_scope :user do
-    get "home/index", to: 'devise/cas_sessions#new', as: :new_user_session
-    get "users/sign_out", to: 'devise/cas_sessions#destroy', as: :destroy_user_session
-    get "users/service", to: 'devise/cas_sessions#service', as: :user_service
+  if EnabledFeatures.has?(:cas_integration)
+    devise_scope :user do
+      get "home/index", to: 'devise/cas_sessions#new', as: :new_user_session
+      get "users/sign_out", to: 'devise/cas_sessions#destroy', as: :destroy_user_session
+      get "users/service", to: 'devise/cas_sessions#service', as: :user_service
+    end
   end
 
   root :controller => :home, :action => :index

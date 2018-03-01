@@ -4,28 +4,12 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 #
-default: &default
+<%= Figaro.env.rails_env%>:
   adapter: postgresql
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-
-development:
-  <<: *default
-  host: localhost
-  database: barito_development
-  username: postgres
-  password:
-
-test:
-  <<: *default
-  host: localhost
-  database: barito_test
-  username: postgres
-  password:
-
-production:
-  <<: *default
-  host: localhost
-  database: barito_production
-  username: postgres
-  password:
+  encoding: unicode
+  host:     <%= Figaro.env.db_host%>
+  database: <%= Figaro.env.db_name%>
+  user:     <%= Figaro.env.db_user%>
+  password: <%= Figaro.env.db_password%>
+  pool: <%= Figaro.env.db_pool { 5 } %>
+  timeout: <%= Figaro.env.db_timeout { 5000 } %>

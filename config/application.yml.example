@@ -1,0 +1,19 @@
+DB_USER:                     'postgres'
+DB_HOST:                     'localhost'
+DB_PASSWORD:                 ''
+DB_POOL:                     '5'
+DB_TIMEOUT:                  '5000'
+ENABLE_CAS_INTEGRATION:      'false'
+CAS_BASE_URL:                'http://localhost:3001'
+
+development:
+  RAILS_ENV:                 'development'
+  RACK_ENV:                  'development'
+  DB_NAME:                   'barito_development'
+  ENABLE_CAS_INTEGRATION:    'false'
+
+test:
+  DB_NAME:                   'barito_test'
+  RAILS_ENV:                 'test'
+  RACK_ENV:                  'test'
+

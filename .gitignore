@@ -14,3 +14,4 @@
 vendor
 tmp
 database.yml
+application.yml

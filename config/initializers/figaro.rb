@@ -1,0 +1,11 @@
+Figaro.require_keys(
+  'DB_HOST',
+  'DB_NAME',
+  'DB_USER',
+  'DB_PASSWORD',
+  'DB_POOL',
+  'DB_TIMEOUT',
+  'RAILS_ENV',
+  'RACK_ENV',
+  'CAS_BASE_URL'
+)
