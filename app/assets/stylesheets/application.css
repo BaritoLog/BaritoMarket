@@ -14,6 +14,14 @@
  *= require_self
  */
  
+
+/* Menu */
+
+.menu-active{
+  font-size: 1.4em;
+  margin-left: 5px;
+  
+} 
  
 /* FORM_GROUP */
  
