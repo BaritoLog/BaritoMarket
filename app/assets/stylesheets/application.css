@@ -13,3 +13,69 @@
  *= require_tree .
  *= require_self
  */
+ 
+ 
+/* FORM_GROUP */
+ 
+.form-group{
+  border: thin solid  #e0e0eb;
+  padding: 12px 30px;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.form-group h4{
+  margin-top: 0;
+}
+
+.form-group input{
+  width: 100%;
+  padding: 3px 5px;
+  border: thin solid  #c1c1d7;
+}
+
+/* SHOW_GROUP */
+
+.show-group{
+  border: thin solid #b3b3cc;
+  padding: 20px 30px 25px 30px;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.show-group h4{
+  margin-top: 0;
+}
+
+.show-group table{
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.show-group td, .show-group th{
+  border: 1px solid #b3b3cc;
+  text-align: left;
+  padding: 3px 5px;
+}
+
+.show-group th{
+  width: 200px;
+}
+
+/* ENTITIES_PANEL */
+
+.entities-panel{
+  margin-bottom: 10px;
+}
+
+.entities-panel .column-id{
+  width: 50px;
+}
+
+.entities-panel .column-name{
+  width: 250px;
+}
+
+.entities-panel .ctrl-link{
+  margin-right: 8px;
+}
