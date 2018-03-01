@@ -1,3 +1,3 @@
-class ServiceConfig < ActiveRecord::Base
+class Databag < ActiveRecord::Base
   validates_presence_of :ip_address, :config_json, :tags
 end

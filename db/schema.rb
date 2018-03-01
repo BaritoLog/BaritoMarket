@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180301035718) do
+ActiveRecord::Schema.define(version: 20180301043238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "databags", force: :cascade do |t|
+    t.string   "ip_address"
+    t.json     "config_json"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "tags",        default: "", null: false
+  end
 
   create_table "forwarders", force: :cascade do |t|
     t.string   "name"
@@ -39,14 +47,6 @@ ActiveRecord::Schema.define(version: 20180301035718) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.integer  "kafka_topic_partition",  default: 0, null: false
-  end
-
-  create_table "service_configs", force: :cascade do |t|
-    t.string   "ip_address"
-    t.json     "config_json"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "tags",        default: "", null: false
   end
 
   create_table "services", force: :cascade do |t|

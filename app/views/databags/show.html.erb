@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Ip address:</strong>
+  <%= @databag.ip_address %>
+</p>
+<p>
+  <strong>Tags:</strong>
+  <%= @databag.tags %>
+</p>
+
+<p>
+  <strong>Config json:</strong>
+  <%= @databag.config_json %>
+</p>
+
+<%= link_to 'Edit', edit_databag_path(@databag) %> |
+<%= link_to 'Back', databag_path, class: 'w3-button w3-light-grey' %>

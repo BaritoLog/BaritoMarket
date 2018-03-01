@@ -1,10 +1,10 @@
-<%= form_for(@service_config) do |f| %>
-  <% if @service_config.errors.any? %>
+<%= form_for(@databag) do |f| %>
+  <% if @databag.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@service_config.errors.count, "error") %> prohibited this service_config from being saved:</h2>
 
       <ul>
-      <% @service_config.errors.full_messages.each do |message| %>
+      <% @databag.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>

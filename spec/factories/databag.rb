@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :service_config do
+  factory :databag do
 
     json = { :some_config => 'some_value' }.to_json
     ip_address '127.0.0.1'

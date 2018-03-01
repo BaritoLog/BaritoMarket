@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :services
   resources :forwarders
-  resources :service_configs
+  resources :databags
   resources :stores
   resources :groups
 
