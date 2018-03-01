@@ -42,6 +42,13 @@ RSpec.describe Group, type: :model do
     end
   end
 
+  context 'receiver_port' do
+    it 'must be presence' do
+      group = FactoryGirl.build(:group, receiver_port: '')
+      expect(group).to_not be_valid
+    end
+  end
+
   context 'when group created' do
     it 'create receiver config' do
       group = FactoryGirl.create(:group)
@@ -50,6 +57,7 @@ RSpec.describe Group, type: :model do
 
       expect(databag.config_json['kafka_broker_hosts']).to eq(group.kafka_broker_hosts)
       expect(databag.config_json['zookeeper_hosts']).to eq(group.zookeeper_hosts)
+      expect(databag.config_json['receiver_port']).to eq(group.receiver_port)
     end
   end
 

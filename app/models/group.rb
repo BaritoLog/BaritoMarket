@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  validates_presence_of :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :kafka_topic_partition
+  validates_presence_of :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :kafka_topic_partition, :receiver_port
 
   validate :validate_kafka_topic_partition_number
 
@@ -16,7 +16,8 @@ class Group < ActiveRecord::Base
   def create_receiver_databag
     config_json = {
         :kafka_broker_hosts => self.kafka_broker_hosts,
-        :zookeeper_hosts => self.zookeeper_hosts
+        :zookeeper_hosts => self.zookeeper_hosts,
+        :receiver_port => self.receiver_port
     }.to_json
 
     databag = Databag.create(ip_address: self.receiver_host, config_json: config_json, tags: 'receiver')
