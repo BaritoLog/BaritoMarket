@@ -1,19 +1,27 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @store.name %>
-</p>
 
-<p>
-  <strong>Elasticsearch host:</strong>
-  <%= @store.elasticsearch_host %>
-</p>
+<div class="show-group">
+  <h4>General</h4>
+  <p>
+    <strong>Name:</strong>
+    <%= @store.name %>
+  </p>  
+</div>
 
-<p>
-  <strong>Kibana host:</strong>
-  <%= @store.kibana_host %>
-</p>
+
+<div class="show-group">
+  <h4>Elastic Stacks</h4>
+  <p>
+    <strong>Elasticsearch host:</strong>
+    <%= @store.elasticsearch_host %>
+  </p>
+
+  <p>
+    <strong>Kibana host:</strong>
+    <%= @store.kibana_host %>
+  </p>  
+</div>
 
 <%= link_to 'Edit', edit_store_path(@store) %> |
 <%= link_to 'Back', stores_path, class: 'w3-button w3-light-grey' %>
