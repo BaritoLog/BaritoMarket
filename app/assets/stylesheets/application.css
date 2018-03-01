@@ -24,22 +24,26 @@
 } 
  
 /* FORM_GROUP */
+
+.form .actions{
+  margin-top: 20px;
+}
  
 .form-group{
-  border: thin solid  #e0e0eb;
-  padding: 12px 30px;
-  max-width: 500px;
-  margin-bottom: 20px;
+  border-bottom: thin solid #b3b3b3;
+  padding: 15px 30px;
+  max-width: 600px;
 }
 
-.form-group h4{
-  margin-top: 0;
+.form-group h3{
+  margin-top: 10px;
 }
 
 .form-group input{
   width: 100%;
-  padding: 3px 5px;
-  border: thin solid  #c1c1d7;
+  padding: 5px 10px;
+  display:block;
+  border:1px solid #ccc;
 }
 
 /* SHOW_GROUP */
