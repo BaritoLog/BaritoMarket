@@ -2,40 +2,30 @@
 
 <h1>Listing Groups</h1>
 
-<table class="w3-table w3-bordered	w3-hoverable">
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>Name</th>
-      <th>Receiver host</th>
-      <th>Receiver port</th>
-      <th>Zookeeper hosts</th>
-      <th>Kafka broker hosts</th>
-      <th>Receiver heartbeat url</th>
-      <th>Kafka manager host</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @groups.each do |group| %>
+<div class="entities-panel">
+  <table class="w3-table w3-bordered">
+    <thead>
       <tr>
-        <td><%= group.id %></td>
-        <td><%= group.name %></td>
-        <td><%= group.receiver_host %></td>
-        <td><%= group.receiver_port %></td>
-        <td><%= group.zookeeper_hosts %></td>
-        <td><%= group.kafka_broker_hosts %></td>
-        <td><%= group.receiver_heartbeat_url %></td>
-        <td><%= group.kafka_manager_host %></td>
-        <td><%= link_to 'Show', group %></td>
-        <td><%= link_to 'Edit', edit_group_path(group) %></td>
-        <td><%= link_to 'Destroy', group, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th class="column-id">#</th>
+        <th class="column-name">Name</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @groups.each do |group| %>
+        <tr>
+          <td><%= group.id %></td>
+          <td><%= group.name %></td>
+          <td>
+            <%= link_to 'Show', group, class: 'ctrl-link'%>
+            <%= link_to 'Edit', edit_group_path(group), class: 'ctrl-link' %>
+            <%= link_to 'Destroy', group, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>  
+</div>
 
 <%= link_to 'New Group', new_group_path %>
