@@ -69,6 +69,6 @@ class ServiceConfigsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_config_params
-      params.require(:service_config).permit(:ip_address, :config_json)
+      params.require(:service_config).permit(:ip_address, :config_json, :tags)
     end
 end
