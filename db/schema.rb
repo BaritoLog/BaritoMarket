@@ -44,9 +44,9 @@ ActiveRecord::Schema.define(version: 20180301035718) do
   create_table "service_configs", force: :cascade do |t|
     t.string   "ip_address"
     t.json     "config_json"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.string   "tags",        default: "f", null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "tags",        default: "", null: false
   end
 
   create_table "services", force: :cascade do |t|
