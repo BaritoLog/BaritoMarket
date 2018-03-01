@@ -11,7 +11,7 @@
 
 <p>
   <strong>Config json:</strong>
-  <%= @databag.config_json %>
+  <%= JSON.unparse(@databag.config_json) %>
 </p>
 
 <%= link_to 'Edit', edit_databag_path(@databag) %> |

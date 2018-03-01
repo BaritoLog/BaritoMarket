@@ -1,1 +1,1 @@
-json.partial! "databags/databag", service_config: @databag
+json.partial! "databags/databag", databag: @databag

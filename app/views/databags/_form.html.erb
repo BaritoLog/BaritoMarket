@@ -1,7 +1,7 @@
 <%= form_for(@databag) do |f| %>
   <% if @databag.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@service_config.errors.count, "error") %> prohibited this service_config from being saved:</h2>
+      <h2><%= pluralize(@databag.errors.count, "error") %> prohibited this databag from being saved:</h2>
 
       <ul>
       <% @databag.errors.full_messages.each do |message| %>
@@ -17,7 +17,7 @@
   </div>
   <div class="field">
     <%= f.label :config_json %><br>
-    <%= f.text_field :config_json %>
+    <%= f.text_field :config_json, value: !@databag.config_json.nil? ? JSON.unparse(@databag.config_json) : '' %>
   </div>
   <div class="field">
     <%= f.label :tags %><br>

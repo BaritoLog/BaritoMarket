@@ -16,7 +16,7 @@
     <% @databags.each do |databag| %>
       <tr>
         <td><%= databag.ip_address %></td>
-        <td><%= databag.config_json %></td>
+        <td><%= JSON.unparse(databag.config_json) %></td>
         <td><%= databag.tags %></td>
         <td><%= link_to 'Show', databag %></td>
         <td><%= link_to 'Edit', edit_databag_path(databag) %></td>
