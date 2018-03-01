@@ -42,4 +42,15 @@ RSpec.describe Group, type: :model do
     end
   end
 
+  context 'when group created' do
+    it 'create receiver config' do
+      group = FactoryGirl.create(:group)
+
+      databag = Databag.find(group.databag_id)
+
+      expect(databag.config_json['kafka_broker_hosts']).to eq(group.kafka_broker_hosts)
+      expect(databag.config_json['zookeeper_hosts']).to eq(group.zookeeper_hosts)
+    end
+  end
+
 end

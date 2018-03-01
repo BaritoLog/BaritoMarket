@@ -3,12 +3,25 @@ class Group < ActiveRecord::Base
 
   validate :validate_kafka_topic_partition_number
 
+  after_create :create_receiver_databag
+
   private
   def validate_kafka_topic_partition_number
     kafka_broker_number = self.kafka_broker_hosts.split(",").size
     if !kafka_topic_partition.nil? && kafka_topic_partition < kafka_broker_number
       errors.add(:kafka_topic_partition, "must be greater than kafka broker host number (#{kafka_broker_number})")
     end
+  end
+
+  def create_receiver_databag
+    config_json = {
+        :kafka_broker_hosts => self.kafka_broker_hosts,
+        :zookeeper_hosts => self.zookeeper_hosts
+    }.to_json
+
+    databag = Databag.create(ip_address: self.receiver_host, config_json: config_json, tags: 'receiver')
+
+    update_column(:databag_id, databag.id)
   end
 
 end
