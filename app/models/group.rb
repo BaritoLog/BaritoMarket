@@ -14,13 +14,13 @@ class Group < ActiveRecord::Base
   end
 
   def create_receiver_databag
-    config_json = {
+    data = {
         :kafka_broker_hosts => self.kafka_broker_hosts,
         :zookeeper_hosts => self.zookeeper_hosts,
         :receiver_port => self.receiver_port
-    }.to_json
+    }
 
-    databag = Databag.create(ip_address: self.receiver_host, config_json: config_json, tags: 'receiver')
+    databag = Databag.create(ip_address: self.receiver_host, data: data.to_json, tags: 'receiver')
 
     update_column(:databag_id, databag.id)
   end

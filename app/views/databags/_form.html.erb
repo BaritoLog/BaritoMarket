@@ -16,8 +16,8 @@
     <%= f.text_field :ip_address %>
   </div>
   <div class="field">
-    <%= f.label :config_json %><br>
-    <%= f.text_field :config_json, value: !@databag.config_json.nil? ? JSON.unparse(@databag.config_json) : '' %>
+    <%= f.label :data %><br>
+    <%= f.text_field :data, value: !@databag.config_json.nil? ? JSON.unparse(@databag.config_json) : '' %>
   </div>
   <div class="field">
     <%= f.label :tags %><br>

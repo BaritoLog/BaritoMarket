@@ -1,3 +1,3 @@
 class Databag < ActiveRecord::Base
-  validates_presence_of :ip_address, :config_json, :tags
+  validates_presence_of :ip_address, :data, :tags
 end

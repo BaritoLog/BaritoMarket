@@ -6,7 +6,7 @@
   <thead>
     <tr>
       <th>Ip address</th>
-      <th>Config json</th>
+      <th>Data</th>
       <th>Tags</th>
       <th colspan="3"></th>
     </tr>
@@ -16,7 +16,7 @@
     <% @databags.each do |databag| %>
       <tr>
         <td><%= databag.ip_address %></td>
-        <td><%= JSON.unparse(databag.config_json) %></td>
+        <td><%= JSON.unparse(databag.data) %></td>
         <td><%= databag.tags %></td>
         <td><%= link_to 'Show', databag %></td>
         <td><%= link_to 'Edit', edit_databag_path(databag) %></td>

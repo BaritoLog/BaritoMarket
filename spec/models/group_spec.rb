@@ -55,9 +55,9 @@ RSpec.describe Group, type: :model do
 
       databag = Databag.find(group.databag_id)
 
-      expect(databag.config_json['kafka_broker_hosts']).to eq(group.kafka_broker_hosts)
-      expect(databag.config_json['zookeeper_hosts']).to eq(group.zookeeper_hosts)
-      expect(databag.config_json['receiver_port']).to eq(group.receiver_port)
+      expect(databag.data['kafka_broker_hosts']).to eq(group.kafka_broker_hosts)
+      expect(databag.data['zookeeper_hosts']).to eq(group.zookeeper_hosts)
+      expect(databag.data['receiver_port']).to eq(group.receiver_port)
     end
   end
 

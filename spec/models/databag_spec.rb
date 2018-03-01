@@ -9,9 +9,9 @@ RSpec.describe Databag, type: :model do
     end
   end
 
-  context 'config_json' do
+  context 'data' do
     it 'must be presence' do
-      databag = FactoryGirl.build(:databag, config_json: nil)
+      databag = FactoryGirl.build(:databag, data: nil)
       expect(databag).to_not be_valid
     end
   end
