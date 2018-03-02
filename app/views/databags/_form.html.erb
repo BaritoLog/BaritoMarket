@@ -17,7 +17,7 @@
   </div>
   <div class="field">
     <%= f.label :data %><br>
-    <%= f.text_field :data, value: !@databag.config_json.nil? ? JSON.unparse(@databag.config_json) : '' %>
+    <%= f.text_field :data, value: !@databag.data.nil? ? JSON.unparse(@databag.data) : '' %>
   </div>
   <div class="field">
     <%= f.label :tags %><br>
