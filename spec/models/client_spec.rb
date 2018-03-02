@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Service, type: :model do
+RSpec.describe Client, type: :model do
 
   context 'associations' do
     it 'belongs to stream' do
@@ -21,40 +21,40 @@ RSpec.describe Service, type: :model do
 
   context 'name' do
     it 'must be presence' do
-      service = FactoryGirl.build(:service, name: '')
-      expect(service).to_not be_valid
+      client = FactoryGirl.build(:client, name: '')
+      expect(client).to_not be_valid
     end
   end
 
-  context 'when service created' do
+  context 'when client created' do
     it 'copy kafka topics from forwarder' do
-      service = FactoryGirl.create(:service)
-      expect(service.kafka_topics).to eq(service.forwarder.kafka_topics)
+      client = FactoryGirl.create(:client)
+      expect(client.kafka_topics).to eq(client.forwarder.kafka_topics)
     end
 
     it 'generate produce url' do
       stream = FactoryGirl.create(:stream, id: 1, receiver_host: 'some-host:with-port')
       store = FactoryGirl.create(:store, id: 2)
       forwarder = FactoryGirl.create(:forwarder, id: 3, kafka_topics: 'kafka-topics')
-      service = FactoryGirl.create(:service, stream: stream, store: store, forwarder: forwarder, id: 4)
+      client = FactoryGirl.create(:client, stream: stream, store: store, forwarder: forwarder, id: 4)
 
-      expect(service.produce_url).to eq('http://some-host:with-port/gp/1/st/2/fw/3/sv/4/produce/kafka-topics')
+      expect(client.produce_url).to eq('http://some-host:with-port/gp/1/st/2/fw/3/sv/4/produce/kafka-topics')
     end
 
     it 'setup forwarder' do
-      service = FactoryGirl.create(:service)
-      expect(service.stream).to eq(service.forwarder.stream)
-      expect(service.store).to eq(service.forwarder.store)
+      client = FactoryGirl.create(:client)
+      expect(client.stream).to eq(client.forwarder.stream)
+      expect(client.store).to eq(client.forwarder.store)
     end
 
     it 'copy kibana host from store' do
-      service = FactoryGirl.create(:service)
-      expect(service.kibana_host).to eq(service.store.kibana_host)
+      client = FactoryGirl.create(:client)
+      expect(client.kibana_host).to eq(client.store.kibana_host)
     end
 
     it 'copy kafka topic partition from stream' do
-      service = FactoryGirl.create(:service)
-      expect(service.kafka_topic_partition).to eq(service.stream.kafka_topic_partition)
+      client = FactoryGirl.create(:client)
+      expect(client.kafka_topic_partition).to eq(client.stream.kafka_topic_partition)
     end
   end
 

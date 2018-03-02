@@ -1,4 +1,4 @@
-class Service < ActiveRecord::Base
+class Client < ActiveRecord::Base
   validates_presence_of :name
 
   belongs_to :stream, required: true

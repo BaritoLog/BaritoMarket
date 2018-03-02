@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :service do
+  factory :client do
     name 'name1'
 
     stream

@@ -1,23 +1,23 @@
-<h2>Service#<%= @service.id %></h2>
+<h2>Client#<%= @client.id %></h2>
 <p id="notice"><%= notice %></p>
 
 <div class="show-group">
   <h3>General</h3>
   <p>
     <strong>id:</strong>
-    <%= @service.id %>
+    <%= @client.id %>
   </p>
   <p>
     <strong>Name:</strong>
-    <%= @service.name %>
+    <%= @client.name %>
   </p>
   <p>
     <strong>Description:</strong>
-    <%= @service.description %>
+    <%= @client.description %>
   </p>
   <p>
     <strong>Heartbeat url:</strong>
-    <%= @service.heartbeat_url %>
+    <%= @client.heartbeat_url %>
   </p>
   
 
@@ -27,20 +27,20 @@
   <h3>Stream</h3>
   <p>
     <strong>Produce url:</strong>
-    <%= @service.produce_url %>
+    <%= @client.produce_url %>
   </p>
   <p>
     <strong>Stream:</strong>
-    <%= @service.stream_id %>
+    <%= @client.stream_id %>
   </p>
   <p>
     <strong>Kafka topics:</strong>
-    <%= @service.kafka_topics %>
+    <%= @client.kafka_topics %>
   </p>
 
   <p>
     <strong>Kafka topic partition:</strong>
-    <%= @service.kafka_topic_partition %>
+    <%= @client.kafka_topic_partition %>
   </p>
 </div>
 
@@ -48,11 +48,11 @@
   <h3>Store</h3>
   <p>
     <strong>Store:</strong>
-    <%= @service.store_id %>
+    <%= @client.store_id %>
   </p>
   <p>
     <strong>Kibana host:</strong>
-    <%= @service.kibana_host %>
+    <%= @client.kibana_host %>
   </p>
 </div>
 
@@ -60,9 +60,9 @@
   <h3>Forwarder</h3>
   <p>
     <strong>Forwarder:</strong>
-    <%= @service.forwarder_id %>
+    <%= @client.forwarder_id %>
   </p>  
 </div>
 
-<%= link_to 'Edit', edit_service_path(@service) %> |
-<%= link_to 'Back', services_path, class: 'w3-button w3-light-grey' %>
+<%= link_to 'Edit', edit_client_path(@client) %> |
+<%= link_to 'Back', clients_path, class: 'w3-button w3-light-grey' %>

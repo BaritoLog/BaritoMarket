@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, skip: :all
 
-  resources :services
+  resources :clients
   resources :forwarders
   resources :databags
   resources :stores
