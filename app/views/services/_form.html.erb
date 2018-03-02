@@ -1,4 +1,4 @@
-<%= form_for(@service) do |f| %>
+<%= form_for(@service, :html => {class: 'form'}) do |f| %>
   <% if @service.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@service.errors.count, "error") %> prohibited this service from being saved:</h2>
@@ -11,30 +11,41 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
+  <div class="form-group">
+    <h4>General</h4>
+    <div class="field">
+      <%= f.label :name %><br>
+      <%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= f.label :description %><br>
+      <%= f.text_area :description %>
+    </div>
+    <div class="field">
+      <%= f.label :heartbeat_url %><br>
+      <%= f.text_field :heartbeat_url %>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
+  
+  <div class="form-group">
+    <h4>References</h4>
+    <div class="field">
+      <%= f.label :group_id %><br>
+      <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
+    </div>
+    <div class="field">
+      <%= f.label :store_id %><br>
+      <%= f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' } %>
+    </div>
+    <div class="field">
+      <%= f.label :forwarder_id %><br>
+      <%= f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: '' } %>
+    </div>
+    
   </div>
-  <div class="field">
-    <%= f.label :group_id %><br>
-    <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
-  </div>
-  <div class="field">
-    <%= f.label :store_id %><br>
-    <%= f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' } %>
-  </div>
-  <div class="field">
-    <%= f.label :forwarder_id %><br>
-    <%= f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: '' } %>
-  </div>
-  <div class="field">
-    <%= f.label :heartbeat_url %><br>
-    <%= f.text_field :heartbeat_url %>
-  </div>
+  
+  
+  
   <div class="actions">
     <%= f.submit(class: 'w3-button w3-blue') %>
   </div>

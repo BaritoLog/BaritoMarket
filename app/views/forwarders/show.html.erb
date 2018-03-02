@@ -1,23 +1,24 @@
+<h2>Forwarder#<%= @forwarder.id %></h2>
 <p id="notice"><%= notice %></p>
 
 <div class="show-group">
-  <h4>General</h4>
-  
+  <h3>General</h3>
+  <p>
+    <strong>id:</strong>
+    <%= @forwarder.id %>
+  </p>
   <p>
     <strong>Name:</strong>
     <%= @forwarder.name %>
   </p>
-
   <p>
     <strong>Host:</strong>
     <%= @forwarder.host %>
   </p>
-  
   <p>
     <strong>Heartbeat url:</strong>
     <%= @forwarder.heartbeat_url %>
   </p>
-  
   <p>
     <strong>Kafka topics:</strong>
     <%= @forwarder.kafka_topics %>
@@ -25,7 +26,7 @@
 </div>
 
 <div class="show-group">
-  <h4>Group</h4>
+  <h3>Group</h3>
   <p>
     <strong>Group:</strong>
     <%= @forwarder.group_id %>
@@ -41,7 +42,7 @@
 </div>
 
 <div class="show-group">
-  <h4>Store</h4>
+  <h3>Store</h3>
   <p>
     <strong>Store:</strong>
     <%= @forwarder.store_id %>

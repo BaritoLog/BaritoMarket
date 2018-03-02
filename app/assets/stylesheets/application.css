@@ -31,31 +31,32 @@
  
 .form-group{
   border-bottom: thin solid #b3b3b3;
-  padding: 15px 30px;
+  padding: 12px 20px;
   max-width: 600px;
 }
 
-.form-group h3{
+.form-group h3, .form-group h4{
   margin-top: 10px;
 }
 
-.form-group input{
+.form-group input, .form-group select, .form-group textarea{
   width: 100%;
   padding: 5px 10px;
   display:block;
   border:1px solid #ccc;
+   -webkit-appearance: none;
 }
 
 /* SHOW_GROUP */
 
 .show-group{
   border: thin solid #b3b3cc;
-  padding: 20px 30px 25px 30px;
+  padding: 12px 20px;
   max-width: 500px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-.show-group h4{
+.show-group h4, .show-group h3{
   margin-top: 0;
 }
 

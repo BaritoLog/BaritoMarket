@@ -2,44 +2,38 @@
 
 <h1>Listing Services</h1>
 
-<table class="w3-table w3-bordered	w3-hoverable">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Group</th>
-      <th>Store</th>
-      <th>Forwarder</th>
-      <th>Produce url</th>
-      <th>Kibana host</th>
-      <th>Kafka topics</th>
-      <th>Kafka topic partition</th>
-      <th>Heartbeat url</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @services.each do |service| %>
+<div class="entities-panel">
+  <table class="w3-table w3-bordered">
+    <thead>
       <tr>
-        <td><%= service.name %></td>
-        <td><%= service.description %></td>
-        <td><%= service.group_id %></td>
-        <td><%= service.store_id %></td>
-        <td><%= service.forwarder_id %></td>
-        <td><%= service.produce_url %></td>
-        <td><%= service.kibana_host %></td>
-        <td><%= service.kafka_topics %></td>
-        <td><%= service.kafka_topic_partition %></td>
-        <td><%= service.heartbeat_url %></td>
-        <td><%= link_to 'Show', service %></td>
-        <td><%= link_to 'Edit', edit_service_path(service) %></td>
-        <td><%= link_to 'Destroy', service, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th class="column-id">#</th>
+        <th class="column-name">Name</th>
+        <th>Group</th>
+        <th>Store</th>
+        <th>Forwarder</th>
+        <th>Kibana host</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @services.each do |service| %>
+        <tr>
+          <td><%= service.id %></td>
+          <td><%= service.name %></td>
+          <td><%= service.group.name %></td>
+          <td><%= service.store.name %></td>
+          <td><%= service.forwarder.name %></td>
+          <td><%= service.kibana_host %></td>
+          <td>
+            <%= link_to 'Show', service, class: 'ctrl-link' %>
+            <%= link_to 'Edit', edit_service_path(service), class: 'ctrl-link' %>
+            <%= link_to 'Destroy', service, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <%= link_to 'New Service', new_service_path %>

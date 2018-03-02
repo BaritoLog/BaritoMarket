@@ -1,4 +1,4 @@
-<%= form_for(@forwarder) do |f| %>
+<%= form_for(@forwarder, :html => {class: 'form'}) do |f| %>
   <% if @forwarder.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@forwarder.errors.count, "error") %> prohibited this forwarder from being saved:</h2>

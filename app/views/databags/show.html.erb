@@ -1,18 +1,29 @@
+<h2>Databag#<%= @databag.id %></h2>
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Ip address:</strong>
-  <%= @databag.ip_address %>
-</p>
-<p>
-  <strong>Tags:</strong>
-  <%= @databag.tags %>
-</p>
+<div class="show-group">
+  <h3>General</h3>
+  <p>
+    <strong>id:</strong>
+    <%= @databag.id %>
+  </p>
+  <p>
+    <strong>IP Address:</strong>
+    <%= @databag.ip_address %>
+  </p>
+  <p>
+    <strong>Tags:</strong>
+    <%= @databag.tags %>
+  </p>
+  <p>
+    <strong>Config json:</strong>
+    <pre style="overflow-x:scroll;">
+      <%= JSON.unparse(@databag.data) %>
+    </pre>
+    
+  </p>
+</div>
 
-<p>
-  <strong>Config json:</strong>
-  <%= JSON.unparse(@databag.data) %>
-</p>
 
 <%= link_to 'Edit', edit_databag_path(@databag) %> |
-<%= link_to 'Back', databag_path, class: 'w3-button w3-light-grey' %>
+<%= link_to 'Back', databags_path, class: 'w3-button w3-light-grey' %>

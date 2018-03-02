@@ -1,54 +1,68 @@
+<h2>Service#<%= @service.id %></h2>
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @service.name %>
-</p>
+<div class="show-group">
+  <h4>General</h4>
+  <p>
+    <strong>id:</strong>
+    <%= @service.id %>
+  </p>
+  <p>
+    <strong>Name:</strong>
+    <%= @service.name %>
+  </p>
+  <p>
+    <strong>Description:</strong>
+    <%= @service.description %>
+  </p>
+  <p>
+    <strong>Heartbeat url:</strong>
+    <%= @service.heartbeat_url %>
+  </p>
+  
 
-<p>
-  <strong>Description:</strong>
-  <%= @service.description %>
-</p>
+</div>
 
-<p>
-  <strong>Group:</strong>
-  <%= @service.group_id %>
-</p>
+<div class="show-group">
+  <h4>Group</h4>
+  <p>
+    <strong>Produce url:</strong>
+    <%= @service.produce_url %>
+  </p>
+  <p>
+    <strong>Group:</strong>
+    <%= @service.group_id %>
+  </p>
+  <p>
+    <strong>Kafka topics:</strong>
+    <%= @service.kafka_topics %>
+  </p>
 
-<p>
-  <strong>Store:</strong>
-  <%= @service.store_id %>
-</p>
+  <p>
+    <strong>Kafka topic partition:</strong>
+    <%= @service.kafka_topic_partition %>
+  </p>
+</div>
 
-<p>
-  <strong>Forwarder:</strong>
-  <%= @service.forwarder_id %>
-</p>
+<div class="show-group">
+  <h4>Store</h4>
+  <p>
+    <strong>Store:</strong>
+    <%= @service.store_id %>
+  </p>
+  <p>
+    <strong>Kibana host:</strong>
+    <%= @service.kibana_host %>
+  </p>
+</div>
 
-<p>
-  <strong>Produce url:</strong>
-  <%= @service.produce_url %>
-</p>
-
-<p>
-  <strong>Kibana host:</strong>
-  <%= @service.kibana_host %>
-</p>
-
-<p>
-  <strong>Kafka topics:</strong>
-  <%= @service.kafka_topics %>
-</p>
-
-<p>
-  <strong>Kafka topic partition:</strong>
-  <%= @service.kafka_topic_partition %>
-</p>
-
-<p>
-  <strong>Heartbeat url:</strong>
-  <%= @service.heartbeat_url %>
-</p>
+<div class="show-group">
+  <h4>Forwarder</h4>
+  <p>
+    <strong>Forwarder:</strong>
+    <%= @service.forwarder_id %>
+  </p>  
+</div>
 
 <%= link_to 'Edit', edit_service_path(@service) %> |
 <%= link_to 'Back', services_path, class: 'w3-button w3-light-grey' %>

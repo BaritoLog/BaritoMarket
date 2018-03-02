@@ -1,8 +1,13 @@
 <p id="notice"><%= notice %></p>
 
+<h2>Store#<%= @store.id%></h2>
 
 <div class="show-group">
-  <h4>General</h4>
+  <h3>General</h3>
+  <p>
+    <strong>id:</strong>
+    <%= @store.id %>
+  </p>  
   <p>
     <strong>Name:</strong>
     <%= @store.name %>
@@ -11,7 +16,7 @@
 
 
 <div class="show-group">
-  <h4>Elastic Stacks</h4>
+  <h3>Elastic Stacks</h3>
   <p>
     <strong>Elasticsearch host:</strong>
     <%= @store.elasticsearch_host %>
