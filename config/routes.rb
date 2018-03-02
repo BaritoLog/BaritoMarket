@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :forwarders
   resources :databags
   resources :stores
-  resources :groups
+  resources :streams
   if EnabledFeatures.has?(:cas_integration)
     devise_scope :user do
       get "home/index", to: 'devise/cas_sessions#new', as: :new_user_session

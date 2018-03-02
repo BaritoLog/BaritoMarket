@@ -1,4 +1,4 @@
-class Group < ActiveRecord::Base
+class Stream < ActiveRecord::Base
   validates_presence_of :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :kafka_topic_partition, :receiver_port
 
   validate :validate_kafka_topic_partition_number

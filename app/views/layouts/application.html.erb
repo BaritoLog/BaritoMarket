@@ -18,10 +18,10 @@
   
   menus = [
     { :text => 'Service', :icon => 'fa-server', :path => services_path },
-    { :text => 'Group', :icon => 'fa-map', :path => groups_path },
+    { :text => 'Stream', :icon => 'fa-map', :path => streams_path },
     { :text => 'Store', :icon => 'fa-database', :path => stores_path },
     { :text => 'Forwarder', :icon => 'fa-truck', :path => forwarders_path },
-    { :text => 'Datadog', :icon => 'fa-gears', :path => databags_path }
+    { :text => 'Databag', :icon => 'fa-gears', :path => databags_path }
   ]
   
   sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'

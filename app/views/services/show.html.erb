@@ -2,7 +2,7 @@
 <p id="notice"><%= notice %></p>
 
 <div class="show-group">
-  <h4>General</h4>
+  <h3>General</h3>
   <p>
     <strong>id:</strong>
     <%= @service.id %>
@@ -24,14 +24,14 @@
 </div>
 
 <div class="show-group">
-  <h4>Group</h4>
+  <h3>Stream</h3>
   <p>
     <strong>Produce url:</strong>
     <%= @service.produce_url %>
   </p>
   <p>
-    <strong>Group:</strong>
-    <%= @service.group_id %>
+    <strong>Stream:</strong>
+    <%= @service.stream_id %>
   </p>
   <p>
     <strong>Kafka topics:</strong>
@@ -45,7 +45,7 @@
 </div>
 
 <div class="show-group">
-  <h4>Store</h4>
+  <h3>Store</h3>
   <p>
     <strong>Store:</strong>
     <%= @service.store_id %>
@@ -57,7 +57,7 @@
 </div>
 
 <div class="show-group">
-  <h4>Forwarder</h4>
+  <h3>Forwarder</h3>
   <p>
     <strong>Forwarder:</strong>
     <%= @service.forwarder_id %>

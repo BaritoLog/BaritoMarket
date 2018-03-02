@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :service do
     name 'name1'
 
-    group
+    stream
     store
     forwarder
   end

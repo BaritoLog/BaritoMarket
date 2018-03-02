@@ -30,8 +30,8 @@
   <div class="form-group">
     <h4>References</h4>
     <div class="field">
-      <%= f.label :group_id %><br>
-      <%= f.collection_select :group_id, Group.all, :id, :name, { prompt: true }, { class: '' } %>
+      <%= f.label :stream_id %><br>
+      <%= f.collection_select :stream_id, Stream.all, :id, :name, { prompt: true }, { class: '' } %>
     </div>
     <div class="field">
       <%= f.label :store_id %><br>

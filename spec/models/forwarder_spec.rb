@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Forwarder, type: :model do
 
   context 'associations' do
-    it 'belongs to group' do
-      assc = described_class.reflect_on_association(:group)
+    it 'belongs to stream' do
+      assc = described_class.reflect_on_association(:stream)
       expect(assc.macro).to eq :belongs_to
     end
 
@@ -35,15 +35,15 @@ RSpec.describe Forwarder, type: :model do
     end
   end
 
-  describe '#set_group_and_store' do
-    it 'set group, store, kafka_broker_hosts, and zookeeper_hosts' do
-      group = FactoryGirl.build(:group, kafka_broker_hosts: 'broker-host', zookeeper_hosts: 'zookeeper-host')
+  describe '#set_stream_and_store' do
+    it 'set stream, store, kafka_broker_hosts, and zookeeper_hosts' do
+      stream = FactoryGirl.build(:stream, kafka_broker_hosts: 'broker-host', zookeeper_hosts: 'zookeeper-host')
       store = FactoryGirl.build(:store)
       forwarder = FactoryGirl.build(:forwarder)
 
-      forwarder.set_group_and_store(group, store)
+      forwarder.set_stream_and_store(stream, store)
 
-      expect(forwarder.group).to eq(group)
+      expect(forwarder.stream).to eq(stream)
       expect(forwarder.store).to eq(store)
 
       expect(forwarder.kafka_broker_hosts).to eq('broker-host')

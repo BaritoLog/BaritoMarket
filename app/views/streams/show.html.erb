@@ -1,4 +1,4 @@
-<h2>Group#<%= @group.id %></h2>
+<h2>Group#<%= @stream.id %></h2>
 
 <p id="notice"><%= notice %></p>
 
@@ -6,11 +6,11 @@
   <h3>General</h3>
   <p>
     <strong>id:</strong>
-    #<%= @group.id %>
+    #<%= @stream.id %>
   </p>
   <p>
     <strong>Name:</strong>
-    <%= @group.name %>
+    <%= @stream.name %>
   </p>
 </div>
 
@@ -18,15 +18,15 @@
   <h3>Receiver</h3>
   <p>
     <strong>Receiver Host:</strong>
-    <%= @group.receiver_host %>
+    <%= @stream.receiver_host %>
   </p>
   <p>
     <strong>Receiver Port:</strong>
-    <%= @group.receiver_port %>
+    <%= @stream.receiver_port %>
   </p>
   <p>
     <strong>Receiver Heartbeat Url:</strong>
-    <%= @group.receiver_heartbeat_url %>
+    <%= @stream.receiver_heartbeat_url %>
   </p>
 </div>
 
@@ -34,18 +34,18 @@
   <h3>Kafka</h3>
   <p>
     <strong>Zookeeper Hosts</strong>
-    <%= @group.zookeeper_hosts %>
+    <%= @stream.zookeeper_hosts %>
   </p>
   <p>
     <strong>Kafka Broker Host</strong>
-    <%= @group.kafka_broker_hosts %>
+    <%= @stream.kafka_broker_hosts %>
   </p>
   <p>
     <strong>Kafka Manager</strong>
-    <%= @group.kafka_manager_host %>
+    <%= @stream.kafka_manager_host %>
   </p>
 </div>
 
 
-<%= link_to 'Edit', edit_group_path(@group) %> |
-<%= link_to 'Back', groups_path %>
+<%= link_to 'Edit', edit_stream_path(@stream) %> |
+<%= link_to 'Back', streams_path %>

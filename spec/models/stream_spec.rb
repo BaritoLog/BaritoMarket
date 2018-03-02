@@ -1,57 +1,57 @@
 require 'rails_helper'
 
-RSpec.describe Group, type: :model do
+RSpec.describe Stream, type: :model do
 
   context 'name' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, name: '')
+      group = FactoryGirl.build(:stream, name: '')
       expect(group).to_not be_valid
     end
   end
 
   context 'receiver_host' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, receiver_host: '')
+      group = FactoryGirl.build(:stream, receiver_host: '')
       expect(group).to_not be_valid
     end
   end
 
   context 'zookeeper_hosts' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, zookeeper_hosts: '')
+      group = FactoryGirl.build(:stream, zookeeper_hosts: '')
       expect(group).to_not be_valid
     end
   end
 
   context 'kafka_broker_hosts' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, kafka_broker_hosts: '')
+      group = FactoryGirl.build(:stream, kafka_broker_hosts: '')
       expect(group).to_not be_valid
     end
   end
 
   context 'kafka_topic_partition' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, kafka_topic_partition: nil)
+      group = FactoryGirl.build(:stream, kafka_topic_partition: nil)
       expect(group).to_not be_valid
     end
 
     it 'greater than or equal to kafka broker host number' do
-      group = FactoryGirl.build(:group, kafka_broker_hosts: 'host,host2', kafka_topic_partition: 1)
+      group = FactoryGirl.build(:stream, kafka_broker_hosts: 'host,host2', kafka_topic_partition: 1)
       expect(group).to_not be_valid
     end
   end
 
   context 'receiver_port' do
     it 'must be presence' do
-      group = FactoryGirl.build(:group, receiver_port: '')
+      group = FactoryGirl.build(:stream, receiver_port: '')
       expect(group).to_not be_valid
     end
   end
 
   context 'when group created' do
     it 'create receiver config' do
-      group = FactoryGirl.create(:group)
+      group = FactoryGirl.create(:stream)
 
       databag = Databag.find(group.databag_id)
 

@@ -10,7 +10,7 @@
         <th class="column-id">#</th>
         <th class="column-name">Name</th>
         <th>Host</th>
-        <th>Group</th>
+        <th>Forwarder</th>
         <th>Store</th>
         <th></th>
       </tr>
@@ -22,7 +22,7 @@
           <td><%= forwarder.id %></td>
           <td><%= forwarder.name %></td>
           <td><%= forwarder.host %></td>
-          <td><%= forwarder.group.name %></td>
+          <td><%= forwarder.stream.name %></td>
           <td><%= forwarder.store.name %></td>
           <td>
             <%= link_to 'Show', forwarder, class: 'ctrl-link' %>
