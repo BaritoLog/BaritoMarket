@@ -13,7 +13,7 @@ class Client < ActiveRecord::Base
   end
 
   def generate_produce_url
-    produce_url = "http://#{self.stream.receiver_host}/gp/#{self.stream_id}/st/#{self.store_id}/fw/#{self.forwarder_id}/sv/#{self.id}/produce/#{self.kafka_topics}"
+    produce_url = "http://#{self.stream.receiver_host}:#{self.stream.receiver_port}/str/#{self.stream_id}/st/#{self.store_id}/fw/#{self.forwarder_id}/sv/#{self.id}/produce/#{self.kafka_topics}"
     update_column(:produce_url, produce_url)
   end
 

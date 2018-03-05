@@ -69,6 +69,6 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.require(:client).permit(:name, :description, :group_id, :store_id, :forwarder_id, :produce_url, :kibana_host, :kafka_topic, :kafka_topic_partition, :heartbeat_url)
+      params.require(:client).permit(:name, :description, :stream_id, :store_id, :forwarder_id, :produce_url, :kibana_host, :kafka_topic, :kafka_topic_partition, :heartbeat_url)
     end
 end

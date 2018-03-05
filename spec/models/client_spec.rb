@@ -33,12 +33,12 @@ RSpec.describe Client, type: :model do
     end
 
     it 'generate produce url' do
-      stream = FactoryGirl.create(:stream, id: 1, receiver_host: 'some-host:with-port')
+      stream = FactoryGirl.create(:stream, id: 1, receiver_host: 'some-host', receiver_port: 'some-port')
       store = FactoryGirl.create(:store, id: 2)
       forwarder = FactoryGirl.create(:forwarder, id: 3, kafka_topics: 'kafka-topics')
       client = FactoryGirl.create(:client, stream: stream, store: store, forwarder: forwarder, id: 4)
 
-      expect(client.produce_url).to eq('http://some-host:with-port/gp/1/st/2/fw/3/sv/4/produce/kafka-topics')
+      expect(client.produce_url).to eq('http://some-host:some-port/str/1/st/2/fw/3/sv/4/produce/kafka-topics')
     end
 
     it 'setup forwarder' do

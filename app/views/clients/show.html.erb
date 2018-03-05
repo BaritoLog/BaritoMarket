@@ -64,5 +64,42 @@
   </p>  
 </div>
 
+<div class="w3-panel w3-pale-yellow w3-border w3-border-yellow">
+  <h3>ENV Vars</h3>
+  <p>Please create these ENV vars for your app deployment : </p>
+  <p>
+    <strong>baritoId:</strong>
+    "<%= @client.token %>"
+  </p>
+  <p>
+    <strong>baritoProduceHost:</strong>
+    "<%= @client.stream.receiver_host %>"
+  </p>
+  <p>
+    <strong>baritoProducePort:</strong>
+    "<%= @client.stream.receiver_port %>"
+  </p>
+  <p>
+    <strong>baritoProduceTopic:</strong>
+    "<%= @client.kafka_topics %>"
+  </p>
+  <p>
+    <strong>baritoStreamId:</strong>
+    <%= @client.stream_id %>
+  </p>
+  <p>
+    <strong>baritoStoreId:</strong>
+    <%= @client.store_id %>
+  </p>
+  <p>
+    <strong>baritoForwarderId:</strong>
+    <%= @client.forwarder_id %>
+  </p>
+  <p>
+    <strong>baritoClientId:</strong>
+    <%= @client.id %>
+  </p>
+</div>
+
 <%= link_to 'Edit', edit_client_path(@client) %> |
 <%= link_to 'Back', clients_path, class: 'w3-button w3-light-grey' %>
