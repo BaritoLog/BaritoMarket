@@ -1,10 +1,10 @@
-ruby '2.3.1', :engine => 'jruby', :engine_version => '9.1.6.0'
+ruby '2.4.3'
 
-source 'http://artifactory-gojek.golabs.io/artifactory/api/gems/rubies'
+source 'https://rubygems.org'
 
-gem 'rails', '4.2.5.1'
+gem 'rails', '4.2.8'
 gem 'jquery-rails'
-gem 'activerecord-jdbcpostgresql-adapter', '~> 1.3.19'
+gem 'pg', '~> 0.18'
 gem 'jar-dependencies', '~> 0.3.5'
 gem 'puma', '~> 3.7'
 gem 'turbolinks', '~> 5'
