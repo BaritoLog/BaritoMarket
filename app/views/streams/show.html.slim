@@ -45,6 +45,7 @@ p#notice
     strong
       | Kafka Manager
     = @stream.kafka_manager_host
-= link_to 'Edit', edit_stream_path(@stream)
-|  | 
-= link_to 'Back', streams_path
+br
+div class="btn-group" role="group"
+  = link_to 'Edit', edit_stream_path(@stream), class: 'btn btn-outline-primary'
+  = link_to 'Back', streams_path, class: 'btn btn-outline-secondary'

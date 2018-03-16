@@ -1,6 +1,7 @@
 h1
   | Editing Store
 = render 'form'
-= link_to 'Show', @store
-|  | 
-= link_to 'Back', stores_path, class: 'w3-button w3-light-grey'
+br
+div class="btn-group" role="group"
+  = link_to 'Show', @store, class: 'btn btn-outline-info'
+  = link_to 'Back', stores_path, class: 'btn btn-outline-secondary'

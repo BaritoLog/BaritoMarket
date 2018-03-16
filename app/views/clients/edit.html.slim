@@ -1,6 +1,7 @@
 h1
   | Editing Client
 = render 'form'
-= link_to 'Show', @client
-|  | 
-= link_to 'Back', clients_path, class: 'w3-button w3-light-grey'
+br
+div class="btn-group" role="group"
+  = link_to 'Show', @client, :class => 'btn btn-outline-info'
+  = link_to 'Back', clients_path, :class => 'btn btn-outline-secondary'

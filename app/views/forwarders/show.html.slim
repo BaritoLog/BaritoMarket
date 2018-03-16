@@ -48,6 +48,7 @@ p#notice
     strong
       | Store:
     = @forwarder.store_id
-= link_to 'Edit', edit_forwarder_path(@forwarder)
-|  | 
-= link_to 'Back', forwarders_path
+br
+div class="btn-group" role="group"
+= link_to 'Edit', edit_forwarder_path(@forwarder), class: 'btn btn-outline-primary'
+= link_to 'Back', forwarders_path, class: 'btn btn-outline-secondary'

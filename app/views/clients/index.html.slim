@@ -3,7 +3,7 @@ p#notice
 h1
   | Listing clients
 .entities-panel
-  table.w3-table.w3-bordered
+  table class="table table-sm"
     thead
       tr
         th.column-id
@@ -35,7 +35,8 @@ h1
           td
             = client.kibana_host
           td
-            = link_to 'Show', client, class: 'ctrl-link'
-            = link_to 'Edit', edit_client_path(client), class: 'ctrl-link'
-            = link_to 'Destroy', client, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
-= link_to 'New client', new_client_path
+            div class="btn-group" role="group"
+              = link_to 'Show', client, class: 'btn btn-primary btn-rounded btn-sm my-0'
+              = link_to 'Edit', edit_client_path(client), class: 'btn btn-secondary btn-rounded btn-sm my-0'
+              = link_to 'Destroy', client, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger btn-rounded btn-sm my-0'
+= link_to 'New client', new_client_path, class: 'btn btn-success'

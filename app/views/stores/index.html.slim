@@ -3,7 +3,7 @@ p#notice
 h1
   | Listing Stores
 .entities-panel
-  table.w3-table.w3-bordered
+  table class="table table-sm"
     thead
       tr
         th.column-id
@@ -27,7 +27,8 @@ h1
           td
             = store.kibana_host
           td
-            = link_to 'Show', store, class: 'ctrl-link'
-            = link_to 'Edit', edit_store_path(store), class: 'ctrl-link'
-            = link_to 'Destroy', store, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
-= link_to 'New Store', new_store_path
+            div class="btn-group" role="group"
+              = link_to 'Show', store, class: 'btn btn-primary btn-rounded btn-sm my-0'
+              = link_to 'Edit', edit_store_path(store), class: 'btn btn-secondary btn-rounded btn-sm my-0'
+              = link_to 'Destroy', store, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-rounded btn-sm my-0'
+= link_to 'New Store', new_store_path, class: 'btn btn-success'

@@ -112,6 +112,7 @@ p#notice
     |  "
     = @client.id
     | " 
-= link_to 'Edit', edit_client_path(@client)
-|  | 
-= link_to 'Back', clients_path, class: 'w3-button w3-light-grey'
+br
+div class="btn-group" role="group"
+  = link_to 'Edit', edit_client_path(@client), class: 'btn btn-outline-primary'
+  = link_to 'Back', clients_path, class: 'btn btn-outline-secondary'

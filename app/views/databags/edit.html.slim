@@ -1,6 +1,8 @@
 h1
   | Editing Databag
 = render 'form'
-= link_to 'Show', @databag
-|  | 
-= link_to 'Back', databags_path, class: 'w3-button w3-light-grey'
+
+br
+div class="btn-group" role="group"
+  = link_to 'Show', @databag, class: 'btn btn-outline-info'
+  = link_to 'Back', databags_path, class: 'btn btn-outline-secondary'

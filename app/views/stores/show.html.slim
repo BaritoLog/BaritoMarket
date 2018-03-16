@@ -25,6 +25,7 @@ h2
     strong
       | Kibana host:
     = @store.kibana_host
-= link_to 'Edit', edit_store_path(@store)
-|  | 
-= link_to 'Back', stores_path, class: 'w3-button w3-light-grey'
+br
+div class="btn-group" role="group"
+  = link_to 'Edit', edit_store_path(@store), class: 'btn btn-outline-primary'
+  = link_to 'Back', stores_path, class: 'btn btn-outline-secondary'
