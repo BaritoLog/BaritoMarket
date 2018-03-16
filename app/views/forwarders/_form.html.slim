@@ -1,0 +1,31 @@
+= form_for(@forwarder, :html => {class: 'form'}) do |f|
+  - if @forwarder.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@forwarder.errors.count, "error")
+        |  prohibited this forwarder from being saved:
+      ul
+        - @forwarder.errors.full_messages.each do |message|
+          li
+            = message
+  .form-group
+    h4
+      | General
+    .field
+      = f.label :name
+      br
+      = f.text_field :name
+    .field
+      = f.label :host
+      br
+      = f.text_field :host
+    .field
+      = f.label :heartbeat_url
+      br
+      = f.text_field :heartbeat_url
+    .field
+      = f.label :kafka_topics
+      br
+      = f.text_field :kafka_topics
+  .actions
+    = f.submit(class: 'w3-button w3-blue')

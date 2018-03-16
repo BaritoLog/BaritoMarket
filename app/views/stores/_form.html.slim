@@ -1,0 +1,30 @@
+= form_for(@store, :html => {class: 'form'}) do |f|
+  - if @store.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@store.errors.count, "error")
+        |  prohibited this store from being saved:
+      ul
+        - @store.errors.full_messages.each do |message|
+          li
+            = message
+  .form-group
+    h4
+      | General
+    .field
+      = f.label :name
+      br
+      = f.text_field :name
+  .form-group
+    h4
+      | Elastic Stack
+    .field
+      = f.label :elasticsearch_host
+      br
+      = f.text_field :elasticsearch_host
+    .field
+      = f.label :kibana_host
+      br
+      = f.text_field :kibana_host
+  .actions
+    = f.submit(class: 'w3-button w3-blue')

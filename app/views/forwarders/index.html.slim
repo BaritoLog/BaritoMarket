@@ -1,0 +1,37 @@
+p#notice
+  = notice
+h1
+  | Listing Forwarders
+.entities-panel
+  table.w3-table.w3-bordered
+    thead
+      tr
+        th.column-id
+          | #
+        th.column-name
+          | Name
+        th
+          | Host
+        th
+          | Forwarder
+        th
+          | Store
+        th
+    tbody
+      - @forwarders.each do |forwarder|
+        tr
+          td
+            = forwarder.id
+          td
+            = forwarder.name
+          td
+            = forwarder.host
+          td
+            = forwarder.stream.name
+          td
+            = forwarder.store.name
+          td
+            = link_to 'Show', forwarder, class: 'ctrl-link'
+            = link_to 'Edit', edit_forwarder_path(forwarder), class: 'ctrl-link'
+            = link_to 'Destroy', forwarder, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
+= link_to 'New Forwarder', new_forwarder_path

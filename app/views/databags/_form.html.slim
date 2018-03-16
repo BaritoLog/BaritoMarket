@@ -1,0 +1,27 @@
+= form_for(@databag, :html => {class: 'form'}) do |f|
+  - if @databag.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@databag.errors.count, "error")
+        |  prohibited this databag from being saved:
+      ul
+        - @databag.errors.full_messages.each do |message|
+          li
+            = message
+  .form-group
+    h3
+      | General
+    .field
+      = f.label :ip_address
+      br
+      = f.text_field :ip_address
+    .field
+      = f.label :data
+      br
+      = f.text_area :data, value: !@databag.data.nil? ? JSON.unparse(@databag.data) : ''
+    .field
+      = f.label :tags
+      br
+      = f.text_field :tags
+  .actions
+    = f.submit(class: 'w3-button w3-blue')

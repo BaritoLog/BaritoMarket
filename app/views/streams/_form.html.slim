@@ -1,0 +1,53 @@
+= form_for(@stream, :html => {class: 'form'}) do |f|
+  - if @stream.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@stream.errors.count, "error")
+        |  prohibited this group from being saved:
+      ul
+        - @stream.errors.full_messages.each do |message|
+          li
+            = message
+  .form-group
+    h3
+      | General
+    .field
+      = f.label :name
+      br
+      = f.text_field :name
+  .form-group
+    h3
+      | Receiver
+    .field
+      = f.label :receiver_host
+      br
+      = f.text_field :receiver_host
+    .field
+      = f.label :receiver_port
+      br
+      = f.text_field :receiver_port
+    .field
+      = f.label :receiver_heartbeat_url
+      br
+      = f.text_field :receiver_heartbeat_url
+  .form-group
+    h3
+      | Kafka
+    .field
+      = f.label :zookeeper_hosts
+      br
+      = f.text_field :zookeeper_hosts
+    .field
+      = f.label :kafka_broker_hosts
+      br
+      = f.text_field :kafka_broker_hosts
+    .field
+      = f.label :kafka_topic_partition
+      br
+      = f.number_field :kafka_topic_partition, :value => 10
+    .field
+      = f.label :kafka_manager_host
+      br
+      = f.text_field :kafka_manager_host
+  .actions
+    = f.submit(class: 'w3-button w3-blue')

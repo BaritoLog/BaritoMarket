@@ -1,0 +1,33 @@
+p#notice
+  = notice
+h1
+  | Listing Databag
+.entities-panel
+  table.w3-table.w3-bordered
+    thead
+      tr
+        th
+          | #
+        th
+          | IP Address
+        th
+          | Tags
+        th
+          | Data
+        th
+    tbody
+      - @databags.each do |databag|
+        tr
+          td
+            = databag.id
+          td
+            = databag.ip_address
+          td
+            = databag.tags
+          td
+            = JSON.unparse(databag.data)
+          td
+            = link_to 'Show', databag, class: 'ctrl-link'
+            = link_to 'Edit', edit_databag_path(databag), class: 'ctrl-link'
+            = link_to 'Destroy', databag, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
+= link_to 'New Databag', new_databag_path

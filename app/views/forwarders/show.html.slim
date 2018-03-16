@@ -1,0 +1,53 @@
+h2
+  | Forwarder#
+  = @forwarder.id
+p#notice
+  = notice
+.show-group
+  h3
+    | General
+  p
+    strong
+      | id:
+    = @forwarder.id
+  p
+    strong
+      | Name:
+    = @forwarder.name
+  p
+    strong
+      | Host:
+    = @forwarder.host
+  p
+    strong
+      | Heartbeat url:
+    = @forwarder.heartbeat_url
+  p
+    strong
+      | Kafka topics:
+    = @forwarder.kafka_topics
+.show-group
+  h3
+    | Group
+  p
+    strong
+      | Stream:
+    = @forwarder.stream_id
+  p
+    strong
+      | Kafka broker hosts:
+    = @forwarder.kafka_broker_hosts
+  p
+    strong
+      | Zookeeper hosts:
+    = @forwarder.zookeeper_hosts
+.show-group
+  h3
+    | Store
+  p
+    strong
+      | Store:
+    = @forwarder.store_id
+= link_to 'Edit', edit_forwarder_path(@forwarder)
+|  | 
+= link_to 'Back', forwarders_path

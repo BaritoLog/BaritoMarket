@@ -1,86 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Barito Market</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+doctype html
+html
+  head
+    title Barito Market
+    link = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    link = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    link = csrf_meta_tags
+  body
 
-<nav class="w3-sidebar w3-bar-block w3-collapse w3-card" style="z-index:3;width:250px;" id="mySidebar">
-  
-  <%
-  def current_class?(test_path)
-    request.path == test_path ? ' menu-active' : ''
-  end
-  
-  menus = [
-    { :text => 'Client', :icon => 'fa-microchip', :path => clients_path },
-    { :text => 'Stream', :icon => 'fa-map', :path => streams_path },
-    { :text => 'Store', :icon => 'fa-database', :path => stores_path },
-    { :text => 'Forwarder', :icon => 'fa-truck', :path => forwarders_path },
-    { :text => 'Databag', :icon => 'fa-gears', :path => databags_path }
-  ]
-  
-  sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
-  
-  %>
+    ruby:
+      def current_class?(test_path)
+        request.path == test_path ? '-active' : ''
+      end
+      menus = [
+        {:text => 'Client', :icon => 'fa-microchip', :path => clients_path},
+        {:text => 'Stream', :icon => 'fa-map', :path => streams_path},
+        {:text => 'Store', :icon => 'fa-database', :path => stores_path},
+        {:text => 'Forwarder', :icon => 'fa-truck', :path => forwarders_path},
+        {:text => 'Databag', :icon => 'fa-gears', :path => databags_path}
+      ]
+      sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
 
-  <% unless user_signed_in? %>
-      <%= link_to 'Sign in', new_user_session_path, class: 'w3-bar-item w3-button' %>
-  <% else %>
-      <a class="w3-bar-item w3-button w3-center w3-indigo w3-xxlarge" href="/">Barito Market </a>
-      <div class="w3-bar-item w3-center w3-teal">
-        <div>
-          <i class="fa fa-user-circle-o" aria-hidden="true"></i>  <%= @current_user.email %>   
-        </div>
-        <div class="w3-tiny">
-          <%= link_to 'Sign Out',sign_out_path, class: 'w3-text-white' %>
-        </div>
-      </div>
-      <a class="w3-bar-item w3-button w3-hide-large w3-large" href="javascript:void(0)" onclick="w3_close()">Close <i class="fa fa-remove"></i></a>
-      <% menus.each do |menu| %>
-        <%= link_to menu[:path], class: 'w3-bar-item w3-button' + current_class?(menu[:path]) do %>
-          <i class="fa <%= menu[:icon]%>"></i> <%= menu[:text] %>
-        <% end %>
-      <% end %>
-      
-  <% end %>
-</nav>
+    nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0"
+      a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" Barito Market
+      ul class="navbar-nav px-3"
+        li class="nav-item text-nowrap"
+          link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
 
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="myOverlay"></div>
+    div class="container-fluid"
+      div class="row"
+        nav class="col-md-2 d-none d-md-block bg-light sidebar"
+          div class="sidebar-sticky"
+            h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+              span =@current_user.email
+            ul class="nav flex-column"
+              - menus.each do |menu|
+                li class="nav-item"
+                  link = link_to menu[:path], class: 'nav-link' + current_class?(menu[:path])
+                    span class="fa #{menu[:icon]}"
+                      =menu[:text]
+        main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
+          ==yield
 
-<div class="w3-main" style="margin-left:250px;">
-
-  <div class="w3-container" style="padding:32px">
-
-  <% unless user_signed_in? %>
-      <p>Please sign in</p>
-  <% else %>
-      <%= yield %>
-  <% end %>
-  </div>
-
-  <footer class="w3-container" style="padding:32px">
-    <p>&copy; 2018 Systems GoPay</p>
-  </footer>
-
-</div>
-
-<script>
-    // Open and close the sidebar on medium and small screens
-    function w3_open() {
-        document.getElementById("mySidebar").style.display = "block";
-        document.getElementById("myOverlay").style.display = "block";
-    }
-    function w3_close() {
-        document.getElementById("mySidebar").style.display = "none";
-        document.getElementById("myOverlay").style.display = "none";
-    }
-
-</script>
-
-
-</body>
-</html>
+  footer class="page-footer font-small pt-4 mt-4"
+    div class="footer-copyright py-3 text-center"
+      p
+        | &copy;
+        = Date.today.year
+        | BaritoLog

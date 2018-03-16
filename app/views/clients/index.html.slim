@@ -1,0 +1,41 @@
+p#notice
+  = notice
+h1
+  | Listing clients
+.entities-panel
+  table.w3-table.w3-bordered
+    thead
+      tr
+        th.column-id
+          | #
+        th.column-name
+          | Name
+        th
+          | Stream
+        th
+          | Store
+        th
+          | Forwarder
+        th
+          | Kibana host
+        th
+    tbody
+      - @clients.each do |client|
+        tr
+          td
+            = client.id
+          td
+            = client.name
+          td
+            = client.stream.name
+          td
+            = client.store.name
+          td
+            = client.forwarder.name
+          td
+            = client.kibana_host
+          td
+            = link_to 'Show', client, class: 'ctrl-link'
+            = link_to 'Edit', edit_client_path(client), class: 'ctrl-link'
+            = link_to 'Destroy', client, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
+= link_to 'New client', new_client_path

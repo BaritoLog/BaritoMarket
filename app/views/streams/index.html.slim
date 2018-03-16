@@ -1,0 +1,25 @@
+p#notice
+  = notice
+h1
+  | Listing Streams
+.entities-panel
+  table.w3-table.w3-bordered
+    thead
+      tr
+        th.column-id
+          | #
+        th.column-name
+          | Name
+        th
+    tbody
+      - @streams.each do |stream|
+        tr
+          td
+            = stream.id
+          td
+            = stream.name
+          td
+            = link_to 'Show', stream, class: 'ctrl-link'
+            = link_to 'Edit', edit_stream_path(stream), class: 'ctrl-link'
+            = link_to 'Destroy', stream, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
+= link_to 'New Group', new_stream_path

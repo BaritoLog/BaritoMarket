@@ -1,0 +1,33 @@
+p#notice
+  = notice
+h1
+  | Listing Stores
+.entities-panel
+  table.w3-table.w3-bordered
+    thead
+      tr
+        th.column-id
+          | #
+        th.column-name
+          | Name
+        th[style="width: 200px;"]
+          | Elasticsearch host
+        th[style="width: 200px;"]
+          | Kibana host
+        th
+    tbody
+      - @stores.each do |store|
+        tr
+          td
+            = store.id
+          td
+            = store.name
+          td
+            = store.elasticsearch_host
+          td
+            = store.kibana_host
+          td
+            = link_to 'Show', store, class: 'ctrl-link'
+            = link_to 'Edit', edit_store_path(store), class: 'ctrl-link'
+            = link_to 'Destroy', store, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ctrl-link'
+= link_to 'New Store', new_store_path

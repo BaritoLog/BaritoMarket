@@ -1,0 +1,50 @@
+h2
+  | Group#
+  = @stream.id
+p#notice
+  = notice
+.show-group
+  h3
+    | General
+  p
+    strong
+      | id:
+    |  #
+    = @stream.id
+  p
+    strong
+      | Name:
+    = @stream.name
+.show-group
+  h3
+    | Receiver
+  p
+    strong
+      | Receiver Host:
+    = @stream.receiver_host
+  p
+    strong
+      | Receiver Port:
+    = @stream.receiver_port
+  p
+    strong
+      | Receiver Heartbeat Url:
+    = @stream.receiver_heartbeat_url
+.show-group
+  h3
+    | Kafka
+  p
+    strong
+      | Zookeeper Hosts
+    = @stream.zookeeper_hosts
+  p
+    strong
+      | Kafka Broker Host
+    = @stream.kafka_broker_hosts
+  p
+    strong
+      | Kafka Manager
+    = @stream.kafka_manager_host
+= link_to 'Edit', edit_stream_path(@stream)
+|  | 
+= link_to 'Back', streams_path
