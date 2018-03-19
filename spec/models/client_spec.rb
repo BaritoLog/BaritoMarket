@@ -27,6 +27,15 @@ RSpec.describe Client, type: :model do
   end
 
   context 'when client created' do
+    it 'generate application secret' do
+      stream = FactoryGirl.create(:stream, id: 1, receiver_host: 'some-host', receiver_port: 'some-port')
+      store = FactoryGirl.create(:store, id: 2)
+      forwarder = FactoryGirl.create(:forwarder, id: 3, kafka_topics: 'kafka-topics')
+      client = FactoryGirl.create(:client, stream: stream, store: store, forwarder: forwarder, id: 4)
+
+      expect(client.application_secret).to_not be_empty
+    end
+
     it 'copy kafka topics from forwarder' do
       client = FactoryGirl.create(:client)
       expect(client.kafka_topics).to eq(client.forwarder.kafka_topics)

@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class Client < ActiveRecord::Base
   validates_presence_of :name
 
@@ -5,7 +7,7 @@ class Client < ActiveRecord::Base
   belongs_to :store, required: true
   belongs_to :forwarder, required: true
 
-  after_create :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder, :copy_kibana_host_from_store, :copy_kafka_topic_partition_from_stream
+  after_create :generate_application_secret, :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder, :copy_kibana_host_from_store, :copy_kafka_topic_partition_from_stream
 
   private
   def copy_kafka_topics_from_forwarder
@@ -27,5 +29,10 @@ class Client < ActiveRecord::Base
 
   def copy_kafka_topic_partition_from_stream
     update_column(:kafka_topic_partition, self.stream.kafka_topic_partition)
+  end
+
+  def generate_application_secret
+    app_secret = SecureRandom.base64
+    update_column(:application_secret, app_secret)
   end
 end
