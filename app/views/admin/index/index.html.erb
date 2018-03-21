@@ -4,7 +4,7 @@
 </head>
 <body>
 <!--<p class="notice"><%= notice %></p>-->
-<p class="notice"> Welcome <%= @current_user.email %> </p>
+<p class="notice"> Welcome <%= @current_user.username %> </p>
 <button type="button">
   <a <%= link_to "Sign Out", destroy_test_session_path, method: :delete %></a>
   <span class="icon-bar"></span>

@@ -20,26 +20,29 @@ html
       ]
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
 
-    nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0"
-      a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" Barito Market
-      ul class="navbar-nav px-3"
-        li class="nav-item text-nowrap"
-          link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
+    - unless user_signed_in?
+      link = link_to 'Sign in', new_user_session_path, class: 'nav-link'
+    - else
+      nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0"
+        a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" Barito Market
+        ul class="navbar-nav px-3"
+          li class="nav-item text-nowrap"
+            link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
 
-    div class="container-fluid"
-      div class="row"
-        nav class="col-md-2 d-none d-md-block bg-light sidebar"
-          div class="sidebar-sticky"
-            h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
-              span =@current_user.email
-            ul class="nav flex-column"
-              - menus.each do |menu|
-                li class="nav-item"
-                  link = link_to menu[:path], class: 'nav-link' + current_class?(menu[:path])
-                    span class="fa #{menu[:icon]}"
-                      =menu[:text]
-        main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
-          ==yield
+      div class="container-fluid"
+        div class="row"
+          nav class="col-md-2 d-none d-md-block bg-light sidebar"
+            div class="sidebar-sticky"
+              h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                span =@current_user.username
+              ul class="nav flex-column"
+                - menus.each do |menu|
+                  li class="nav-item"
+                    link = link_to menu[:path], class: 'nav-link' + current_class?(menu[:path])
+                      span class="fa #{menu[:icon]}"
+                        =menu[:text]
+          main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
+            ==yield
 
   footer class="page-footer font-small pt-4 mt-4"
     div class="footer-copyright py-3 text-center"

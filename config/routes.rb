@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       get "users/sign_out", to: 'devise/cas_sessions#destroy', as: :destroy_user_session
       get "users/service", to: 'devise/cas_sessions#service', as: :user_service
     end
+    match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   end
 
   root :controller => :home, :action => :index
