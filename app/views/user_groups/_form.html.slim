@@ -1,0 +1,17 @@
+= form_for(@user_group, remote: request.xhr?, html: { data: { modal: true } }) do |f|
+  .modal-body
+    - if @user_group.errors.any?
+        #error_explanation
+        h2
+            = pluralize(@user_group.errors.count, "error")
+            |  prohibited this client from being saved:
+        ul
+            - @user_group.errors.full_messages.each do |message|
+            li
+                = message
+    .field
+      = f.label :name
+      br
+      = f.text_field :name
+  .modal-footer
+    = f.button("Create Group", class: 'btn btn-success')

@@ -6,6 +6,8 @@ class Client < ActiveRecord::Base
   belongs_to :stream, required: true
   belongs_to :store, required: true
   belongs_to :forwarder, required: true
+  has_many :client_groups
+  has_many :user_groups, through: :client_groups
 
   after_create :generate_application_secret, :copy_kafka_topics_from_forwarder, :generate_produce_url, :setup_forwarder, :copy_kibana_host_from_store, :copy_kafka_topic_partition_from_stream
 

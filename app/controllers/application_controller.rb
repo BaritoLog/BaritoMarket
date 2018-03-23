@@ -31,4 +31,10 @@ class ApplicationController < ActionController::Base
       stored_location_for(resource_or_scope) || signed_in_root_path(resource_or_scope)
     end
   end
+
+  def respond_modal_with(*args, &blk)
+    options = args.extract_options!
+    options[:responder] = ModalResponder
+    respond_with *args, options, &blk
+  end
 end

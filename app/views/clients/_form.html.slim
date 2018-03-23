@@ -1,6 +1,6 @@
 = form_for(@client, :html => {class: 'form'}) do |f|
   - if @client.errors.any?
-    #error_explanation
+    div class="error_explanation" role="alert"
       h2
         = pluralize(@client.errors.count, "error")
         |  prohibited this client from being saved:
@@ -23,20 +23,26 @@
       = f.label :heartbeat_url
       br
       = f.text_field :heartbeat_url
+    .field
+      = f.label :group
+      br
+      = f.collection_select :user_group_ids, UserGroup.all, :id, :name, { prompt: true }, { class: 'form-control' }
+    div class="btn-group"
+      = link_to 'Create Group', new_user_group_path, data: { modal: true }, class: 'btn btn-primary'
   .form-group
     h4
       | References
     .field
       = f.label :stream_id
       br
-      = f.collection_select :stream_id, Stream.all, :id, :name, { prompt: true }, { class: '' }
+      = f.collection_select :stream_id, Stream.all, :id, :name, { prompt: true }, { class: 'form-control' }
     .field
       = f.label :store_id
       br
-      = f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: '' }
+      = f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: 'form-control' }
     .field
       = f.label :forwarder_id
       br
-      = f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: '' }
+      = f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: 'form-control' }
   .actions
     = f.submit(class: 'btn btn-primary')

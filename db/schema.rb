@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180319050118) do
+ActiveRecord::Schema.define(version: 20180321102841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "client_groups", force: :cascade do |t|
+    t.integer  "client_id"
+    t.integer  "user_group_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "client_groups", ["client_id"], name: "index_client_groups_on_client_id", using: :btree
+  add_index "client_groups", ["user_group_id"], name: "index_client_groups_on_user_group_id", using: :btree
 
   create_table "clients", force: :cascade do |t|
     t.string   "name"
@@ -73,6 +83,13 @@ ActiveRecord::Schema.define(version: 20180319050118) do
     t.integer  "kafka_topic_partition",  default: 0, null: false
     t.integer  "databag_id"
     t.string   "receiver_port"
+  end
+
+  create_table "user_groups", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "created_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

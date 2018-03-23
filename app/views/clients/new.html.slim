@@ -3,3 +3,11 @@ h1
 = render 'form'
 br
 = link_to 'Back', clients_path, class: 'btn btn-outline-secondary'
+
+javascript:
+  function modalDidDismiss(data) {
+      $(function() {
+        var select = $("#client_user_group_ids");
+        select.append($("<option></option>").attr("value", data.user_group.id).text(data.user_group.name));
+      });
+  }
