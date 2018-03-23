@@ -26,7 +26,7 @@
     .field
       = f.label :group
       br
-      = f.collection_select :user_group_ids, UserGroup.all, :id, :name, { prompt: true }, { class: 'form-control' }
+      = f.collection_select :user_group_ids, UserGroup.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
     div class="btn-group"
       = link_to 'Create Group', new_user_group_path, data: { modal: true }, class: 'btn btn-primary'
   .form-group
@@ -35,14 +35,14 @@
     .field
       = f.label :stream_id
       br
-      = f.collection_select :stream_id, Stream.all, :id, :name, { prompt: true }, { class: 'form-control' }
+      = f.collection_select :stream_id, Stream.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
     .field
       = f.label :store_id
       br
-      = f.collection_select :store_id, Store.all, :id, :name, { prompt: true }, { class: 'form-control' }
+      = f.collection_select :store_id, Store.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
     .field
       = f.label :forwarder_id
       br
-      = f.collection_select :forwarder_id, Forwarder.all, :id, :name, { prompt: true }, { class: 'form-control' }
+      = f.collection_select :forwarder_id, Forwarder.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
   .actions
     = f.submit(class: 'btn btn-primary')

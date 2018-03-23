@@ -28,6 +28,7 @@ class UserGroupsController < ApplicationController
     # POST /user_groups.json
     def create
       @user_group = UserGroup.new(user_group_params)
+      @user_group.created_by = @current_user.id
       if request.xhr?
         if @user_group.save
           render :json => { :success => true, :user_group => @user_group }, status: :created
