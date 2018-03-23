@@ -1,9 +1,6 @@
 = form_for(@databag, :html => {class: 'form'}) do |f|
   - if @databag.errors.any?
-    #error_explanation
-      h2
-        = pluralize(@databag.errors.count, "error")
-        |  prohibited this databag from being saved:
+    div class="alert alert-danger" role="alert"
       ul
         - @databag.errors.full_messages.each do |message|
           li

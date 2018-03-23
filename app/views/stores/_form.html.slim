@@ -1,9 +1,6 @@
 = form_for(@store, :html => {class: 'form'}) do |f|
   - if @store.errors.any?
-    #error_explanation
-      h2
-        = pluralize(@store.errors.count, "error")
-        |  prohibited this store from being saved:
+    div class="alert alert-danger" role="alert"
       ul
         - @store.errors.full_messages.each do |message|
           li

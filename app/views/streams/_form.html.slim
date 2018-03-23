@@ -1,9 +1,6 @@
 = form_for(@stream, :html => {class: 'form'}) do |f|
   - if @stream.errors.any?
-    #error_explanation
-      h2
-        = pluralize(@stream.errors.count, "error")
-        |  prohibited this group from being saved:
+    div class="alert alert-danger" role="alert"
       ul
         - @stream.errors.full_messages.each do |message|
           li

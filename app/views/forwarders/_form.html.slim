@@ -1,9 +1,6 @@
 = form_for(@forwarder, :html => {class: 'form'}) do |f|
   - if @forwarder.errors.any?
-    #error_explanation
-      h2
-        = pluralize(@forwarder.errors.count, "error")
-        |  prohibited this forwarder from being saved:
+    div class="alert alert-danger" role="alert"
       ul
         - @forwarder.errors.full_messages.each do |message|
           li

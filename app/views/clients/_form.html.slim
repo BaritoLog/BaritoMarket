@@ -1,9 +1,6 @@
 = form_for(@client, :html => {class: 'form'}) do |f|
   - if @client.errors.any?
-    div class="error_explanation" role="alert"
-      h2
-        = pluralize(@client.errors.count, "error")
-        |  prohibited this client from being saved:
+    div class="alert alert-danger" role="alert"
       ul
         - @client.errors.full_messages.each do |message|
           li
