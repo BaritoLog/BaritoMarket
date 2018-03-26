@@ -23,4 +23,8 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :index, :only => [:index]
   end
+
+  namespace :api, defaults: { format: :json } do
+    resources :clients, :only => [:index]
+  end
 end

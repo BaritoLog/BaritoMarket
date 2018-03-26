@@ -1,4 +1,4 @@
-class ForwardersController < ApplicationController
+class ForwardersController < BaseController
   before_action :set_forwarder, only: [:show, :edit, :update, :destroy]
 
   # GET /forwarders

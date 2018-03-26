@@ -1,4 +1,4 @@
-class DatabagsController < ApplicationController
+class DatabagsController < BaseController
   before_action :set_databag, only: [:show, :edit, :update, :destroy]
 
   # GET /databags

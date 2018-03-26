@@ -1,4 +1,4 @@
-class UserGroupsController < ApplicationController
+class UserGroupsController < BaseController
     respond_to :html, :json
 
     before_action :set_user_group, only: [:show, :edit, :update, :destroy]

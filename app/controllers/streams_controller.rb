@@ -1,4 +1,4 @@
-class StreamsController < ApplicationController
+class StreamsController < BaseController
   before_action :set_stream, only: [:show, :edit, :update, :destroy]
 
   # GET /streams
