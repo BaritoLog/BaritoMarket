@@ -1,0 +1,11 @@
+dist: trusty
+language: ruby
+rvm:
+  - 2.4.3
+before_script:
+  - cp config/application.yml.example config/application.yml
+  - cp config/database.yml.example config/database.yml
+  - psql -c 'create database barito_test;' -U postgres
+script:
+  - bundle exec rails db:migrate RAILS_ENV=test
+  - bundle exec rspec
