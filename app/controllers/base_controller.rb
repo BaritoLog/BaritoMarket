@@ -1,9 +1,7 @@
 class BaseController < ApplicationController
-# Prevent CSRF attacks by raising an exception.
-# For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  before_action :store_user_location!, if: :storable_location?
   before_action :authenticate_user, :remove_irrelevant_devise_flash, :find_current_user
-  #
 
   def authenticate_user
     if EnabledFeatures.has?(:cas_integration)
@@ -21,6 +19,7 @@ class BaseController < ApplicationController
 
 
   def remove_irrelevant_devise_flash
+    flash[:notice] = nil
     flash.delete(:alert) if flash[:alert] == "You need to sign in or sign up before continuing."
   end
 
@@ -36,5 +35,18 @@ class BaseController < ApplicationController
     options = args.extract_options!
     options[:responder] = ModalResponder
     respond_with *args, options, &blk
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    stored_location_for(resource_or_scope) || super
+  end
+
+  private
+  def storable_location?
+    request.get? && is_navigational_format? && !devise_controller? && !request.xhr?
+  end
+
+  def store_user_location!
+    store_location_for(:user, request.fullpath)
   end
 end
