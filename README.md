@@ -2,6 +2,8 @@
 ### Transports the Logs to where it should be
 ---
 
+[![Build Status](https://travis-ci.org/BaritoLog/BaritoMarket.svg?branch=master)](https://travis-ci.org/BaritoLog/BaritoMarket)
+
 Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will
 handle logs management, service discovery & log stream provisioning for GO-PAY System.
 
