@@ -14,9 +14,6 @@ Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8
 * Install [Homebrew](http://brew.sh/)
 * Install [Hombrew Cask](http://caskroom.io/)
 * Install rbenv using Homebrew `brew install rbenv`
-* Install ruby-build using Homebrew `brew install ruby-build`
-* Install Java 8 using Homebrew Cask `brew cask install java`
-* Install JRuby 9.1.6.0 using rbenv `rbenv install jruby-9.1.6.0`
 * Install Postgres using Homebrew `brew install postgresql`
 * Install Bundler using RubyGems `gem install bundler`
 
