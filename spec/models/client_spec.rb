@@ -17,6 +17,16 @@ RSpec.describe Client, type: :model do
       assc = described_class.reflect_on_association(:forwarder)
       expect(assc.macro).to eq :belongs_to
     end
+
+    it 'has many client groups' do
+      assc = described_class.reflect_on_association(:client_groups)
+      expect(assc.macro).to eq :has_many
+    end
+
+    it 'has many user groups' do
+      assc = described_class.reflect_on_association(:user_groups)
+      expect(assc.macro).to eq :has_many
+    end
   end
 
   context 'name' do
