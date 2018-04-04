@@ -3,6 +3,7 @@ require 'securerandom'
 class Client < ActiveRecord::Base
   validates_presence_of :name
 
+  belongs_to :user, required: true
   belongs_to :stream, required: true
   belongs_to :store, required: true
   belongs_to :forwarder, required: true

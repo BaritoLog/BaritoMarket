@@ -4,7 +4,11 @@ class ClientsController < BaseController
   # GET /clients
   # GET /clients.json
   def index
-    @clients = Client.all
+    unless @current_user.nil?
+      @clients = Client.where(user_id: @current_user.id)
+    else
+      @clients = Client.all
+    end
   end
 
   # GET /clients/1

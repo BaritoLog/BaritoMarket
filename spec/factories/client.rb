@@ -5,5 +5,6 @@ FactoryGirl.define do
     stream
     store
     forwarder
+    user
   end
 end
