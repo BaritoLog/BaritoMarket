@@ -1,1 +1,10 @@
-| This is Home
+div class="jumbotron"
+  div class="container vertical-height"
+    div class="row"
+      div class="col text-center"
+        h1 Welcome to Barito
+        - unless not @clients.nil?
+          p Looks like you have no access to any applications right now
+          p Click the button below to get started
+          a class="btn btn-primary btn-lg" href="#" role="button" New Application
+
