@@ -19,37 +19,44 @@ html
         {:text => 'Databag', :icon => 'fa-gears', :path => databags_path}
       ]
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
-
-    nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0"
-      a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" Barito Market
-      ul class="navbar-nav px-3"
-        li class="nav-item text-nowrap"
+    
+    #page.mx-auto.my-4[style="max-width: 1100px;"]
+      nav.navbar.navbar-expand-lg.navbar-dark.bg-dark[style="border: thin solid gray;"]
+        a.navbar-brand[href="#"]
+          | BARITO Market
+        button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"]
+          span.navbar-toggler-icon
+        #navbarSupportedContent.collapse.navbar-collapse
+          form
+            input.form-control.mr-sm-2[type="search" placeholder="Search by Client Name" aria-label="Search"]
+        ul.navbar-nav.flex-row
+          li.nav-item.dropdown
+            a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+              |  All Stream 
+            .dropdown-menu[aria-labelledby="navbarDropdown"]
+              a.dropdown-item[href="#"]
+                | Action
+              
+          li.nav-item.dropdown
+            a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+              |  Admin 
+            .dropdown-menu[aria-labelledby="navbarDropdown"]
+              - menus.each do |menu|
+                link = link_to menu[:path], class: 'dropdown-item' 
+                  span class="fa #{menu[:icon]}"  
+                  = ' '
+                  = menu[:text]
           link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
 
-    - if user_signed_in?
-      div class="container-fluid"
-        div class="row"
-          nav class="col-md-2 d-none d-md-block bg-light sidebar"
-            div class="sidebar-sticky"
-              h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
-                span =@current_user.username
-              ul class="nav flex-column"
-                - menus.each do |menu|
-                  li class="nav-item"
-                    link = link_to menu[:path], class: 'nav-link' + current_class?(menu[:path])
-                      span class="fa #{menu[:icon]}"
-                        =menu[:text]
-          main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4"
-            ==yield
-
-  div id="modal-holder"
-
-  footer class="page-footer font-small pt-4 mt-4"
-    div class="footer-copyright py-3 text-center"
-      p
-        | &copy;
-        = Date.today.year
-        | BaritoLog
+      
+      main.py-2[role="main"]
+        ==yield
+      div#modal-holder
+      footer.page-footer.font-small.mt-3
+        div.footer-copyright
+          | &copy; 
+          = Date.today.year
+          |  BaritoLog
 
 javascript:
   (function() {
