@@ -13,9 +13,9 @@ gem 'figaro'
 gem 'slim'
 gem 'slim-rails'
 gem 'bootstrap', '~> 4.0.0'
-
 gem 'devise'
 gem 'devise_cas_authenticatable'
+gem 'paranoia', '~> 2.2'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

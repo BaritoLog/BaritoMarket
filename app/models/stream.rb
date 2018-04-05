@@ -1,4 +1,5 @@
 class Stream < ActiveRecord::Base
+  acts_as_paranoid
   validates_presence_of :name, :receiver_host, :zookeeper_hosts, :kafka_broker_hosts, :kafka_topic_partition, :receiver_port
 
   validate :validate_kafka_topic_partition_number

@@ -1,6 +1,7 @@
 require 'securerandom'
 
 class User < ActiveRecord::Base
+  acts_as_paranoid
   devise :cas_authenticatable
 
   def cas_extra_attributes=(extra_attributes)

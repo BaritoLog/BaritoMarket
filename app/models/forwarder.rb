@@ -1,4 +1,5 @@
 class Forwarder < ActiveRecord::Base
+  acts_as_paranoid
   validates_presence_of :name, :host, :kafka_topics
 
   belongs_to :stream
