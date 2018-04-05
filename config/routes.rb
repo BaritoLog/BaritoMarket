@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
     match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   else
+    root 'home#index'
     resources :clients
     resources :forwarders
     resources :databags
