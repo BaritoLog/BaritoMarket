@@ -20,34 +20,26 @@ html
       ]
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
     
-    #page.mx-auto.my-4[style="max-width: 1100px;"]
+    #page.mx-auto[style="max-width: 1099px;"]
       nav.navbar.navbar-expand-lg.navbar-dark.bg-dark[style="border: thin solid gray;"]
-        a.navbar-brand[href="#"]
+        a.navbar-brand.font-weight-bold[href="/"]
           | BARITO Market
         button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"]
           span.navbar-toggler-icon
-        #navbarSupportedContent.collapse.navbar-collapse
-          form
-            input.form-control.mr-sm-2[type="search" placeholder="Search by Client Name" aria-label="Search"]
-        ul.navbar-nav.flex-row
-          li.nav-item.dropdown
+        #navbarSupportedContent.collapse.navbar-collapse.navbar-nav
+          form.m-auto
+            input.form-control[type="search" placeholder="Search by Application Name" aria-label="Search" size="40"]
+          div.nav-item
+            a.nav-link[href="#"] All Group
+          div.nav-item.dropdown
             a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
-              |  All Stream 
-            .dropdown-menu[aria-labelledby="navbarDropdown"]
-              a.dropdown-item[href="#"]
-                | Action
-              
-          li.nav-item.dropdown
-            a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
-              |  Admin 
+              |  Admin Tool
             .dropdown-menu[aria-labelledby="navbarDropdown"]
               - menus.each do |menu|
                 link = link_to menu[:path], class: 'dropdown-item' 
-                  span class="fa #{menu[:icon]}"  
-                  = ' '
-                  = menu[:text]
-          link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
-
+                  = menu[:text] 
+          div.nav-item
+            link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
       
       main.py-2[role="main"]
         ==yield
