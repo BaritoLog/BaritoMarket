@@ -21,30 +21,31 @@ html
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
     
     #page.mx-auto[style="max-width: 1099px;"]
-      nav.navbar.navbar-expand-lg.navbar-dark.bg-dark[style="border: thin solid gray;"]
+      nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         a.navbar-brand.font-weight-bold[href="/"]
           | BARITO Market
         button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"]
           span.navbar-toggler-icon
-        #navbarSupportedContent.collapse.navbar-collapse.navbar-nav
-          form.m-auto
+        #navbarSupportedContent.collapse.navbar-collapse
+          form.mx-auto
             input.form-control[type="search" placeholder="Search by Application Name" aria-label="Search" size="40"]
-          div.nav-item
-            a.nav-link[href="#"] All Group
-          div.nav-item.dropdown
-            a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
-              |  Admin Tool
-            .dropdown-menu[aria-labelledby="navbarDropdown"]
-              - menus.each do |menu|
-                link = link_to menu[:path], class: 'dropdown-item' 
-                  = menu[:text] 
-          div.nav-item
-            link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
+          ul.navbar-nav
+            li.nav-item
+              a.nav-link[href="#"] All Group
+            li.nav-item.dropdown
+              a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
+                |  Admin Tool
+              .dropdown-menu[aria-labelledby="navbarDropdown"]
+                - menus.each do |menu|
+                  link = link_to menu[:path], class: 'dropdown-item' 
+                    = menu[:text] 
+            li.nav-item
+              link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
       
-      main.py-2[role="main"]
+      main.px-3.py-2[role="main"]
         ==yield
       div#modal-holder
-      footer.page-footer.font-small.mt-3
+      footer.page-footer.font-small.px-3.py-2.mt-2
         div.footer-copyright
           | &copy; 
           = Date.today.year
