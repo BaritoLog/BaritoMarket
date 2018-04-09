@@ -23,7 +23,6 @@ Note: You can run `./devbox.sh` from project directory which does the project in
 
 * Run `gem install bundle`
 * Run `bundle install` to install project gem dependencies
-* Run `jbundle install` to install jar dependencies
 * Copy over `config/application.yml.example` to `config/application.yml`
 * Modify `config/application.yml` based on your environment
 * Create the databases: `RAILS_ENV=development bundle exec rake db:create db:migrate prepare_local`
