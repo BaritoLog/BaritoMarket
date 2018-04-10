@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'jquery-rails'
-gem 'pg', '~> 0.18'
+gem 'pg', '~> 0.20.0'
 gem 'jar-dependencies', '~> 0.3.5'
 gem 'puma', '~> 3.7'
 gem 'turbolinks', '~> 5'
