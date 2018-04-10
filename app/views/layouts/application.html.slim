@@ -12,11 +12,7 @@ html
         request.path == test_path ? '-active' : ''
       end
       menus = [
-        {:text => 'Client', :icon => 'fa-microchip', :path => clients_path},
-        {:text => 'Stream', :icon => 'fa-map', :path => streams_path},
-        {:text => 'Store', :icon => 'fa-database', :path => stores_path},
-        {:text => 'Forwarder', :icon => 'fa-truck', :path => forwarders_path},
-        {:text => 'Databag', :icon => 'fa-gears', :path => databags_path}
+        {:text => 'Log Template', :icon => 'fa-microchip', :path => log_templates_path}
       ]
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
     
@@ -42,10 +38,10 @@ html
             li.nav-item
               link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
       
-      main.px-3.py-2[role="main"]
+      main.px-3.pt-5.pb-4[role="main"]
         ==yield
       div#modal-holder
-      footer.page-footer.font-small.px-3.py-2.mt-2
+      footer.page-footer.font-small.border-top.p-2
         div.footer-copyright
           | &copy; 
           = Date.today.year
