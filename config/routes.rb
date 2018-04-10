@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :log_templates
   devise_for :users, skip: :all
 
   if EnabledFeatures.has?(:cas_integration)

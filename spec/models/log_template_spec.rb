@@ -1,0 +1,47 @@
+require 'rails_helper'
+
+RSpec.describe LogTemplate, type: :model do
+  
+  context 'name' do
+    it 'must be presence' do
+      template = FactoryGirl.build(:log_template, name: '')
+      expect(template).to_not be_valid
+    end
+  end
+  
+  context 'tps_limit' do
+    it 'must be presence' do
+      template = FactoryGirl.build(:log_template, tps_limit: nil)
+      expect(template).to_not be_valid
+    end
+    it 'must greater than 0' do
+      template = FactoryGirl.build(:log_template, tps_limit: 0)
+      expect(template).to_not be_valid
+    end
+  end
+  
+  context 'zookeeper_instances' do
+    it 'must be presence' do
+      template = FactoryGirl.build(:log_template, zookeeper_instances: nil)
+      expect(template).to_not be_valid
+    end
+    
+  end
+  
+  context 'kafka_instances' do
+    it 'must be presence' do
+      template = FactoryGirl.build(:log_template, kafka_instances: nil)
+      expect(template).to_not be_valid
+    end
+    
+  end
+  
+  context 'es_instances' do
+    it 'must be presence' do
+      template = FactoryGirl.build(:log_template, es_instances: nil)
+      expect(template).to_not be_valid
+    end
+    
+  end
+  
+end

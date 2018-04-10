@@ -1,0 +1,24 @@
+= form_for @log_template do |f|
+  - if @log_template.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@log_template.errors.count, "error")} prohibited this log_template from being saved:"
+      ul
+        - @log_template.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :tps_limit
+    = f.number_field :tps_limit
+  .field
+    = f.label :zookeeper_instances
+    = f.number_field :zookeeper_instances
+  .field
+    = f.label :kafka_instances
+    = f.number_field :kafka_instances
+  .field
+    = f.label :es_instances
+    = f.number_field :es_instances
+  .actions = f.submit

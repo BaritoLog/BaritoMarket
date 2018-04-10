@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405051628) do
+ActiveRecord::Schema.define(version: 20180410065518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,16 @@ ActiveRecord::Schema.define(version: 20180405051628) do
   end
 
   add_index "forwarders", ["deleted_at"], name: "index_forwarders_on_deleted_at", using: :btree
+
+  create_table "log_templates", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "tps_limit"
+    t.integer  "zookeeper_instances"
+    t.integer  "kafka_instances"
+    t.integer  "es_instances"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
 
   create_table "stores", force: :cascade do |t|
     t.string   "name"

@@ -1,0 +1,29 @@
+h1 Listing log_templates
+
+table
+  thead
+    tr
+      th Name
+      th Tps limit
+      th Zookeeper instances
+      th Kafka instances
+      th Es instances
+      th
+      th
+      th
+
+  tbody
+    - @log_templates.each do |log_template|
+      tr
+        td = log_template.name
+        td = log_template.tps_limit
+        td = log_template.zookeeper_instances
+        td = log_template.kafka_instances
+        td = log_template.es_instances
+        td = link_to 'Show', log_template
+        td = link_to 'Edit', edit_log_template_path(log_template)
+        td = link_to 'Destroy', log_template, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Log template', new_log_template_path

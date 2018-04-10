@@ -1,0 +1,21 @@
+p#notice = notice
+
+p
+  strong Name:
+  = @log_template.name
+p
+  strong Tps limit:
+  = @log_template.tps_limit
+p
+  strong Zookeeper instances:
+  = @log_template.zookeeper_instances
+p
+  strong Kafka instances:
+  = @log_template.kafka_instances
+p
+  strong Es instances:
+  = @log_template.es_instances
+
+=> link_to 'Edit', edit_log_template_path(@log_template)
+'|
+=< link_to 'Back', log_templates_path
