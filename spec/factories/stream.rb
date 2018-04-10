@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :stream do
     name 'stream_name'
     receiver_host 'host'

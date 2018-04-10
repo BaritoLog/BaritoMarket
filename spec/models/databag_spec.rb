@@ -4,21 +4,21 @@ RSpec.describe Databag, type: :model do
 
   context 'ip_address' do
     it 'must be presence' do
-      databag = FactoryGirl.build(:databag, ip_address: '')
+      databag = FactoryBot.build(:databag, ip_address: '')
       expect(databag).to_not be_valid
     end
   end
 
   context 'data' do
     it 'must be presence' do
-      databag = FactoryGirl.build(:databag, data: nil)
+      databag = FactoryBot.build(:databag, data: nil)
       expect(databag).to_not be_valid
     end
   end
 
   context 'tags' do
     it 'must be presence' do
-      databag = FactoryGirl.build(:databag, tags: '')
+      databag = FactoryBot.build(:databag, tags: '')
       expect(databag).to_not be_valid
     end
   end

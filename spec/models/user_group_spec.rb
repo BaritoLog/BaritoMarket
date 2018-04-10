@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe UserGroup, type: :model do
   context 'name' do
     it 'must be presence' do
-      user_group = FactoryGirl.build(:user_group, name: '')
+      user_group = FactoryBot.build(:user_group, name: '')
       expect(user_group).to_not be_valid
     end
   end

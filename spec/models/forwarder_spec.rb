@@ -16,30 +16,30 @@ RSpec.describe Forwarder, type: :model do
 
   context 'name' do
     it 'must be presence' do
-      forwarder = FactoryGirl.build(:forwarder, name: '')
+      forwarder = FactoryBot.build(:forwarder, name: '')
       expect(forwarder).to_not be_valid
     end
   end
 
   context 'host' do
     it 'must be presence' do
-      forwarder = FactoryGirl.build(:forwarder, host: '')
+      forwarder = FactoryBot.build(:forwarder, host: '')
       expect(forwarder).to_not be_valid
     end
   end
 
   context 'kafka_topics' do
     it 'must be presence' do
-      forwarder = FactoryGirl.build(:forwarder, kafka_topics: '')
+      forwarder = FactoryBot.build(:forwarder, kafka_topics: '')
       expect(forwarder).to_not be_valid
     end
   end
 
   describe '#set_stream_and_store' do
     it 'set stream, store, kafka_broker_hosts, and zookeeper_hosts' do
-      stream = FactoryGirl.build(:stream, kafka_broker_hosts: 'broker-host', zookeeper_hosts: 'zookeeper-host')
-      store = FactoryGirl.build(:store)
-      forwarder = FactoryGirl.build(:forwarder)
+      stream = FactoryBot.build(:stream, kafka_broker_hosts: 'broker-host', zookeeper_hosts: 'zookeeper-host')
+      store = FactoryBot.build(:store)
+      forwarder = FactoryBot.build(:forwarder)
 
       forwarder.set_stream_and_store(stream, store)
 

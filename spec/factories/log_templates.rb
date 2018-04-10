@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :log_template do
     name "template1"
     tps_limit 1

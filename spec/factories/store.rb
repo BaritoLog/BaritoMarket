@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :store do
     name 'group_name'
     elasticsearch_host 'host'

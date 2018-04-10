@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :databag do
 
     json = { :some_config => 'some_value' }.to_json

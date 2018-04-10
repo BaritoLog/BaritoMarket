@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :forwarder do
     name 'name1'
     host 'host1'

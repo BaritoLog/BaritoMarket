@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
     factory :client_groups do
         user_group
         client
