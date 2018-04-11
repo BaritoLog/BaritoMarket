@@ -1,25 +1,37 @@
 h1 Listing apps
 
-table.table
-  thead
-    tr
-      th Name
-      th Log template
-      th App group
-      th[style="width:50px"]
-      th[style="width:50px"]
-      th[style="width:50px"]
+- if @apps.empty?
+  .jumbotron
+    .container.vertical-height
+      .row
+        .col.text-center
+          img.mb-4[src="barito_river.jpeg" style="width:350px;height:249px;"]
+          h1 Welcome to Barito  
+          p 
+            | Looks like you have no access to any applications right now 
+            br
+            | Click the button below to get started
+          = link_to 'New Application', new_app_path, class: 'btn btn-primary'
 
-  tbody
-    - @apps.each do |app|
+- else
+  table.table
+    thead
       tr
-        td = app.name
-        td = app.log_template.name
-        td = app.app_group.name
-        td = link_to 'Show', app
-        td = link_to 'Edit', edit_app_path(app)
-        td = link_to 'Destroy', app, data: { confirm: 'Are you sure?' }, method: :delete
+        th Name
+        th Log template
+        th App group
+        th[style="width:50px"]
+        th[style="width:50px"]
+        th[style="width:50px"]
 
-br
-
-= link_to 'New App', new_app_path
+    tbody
+      - @apps.each do |app|
+        tr
+          td = app.name
+          td = app.log_template.name
+          td = app.app_group.name
+          td = link_to 'Show', app
+          td = link_to 'Edit', edit_app_path(app)
+          td = link_to 'Destroy', app, data: { confirm: 'Are you sure?' }, method: :delete
+  br
+  = link_to 'New App', new_app_path, class: 'btn btn-primary'
