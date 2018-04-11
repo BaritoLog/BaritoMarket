@@ -1,14 +1,6 @@
+- @model = @app
 = form_for @app do |f|
-  - if @app.errors.any?
-    #error_explanation.alert.alert-danger.alert-dismissible.fade.show.small[role="alert"]
-      = "#{pluralize(@app.errors.count, "error")} prohibited this app from being saved:"
-      ul.m-0
-        - @app.errors.full_messages.each do |message|
-          li = message
-      button.close[type="button" data-dismiss="alert" aria-label="Close"] 
-        span[aria-hidden="true"]
-          == ("&times")
-
+  == render 'layouts/form_error'
   .form-group
     = f.label :name
     = f.text_field :name, {class: 'form-control'}

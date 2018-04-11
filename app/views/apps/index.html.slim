@@ -6,16 +6,16 @@ table.table
       th Name
       th Log template
       th App group
-      th
-      th
-      th
+      th[style="width:50px"]
+      th[style="width:50px"]
+      th[style="width:50px"]
 
   tbody
     - @apps.each do |app|
       tr
         td = app.name
-        td = app.log_template_id
-        td = app.app_group_id
+        td = app.log_template.name
+        td = app.app_group.name
         td = link_to 'Show', app
         td = link_to 'Edit', edit_app_path(app)
         td = link_to 'Destroy', app, data: { confirm: 'Are you sure?' }, method: :delete

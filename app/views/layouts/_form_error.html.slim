@@ -1,0 +1,9 @@
+- if @model.errors.any?
+  #error_explanation.alert.alert-danger.alert-dismissible.fade.show.small[role="alert"]
+    = "#{pluralize(@model.errors.count, "error")} prohibited this app from being saved:"
+    ul.m-0
+      - @model.errors.full_messages.each do |message|
+        li = message
+    button.close[type="button" data-dismiss="alert" aria-label="Close"] 
+      span[aria-hidden="true"]
+        == ("&times")

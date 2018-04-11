@@ -1,24 +1,20 @@
+- @model = @log_template
 = form_for @log_template do |f|
-  - if @log_template.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@log_template.errors.count, "error")} prohibited this log_template from being saved:"
-      ul
-        - @log_template.errors.full_messages.each do |message|
-          li = message
+  == render 'layouts/form_error'
 
-  .field
+  .form-group
     = f.label :name
-    = f.text_field :name
-  .field
+    = f.text_field :name, class: 'form-control'
+  .form-group
     = f.label :tps_limit
-    = f.number_field :tps_limit
-  .field
+    = f.number_field :tps_limit, class: 'form-control'
+  .form-group
     = f.label :zookeeper_instances
-    = f.number_field :zookeeper_instances
-  .field
+    = f.number_field :zookeeper_instances, class: 'form-control'
+  .form-group
     = f.label :kafka_instances
-    = f.number_field :kafka_instances
-  .field
-    = f.label :es_instances
-    = f.number_field :es_instances
-  .actions = f.submit
+    = f.number_field :kafka_instances, class: 'form-control'
+  .form-group
+    = f.label :es_instances, 'ES Instance'
+    = f.number_field :es_instances, class: 'form-control'
+  .actions = f.submit 'Submit',  class: 'btn btn-primary'
