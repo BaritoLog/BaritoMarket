@@ -1,0 +1,28 @@
+= form_for @app do |f|
+  - if @app.errors.any?
+    #error_explanation.alert.alert-danger.alert-dismissible.fade.show.small[role="alert"]
+      = "#{pluralize(@app.errors.count, "error")} prohibited this app from being saved:"
+      ul.m-0
+        - @app.errors.full_messages.each do |message|
+          li = message
+      button.close[type="button" data-dismiss="alert" aria-label="Close"] 
+        span[aria-hidden="true"]
+          == ("&times")
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, {class: 'form-control'}
+    small.form-text.text-muted
+      | Please enter the name of your application / service
+  .form-group
+    = f.label :log_template_id, 'Log Template'
+    = f.collection_select :log_template_id, LogTemplate.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
+    small.form-text.text-muted
+      | Please choose your log template based on your TPS
+  .form-group
+    = f.label :app_group_id, 'Application Group'
+    = f.collection_select :app_group_id, AppGroup.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
+    small.form-text.text-muted
+      | Choose from group, or you can add a 
+      = link_to 'new group', new_app_group_path
+  .actions = f.submit 'Submit',class: 'btn btn-primary'

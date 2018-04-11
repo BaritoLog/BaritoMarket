@@ -1,0 +1,15 @@
+p#notice = notice
+
+p
+  strong Name:
+  = @app.name
+p
+  strong Log template:
+  = @app.log_template_id
+p
+  strong App group:
+  = @app.app_group_id
+
+=> link_to 'Edit', edit_app_path(@app)
+'|
+=< link_to 'Back', apps_path

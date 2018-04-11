@@ -1,0 +1,25 @@
+h1 Listing apps
+
+table.table
+  thead
+    tr
+      th Name
+      th Log template
+      th App group
+      th
+      th
+      th
+
+  tbody
+    - @apps.each do |app|
+      tr
+        td = app.name
+        td = app.log_template_id
+        td = app.app_group_id
+        td = link_to 'Show', app
+        td = link_to 'Edit', edit_app_path(app)
+        td = link_to 'Destroy', app, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New App', new_app_path
