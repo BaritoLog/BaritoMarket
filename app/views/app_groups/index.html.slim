@@ -1,0 +1,21 @@
+h1 Listing app_groups
+
+table.table
+  thead
+    tr
+      th Name
+      th[style="width:50px"]
+      th[style="width:50px"]
+      th[style="width:50px"]
+
+  tbody
+    - @app_groups.each do |app_group|
+      tr
+        td = app_group.name
+        td = link_to 'Show', app_group
+        td = link_to 'Edit', edit_app_group_path(app_group)
+        td = link_to 'Destroy', app_group, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New App group', new_app_group_path

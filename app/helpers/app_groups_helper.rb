@@ -1,0 +1,2 @@
+module AppGroupsHelper
+end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :app_groups
   resources :log_templates
   devise_for :users, skip: :all
 
