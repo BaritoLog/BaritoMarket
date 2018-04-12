@@ -1,0 +1,58 @@
+h1 Application Created
+.wizard
+  .step.active
+    a.ptr[href="#"] 1
+    .label Basic Information
+    .progress
+  .step.active
+    a.ptr[href="#"] 2
+    .label Infrastructure Setup
+    .progress
+  .step
+    a.ptr[href="#"] 3
+    .label Testing your logs
+    .progress
+
+.my-4
+  h3 Pre-Installation Steps
+  ol 
+    li 
+      | Install FluentD as instructed at 
+      a[href="#"] http://doc.fluentd.org/v1.0/quickstart#step-1:-installing-fluentd
+    li 
+      | Setup a process monitoring service to make sure FluentD is always running
+    li 
+      | Your fluentd configuration is at 
+      code 
+        | /etc/td-agent/td-agent.conf
+
+.my-4
+  h3 Installation Steps 
+  ol
+    li 
+      | Install secure forward as instructed at 
+      a[href="#"] http://github.com/tagomoris/fluent-plugin-secure-forward/blob/master/README.md
+    li 
+      | Set the 
+      strong self_hostname
+      | &nbsp;to&nbsp;
+      strong 
+        = @app.name
+        | .logging.gopay.co.id
+      | &nbsp;(
+      a[href="#"] copy
+      | )
+    li 
+      | Set the 
+      strong shared_key
+      | &nbsp;to&nbsp;
+      strong 
+        | asj$91nasd19
+      | &nbsp;(
+      a[href="#"] copy
+      | )
+p.my-4
+  | Once you are done with the above steps your logs should start coming in, and we should be able to view the logs in Kibana Below
+  
+a.btn.btn-primary[href="#"] Open Kibana
+a.btn[href=apps_path] Finish

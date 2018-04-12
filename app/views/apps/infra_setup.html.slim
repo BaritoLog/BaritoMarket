@@ -1,0 +1,29 @@
+h1 Application Created
+.wizard
+  .step.active
+    a.ptr[href="#"] 1
+    .label Basic Information
+    .progress
+  .step
+    a.ptr[href="#"] 2
+    .label Infrastructure Setup
+    .progress
+  .step
+    a.ptr[href="#"] 3
+    .label Testing your logs
+    .progress
+
+.my-4
+  p
+    | We are presently configuring the logs for your application 
+    strong.text-uppercase
+      = @app.name
+    | .
+    | You can monitor the progress below, once this is done you can test it by sending a log and viewing it at 
+    a[href="#"] 
+      = @app.name
+      | .logging.gopay.co.id
+  .progress
+    .progress-bar.progress-bar-striped[style="width: 100%" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"]
+    
+= link_to 'Configure', infra_configuration_path, class: 'btn btn-primary'

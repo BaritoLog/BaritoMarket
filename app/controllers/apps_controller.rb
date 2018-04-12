@@ -1,5 +1,5 @@
 class AppsController < ApplicationController
-  before_action :set_app, only: [:show, :edit, :update, :destroy]
+  before_action :set_app, only: [:show, :edit, :update, :destroy, :infra_setup, :infra_configuration]
 
   # GET /apps
   # GET /apps.json
@@ -28,7 +28,7 @@ class AppsController < ApplicationController
 
     respond_to do |format|
       if @app.save
-        format.html { redirect_to @app, notice: 'App was successfully created.' }
+        format.html { redirect_to controller: 'apps', action: 'infra_setup', id: @app.id , notice: 'App was successfully created.' }
         format.json { render :show, status: :created, location: @app }
       else
         format.html { render :new }
@@ -59,6 +59,14 @@ class AppsController < ApplicationController
       format.html { redirect_to apps_url, notice: 'App was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  # GET /setup/1
+  def infra_setup
+  end
+  
+  # GET /configuration/1
+  def infra_configuration
   end
 
   private
