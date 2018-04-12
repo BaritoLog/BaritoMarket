@@ -30,66 +30,6 @@ ActiveRecord::Schema.define(version: 20180411041123) do
     t.datetime "updated_at",      null: false
   end
 
-  create_table "client_groups", force: :cascade do |t|
-    t.integer  "client_id"
-    t.integer  "user_group_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "client_groups", ["client_id"], name: "index_client_groups_on_client_id", using: :btree
-  add_index "client_groups", ["deleted_at"], name: "index_client_groups_on_deleted_at", using: :btree
-  add_index "client_groups", ["user_group_id"], name: "index_client_groups_on_user_group_id", using: :btree
-
-  create_table "clients", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "stream_id"
-    t.integer  "store_id"
-    t.string   "produce_url"
-    t.string   "kibana_host"
-    t.string   "kafka_topics"
-    t.integer  "kafka_topic_partition"
-    t.string   "heartbeat_url"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
-    t.integer  "forwarder_id",          default: 0, null: false
-    t.string   "application_secret"
-    t.integer  "user_id"
-    t.datetime "deleted_at"
-  end
-
-  add_index "clients", ["deleted_at"], name: "index_clients_on_deleted_at", using: :btree
-  add_index "clients", ["user_id"], name: "index_clients_on_user_id", using: :btree
-
-  create_table "databags", force: :cascade do |t|
-    t.string   "ip_address"
-    t.json     "data"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "tags",       default: "", null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "databags", ["deleted_at"], name: "index_databags_on_deleted_at", using: :btree
-
-  create_table "forwarders", force: :cascade do |t|
-    t.string   "name"
-    t.string   "host"
-    t.integer  "stream_id"
-    t.integer  "store_id"
-    t.string   "kafka_broker_hosts"
-    t.string   "zookeeper_hosts"
-    t.string   "kafka_topics"
-    t.string   "heartbeat_url"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "forwarders", ["deleted_at"], name: "index_forwarders_on_deleted_at", using: :btree
-
   create_table "log_templates", force: :cascade do |t|
     t.string   "name"
     t.integer  "tps_limit"
@@ -99,34 +39,6 @@ ActiveRecord::Schema.define(version: 20180411041123) do
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
   end
-
-  create_table "stores", force: :cascade do |t|
-    t.string   "name"
-    t.string   "elasticsearch_host"
-    t.string   "kibana_host"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "stores", ["deleted_at"], name: "index_stores_on_deleted_at", using: :btree
-
-  create_table "streams", force: :cascade do |t|
-    t.string   "name"
-    t.string   "receiver_host"
-    t.string   "zookeeper_hosts"
-    t.string   "kafka_broker_hosts"
-    t.string   "receiver_heartbeat_url"
-    t.string   "kafka_manager_host"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "kafka_topic_partition",  default: 0, null: false
-    t.integer  "databag_id"
-    t.string   "receiver_port"
-    t.datetime "deleted_at"
-  end
-
-  add_index "streams", ["deleted_at"], name: "index_streams_on_deleted_at", using: :btree
 
   create_table "user_groups", force: :cascade do |t|
     t.string   "name"

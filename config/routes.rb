@@ -8,11 +8,6 @@ Rails.application.routes.draw do
     devise_scope :user do
       authenticated :user do
         root 'home#index', as: :authenticated_root
-        resources :clients
-        resources :forwarders
-        resources :databags
-        resources :stores
-        resources :streams
         resources :user_groups
       end
 
@@ -26,11 +21,6 @@ Rails.application.routes.draw do
     match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   else
     root 'apps#index'
-    resources :clients
-    resources :forwarders
-    resources :databags
-    resources :stores
-    resources :streams
     resources :user_groups
   end
 
