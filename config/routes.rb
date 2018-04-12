@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'ping', to: 'ping#show', defaults: { format: :json }
   resources :apps
   resources :app_groups
   resources :log_templates
