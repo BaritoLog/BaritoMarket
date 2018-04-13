@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180411041123) do
+ActiveRecord::Schema.define(version: 20180413072400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,8 +26,11 @@ ActiveRecord::Schema.define(version: 20180411041123) do
     t.string   "name"
     t.integer  "log_template_id"
     t.integer  "app_group_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "secret_key"
+    t.string   "kibana_address"
+    t.string   "receiver_end_point"
   end
 
   create_table "log_templates", force: :cascade do |t|

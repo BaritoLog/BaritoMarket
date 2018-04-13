@@ -19,4 +19,19 @@ RSpec.describe App, type: :model do
       expect(app).to_not be_valid
     end
   end
+  
+  context 'after_create' do
+    it 'generate secret key' do
+      app = FactoryBot.create(:app)
+      expect(app.secret_key.length).to eq(24)
+    end
+    it 'generate receiver end point' do
+      app = FactoryBot.create(:app)
+      expect(app.receiver_end_point).to eq('http://dummy.end-point/')
+    end
+    it 'generate kibana address' do
+      app = FactoryBot.create(:app)
+      expect(app.kibana_address).to eq('http://dummy.kibana-address/')
+    end
+  end
 end

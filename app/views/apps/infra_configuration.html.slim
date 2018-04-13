@@ -34,23 +34,17 @@ h1 Application Created
       a[href="#"] http://github.com/tagomoris/fluent-plugin-secure-forward/blob/master/README.md
     li 
       | Set the 
-      strong self_hostname
-      | &nbsp;to&nbsp;
-      strong 
-        = @app.name
-        | .logging.gopay.co.id
-      | &nbsp;(
-      a[href="#"] copy
-      | )
+      code receiver_end_point
+      |  to 
+      code 
+        = @app.receiver_end_point
     li 
       | Set the 
-      strong shared_key
-      | &nbsp;to&nbsp;
-      strong 
-        | asj$91nasd19
-      | &nbsp;(
-      a[href="#"] copy
-      | )
+      code secret_key
+      |  to 
+      code 
+        = @app.secret_key
+      
 p.my-4
   | Once you are done with the above steps your logs should start coming in, and we should be able to view the logs in Kibana Below
   
