@@ -35,18 +35,24 @@ h1 Application Created
     li 
       | Set the 
       code receiver_end_point
-      |  to 
-      code 
-        = @app.receiver_end_point
+      .input-group
+        input.copy-me.form-control[type="text" value=@app.receiver_end_point readonly]
+        a.btn-copy.input-group-append.m-0
+          .input-group-text
+            i.fa.fa-clipboard
     li 
       | Set the 
       code secret_key
-      |  to 
-      code 
-        = @app.secret_key
+      .input-group
+        input.copy-me.form-control[type="text" value=@app.secret_key readonly]
+        a.btn-copy.input-group-append.m-0
+          .input-group-text
+            i.fa.fa-clipboard
       
 p.my-4
   | Once you are done with the above steps your logs should start coming in, and we should be able to view the logs in Kibana Below
   
 a.btn.btn-primary[href="#"] Open Kibana
 a.btn[href=apps_path] Finish
+
+  
