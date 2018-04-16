@@ -28,7 +28,7 @@
     tbody
       - @apps.each do |app|
         tr
-          td = link_to 'app.name', app 
+          td = link_to app.name, app 
           td = app.log_template.name
           td = app.app_group.name
           td
