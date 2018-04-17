@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require popper
 //= require bootstrap
 //= require turbolinks
 //= require_tree .
@@ -21,6 +22,5 @@ $(document).ready(function(){
     copyMe = $(this).siblings(".copy-me")
     copyMe.select()
     document.execCommand("Copy");
-    alert("Copied the text: " + copyMe.val())
   })
 })
