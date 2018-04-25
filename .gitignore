@@ -11,6 +11,7 @@
 /log/*
 !/log/.keep
 /tmp
+/public/assets
 vendor
 tmp
 database.yml
