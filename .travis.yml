@@ -23,8 +23,7 @@ before_deploy:
 deploy:
   provider: releases
   skip_cleanup: true
-  api_key:
-    secure: xr4r0kG/LdkfS7ahJZvhVer/+8doAayeoEzJpqYnBLkSWyxGEzYp7harDitolObQBizreW7+ZSKYZGMKFzPZGj5avF1W7MJuRg3tN1tAuKpX7j+9e3E5b7QE7minRDYxGBv7x0E9X7JC54taxLIRcq/OJVEktU2O9g4Wh5WeqtGkik6ExVPcJjeuC9qkGbZSJXijpwOtWjY+9fAZ8AQO7SQ4WieNhNtUgm5bjf3ZLMdnuq90k694h5fOjqFa7+i+Htn+r36jK7OYGj6otOZkAM3EHdlWLgnELV1lgsUYuoFm9YtesEbHE6zXxq9f4vC5On3qrGpe+UUh/X0BK5FVLRrSC0cWSvT5Ce+AO1LhYBknmF9hY+U8yNfjWATPaGhyGuWcWOrm/nqM8CmQmNktwHj3AGEkooPz1WaZtf0nCBUdBE58Vvh/5VnGyncLUpPu3H+5UQwjd9A28cYAAw58lKYqpUqpp9J5GNI9Pg0JWXQZPnPzKW9fjh0VDlXhrta4Tmr/97CI1AZBQtKQRNBt7kZ9VtcQ1+VJi+leQY8PTML4hVn9kxU9jJYMW42vdyeQNP7tYHPdgx7qNNx9poQReUj4GItTBkwiFoxJdvS1kNhf45VNHQihl91cqt/pLLvH6Lm/gpfB4vYWbgLSc4XpCE9WJ373P1SkAfB5N58vyqI=
+  api_key: $GITHUB_TOKEN
   file_glob: true
   file: $TRAVIS_BUILD_DIR/*.tar.gz
   on:
