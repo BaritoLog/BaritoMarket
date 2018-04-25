@@ -7,5 +7,24 @@ before_script:
   - cp config/database.yml.example config/database.yml
   - psql -c 'create database barito_test;' -U postgres
 script:
-  - bundle exec rake db:migrate RAILS_ENV=test
-  - bundle exec rspec
+  - bundle package --all
+  - bundle install --binstubs --local
+  - bundle exec rake db:migrate
+  - bundle exec rake spec
+  - bundle exec rake assets:precompile
+after_success:
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "iman"
+  - git config --local user.email "iman.tung@gmail.com"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - "rm -rf $TRAVIS_BUILD_DIR/*.tar.gz"
+  - "tar zcf release-$(git log --format=%h -1).tar.gz -C $TRAVIS_BUILD_DIR ./*"
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: $TRAVIS_BUILD_DIR/*.tar.gz
+  on:
+    repo: BaritoLog/BaritoMarket
