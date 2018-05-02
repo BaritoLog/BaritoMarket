@@ -1,4 +1,4 @@
-class VagrantHelper
+module VagrantHelper
   
   def self.vagrantfile(new_vagrant_config)
     vagrant_config = {
