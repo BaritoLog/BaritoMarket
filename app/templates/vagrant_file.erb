@@ -5,4 +5,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "<%= vagrant_config[:vm_box] %>"
   config.vm.network "private_network", ip: "<%= vagrant_config[:ip_address] %>"
   config.vm.network "forwarded_port", guest: <%= vagrant_config[:port] %>, host: <%= vagrant_config[:port] %>
+  
+  config.vm.provider :virtulbox do |v|
+    v.name = "<%= vagrant_config[:name] %>"
+    v.memory = <%= vagrant_config[:memory] %>
+    v.cpus = <%= vagrant_config[:cpus] %>
+  end
 end

@@ -7,7 +7,11 @@
   "nodes": [
     { 
       "name": "elasticsearch-withdrawal-gopay-01",
-      "chef_config_file": "elasticsearch.json" 
+      "chef_config_file": "elasticsearch.json"
+    },
+    { 
+      "name": "elasticsearch-withdrawal-gopay-02",
+      "chef_config_file": "elasticsearch.json"
     }
   ]
 }
