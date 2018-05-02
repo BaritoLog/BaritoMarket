@@ -25,7 +25,7 @@ Note: You can run `./devbox.sh` from project directory which does the project in
 * Run `bundle install` to install project gem dependencies
 * Copy over `config/application.yml.example` to `config/application.yml`
 * Modify `config/application.yml` based on your environment
-* Create the databases: `RAILS_ENV=development bundle exec rake db:create db:migrate prepare_local`
+* Create the databases: `RAILS_ENV=development bundle exec rake db:create db:migrate`
 * Migrate the test database: `RAILS_ENV=test rake db:migrate`
 * Run `RAILS_ENV=development bundle exec rake` to run the build
 * Run `RAILS_ENV=development bundle exec rake coverage:all` to generate coverage reports
@@ -34,5 +34,3 @@ Note: You can run `./devbox.sh` from project directory which does the project in
 ### Rake task
 
 All tasks resides in `lib/tasks`
-
-* `prepare_local` will initialize dummy data for local development
