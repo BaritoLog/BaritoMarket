@@ -16,3 +16,5 @@ vendor
 tmp
 database.yml
 application.yml
+chef-repo
+vagrant_work_dir

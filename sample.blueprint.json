@@ -1,0 +1,13 @@
+{
+  "provisioning":"vagrant",
+  "chef_repo_dir": ".",
+  "vagrant":{
+    "work_dir": "vagrant_work_dir"
+  },
+  "nodes": [
+    { 
+      "name": "elasticsearch-withdrawal-gopay-01",
+      "chef_config_file": "elasticsearch.json" 
+    }
+  ]
+}
