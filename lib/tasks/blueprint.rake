@@ -23,7 +23,7 @@ namespace :blueprint do
       
       nodes.each do |node|
         node_dir = "#{work_dir}/#{node['name']}"
-        vagrantfile =  VagrantHelper.vagrantfile({
+        vagrantfile =  VagrantHelper::vagrantfile({
           :name => node['name'],
           :ip_address => "172.10.0.#{2 + node_cnt}",
           :port => "#{10001 + node_cnt}"
@@ -36,9 +36,8 @@ namespace :blueprint do
         
         node_cnt += 1
         
-        `cd #{node_dir} && vagrant up`
-        vagrant_id = `vagrant global-status | grep #{node_dir} | awk '{print $1}'`
-        puts vagrant_id
+        VagrantHelper::vagrant_up(node_dir)
+        puts VagrantHelper::get_id(node_dir)
       end
       
     end

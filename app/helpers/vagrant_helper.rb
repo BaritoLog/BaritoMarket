@@ -17,4 +17,12 @@ class VagrantHelper
     
     ERB.new(vagrant_file).result(b)
   end
+  
+  def self.get_id(vagrant_dir)
+    `vagrant global-status | grep #{vagrant_dir} | awk '{print $1}'`
+  end
+  
+  def self.vagrant_up(vagrant_dir)
+    `cd #{vagrant_dir} && vagrant up`
+  end
 end
