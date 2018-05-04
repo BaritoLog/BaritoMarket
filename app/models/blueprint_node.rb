@@ -1,5 +1,5 @@
 class BlueprintNode
-  attr_accessor :name, :chef_config_file
+  attr_accessor :name, :chef_node_config
   
   def initialize args
     args.each do |k,v|

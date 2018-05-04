@@ -1,6 +1,6 @@
 {
   "provisioning":"vagrant",
-  "chef_repo_dir": ".",
+  "chef_repo": "./chef-repo",
   "vagrant":{
     "work_dir": "vagrant_work_dir"
   },

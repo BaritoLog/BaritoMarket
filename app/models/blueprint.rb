@@ -1,9 +1,9 @@
 class Blueprint
-  attr_accessor :provisioning, :vagrant, :chef_repo_dir, :nodes
+  attr_accessor :provisioning, :vagrant, :chef_repo, :nodes
   
   def initialize args
     @provisioning = args['provisioning']
-    @chef_repo_dir = args['chef_repo_dir']
+    @chef_repo = args['chef_repo']
     @vagrant = BlueprintVagrant.new(args['vagrant'])
     @nodes = []
     args['nodes'].each do |node|

@@ -19,6 +19,8 @@ namespace :blueprint do
       node_cnt = 0
     
       blueprint.nodes.each do |node|
+        puts "\n\n[#{node.name}] Start provision"
+        
         node_dir = "#{blueprint.vagrant.work_dir}/#{node.name}"
         
         id = BlueprintHelper::get_id(node_dir)
@@ -28,7 +30,7 @@ namespace :blueprint do
           
           FileUtils::mkdir_p node_dir
           
-          puts "\n\n[#{node.name}] Write the #{node_dir}/Vagrantfile"
+          puts "[#{node.name}] Write the #{node_dir}/Vagrantfile"
           vagrantfile =  BlueprintHelper::vagrantfile({
             :name => node.name,
             :ip_address => "172.10.0.#{2 + node_cnt}",
@@ -52,17 +54,12 @@ namespace :blueprint do
         end
 
         puts "[#{node.name}] Vagrant ID: #{id}"
+        system "cd #{blueprint.chef_repo} && bundle exec knife solo bootstrap default nodes/#{node.chef_node_config} -F ../#{node_dir}/#{SSH_CONFIG}"
         
         node_cnt += 1
       end
     
     end
-    
-    # TODO: run chef bootstrap for each node
-    # nodes.each do |node|
-    #   node = node.symbolize_keys
-    #   puts "cd #{chef_repo_dir}"
-    # end
   end
   
   
