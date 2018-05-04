@@ -16,6 +16,8 @@ gem 'devise_cas_authenticatable'
 gem 'paranoia', '~> 2.2'
 gem 'execjs'
 gem 'therubyracer'
+gem 'berkshelf'
+gem 'knife-solo'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
