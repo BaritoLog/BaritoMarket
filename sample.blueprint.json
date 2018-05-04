@@ -2,7 +2,7 @@
   "provisioning":"vagrant",
   "chef_repo": "./chef-repo",
   "vagrant":{
-    "work_dir": "vagrant_work_dir"
+    "work_dir": "./vagrant_work_dir"
   },
   "nodes": [
     { 
@@ -13,36 +13,5 @@
       "name": "elasticsearch-withdrawal-gopay-02",
       "chef_node_config": "elasticsearch.json"
     }
-  ],
-  "nodes_2": [
-    { 
-      "name": "consul-01",
-      "chef_node_config": "consul.json"
-    },
-    { 
-      "name": "yggdrasil-01",
-      "chef_config_file": "yggdrasil.json",
-      "after_success": ["push_config_to_yygdrasil"]
-    },
-    { 
-      "name": "elasticsearch-01",
-      "chef_node_config": "elasticsearch.json"
-    },
-    { 
-      "name": "receiver-01",
-      "config": [
-        {
-          "name": "",
-          "value":""
-        }
-      ],
-      "chef_node_config": "receiver.json"
-    },
-    { 
-      "name": "forwarder-01",
-      "yggdrasil_config": true,
-      "chef_node_config": "forwarder.json"
-    }
   ]
-  
 }
