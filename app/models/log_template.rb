@@ -6,6 +6,6 @@ class LogTemplate < ActiveRecord::Base
   validates :es_instances, presence: true, numericality: {greater_than: 0}
   
   def name_with_tps
-    "#{name.camelize} (#{tps_limit}/sec)"
+    "#{name.camelize} (#{tps_limit} trx/sec)"
   end
 end
