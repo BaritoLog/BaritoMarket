@@ -1,4 +1,4 @@
-module VagrantHelper
+module BlueprintHelper
   
   def self.vagrantfile(new_vagrant_config)
     vagrant_config = {
@@ -19,10 +19,14 @@ module VagrantHelper
   end
   
   def self.get_id(vagrant_dir)
-    `vagrant global-status | grep #{vagrant_dir} | awk '{print $1}'`
+    `vagrant global-status | grep running | grep #{vagrant_dir} | awk '{print $1}'`
   end
   
   def self.vagrant_up(vagrant_dir)
     `cd #{vagrant_dir} && vagrant up`
+  end
+  
+  def self.save_vagrant_ssh_config(vagrant_dir, ssh_config)
+    `cd #{vagrant_dir} && vagrant ssh-config > #{ssh_config}`
   end
 end

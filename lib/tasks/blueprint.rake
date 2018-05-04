@@ -1,6 +1,8 @@
 require 'fileutils'
 
 namespace :blueprint do
+  SSH_CONFIG = "ssh-config"
+  
   desc 'blueprint related tasks'
   
   task :exec, [:path] => [:environment] do |t, args|
@@ -18,21 +20,38 @@ namespace :blueprint do
     
       blueprint.nodes.each do |node|
         node_dir = "#{blueprint.vagrant.work_dir}/#{node.name}"
-
-        vagrantfile =  VagrantHelper::vagrantfile({
-          :name => node.name,
-          :ip_address => "172.10.0.#{2 + node_cnt}",
-          :port => "#{10001 + node_cnt}"
-        })
-      
-        FileUtils::mkdir_p node_dir
-        File.open("#{node_dir}/Vagrantfile", "w+") do |file|
-          file.write(vagrantfile)
+        
+        id = BlueprintHelper::get_id(node_dir)
+        
+        if id.empty?
+          puts "[#{node.name}] No running vagrant"
+          
+          FileUtils::mkdir_p node_dir
+          
+          puts "\n\n[#{node.name}] Write the #{node_dir}/Vagrantfile"
+          vagrantfile =  BlueprintHelper::vagrantfile({
+            :name => node.name,
+            :ip_address => "172.10.0.#{2 + node_cnt}",
+            :port => "#{10001 + node_cnt}"
+          })
+          File.open("#{node_dir}/Vagrantfile", "w+") do |file|
+            file.write(vagrantfile)
+          end
+          
+          puts "[#{node.name}] Vagrant up"
+          BlueprintHelper::vagrant_up(node_dir)
+          id = BlueprintHelper::get_id(node_dir)
+          
+          if id.empty?
+            puts "[#{node.name}] Vagrant up is failed. Exit the task."
+            exit(1)
+          end  
+          
+          puts "[#{node.name}] Save ssh-config as '#{SSH_CONFIG}'"
+          puts BlueprintHelper::save_vagrant_ssh_config(node_dir, SSH_CONFIG)
         end
-      
-        VagrantHelper::vagrant_up(node_dir)
-        id = VagrantHelper::get_id(node_dir)
-        puts "setup vagrantbox with id #{id}"
+
+        puts "[#{node.name}] Vagrant ID: #{id}"
         
         node_cnt += 1
       end
