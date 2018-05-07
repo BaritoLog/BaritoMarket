@@ -17,4 +17,13 @@
   .form-group
     = f.label :es_instances, 'ES Instance'
     = f.number_field :es_instances, class: 'form-control'
+  .form-group
+    = f.label :consul_instances, 'Consul Instance'
+    = f.number_field :consul_instances, class: 'form-control'
+  .form-group
+    = f.label :yggdrasil_instances, 'Yggdrasil Instance'
+    = f.number_field :yggdrasil_instances, class: 'form-control'
+  .form-group
+    = f.label :kibana_instances, 'Kibana Instance'
+    = f.number_field :kibana_instances, class: 'form-control'
   .actions = f.submit 'Submit',  class: 'btn btn-primary'

@@ -69,6 +69,6 @@ class LogTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def log_template_params
-      params.require(:log_template).permit(:name, :tps_limit, :zookeeper_instances, :kafka_instances, :es_instances)
+      params.require(:log_template).permit(:name, :tps_limit, :zookeeper_instances, :kafka_instances, :es_instances, :consul_instances, :yggdrasil_instances, :kibana_instances)
     end
 end
