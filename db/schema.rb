@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507040330) do
+ActiveRecord::Schema.define(version: 20180507062506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,12 +26,17 @@ ActiveRecord::Schema.define(version: 20180507040330) do
     t.string   "name"
     t.integer  "log_template_id"
     t.integer  "app_group_id"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.string   "secret_key"
     t.string   "kibana_address"
     t.string   "receiver_end_point"
+    t.string   "setup_status",       default: "PENDING"
+    t.string   "app_status",         default: "INACTIVE"
   end
+
+  add_index "apps", ["app_status"], name: "index_apps_on_app_status", using: :btree
+  add_index "apps", ["setup_status"], name: "index_apps_on_setup_status", using: :btree
 
   create_table "log_templates", force: :cascade do |t|
     t.string   "name"

@@ -18,6 +18,7 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'berkshelf'
 gem 'knife-solo'
+gem 'enumerize'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

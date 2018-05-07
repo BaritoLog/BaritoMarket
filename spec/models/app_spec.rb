@@ -33,5 +33,13 @@ RSpec.describe App, type: :model do
       app = FactoryBot.create(:app)
       expect(app.kibana_address).to eq('http://dummy.kibana-address/')
     end
+    it 'should has pending setup status' do
+      app = FactoryBot.create(:app)
+      expect(app.setup_status).to eq('PENDING')
+    end
+    it 'should has inactive app status' do
+      app = FactoryBot.create(:app)
+      expect(app.app_status).to eq('INACTIVE')
+    end
   end
 end

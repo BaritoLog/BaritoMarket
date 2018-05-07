@@ -1,7 +1,9 @@
 FactoryBot.define do
   factory :app do
     name "app1"
-    
+    setup_status "PENDING"
+    app_status "INACTIVE"
+
     log_template
     app_group
   end
