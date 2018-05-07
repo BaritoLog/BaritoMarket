@@ -5,5 +5,8 @@ FactoryBot.define do
     zookeeper_instances 1
     kafka_instances 1
     es_instances 1
+    consul_instances 1
+    yggdrasil_instances 1
+    kibana_instances 1
   end
 end

@@ -49,5 +49,25 @@ RSpec.describe LogTemplate, type: :model do
       expect(template.name_with_tps).to eq('Template1 (1 trx/sec)')
     end
   end
-  
+
+  context 'consul_instances' do
+    it 'must be presence' do
+      template = FactoryBot.build(:log_template, consul_instances: nil)
+      expect(template).to_not be_valid
+    end
+  end
+
+  context 'yggdrasil_instances' do
+    it 'must be presence' do
+      template = FactoryBot.build(:log_template, yggdrasil_instances: nil)
+      expect(template).to_not be_valid
+    end
+  end
+
+  context 'kibana_instances' do
+    it 'must be presence' do
+      template = FactoryBot.build(:log_template, kibana_instances: nil)
+      expect(template).to_not be_valid
+    end
+  end
 end
