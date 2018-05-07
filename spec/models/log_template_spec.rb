@@ -46,7 +46,7 @@ RSpec.describe LogTemplate, type: :model do
   describe '.name_with_tps' do
     it do
       template = FactoryBot.build(:log_template)
-      expect(template.name_with_tps).to eq('Template1 (1/sec)')
+      expect(template.name_with_tps).to eq('Template1 (1 trx/sec)')
     end
   end
   
