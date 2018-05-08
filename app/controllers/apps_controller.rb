@@ -77,6 +77,6 @@ class AppsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def app_params
-      params.require(:app).permit(:name, :log_template_id, :app_group_id)
+      params.require(:app).permit(:name, :tps_config_id, :app_group_id)
     end
 end

@@ -6,16 +6,18 @@ RSpec.describe App, type: :model do
       assc = described_class.reflect_on_association(:app_group)
       expect(assc.macro).to eq :belongs_to
     end
-    
-    it 'belongs to log_template' do
-      assc = described_class.reflect_on_association(:log_template)
-      expect(assc.macro).to eq :belongs_to
-    end
   end
   
   context 'name' do
     it 'must be presence' do
       app = FactoryBot.build(:app, name: '')
+      expect(app).to_not be_valid
+    end
+  end
+
+  context 'tps_config_id' do
+    it 'must be presence' do
+      app = FactoryBot.build(:app, tps_config_id: '')
       expect(app).to_not be_valid
     end
   end

@@ -3,8 +3,8 @@ FactoryBot.define do
     name "app1"
     setup_status "PENDING"
     app_status "INACTIVE"
+    tps_config_id "small"
 
-    log_template
     app_group
   end
 end

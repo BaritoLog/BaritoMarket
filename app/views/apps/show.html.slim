@@ -18,8 +18,8 @@ p#notice = notice
         | Delete Application
 
 small
-  strong Log template: 
-  = @app.log_template.name_with_tps 
+  strong TPS Configuration:
+  = @app.tps_config_name
   '  | 
   strong Application Group: 
   = @app.app_group.name

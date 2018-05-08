@@ -21,7 +21,7 @@
     thead
       tr
         th Name
-        th[style="width: 130px;"] Log template
+        th[style="width: 130px;"] TPS Config
         th[style="width: 130px;"] App group
         th[style="width: 150px;"] Kibana
 
@@ -29,7 +29,7 @@
       - @apps.each do |app|
         tr
           td = link_to app.name, app 
-          td = app.log_template.name
+          td = app.tps_config_id
           td = app.app_group.name
           td
             - unless app.kibana_address.nil? then

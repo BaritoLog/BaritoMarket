@@ -1,6 +1,6 @@
 class App < ActiveRecord::Base
   extend Enumerize
-  validates_presence_of :name
+  validates_presence_of :name, :tps_config_id
 
   enumerize :app_status, in:  %w(INACTIVE ACTIVE)
   enumerize :setup_status, in: %w(
@@ -17,7 +17,6 @@ class App < ActiveRecord::Base
   )
 
   belongs_to :app_group, required: true
-  belongs_to :log_template, required: true
   
   after_create :generate_secret_key, :generate_receiver_end_point, :generate_kibana_address, :set_setup_status_pending, :set_app_status_inactive
   
@@ -39,6 +38,10 @@ class App < ActiveRecord::Base
 
   def set_app_status_inactive
     set_app_status('INACTIVE')
+  end
+
+  def tps_config_name
+    TpsConfig.name(self.tps_config_id)
   end
 
   private

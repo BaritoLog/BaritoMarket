@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507062506) do
+ActiveRecord::Schema.define(version: 20180508084519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(version: 20180507062506) do
 
   create_table "apps", force: :cascade do |t|
     t.string   "name"
-    t.integer  "log_template_id"
     t.integer  "app_group_id"
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
@@ -33,23 +32,11 @@ ActiveRecord::Schema.define(version: 20180507062506) do
     t.string   "receiver_end_point"
     t.string   "setup_status",       default: "PENDING"
     t.string   "app_status",         default: "INACTIVE"
+    t.string   "tps_config_id"
   end
 
   add_index "apps", ["app_status"], name: "index_apps_on_app_status", using: :btree
   add_index "apps", ["setup_status"], name: "index_apps_on_setup_status", using: :btree
-
-  create_table "log_templates", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "tps_limit"
-    t.integer  "zookeeper_instances"
-    t.integer  "kafka_instances"
-    t.integer  "es_instances"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "consul_instances",    default: 0
-    t.integer  "yggdrasil_instances", default: 0
-    t.integer  "kibana_instances",    default: 0
-  end
 
   create_table "user_groups", force: :cascade do |t|
     t.string   "name"

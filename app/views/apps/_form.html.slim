@@ -7,10 +7,10 @@
     small.form-text.text-muted
       | Please enter the name of your application / service
   .form-group
-    = f.label :log_template_id, 'Log Template'
-    = f.collection_select :log_template_id, LogTemplate.all, :id, :name_with_tps, { prompt: true }, { class: 'form-control' }
+    = f.label :tps_config_id, 'TPS Configuration'
+    = f.select :tps_config_id, TpsConfig.all, { prompt: true }, { class: 'form-control' }
     small.form-text.text-muted
-      | Please choose your log template based on your TPS
+      | Please choose your TPS Configuration
   .form-group
     = f.label :app_group_id, 'Application Group'
     = f.collection_select :app_group_id, AppGroup.order(:name), :id, :name, { prompt: true }, { class: 'form-control' }
