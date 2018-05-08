@@ -14,7 +14,6 @@ html
       menus = [
         {:text => 'Application', :icon => 'fa-microchip', :path => apps_path},
         {:text => 'Application Group', :icon => 'fa-microchip', :path => app_groups_path},
-        {:text => 'Log Template', :icon => 'fa-microchip', :path => log_templates_path}
       ]
       sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
     

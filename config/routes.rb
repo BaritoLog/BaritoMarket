@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   get 'ping', to: 'ping#show', defaults: { format: :json }
   resources :apps
   resources :app_groups
-  resources :log_templates
   get '/setup/:id', to: "apps#infra_setup", as: "infra_setup"
   get '/configuration/:id', to: "apps#infra_configuration", as: "infra_configuration"
   devise_for :users, skip: :all
