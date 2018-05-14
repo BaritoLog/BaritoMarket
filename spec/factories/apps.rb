@@ -4,6 +4,7 @@ FactoryBot.define do
     setup_status "PENDING"
     app_status "INACTIVE"
     tps_config_id "small"
+    cluster_name "some"
 
     app_group
   end

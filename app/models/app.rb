@@ -40,6 +40,10 @@ class App < ActiveRecord::Base
     set_app_status('INACTIVE')
   end
 
+  def set_cluster_name(cluster_name)
+    update_column(:cluster_name, cluster_name)
+  end
+
   private
 
   def set_setup_status(status)

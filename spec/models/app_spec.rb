@@ -46,6 +46,17 @@ RSpec.describe App, type: :model do
     end
   end
 
+  context 'cluster name' do
+    it 'has cluster name after blueprint creation' do
+      app = FactoryBot.create(:app, cluster_name: '')
+      tps_config = FactoryBot.build(:tps_config)
+      chef_configs = FactoryBot.build(:chef_configs)
+      blueprint = Blueprint.new(app, tps_config, chef_configs)
+      app.set_cluster_name(blueprint.cluster_name)
+      expect(app.cluster_name).to eq(blueprint.cluster_name)
+    end
+  end
+
   context 'after_create' do
     it 'should has pending setup status' do
       app = FactoryBot.create(:app)

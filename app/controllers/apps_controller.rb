@@ -31,6 +31,7 @@ class AppsController < ApplicationController
       if @app.save
         blueprint = Blueprint.new(@app, @tps_config, @chef_configs)
         blueprint.to_file
+        @app.set_cluster_name(blueprint.cluster_name)
         format.html { redirect_to controller: 'apps', action: 'infra_setup', id: @app.id , notice: 'App was successfully created.' }
         format.json { render :show, status: :created, location: @app }
       else
