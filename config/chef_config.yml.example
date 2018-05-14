@@ -22,4 +22,4 @@ development:
     run_list: 'elasticsearch'
   kibana:
     chef_repo: 'https://github.com/kibana/cookbooks'
-    chef_repo: 'kibana'
+    run_list: 'kibana'
