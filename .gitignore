@@ -17,5 +17,8 @@ tmp
 database.yml
 application.yml
 tps_config.yml
+chef_config.yml
 chef-repo
 vagrant_work_dir
+blueprints/jobs/*.json
+blueprints/failed/*.json

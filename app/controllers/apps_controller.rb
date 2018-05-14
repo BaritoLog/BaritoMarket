@@ -1,4 +1,5 @@
 class AppsController < ApplicationController
+  before_action :set_config
   before_action :set_app, only: [:show, :edit, :update, :destroy, :infra_setup, :infra_configuration]
 
   # GET /apps
@@ -28,6 +29,8 @@ class AppsController < ApplicationController
 
     respond_to do |format|
       if @app.save
+        blueprint = Blueprint.new(@app, @tps_config, @chef_configs)
+        blueprint.to_file
         format.html { redirect_to controller: 'apps', action: 'infra_setup', id: @app.id , notice: 'App was successfully created.' }
         format.json { render :show, status: :created, location: @app }
       else
@@ -78,5 +81,10 @@ class AppsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def app_params
       params.require(:app).permit(:name, :tps_config_id, :app_group_id)
+    end
+
+    def set_config
+      @tps_config = TpsConfig.new(TPS_CONFIG)
+      @chef_configs = ChefConfigs.new(CHEF_CONFIG)
     end
 end

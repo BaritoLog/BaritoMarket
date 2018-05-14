@@ -6,6 +6,7 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - cp config/tps_config.yml.example config/tps_config.yml
+  - cp config/chef_config.yml.example config/chef_config.yml
   - psql -c 'create database barito_test;' -U postgres
 script:
   - bundle package --all

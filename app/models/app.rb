@@ -18,8 +18,8 @@ class App < ActiveRecord::Base
 
   belongs_to :app_group, required: true
   
-  after_create :generate_secret_key, :generate_receiver_end_point, :generate_kibana_address, :set_setup_status_pending, :set_app_status_inactive
-  
+  after_create :set_setup_status_pending, :set_app_status_inactive
+
   def generate_secret_key
     update_column(:secret_key, SecureRandom.base64)
   end
@@ -38,10 +38,6 @@ class App < ActiveRecord::Base
 
   def set_app_status_inactive
     set_app_status('INACTIVE')
-  end
-
-  def tps_config_name
-    TpsConfig.name(self.tps_config_id)
   end
 
   private

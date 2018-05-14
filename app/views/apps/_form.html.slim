@@ -8,7 +8,7 @@
       | Please enter the name of your application / service
   .form-group
     = f.label :tps_config_id, 'TPS Configuration'
-    = f.select :tps_config_id, TpsConfig.all, { prompt: true }, { class: 'form-control' }
+    = f.select :tps_config_id, @tps_config.all, { prompt: true }, { class: 'form-control' }
     small.form-text.text-muted
       | Please choose your TPS Configuration
   .form-group

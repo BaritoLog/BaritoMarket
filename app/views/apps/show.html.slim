@@ -19,7 +19,7 @@ p#notice = notice
 
 small
   strong TPS Configuration:
-  = @app.tps_config_name
+  = @tps_config.name(@app.tps_config_id)
   '  | 
   strong Application Group: 
   = @app.app_group.name

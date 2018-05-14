@@ -1,14 +1,25 @@
 class TpsConfig
-  def self.all
-    TPS_CONFIG.map { |key, configs|
+
+  attr_accessor :config
+
+  def initialize(config)
+    @config = config
+  end
+
+  def all
+    @config.map { |key, configs|
         [configs['name'], key]
     }
   end
 
-  def self.name(id)
-    config = TPS_CONFIG[id]
+  def name(id)
+    config = get(id)
     unless config.nil?
       return config['name']
     end
+  end
+
+  def get(id)
+    @config[id]
   end
 end

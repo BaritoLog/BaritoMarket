@@ -21,20 +21,32 @@ RSpec.describe App, type: :model do
       expect(app).to_not be_valid
     end
   end
-  
-  context 'after_create' do
+
+  context 'application secret' do
     it 'generate secret key' do
       app = FactoryBot.create(:app)
+      app.generate_secret_key
       expect(app.secret_key.length).to eq(24)
     end
+  end
+
+  context 'receiver end point' do
     it 'generate receiver end point' do
       app = FactoryBot.create(:app)
+      app.generate_receiver_end_point
       expect(app.receiver_end_point).to eq('http://dummy.end-point/')
     end
+  end
+
+  context 'kibana address' do
     it 'generate kibana address' do
       app = FactoryBot.create(:app)
+      app.generate_kibana_address
       expect(app.kibana_address).to eq('http://dummy.kibana-address/')
     end
+  end
+
+  context 'after_create' do
     it 'should has pending setup status' do
       app = FactoryBot.create(:app)
       expect(app.setup_status).to eq('PENDING')
