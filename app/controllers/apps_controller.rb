@@ -29,7 +29,7 @@ class AppsController < ApplicationController
 
     respond_to do |format|
       if @app.save
-        blueprint = Blueprint.new(@app, @tps_config, @chef_configs)
+        blueprint = Blueprint.new(@app, @tps_config)
         blueprint.to_file
         @app.set_cluster_name(blueprint.cluster_name)
         format.html { redirect_to controller: 'apps', action: 'infra_setup', id: @app.id , notice: 'App was successfully created.' }
@@ -86,6 +86,5 @@ class AppsController < ApplicationController
 
     def set_config
       @tps_config = TpsConfig.new(TPS_CONFIG)
-      @chef_configs = ChefConfigs.new(CHEF_CONFIG)
     end
 end
