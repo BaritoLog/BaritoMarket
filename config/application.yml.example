@@ -14,7 +14,6 @@ development:
   ENABLE_CAS_INTEGRATION:    'false'
 
 test:
-  DB_NAME:                   'barito_test'
   RAILS_ENV:                 'test'
   RACK_ENV:                  'test'
-
+  DB_NAME:                   'barito_test'

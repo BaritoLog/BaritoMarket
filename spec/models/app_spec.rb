@@ -50,8 +50,7 @@ RSpec.describe App, type: :model do
     it 'has cluster name after blueprint creation' do
       app = FactoryBot.create(:app, cluster_name: '')
       tps_config = FactoryBot.build(:tps_config)
-      chef_configs = FactoryBot.build(:chef_configs)
-      blueprint = Blueprint.new(app, tps_config, chef_configs)
+      blueprint = Blueprint.new(app, tps_config)
       app.set_cluster_name(blueprint.cluster_name)
       expect(app.cluster_name).to eq(blueprint.cluster_name)
     end

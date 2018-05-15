@@ -1,8 +1,20 @@
 require 'faker'
 
 class Blueprint
-  # attr_accessor :provisioning, :vagrant, :chef_repo, :nodes
-  attr_accessor :blueprint, :application, :tps_config, :chef_config, :nodes, :cluster_name
+  attr_accessor :blueprint, :application, :tps_config, :nodes, :cluster_name
+
+  def initialize(application, tps_config)
+    @application = application
+    @tps_config = tps_config.get(application.tps_config_id)
+    @cluster_name = generate_cluster_name
+
+    create_nodes
+    create_blueprint
+  end
+
+  def generate_cluster_name
+    Faker::Internet.user_name(4..4)
+  end
 
   def blueprint_hash
     {
@@ -14,44 +26,12 @@ class Blueprint
     }
   end
 
-  def node_hash(node_name, node_type, run_list, chef_repo, container_config)
+  def node_hash(node_name, node_type, container_config)
     {
         "name": node_name,
         "type": node_type,
-        "run_list": run_list,
-        "chef_repo": chef_repo,
         "node_container_config": container_config
     }
-  end
-
-  # def initialize args
-  #   @provisioning = args['provisioning']
-  #   @chef_repo = args['chef_repo']
-  #   @vagrant = BlueprintVagrant.new(args['vagrant'])
-  #   @nodes = []
-  #   args['nodes'].each do |node|
-  #     @nodes << BlueprintNode.new(node)
-  #   end
-  # end
-  def initialize(application, tps_config, chef_config)
-    @application = application
-    @tps_config = tps_config.get(application.tps_config_id)
-    @chef_config = chef_config
-    @cluster_name = generate_cluster_name
-
-    create_nodes
-    create_blueprint
-  end
-
-  # def self.create_from_file(path)
-  #   file = File.read(path)
-  #   hash = JSON.parse(file)
-  #
-  #   Blueprint.new(hash)
-  # end
-
-  def generate_cluster_name
-    Faker::Internet.user_name(4..4)
   end
 
   def create_blueprint
@@ -64,11 +44,8 @@ class Blueprint
     available_instances.each do |instance|
       number_of_instance = @tps_config[instance + '_instances']
       unless not number_of_instance.present?
-        chef_config = @chef_config.get(instance)
-        run_list = chef_config['run_list']
-        chef_repo = chef_config['chef_repo']
         (1..number_of_instance).each do |number|
-          nodes << node_hash(generate_node_name(instance, number), instance, run_list, chef_repo, @application.tps_config_id)
+          nodes << node_hash(generate_node_name(instance, number), instance, @application.tps_config_id)
         end
       end
     end
