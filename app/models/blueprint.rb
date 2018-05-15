@@ -1,7 +1,6 @@
 require 'faker'
 
 class Blueprint
-  # attr_accessor :provisioning, :vagrant, :chef_repo, :nodes
   attr_accessor :blueprint, :application, :tps_config, :nodes, :cluster_name
 
   def blueprint_hash
@@ -22,15 +21,6 @@ class Blueprint
     }
   end
 
-  # def initialize args
-  #   @provisioning = args['provisioning']
-  #   @chef_repo = args['chef_repo']
-  #   @vagrant = BlueprintVagrant.new(args['vagrant'])
-  #   @nodes = []
-  #   args['nodes'].each do |node|
-  #     @nodes << BlueprintNode.new(node)
-  #   end
-  # end
   def initialize(application, tps_config)
     @application = application
     @tps_config = tps_config.get(application.tps_config_id)
@@ -39,13 +29,6 @@ class Blueprint
     create_nodes
     create_blueprint
   end
-
-  # def self.create_from_file(path)
-  #   file = File.read(path)
-  #   hash = JSON.parse(file)
-  #
-  #   Blueprint.new(hash)
-  # end
 
   def generate_cluster_name
     Faker::Internet.user_name(4..4)
