@@ -3,6 +3,19 @@ require 'faker'
 class Blueprint
   attr_accessor :blueprint, :application, :tps_config, :nodes, :cluster_name
 
+  def initialize(application, tps_config)
+    @application = application
+    @tps_config = tps_config.get(application.tps_config_id)
+    @cluster_name = generate_cluster_name
+
+    create_nodes
+    create_blueprint
+  end
+
+  def generate_cluster_name
+    Faker::Internet.user_name(4..4)
+  end
+
   def blueprint_hash
     {
         'application_id': @application.id,
@@ -19,19 +32,6 @@ class Blueprint
         "type": node_type,
         "node_container_config": container_config
     }
-  end
-
-  def initialize(application, tps_config)
-    @application = application
-    @tps_config = tps_config.get(application.tps_config_id)
-    @cluster_name = generate_cluster_name
-
-    create_nodes
-    create_blueprint
-  end
-
-  def generate_cluster_name
-    Faker::Internet.user_name(4..4)
   end
 
   def create_blueprint
