@@ -31,6 +31,6 @@ Rails.application.routes.draw do
   # end
 
   namespace :api, defaults: { format: :json } do
-    resources :clients, :only => [:index]
+    resources :apps, :only => [:index]
   end
 end
