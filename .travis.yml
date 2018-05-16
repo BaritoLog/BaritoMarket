@@ -28,4 +28,6 @@ deploy:
   file_glob: true
   file: $TRAVIS_BUILD_DIR/*.tar.gz
   on:
+    tags: true
     repo: BaritoLog/BaritoMarket
+    all_branches: true
