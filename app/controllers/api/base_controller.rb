@@ -9,6 +9,9 @@ class Api::BaseController < ApplicationController
     if @app.nil? or req_header.blank?
       custom_render json_string: {:errors => "Invalid App Secret"}.to_json, status: :unauthorized
       return
+    elsif @app.app_status.INACTIVE?
+      custom_render json_string: {:errors => "App is inactive"}.to_json, status: :not_found
+      return
     end
   end
 
