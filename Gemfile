@@ -20,12 +20,14 @@ gem 'berkshelf'
 gem 'knife-solo'
 gem 'enumerize'
 gem 'faker'
+gem 'typhoeus'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem "factory_bot_rails"
+  gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'rspec-collection_matchers'
+  gem 'webmock'
 end
 
 group :development do

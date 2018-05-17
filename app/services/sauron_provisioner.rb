@@ -1,0 +1,29 @@
+class SauronProvisioner
+  attr_accessor :sauron_host, :container_host, :container_host_name
+
+  def initialize(sauron_host, container_host, container_host_name, opts = {})
+    @sauron_host = sauron_host
+    @container_host = container_host
+    @container_host_name = container_host_name
+    @image = opts[:image] || 'ubuntu:16.04'
+  end
+
+  def provision!(hostname, opts = {})
+    req = Typhoeus::Request.new(
+      "#{@sauron_host}/containers",
+      method: :post,
+      body: {
+        'container' => {
+          'image' => opts[:image] || @image,
+          'container_hostname' => hostname,
+          'lxd_host_ipaddress' => @container_host
+        }
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json'
+      }
+    )
+    req.run
+    req.response.body
+  end
+end
