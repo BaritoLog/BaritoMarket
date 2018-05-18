@@ -42,7 +42,7 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
             'node_container_config' => 'medium',
-            'provision_status' => 'PROVISIONED',
+            'provision_status' => 'INSTANCE_PROVISIONED',
             'provision_attributes' => {
               'ip_address' => 'xx.yy.zz.hh'
             }
@@ -51,7 +51,7 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
-            'provision_status' => 'PROVISIONED',
+            'provision_status' => 'INSTANCE_PROVISIONED',
             'provision_attributes' => {
               'ip_address' => 'xx.yy.zz.hh'
             }
@@ -75,13 +75,13 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
             'node_container_config' => 'medium',
-            'provision_status' => 'FAILED',
+            'provision_status' => 'FAIL_INSTANCE_PROVISIONING',
           },
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
-            'provision_status' => 'FAILED',
+            'provision_status' => 'FAIL_INSTANCE_PROVISIONING',
           }
         ]
       end
