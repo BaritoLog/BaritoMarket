@@ -6,6 +6,7 @@ RSpec.describe SauronProvisioner do
       @sauron_host = '127.0.0.1:3000'
       @container_host = '127.0.0.1'
       @container_host_name = 'localhost'
+      @access_key = 'barito'
 
       # Mock Sauron API
       stub_request(:post, "http://#{@sauron_host}/containers").
@@ -14,7 +15,8 @@ RSpec.describe SauronProvisioner do
             'container' => {
               'image' => 'ubuntu:16.04',
               'container_hostname' => 'test-01',
-              'lxd_host_ipaddress' => @container_host
+              'lxd_host_ipaddress' => @container_host,
+              'access_key' => 'barito'
             }
           }.to_json,
           headers: {
@@ -33,7 +35,8 @@ RSpec.describe SauronProvisioner do
             'success' => 'true',
             'error' => '',
             'data' => {
-              'ip_address' => 'xx.yy.zz.hh'
+              'ip_address' => 'xx.yy.zz.hh',
+              'access_key' => 'barito'
             }
           }.to_json
         })
@@ -43,10 +46,11 @@ RSpec.describe SauronProvisioner do
       it 'should make necessary calls to Sauron and return the response' do
         sauron_provisioner = SauronProvisioner.new(
           @sauron_host, @container_host, @container_host_name)
-        expect(sauron_provisioner.provision!('test-01')).to eq({
+        expect(sauron_provisioner.provision!('test-01', access_key: @access_key)).to eq({
           'success' => true,
           'data' => {
-            'ip_address' => 'xx.yy.zz.hh'
+            'ip_address' => 'xx.yy.zz.hh',
+            'access_key' => 'barito'
           }
         })
       end
