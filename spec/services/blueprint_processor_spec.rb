@@ -28,9 +28,10 @@ RSpec.describe BlueprintProcessor do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
-          'success' => 'true',
-          'error' => '',
-          'ip_address' => 'xx.yy.zz.hh'           
+          'success' => true,
+          'data' => {
+            'ip_address' => 'xx.yy.zz.hh' 
+          }       
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
 
@@ -62,7 +63,7 @@ RSpec.describe BlueprintProcessor do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
-          'success' => 'false',
+          'success' => false,
           'error' => '',         
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)

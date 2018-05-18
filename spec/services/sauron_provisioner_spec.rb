@@ -32,7 +32,9 @@ RSpec.describe SauronProvisioner do
           body: {
             'success' => 'true',
             'error' => '',
-            'ip_address' => 'xx.yy.zz.hh'
+            'data' => {
+              'ip_address' => 'xx.yy.zz.hh'
+            }
           }.to_json
         })
     end
@@ -42,10 +44,11 @@ RSpec.describe SauronProvisioner do
         sauron_provisioner = SauronProvisioner.new(
           @sauron_host, @container_host, @container_host_name)
         expect(sauron_provisioner.provision!('test-01')).to eq({
-          'success' => 'true',
-          'error' => '',
-          'ip_address' => 'xx.yy.zz.hh'
-        }.to_json)
+          'success' => true,
+          'data' => {
+            'ip_address' => 'xx.yy.zz.hh'
+          }
+        })
       end
     end
   end

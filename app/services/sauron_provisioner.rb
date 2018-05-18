@@ -24,6 +24,19 @@ class SauronProvisioner
       }
     )
     req.run
-    req.response.body
+    res = req.response
+    body = JSON.parse(res.body)
+
+    if body['success'] == 'true'
+      return {
+        'success' => true,
+        'data' => body['data']
+      }
+    else
+      return {
+        'success' => false,
+        'error' => body['error']
+      }
+    end
   end
 end
