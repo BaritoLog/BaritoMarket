@@ -16,6 +16,7 @@ class BlueprintProcessor
     @sauron_host            = (opts[:sauron_host] || '127.0.0.1:3000')
     @container_host         = (opts[:container_host] || '127.0.0.1')
     @container_host_name    = (opts[:container_host_name] || 'localhost')
+    @access_key             = opts[:access_key]
     @container_provisioner  = SauronProvisioner.new(
       @sauron_host, @container_host, @container_host_name)
 
@@ -27,7 +28,8 @@ class BlueprintProcessor
       node_state = node.dup
 
       # Provision container
-      exit_status, node_state = provisioner_container!(node, node_state)
+      exit_status, node_state = provisioner_container!(
+        node, node_state, access_key: @access_key)
       @blueprint_status = 'FAILED' unless exit_status == false
 
       @nodes << node_state
@@ -37,9 +39,9 @@ class BlueprintProcessor
     return @blueprint_status
   end
 
-  def provisioner_container!(node, node_state)
+  def provisioner_container!(node, node_state, opts = {})
     exit_status = false
-    res = @container_provisioner.provision!(node['name'])
+    res = @container_provisioner.provision!(node['name'], access_key: opts[:access_key])
     res['data'] ||= {}
 
     if res['success'] == true

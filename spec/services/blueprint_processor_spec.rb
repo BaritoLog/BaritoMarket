@@ -30,7 +30,8 @@ RSpec.describe BlueprintProcessor do
         allow(sauron_provisioner).to receive(:provision!).and_return({
           'success' => true,
           'data' => {
-            'ip_address' => 'xx.yy.zz.hh' 
+            'ip_address' => 'xx.yy.zz.hh',
+            'access_key' => 'barito'
           }       
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
@@ -44,7 +45,8 @@ RSpec.describe BlueprintProcessor do
             'node_container_config' => 'medium',
             'provision_status' => 'INSTANCE_PROVISIONED',
             'provision_attributes' => {
-              'ip_address' => 'xx.yy.zz.hh'
+              'ip_address' => 'xx.yy.zz.hh',
+              'access_key' => 'barito'
             }
           },
           {
@@ -53,7 +55,8 @@ RSpec.describe BlueprintProcessor do
             'node_container_config' => 'medium',
             'provision_status' => 'INSTANCE_PROVISIONED',
             'provision_attributes' => {
-              'ip_address' => 'xx.yy.zz.hh'
+              'ip_address' => 'xx.yy.zz.hh',
+              'access_key' => 'barito'
             }
           }
         ]
