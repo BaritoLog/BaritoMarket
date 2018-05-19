@@ -36,13 +36,11 @@ class ChefSoloProvisioner
 
     if status.success?
       return {
-        'success' => true,
-        'status' => status
+        'success' => true
       }
     else
       return {
         'success' => false,
-        'status' => status,
         'error' => error_str
       }
     end

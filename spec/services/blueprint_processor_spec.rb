@@ -23,8 +23,8 @@ RSpec.describe BlueprintProcessor do
   end
 
   describe '#process!' do
-    context 'using SauronProvisioner' do
-      it 'should populate nodes based on return value from provisioner' do
+    context 'success' do
+      before(:each) do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
@@ -36,6 +36,15 @@ RSpec.describe BlueprintProcessor do
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
 
+        # Mock chef_solo_provisioner
+        chef_solo_provisioner = double
+        allow(chef_solo_provisioner).to receive(:provision!).and_return({
+          'success' => true
+        })
+        allow(ChefSoloProvisioner).to receive(:new).and_return(chef_solo_provisioner)
+      end
+
+      it 'should populate nodes based on return value from provisioner' do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         expect(blueprint_processor.nodes).to eq [
@@ -43,26 +52,34 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
             'node_container_config' => 'medium',
-            'provision_status' => 'INSTANCE_PROVISIONED',
-            'provision_attributes' => {
+            'provision_status' => 'APPS_PROVISIONED',
+            'instance_attributes' => {
               'ip_address' => 'xx.yy.zz.hh',
               'access_key' => 'barito'
+            },
+            'apps_attributes' => {
+              'run_list' => ['role[consul]']
             }
           },
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
-            'provision_status' => 'INSTANCE_PROVISIONED',
-            'provision_attributes' => {
+            'provision_status' => 'APPS_PROVISIONED',
+            'instance_attributes' => {
               'ip_address' => 'xx.yy.zz.hh',
               'access_key' => 'barito'
+            },
+            'apps_attributes' => {
+              'run_list' => ['role[yggdrasil]']
             }
           }
         ]
       end
+    end
 
-      it 'should populate nodes as failed if provisioning fails' do
+    context 'failure' do
+      before(:each) do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
@@ -70,7 +87,9 @@ RSpec.describe BlueprintProcessor do
           'error' => '',         
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
+      end
 
+      it 'should populate nodes as failed if provisioning fails' do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         expect(blueprint_processor.nodes).to eq [
