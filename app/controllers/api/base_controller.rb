@@ -1,20 +1,4 @@
 class Api::BaseController < ApplicationController
-  before_action :validate_application_secret
-
-  HTTP_HEADER = "X-App-Secret"
-
-  def validate_application_secret
-    req_header = request.headers[HTTP_HEADER]
-    @app = App.find_by_secret_key(req_header)
-    if @app.nil? or req_header.blank?
-      custom_render json_string: {:errors => "Invalid App Secret"}.to_json, status: :unauthorized
-      return
-    elsif @app.app_status.INACTIVE?
-      custom_render json_string: {:errors => "App is inactive"}.to_json, status: :not_found
-      return
-    end
-  end
-
   private
 
   def custom_render(json_string: , status:)
