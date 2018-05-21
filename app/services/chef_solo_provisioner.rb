@@ -41,7 +41,8 @@ class ChefSoloProvisioner
     else
       return {
         'success' => false,
-        'error' => error_str
+        'error' => error_str,
+        'error_log' => stdout_str
       }
     end
   end

@@ -1,5 +1,5 @@
 class BlueprintProcessor
-  attr_accessor :blueprint_hash, :nodes
+  attr_accessor :blueprint_hash, :nodes, :errors
 
   PROVISION_STATUS = [
     'FAIL_INSTANCE_PROVISIONING', 
@@ -11,6 +11,7 @@ class BlueprintProcessor
   def initialize(blueprint_hash, opts = {})
     @blueprint_hash = blueprint_hash
     @nodes = []
+    @errors = []
 
     # Initialize Instance Provisioner
     @sauron_host            = (opts[:sauron_host] || '127.0.0.1:3000')
@@ -99,6 +100,7 @@ class BlueprintProcessor
       apps_provisioned = true
     else
       node_state['provision_status'] = 'FAIL_APPS_PROVISIONING'
+      @errors << { message: res['error'], log: res['error_log'] }
     end
 
     [apps_provisioned, node_state]
