@@ -26,7 +26,7 @@ class BlueprintProcessor
 
     # Access keys
     @access_keys_dir        = (opts[:access_keys_dir] || "#{Rails.root}/config/access_keys")
-    @access_key             = opts[:access_key]
+    @access_key_name        = opts[:access_key_name]
     @username               = opts[:username]
 
     @blueprint_status = 'UNPROCESSED'
@@ -38,7 +38,7 @@ class BlueprintProcessor
 
       # Provision instance
       instance_provisioned, node_state = provision_instance!(
-        node_state, access_key: @access_key)
+        node_state, access_key_name: @access_key_name)
 
       # Provision apps within instance
       if instance_provisioned == true
@@ -48,7 +48,7 @@ class BlueprintProcessor
           @username,
           node_state,
           access_keys_dir: @access_keys_dir,
-          access_key: @access_key,
+          access_key_name: @access_key_name,
           attrs: attrs)
       end
 
@@ -62,18 +62,19 @@ class BlueprintProcessor
 
   def provision_instance!(node_state, opts = {})
     instance_provisioned = false
-    res = @instance_provisioner.provision!(node_state['name'], access_key: opts[:access_key])
+    res = @instance_provisioner.provision!(node_state['name'], access_key_name: opts[:access_key_name])
     res['data'] ||= {}
 
     if res['success'] == true
       node_state['provision_status'] = 'INSTANCE_PROVISIONED'
       node_state['instance_attributes'] = {
         'ip_address' => res['data']['ip_address'],
-        'access_key' => res['data']['access_key']
+        'access_key_name' => res['data']['access_key_name']
       }
       instance_provisioned = true
     else
       node_state['provision_status'] = 'FAIL_INSTANCE_PROVISIONING'
+      @errors << { message: res['error'] }
     end
 
     [instance_provisioned, node_state]
@@ -82,15 +83,15 @@ class BlueprintProcessor
   def provision_apps!(node_host, username, node_state, opts = {})
     apps_provisioned = false
 
-    private_key = nil
-    if opts[:access_keys_dir] && opts[:access_key]
-      private_key = File.join(opts[:access_keys_dir], opts[:access_key])
+    access_key = nil
+    if opts[:access_keys_dir] && opts[:access_key_name]
+      access_key = File.join(opts[:access_keys_dir], opts[:access_key_name])
     end
 
     res = @apps_provisioner.provision!(
       node_host,
       username,
-      private_key: private_key,
+      private_key: access_key,
       attrs: opts[:attrs]
     )
 

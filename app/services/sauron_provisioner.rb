@@ -17,7 +17,7 @@ class SauronProvisioner
           'image' => opts[:image] || @image,
           'container_hostname' => hostname,
           'lxd_host_ipaddress' => @container_host,
-          'access_key' => opts[:access_key],
+          'key_pair_name' => opts[:access_key_name],
         }
       }.to_json,
       headers: {

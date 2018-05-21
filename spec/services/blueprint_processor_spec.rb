@@ -31,7 +31,7 @@ RSpec.describe BlueprintProcessor do
           'success' => true,
           'data' => {
             'ip_address' => 'xx.yy.zz.hh',
-            'access_key' => 'barito'
+            'access_key_name' => 'barito'
           }       
         })
         allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
@@ -55,7 +55,7 @@ RSpec.describe BlueprintProcessor do
             'provision_status' => 'APPS_PROVISIONED',
             'instance_attributes' => {
               'ip_address' => 'xx.yy.zz.hh',
-              'access_key' => 'barito'
+              'access_key_name' => 'barito'
             },
             'apps_attributes' => {
               'run_list' => ['role[consul]']
@@ -68,7 +68,7 @@ RSpec.describe BlueprintProcessor do
             'provision_status' => 'APPS_PROVISIONED',
             'instance_attributes' => {
               'ip_address' => 'xx.yy.zz.hh',
-              'access_key' => 'barito'
+              'access_key_name' => 'barito'
             },
             'apps_attributes' => {
               'run_list' => ['role[yggdrasil]']
