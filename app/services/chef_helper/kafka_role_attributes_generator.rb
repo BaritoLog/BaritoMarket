@@ -15,7 +15,7 @@ module ChefHelper
           'kafka' => {
             'hosts' => @hosts
           }
-        }
+        },
         'run_list' => ["role[#{@role_name}]"]
       }
     end
