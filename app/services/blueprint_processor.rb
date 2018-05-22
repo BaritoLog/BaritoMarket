@@ -2,6 +2,7 @@ class BlueprintProcessor
   attr_accessor :blueprint_hash, :nodes, :errors
 
   PROVISION_STATUS = [
+    'UNPROCESSED',
     'FAIL_INSTANCE_PROVISIONING', 
     'INSTANCE_PROVISIONED', 
     'FAIL_APPS_PROVISIONING', 
@@ -24,94 +25,109 @@ class BlueprintProcessor
     @chef_repo_dir          = (opts[:chef_repo_dir] || '/opt/chef-repo')
     @apps_provisioner       = ChefSoloProvisioner.new(@chef_repo_dir)
 
-    # Access keys
-    @access_keys_dir        = (opts[:access_keys_dir] || "#{Rails.root}/config/access_keys")
-    @access_key_name        = opts[:access_key_name]
+    # Private keys
+    @private_keys_dir       = (opts[:private_keys_dir] || "#{Rails.root}/config/private_keys")
+    @private_key_name       = opts[:private_key_name]
     @username               = opts[:username]
 
     @blueprint_status = 'UNPROCESSED'
   end
 
   def process!
-    @blueprint_hash['nodes'].each do |node|
-      node_state = node.dup
-
-      # Provision instance
-      instance_provisioned, node_state = provision_instance!(
-        node_state, access_key_name: @access_key_name)
-
-      # Provision apps within instance
-      if instance_provisioned == true
-        attrs = generate_instance_attributes(node_state)
-        apps_provisioned, node_state = provision_apps!(
-          node_state['instance_attributes']['ip_address'] || "#{node_state['name']}",
-          @username,
-          node_state,
-          access_keys_dir: @access_keys_dir,
-          access_key_name: @access_key_name,
-          attrs: attrs)
-      end
-
-      @nodes << node_state
-      @blueprint_status = 'FAILED' unless (instance_provisioned && apps_provisioned)
+    # Set initial status
+    if @blueprint_status == 'UNPROCESSED'
+      @nodes = @blueprint_hash['nodes'].dup
+      @nodes.each{ |node| node['provision_status'] = 'UNPROCESSED' }
     end
-
-    @blueprint_status = 'SUCCESS' unless @blueprint_status == 'FAILED'
-    return @blueprint_status
+    @errors = []
+    return (@blueprint_status = 'FAILED') unless provision_instances!
+    return (@blueprint_status = 'FAILED') unless provision_apps!
+    return (@blueprint_status = 'SUCCESS')
   end
 
-  def provision_instance!(node_state, opts = {})
+  def provision_instances!
+    @nodes.each do |node|
+      if node['provision_status'] == 'UNPROCESSED' || 
+         node['provision_status'] == 'FAIL_INSTANCE_PROVISIONING'
+        instance_provisioned, node = provision_instance!(node, private_key_name: @private_key_name)
+        return false if !instance_provisioned
+      end
+    end
+    return true
+  end
+
+  def provision_apps!
+    @nodes.each do |node|
+      if node['provision_status'] == 'INSTANCE_PROVISIONED' || 
+         node['provision_status'] == 'FAIL_APPS_PROVISIONING'
+        attrs = generate_instance_attributes(node, @nodes)
+        apps_provisioned, node = provision_app!(
+          node['instance_attributes']['host'] || "#{node['name']}",
+          @username,
+          node,
+          private_keys_dir: @private_keys_dir,
+          private_key_name: @private_key_name,
+          attrs: attrs)
+        return false if !apps_provisioned
+      end
+    end
+    return true
+  end
+
+  def provision_instance!(node, opts = {})
     instance_provisioned = false
-    res = @instance_provisioner.provision!(node_state['name'], access_key_name: opts[:access_key_name])
+    res = @instance_provisioner.provision!(node['name'], key_pair_name: opts[:private_key_name])
     res['data'] ||= {}
 
     if res['success'] == true
-      node_state['provision_status'] = 'INSTANCE_PROVISIONED'
-      node_state['instance_attributes'] = {
-        'ip_address' => res['data']['ip_address'],
-        'access_key_name' => res['data']['access_key_name']
+      node['provision_status'] = 'INSTANCE_PROVISIONED'
+      node['instance_attributes'] = {
+        'host' => res['data']['host'],
+        'key_pair_name' => res['data']['key_pair_name']
       }
       instance_provisioned = true
     else
-      node_state['provision_status'] = 'FAIL_INSTANCE_PROVISIONING'
+      node['provision_status'] = 'FAIL_INSTANCE_PROVISIONING'
       @errors << { message: res['error'] }
     end
 
-    [instance_provisioned, node_state]
+    [instance_provisioned, node]
   end
 
-  def provision_apps!(node_host, username, node_state, opts = {})
+  def provision_app!(node_host, username, node, opts = {})
     apps_provisioned = false
 
-    access_key = nil
-    if opts[:access_keys_dir] && opts[:access_key_name]
-      access_key = File.join(opts[:access_keys_dir], opts[:access_key_name])
+    # Get private key file path
+    private_key = nil
+    if opts[:private_keys_dir] && opts[:private_key_name]
+      private_key = File.join(opts[:private_keys_dir], opts[:private_key_name])
     end
 
     res = @apps_provisioner.provision!(
       node_host,
       username,
-      private_key: access_key,
+      private_key: private_key,
       attrs: opts[:attrs]
     )
 
     if res['success'] == true
-      node_state['provision_status'] = 'APPS_PROVISIONED'
-      node_state['apps_attributes'] = opts[:attrs]
+      node['provision_status'] = 'APPS_PROVISIONED'
+      node['apps_attributes'] = opts[:attrs]
       apps_provisioned = true
     else
-      node_state['provision_status'] = 'FAIL_APPS_PROVISIONING'
+      node['provision_status'] = 'FAIL_APPS_PROVISIONING'
       @errors << { message: res['error'], log: res['error_log'] }
     end
 
-    [apps_provisioned, node_state]
+    [apps_provisioned, node]
   end
 
-  # TODO: @giosakti should get these attributes from templates
-  def generate_instance_attributes(node_state)
-    case node_state['type']
+  def generate_instance_attributes(node, nodes)
+    case node['type']
     when 'consul'
-      { 'run_list' => ['role[consul]'] }
+      hosts = fetch_hosts_by(nodes, 'type', 'consul')
+      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
+      ChefHelper::ConsulRoleAttributesGenerator.new(hosts).generate
     when 'elasticsearch'
       { 'run_list' => ['role[elasticsearch]'] }
     when 'kafka'
@@ -126,4 +142,9 @@ class BlueprintProcessor
       {}
     end
   end
+
+  private
+    def fetch_hosts_by(nodes, filter_type, filter)
+      nodes.select{ |node| node[filter_type] == filter }
+    end
 end

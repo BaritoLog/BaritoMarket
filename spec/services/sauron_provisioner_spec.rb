@@ -6,7 +6,7 @@ RSpec.describe SauronProvisioner do
       @sauron_host = '127.0.0.1:3000'
       @container_host = '127.0.0.1'
       @container_host_name = 'localhost'
-      @access_key_name = 'barito'
+      @key_pair_name = 'barito'
 
       # Mock Sauron API
       stub_request(:post, "http://#{@sauron_host}/containers").
@@ -46,10 +46,10 @@ RSpec.describe SauronProvisioner do
       it 'should make necessary calls to Sauron and return the response' do
         sauron_provisioner = SauronProvisioner.new(
           @sauron_host, @container_host, @container_host_name)
-        expect(sauron_provisioner.provision!('test-01', access_key_name: @access_key_name)).to eq({
+        expect(sauron_provisioner.provision!('test-01', key_pair_name: @key_pair_name)).to eq({
           'success' => true,
           'data' => {
-            'ip_address' => 'xx.yy.zz.hh',
+            'host' => 'xx.yy.zz.hh',
             'key_pair_name' => 'barito'
           }
         })

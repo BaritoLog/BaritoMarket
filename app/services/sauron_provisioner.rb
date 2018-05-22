@@ -17,7 +17,7 @@ class SauronProvisioner
           'image' => opts[:image] || @image,
           'container_hostname' => hostname,
           'lxd_host_ipaddress' => @container_host,
-          'key_pair_name' => opts[:access_key_name],
+          'key_pair_name' => opts[:key_pair_name]
         }
       }.to_json,
       headers: {
@@ -31,7 +31,10 @@ class SauronProvisioner
     if body['success'] == 'true'
       return {
         'success' => true,
-        'data' => body['data']
+        'data' => {
+          'host' => body.dig('data', 'ip_address'),
+          'key_pair_name' => body.dig('data', 'key_pair_name')
+        }
       }
     else
       return {
