@@ -21,3 +21,8 @@ chef-repo
 vagrant_work_dir
 blueprints/jobs/*.json
 blueprints/failed/*.json
+
+# Ignore ruby version manager files
+.ruby-gemset
+.ruby-version
+
