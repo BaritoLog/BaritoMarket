@@ -8,12 +8,14 @@ module ChefHelper
 
     def generate
       {
-        'zookeeper' => {
-          'hosts' => @zookeeper_hosts
-        },
         'kafka' => {
-          'hosts' => @hosts
-        },
+          'zookeeper' => {
+            'hosts' => @zookeeper_hosts
+          },
+          'kafka' => {
+            'hosts' => @hosts
+          }
+        }
         'run_list' => ["role[#{@role_name}]"]
       }
     end
