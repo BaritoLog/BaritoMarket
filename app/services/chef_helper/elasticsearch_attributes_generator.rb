@@ -8,7 +8,7 @@ module ChefHelper
       {
         'java' => {
           'jdk_version' => '8'
-        }
+        },
         'run_list' => ["role[#{@role_name}]"]
       }
     end
