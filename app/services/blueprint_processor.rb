@@ -141,7 +141,7 @@ class BlueprintProcessor
     when 'yggdrasil'
       ChefHelper::YggdrasilAttributesGenerator.new.generate
     when 'zookeeper'
-      host = node['instance_attributes']['host']
+      host = node['instance_attributes']['host'] || node['name']
       hosts = fetch_hosts_by(nodes, 'type', 'zookeeper')
       hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
       ChefHelper::ZookeeperRoleAttributesGenerator.new(host, hosts).generate
