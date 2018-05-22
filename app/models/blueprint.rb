@@ -52,12 +52,14 @@ class Blueprint
     @nodes = nodes
   end
 
-  def to_file
+  def to_file   
     time = Time.now.strftime("%Y%m%d%H%M%S")
     filename = "#{@cluster_name}_#{time}.json"
-    File.open("#{Rails.root.to_s}/blueprints/jobs/#{filename}", "w+") do |f|
+    filepath = "#{Rails.root.to_s}/blueprints/jobs/#{filename}"
+    File.open(filepath, "w+") do |f|
       f.write(JSON.pretty_generate(@blueprint))
     end
+    filepath
   end
 
   def generate_node_name(type, counter)

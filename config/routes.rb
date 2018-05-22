@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
   get 'ping', to: 'ping#show', defaults: { format: :json }
   resources :apps
   resources :app_groups
   get '/setup/:id', to: "apps#infra_setup", as: "infra_setup"
   get '/configuration/:id', to: "apps#infra_configuration", as: "infra_configuration"
   devise_for :users, skip: :all
+  mount Sidekiq::Web => '/sidekiq'
 
   if EnabledFeatures.has?(:cas_integration)
     devise_scope :user do

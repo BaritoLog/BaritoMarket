@@ -21,6 +21,7 @@ gem 'knife-solo', '~> 0.7.pre3'
 gem 'enumerize'
 gem 'faker'
 gem 'typhoeus'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
