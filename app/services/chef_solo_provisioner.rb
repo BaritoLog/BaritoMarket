@@ -6,11 +6,10 @@ class ChefSoloProvisioner
   def initialize(chef_repo_dir, opts = {})
     @chef_repo_dir = chef_repo_dir
     @nodes_dir = opts[:nodes_dir] || File.join(@chef_repo_dir, "nodes")
+    @bootstrap_version = opts[:bootstrap_version] || "14.1.1"
   end
 
   def provision!(host, username, opts = {})
-    private_key = ""
-    private_key = "-i #{opts[:private_key]}" if opts[:private_key]
     opts[:attrs] ||= {run_list: []}
 
     tmp_file = "/tmp/#{SecureRandom.uuid}.json"
@@ -23,7 +22,8 @@ class ChefSoloProvisioner
     cmd_stack = []
     cmd_stack << "cd #{@chef_repo_dir} &&"
     cmd_stack << "knife solo bootstrap"
-    cmd_stack << "#{private_key}"
+    cmd_stack << "--bootstrap-version=#{@bootstrap_version}"
+    (cmd_stack << "-i #{opts[:private_key]}") if opts[:private_key].present?
     cmd_stack << "#{username}@#{host}"
     cmd_stack << "#{tmp_file}"
 
