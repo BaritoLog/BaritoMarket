@@ -2,91 +2,109 @@ development:
   small:
     name: 'Small'
     tps_limit: 100
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
 staging:
   small:
     name: 'Small'
     tps_limit: 100
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
 production:
   small:
     name: 'Small'
     tps_limit: 100
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
+    yggdrasil_instances: 1
+    consul_instances: 1
+    barito_flow_receiver_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
+    barito_flow_forwarder_instances: 1
     elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
     kibana_instances: 1
