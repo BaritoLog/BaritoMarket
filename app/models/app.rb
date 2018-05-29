@@ -18,14 +18,14 @@ class App < ActiveRecord::Base
 
   belongs_to :app_group, required: true
   
-  after_create :set_setup_status_pending, :set_app_status_inactive
+  after_create :set_setup_status_pending, :set_app_status_inactive, :generate_secret_key, :generate_receiver_end_point
 
   def generate_secret_key
     update_column(:secret_key, SecureRandom.base64)
   end
   
   def generate_receiver_end_point
-    update_column(:receiver_end_point, 'http://dummy.end-point/')
+    update_column(:receiver_end_point, Figaro.env.receiver_end_point)
   end
   
   def generate_kibana_address
