@@ -2,91 +2,134 @@ development:
   small:
     name: 'Small'
     tps_limit: 100
-    zookeeper_instances: 2
-    kafka_instances: 2
-    elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 2
+      kafka: 2
+      elasticsearch: 2
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
-    zookeeper_instances: 4
-    kafka_instances: 4
-    elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 4
+      kafka: 4
+      elasticsearch: 4
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
-    zookeeper_instances: 8
-    kafka_instances: 8
-    elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 8
+      kafka: 8
+      elasticsearch: 8
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
+
+test:
+  small:
+    name: 'Small'
+    tps_limit: 100
+    instances:
+      zookeeper: 2
+      kafka: 2
+      elasticsearch: 2
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
+
+  medium:
+    name: 'Medium'
+    tps_limit: 500
+    instances:
+      zookeeper: 4
+      kafka: 4
+      elasticsearch: 4
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
+
+  large:
+    name: 'Large'
+    tps_limit: 1000
+    instances:
+      zookeeper: 8
+      kafka: 8
+      elasticsearch: 8
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
 staging:
   small:
     name: 'Small'
     tps_limit: 100
-    zookeeper_instances: 2
-    kafka_instances: 2
-    elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 2
+      kafka: 2
+      elasticsearch: 2
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
-    zookeeper_instances: 4
-    kafka_instances: 4
-    elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 4
+      kafka: 4
+      elasticsearch: 4
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
-    zookeeper_instances: 8
-    kafka_instances: 8
-    elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 8
+      kafka: 8
+      elasticsearch: 8
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
 production:
   small:
     name: 'Small'
     tps_limit: 100
-    zookeeper_instances: 2
-    kafka_instances: 2
-    elasticsearch_instances: 2
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 2
+      kafka: 2
+      elasticsearch: 2
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   medium:
     name: 'Medium'
     tps_limit: 500
-    zookeeper_instances: 4
-    kafka_instances: 4
-    elasticsearch_instances: 4
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 4
+      kafka: 4
+      elasticsearch: 4
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
 
   large:
     name: 'Large'
     tps_limit: 1000
-    zookeeper_instances: 8
-    kafka_instances: 8
-    elasticsearch_instances: 8
-    consul_instances: 1
-    yggdrasil_instances: 1
-    kibana_instances: 1
+    instances:
+      zookeeper: 8
+      kafka: 8
+      elasticsearch: 8
+      consul: 1
+      yggdrasil: 1
+      kibana: 1
