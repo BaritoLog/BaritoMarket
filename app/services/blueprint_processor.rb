@@ -176,7 +176,7 @@ class BlueprintProcessor
   private
     def fetch_hosts_address_by(hosts, filter_type, filter)
       nodes.
-        select{ |host| node[filter_type] == filter }.
+        select{ |host| host[filter_type] == filter }.
         collect{ |host| host['instance_attributes']['host'] || host['name'] }
     end
 end

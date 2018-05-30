@@ -10,7 +10,7 @@ module ChefHelper
         'consul' => {
           'run_as_server' => false,
           'hosts' => @consul_hosts
-        }
+        },
         'run_list' => ["role[#{@role_name}]"]
       }
     end

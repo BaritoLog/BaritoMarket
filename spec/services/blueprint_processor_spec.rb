@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe BlueprintProcessor do
   before(:each) do
+    @app = create(:app)
     @blueprint_hash = {
-      'application_id' => 1,
+      'application_id' => @app.id,
       'cluster_name' => 'trac',
       'environment' => 'development',
       'application_tps' => 'medium',
