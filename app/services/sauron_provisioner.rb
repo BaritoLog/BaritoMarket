@@ -39,7 +39,7 @@ class SauronProvisioner
     else
       return {
         'success' => false,
-        'error' => body['error']
+        'error' => body['errors']
       }
     end
   end
