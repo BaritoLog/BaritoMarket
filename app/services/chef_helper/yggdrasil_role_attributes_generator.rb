@@ -1,5 +1,5 @@
 module ChefHelper
-  class YggdrasilAttributesGenerator
+  class YggdrasilRoleAttributesGenerator
     def initialize(opts = {})
       @role_name = opts[:role_name] || 'yggdrasil'
     end

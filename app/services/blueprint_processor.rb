@@ -126,24 +126,32 @@ class BlueprintProcessor
     case node['type']
     when 'consul'
       hosts = fetch_hosts_by(nodes, 'type', 'consul')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
+      hosts.collect!{ |host| 
+        host['instance_attributes']['host'] || host['name'] 
+      }
       ChefHelper::ConsulRoleAttributesGenerator.new(hosts).generate
     when 'elasticsearch'
       ChefHelper::ElasticsearchRoleAttributesGenerator.new.generate
     when 'kafka'
       zookeeper_hosts = fetch_hosts_by(nodes, 'type', 'zookeeper')
-      zookeeper_hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
+      zookeeper_hosts.collect!{ |host| 
+        host['instance_attributes']['host'] || host['name'] 
+      }
       hosts = fetch_hosts_by(nodes, 'type', 'kafka')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
+      hosts.collect!{ |host| 
+        host['instance_attributes']['host'] || host['name'] 
+      }
       ChefHelper::KafkaRoleAttributesGenerator.new(zookeeper_hosts, hosts).generate
     when 'kibana'
       ChefHelper::KibanaRoleAttributesGenerator.new.generate
     when 'yggdrasil'
-      ChefHelper::YggdrasilAttributesGenerator.new.generate
+      ChefHelper::YggdrasilRoleAttributesGenerator.new.generate
     when 'zookeeper'
       host = node['instance_attributes']['host'] || node['name']
       hosts = fetch_hosts_by(nodes, 'type', 'zookeeper')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
+      hosts.collect!{ |host| 
+        host['instance_attributes']['host'] || host['name'] 
+      }
       ChefHelper::ZookeeperRoleAttributesGenerator.new(host, hosts).generate
     else
       {}
