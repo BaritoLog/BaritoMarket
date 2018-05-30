@@ -138,13 +138,16 @@ class BlueprintProcessor
       ChefHelper::ConsulRoleAttributesGenerator.
         new(consul_hosts).
         generate
-    when 'barito_flow_consumer_instances'
+    when 'barito-flow-consumer'
+      kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      es_hosts = fetch_hosts_address_by(nodes, 'type', 'elasticsearch')
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new.
+        new(kafka_hosts, es_hosts).
         generate
-    when 'barito_flow_producer_instances'
+    when 'barito-flow-producer'
+      kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       ChefHelper::BaritoFlowProducerRoleAttributesGenerator.
-        new(consul_hosts).
+        new(kafka_hosts, consul_hosts).
         generate
     when 'elasticsearch'
       ChefHelper::ElasticsearchRoleAttributesGenerator.new.generate
@@ -155,8 +158,9 @@ class BlueprintProcessor
         new(zookeeper_hosts, kafka_hosts).
         generate
     when 'kibana'
+      es_hosts = fetch_hosts_address_by(nodes, 'type', 'elasticsearch')
       ChefHelper::KibanaRoleAttributesGenerator.
-        new.
+        new(es_hosts).
         generate
     when 'yggdrasil'
       ChefHelper::YggdrasilRoleAttributesGenerator.
