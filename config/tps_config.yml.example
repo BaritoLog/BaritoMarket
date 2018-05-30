@@ -4,10 +4,10 @@ development:
     tps_limit: 100
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 2
     kibana_instances: 1
 
@@ -16,10 +16,10 @@ development:
     tps_limit: 500
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 4
     kibana_instances: 1
 
@@ -28,10 +28,10 @@ development:
     tps_limit: 1000
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 8
     kibana_instances: 1
 
@@ -41,10 +41,10 @@ staging:
     tps_limit: 100
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 2
     kibana_instances: 1
 
@@ -53,10 +53,10 @@ staging:
     tps_limit: 500
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 4
     kibana_instances: 1
 
@@ -65,10 +65,10 @@ staging:
     tps_limit: 1000
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 8
     kibana_instances: 1
 
@@ -78,10 +78,10 @@ production:
     tps_limit: 100
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 2
     kafka_instances: 2
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 2
     kibana_instances: 1
 
@@ -90,10 +90,10 @@ production:
     tps_limit: 500
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 4
     kafka_instances: 4
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 4
     kibana_instances: 1
 
@@ -102,9 +102,9 @@ production:
     tps_limit: 1000
     yggdrasil_instances: 1
     consul_instances: 1
-    barito_flow_receiver_instances: 1
+    barito_flow_producer_instances: 1
     zookeeper_instances: 8
     kafka_instances: 8
-    barito_flow_forwarder_instances: 1
+    barito_flow_consumer_instances: 1
     elasticsearch_instances: 8
     kibana_instances: 1
