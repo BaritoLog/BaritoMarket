@@ -5,10 +5,10 @@ development:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 2
-    kafka_instances: 2
+    zookeeper_instances: 1
+    kafka_instances: 1
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 2
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   medium:
@@ -17,10 +17,10 @@ development:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 4
-    kafka_instances: 4
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 4
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   large:
@@ -29,10 +29,10 @@ development:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 8
-    kafka_instances: 8
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 8
+    elasticsearch_instances: 1
     kibana_instances: 1
 
 staging:
@@ -42,10 +42,10 @@ staging:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 2
-    kafka_instances: 2
+    zookeeper_instances: 1
+    kafka_instances: 1
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 2
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   medium:
@@ -54,10 +54,10 @@ staging:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 4
-    kafka_instances: 4
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 4
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   large:
@@ -66,10 +66,10 @@ staging:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 8
-    kafka_instances: 8
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 8
+    elasticsearch_instances: 1
     kibana_instances: 1
 
 production:
@@ -79,10 +79,10 @@ production:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 2
-    kafka_instances: 2
+    zookeeper_instances: 1
+    kafka_instances: 1
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 2
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   medium:
@@ -91,10 +91,10 @@ production:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 4
-    kafka_instances: 4
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 4
+    elasticsearch_instances: 1
     kibana_instances: 1
 
   large:
@@ -103,8 +103,8 @@ production:
     yggdrasil_instances: 1
     consul_instances: 1
     barito-flow-producer_instances: 1
-    zookeeper_instances: 8
-    kafka_instances: 8
+    zookeeper_instances: 3
+    kafka_instances: 3
     barito-flow-consumer_instances: 1
-    elasticsearch_instances: 8
+    elasticsearch_instances: 1
     kibana_instances: 1
