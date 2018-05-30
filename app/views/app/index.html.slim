@@ -1,0 +1,26 @@
+- if @app_list.empty?
+  img.mb-4[src="/barito_river.jpeg" style="width:350px;height:249px;"]
+  h1 Welcome to Barito
+  p
+    | Looks like you have no access to any applications right now
+    br
+    | Click the button below to get started
+  = link_to 'New Application', new_app_path, class: 'btn btn-primary'
+- else
+  h3.mb-3 All Applications
+  table.table.table-bordered
+    thead.thead-dark
+      tr
+        th Name
+        th.app_list_config.text-center TPS Config
+        th.app_list_goup.text-center App group
+        th.app_list_status.text-center Status
+        th.app_list_actions.text-center Actions
+    tbody
+      - @app_list.each do |app|
+        tr
+          td.app_list_name = link_to app.name, app_path(app)
+          td.app_list_config.text-center = app.tps_config
+          td.app_list_goup.text-center = app.app_group
+          td.app_list_status.text-center = status(app)
+          td.app_list_actions.text-center Open Kibana | Delete

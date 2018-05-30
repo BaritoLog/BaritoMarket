@@ -1,84 +1,44 @@
 require 'faker'
 
 class Blueprint
-  attr_accessor :blueprint, :application, :tps_config, :nodes, :cluster_name
+  attr_accessor :app, :tps_config, :env_prefix, :env
 
-  def initialize(application, tps_config)
-    @application = application
-    @tps_config = tps_config.get(application.tps_config_id)
-    @cluster_name = generate_cluster_name
-
-    create_nodes
-    create_blueprint
-  end
-
-  def generate_cluster_name
-    Faker::Internet.user_name(4..4)
-  end
-
-  def blueprint_hash
-    {
-        'application_id': @application.id,
-        'cluster_name': @cluster_name,
-        'environment': Rails.env,
-        'application_tps': @application.tps_config_id,
-        'nodes': @nodes
+  def initialize(application, env)
+    @env_prefix = {
+      production: 'p', staging: 's', development: 'd', uat: 'u', internal: 'i',
+      integration: 'g', test: 't'
     }
+    config = YAML.load_file("#{Rails.root}/config/tps_config.yml")
+    @app = application
+    @tps_config = config[env][@app.tps_config]
   end
 
-  def node_hash(node_name, node_type, container_config)
-    {
-        "name": node_name,
-        "type": node_type,
-        "node_container_config": container_config
+  def generate_file(env)
+    nodes = generate_nodes(env)
+    blueprint = {
+      application_id: @app.id, cluster_name: @app.cluster_name, environment: env, nodes: nodes
     }
+    File.open("#{Rails.root}/blueprints/jobs/#{filename}", 'w+') do |f|
+      f.write(blueprint.to_json)
+    end
   end
 
-  def create_blueprint
-    @blueprint = blueprint_hash
-  end
-
-  def create_nodes
+  def generate_nodes(env)
     nodes = []
-    available_instances = Figaro.env.provision_available_instances.split(',')
-    available_instances.each do |instance|
-      number_of_instance = @tps_config[instance + '_instances']
-      unless not number_of_instance.present?
-        (1..number_of_instance).each do |number|
-          nodes << node_hash(generate_node_name(instance, number), instance, @application.tps_config_id)
-        end
-      end
+    @tps_config['instances'].each do |type, count|
+      nodes += (1..count).map { |number| node_hash(env, type, number) }
     end
-    @nodes = nodes
+    nodes
   end
 
-  def to_file   
-    time = Time.now.strftime("%Y%m%d%H%M%S")
-    filename = "#{@cluster_name}_#{time}.json"
-    filepath = "#{Rails.root.to_s}/blueprints/jobs/#{filename}"
-    File.open(filepath, "w+") do |f|
-      f.write(JSON.pretty_generate(@blueprint))
-    end
-    filepath
+  def filename
+    "#{@app.cluster_name}_#{Time.now.strftime('%Y%m%d%H%M%S')}"
   end
 
-  def generate_node_name(type, counter)
-    short_env_name = ''
-    case Rails.env
-      when 'production'
-        short_env_name = 'p'
-      when 'staging'
-        short_env_name = 's'
-      when 'development'
-        short_env_name = 'd'
-      when 'uat'
-        short_env_name = 'u'
-      when 'internal'
-        short_env_name = 'i'
-      when 'integration'
-        short_env_name = 'g'
-    end
+  private
 
-    short_env_name + '-' + @cluster_name + '-' + type + '-' + format('%02d', counter.to_i)
+  def node_hash(env, type, count)
+    name = "#{@env_prefix[env.to_s]}-#{@app.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
+    { name: name, type: type }
   end
 end

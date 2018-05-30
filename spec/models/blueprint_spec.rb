@@ -1,42 +1,81 @@
 require 'rails_helper'
 
 RSpec.describe Blueprint, type: :model do
+  context 'filename' do
+    let(:app) { create :barito_app }
+    let(:env) { Rails.env }
 
-  let (:app) {build :app}
-  let (:tps_config) {build :tps_config}
+    it 'should generate filename' do
+      blueprint = Blueprint.new(app, env)
+      name = "#{app.cluster_name}_#{Time.now.strftime('%Y%m%d%H%M%S')}"
+      expect(blueprint.filename).to eq(name)
+    end
+  end
 
-  context 'blueprint creation' do
-    it 'has application' do
-      blueprint = Blueprint.new(app, tps_config)
-      expect(blueprint.application).to eq(app)
+  context 'generate_nodes' do
+    let(:app) { create :barito_app }
+    let(:env) { Rails.env }
+    let(:config) { YAML.load_file("#{Rails.root}/config/tps_config.yml") }
+
+    it 'should generate correct number of nodes' do
+      blueprint = Blueprint.new(app, env)
+      tps_config = config[env][app.tps_config]
+      node_count = tps_config['instances'].values.inject(:+)
+      expect(node_count).to eq(blueprint.generate_nodes(env).count)
     end
 
-    it 'has tps_config' do
-      blueprint = Blueprint.new(app, tps_config)
-      expect(blueprint.tps_config['name']).to eq('Small')
+    it 'should validate node hash' do
+      blueprint = Blueprint.new(app, env)
+      nodes = blueprint.generate_nodes(env)
+      nodes.each do |node|
+        expect(node.key?(:name) && node.key?(:type)).to eq(true)
+      end
     end
 
-    it 'generate cluster name' do
-      blueprint = Blueprint.new(app, tps_config)
-      expect(blueprint.cluster_name).to_not be_empty
+    it 'should validate node name' do
+      blueprint = Blueprint.new(app, env)
+      tps_config = config[env][app.tps_config]
+      nodes = blueprint.generate_nodes(env)
+      names = []
+      tps_config['instances'].each do |type, count|
+        (1..count).each do |number|
+          names << "#{blueprint.env_prefix[env.to_s]}-#{app.cluster_name}-#{type}-#{format('%02d', number.to_i)}"
+        end
+      end
+      nodes.each do |node|
+        expect(names.include?(node[:name])).to eq(true)
+      end
+    end
+  end
+
+  context 'generate_file' do
+    let(:app) { create :barito_app }
+    let(:env) { Rails.env }
+    let(:config) { YAML.load_file("#{Rails.root}/config/tps_config.yml") }
+
+    before do
+      Timecop.freeze
     end
 
-    it 'has cluster name not longer than 4 chars' do
-      blueprint = Blueprint.new(app, tps_config)
-      expect(blueprint.cluster_name.length).to eq(4)
+    it 'should create blueprint file' do
+      blueprint = Blueprint.new(app, env)
+      file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}"
+      expect(File.exist?(file_path)).to eq(true)
     end
 
-    it 'has blueprint hash' do
-      blueprint = Blueprint.new(app, tps_config)
-      blueprint.create_blueprint
-
-      expect(blueprint.blueprint).to_not be_nil
-    end
-
-    it 'has nodes hash' do
-      blueprint = Blueprint.new(app, tps_config)
-
-      expect(blueprint.nodes).to_not be_nil
+    it 'should validate content of blueprint file' do
+      blueprint = Blueprint.new(app, env)
+      file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}"
+      nodes = blueprint.generate_nodes(env)
+      blueprint.generate_file(env)
+      content = File.read(file_path)
+      blueprint_content = {
+        application_id: app.id,
+        cluster_name: app.cluster_name,
+        environment: env,
+        nodes: nodes,
+      }
+      expect(content).to eq(blueprint_content.to_json)
     end
   end
 end

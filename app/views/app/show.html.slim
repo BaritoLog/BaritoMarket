@@ -1,0 +1,25 @@
+h3.mb-3 Application Details
+- if inactive?(@app)
+  .alert.alert-danger
+    pre You yet need to setup your app, by configuring it
+      Install FluentD Plugin from (https://github.com/BaritoLog/Barito-Fluent-Plugin)
+      HOST URL - https://barito-router.#{@app.cluster_name}.baritolog.com/postlog
+      Secret Key - #{@app.secret_key}
+p
+  b Application Name -
+  = @app.name
+  br
+p
+  b Application Group -
+  = @app.app_group
+  br
+p
+  b Application Status -
+  = status(@app)
+  br
+p
+  b TPS -
+  = "#{tps_name(@app)}(#{tps_size(@app)})"
+  br
+= link_to "Open Kibana", "#", class: 'btn btn-primary mr-2'
+= link_to "Upgrade", "#", class: 'btn btn-primary'

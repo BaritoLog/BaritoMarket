@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,54 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180517030757) do
+ActiveRecord::Schema.define(version: 2018_04_11_041123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "app_groups", force: :cascade do |t|
-    t.string   "name"
+  create_table "barito_apps", force: :cascade do |t|
+    t.string "name"
+    t.string "app_group"
+    t.string "tps_config"
+    t.string "secret_key"
+    t.string "cluster_name"
+    t.string "app_status"
+    t.string "setup_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-  create_table "apps", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "app_group_id"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.string   "secret_key"
-    t.string   "kibana_address"
-    t.string   "receiver_end_point"
-    t.string   "setup_status",       default: "PENDING"
-    t.string   "app_status",         default: "INACTIVE"
-    t.string   "tps_config_id"
-    t.string   "cluster_name"
-    t.string   "consul"
-  end
-
-  add_index "apps", ["app_status"], name: "index_apps_on_app_status", using: :btree
-  add_index "apps", ["setup_status"], name: "index_apps_on_setup_status", using: :btree
-
-  create_table "user_groups", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "created_by"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "user_groups", ["deleted_at"], name: "index_user_groups_on_deleted_at", using: :btree
-
-  create_table "users", force: :cascade do |t|
-    t.string   "email",      default: "", null: false
-    t.string   "username",                null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.datetime "deleted_at"
-  end
-
-  add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
 end
