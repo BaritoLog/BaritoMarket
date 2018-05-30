@@ -42,6 +42,13 @@ class BlueprintProcessor
     @errors = []
     return (@blueprint_status = 'FAILED') unless provision_instances!
     return (@blueprint_status = 'FAILED') unless provision_apps!
+
+    # Save consul host
+    # TODO: @giosakti can be refactored
+    app = App.find(@blueprint_hash['application_id'])
+    consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
+    app.update!(consul: (consul_hosts || []).sample)
+
     return (@blueprint_status = 'SUCCESS')
   end
 
@@ -123,35 +130,57 @@ class BlueprintProcessor
   end
 
   def generate_instance_attributes(node, nodes)
+    # Fetch consul hosts
+    consul_hosts = fetch_hosts_address_by(nodes, 'type', 'consul')
+
     case node['type']
     when 'consul'
-      hosts = fetch_hosts_by(nodes, 'type', 'consul')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
-      ChefHelper::ConsulRoleAttributesGenerator.new(hosts).generate
+      ChefHelper::ConsulRoleAttributesGenerator.
+        new(consul_hosts).
+        generate
+    when 'barito-flow-consumer'
+      kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
+      ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
+        new(kafka_hosts, es_host).
+        generate
+    when 'barito-flow-producer'
+      kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      ChefHelper::BaritoFlowProducerRoleAttributesGenerator.
+        new(kafka_hosts, consul_hosts).
+        generate
     when 'elasticsearch'
       ChefHelper::ElasticsearchRoleAttributesGenerator.new.generate
     when 'kafka'
-      zookeeper_hosts = fetch_hosts_by(nodes, 'type', 'zookeeper')
-      zookeeper_hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
-      hosts = fetch_hosts_by(nodes, 'type', 'kafka')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
-      ChefHelper::KafkaRoleAttributesGenerator.new(zookeeper_hosts, hosts).generate
+      zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
+      kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      ChefHelper::KafkaRoleAttributesGenerator.
+        new(zookeeper_hosts, kafka_hosts).
+        generate
     when 'kibana'
-      ChefHelper::KibanaRoleAttributesGenerator.new.generate
+      es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
+      ChefHelper::KibanaRoleAttributesGenerator.
+        new(es_host).
+        generate
     when 'yggdrasil'
-      ChefHelper::YggdrasilAttributesGenerator.new.generate
+      ChefHelper::YggdrasilRoleAttributesGenerator.
+        new.
+        generate
     when 'zookeeper'
       host = node['instance_attributes']['host'] || node['name']
-      hosts = fetch_hosts_by(nodes, 'type', 'zookeeper')
-      hosts.collect!{ |host| host['instance_attributes']['host'] || host['name'] }
-      ChefHelper::ZookeeperRoleAttributesGenerator.new(host, hosts).generate
+      zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
+      ChefHelper::ZookeeperRoleAttributesGenerator.
+        new(host, zookeeper_hosts).
+        generate
     else
       {}
     end
   end
 
   private
-    def fetch_hosts_by(nodes, filter_type, filter)
-      nodes.select{ |node| node[filter_type] == filter }
+    def fetch_hosts_address_by(hosts, filter_type, filter)
+      nodes.
+        select{ |host| host[filter_type] == filter }.
+        collect{ |host| host['instance_attributes']['host'] || host['name'] }
     end
 end

@@ -9,6 +9,9 @@ module ChefHelper
         'java' => {
           'jdk_version' => '8'
         },
+        'elasticsearch' => {
+          'version' => '5.6.9'
+        },
         'run_list' => ["role[#{@role_name}]"]
       }
     end

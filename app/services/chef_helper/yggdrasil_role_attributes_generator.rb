@@ -1,7 +1,7 @@
 module ChefHelper
-  class KibanaRoleAttributesGenerator
+  class YggdrasilRoleAttributesGenerator
     def initialize(opts = {})
-      @role_name = opts[:role_name] || 'kibana'
+      @role_name = opts[:role_name] || 'yggdrasil'
     end
 
     def generate
