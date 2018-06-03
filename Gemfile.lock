@@ -170,7 +170,7 @@ GEM
     minitest (5.11.3)
     mixlib-archive (0.4.6)
       mixlib-log
-    mixlib-authentication (2.0.0)
+    mixlib-authentication (2.1.0)
     mixlib-cli (1.7.0)
     mixlib-config (2.2.6)
       tomlrb
@@ -207,8 +207,6 @@ GEM
       plist (~> 3.1)
       systemu (~> 2.6.4)
       wmi-lite (~> 1.0)
-    paranoia (2.4.1)
-      activerecord (>= 4.0, < 5.3)
     pg (1.0.0)
     plist (3.4.0)
     proxifier (1.0.3)
@@ -369,9 +367,8 @@ DEPENDENCIES
   figaro (<= 1.1.1)
   jar-dependencies (<= 0.3.12)
   jbuilder (<= 2.7.0)
-  knife-solo (<= 0.7.pre3)
+  knife-solo (<= 0.7.0.pre3)
   listen (<= 3.1.5)
-  paranoia (<= 2.4.1)
   pg (<= 1.0.0)
   pry (<= 0.11.3)
   puma (<= 3.11.4)
