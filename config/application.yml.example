@@ -6,6 +6,7 @@ DB_TIMEOUT:                  '5000'
 ENABLE_CAS_INTEGRATION:      'false'
 CAS_BASE_URL:                'http://localhost:3001'
 PROVISION_AVAILABLE_INSTANCES:    'yggdrasil,consul,zookeeper,kafka,elasticsearch,barito-flow-producer,barito-flow-consumer,kibana'
+APP_GROUPS:                  'barito'
 RECEIVER_END_POINT:          'http://dummy.end-point/'
 
 development:
