@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe BlueprintProcessor do
   before(:each) do
-    @app = create(:app)
+    @app = create(:barito_app)
     @blueprint_hash = {
       'application_id' => @app.id,
       'cluster_name' => 'trac',
