@@ -9,7 +9,7 @@ handle logs management, service discovery & log stream provisioning for GO-PAY S
 
 Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
 
-### Setting up development environment
+### Prerequisite for development environment
 
 * Install [Homebrew](http://brew.sh/)
 * Install [Hombrew Cask](http://caskroom.io/)
@@ -19,18 +19,24 @@ Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8
 
 ### Setup
 
-Note: You can run `./devbox.sh` from project directory which does the project initialization.
+> Note: You can run `./devbox.sh` from project directory which automatically do these steps.
 
-* Run `gem install bundle`
+* Run `gem install bundler`
+* Copy over configuration files and modify as necessary
+  - `config/application.yml.example` to `config/application.yml`
+  - `config/database.yml.example` to `config/database.yml`
+  - `config/tps_config.yml.example` to `config/tps_config.yml`
 * Run `bundle install` to install project gem dependencies
-* Copy over `config/application.yml.example` to `config/application.yml`
-* Modify `config/application.yml` based on your environment
-* Create the databases: `RAILS_ENV=development bundle exec rake db:create db:migrate`
-* Migrate the test database: `RAILS_ENV=test rake db:migrate`
+* Create and migrate the databases: 
+  - `RAILS_ENV=development bundle exec rake db:create db:migrate`
+  - `RAILS_ENV=test bundle exec rake db:create db:migrate`
+
+### Running
+
 * Run `RAILS_ENV=development bundle exec rake` to run the build
 * Run `RAILS_ENV=development bundle exec rake coverage:all` to generate coverage reports
 * Run `bundle exec rails s` to run the server.
 
 ### Rake task
 
-All tasks resides in `lib/tasks`
+All tasks reside in `lib/tasks`
