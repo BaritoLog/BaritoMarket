@@ -17,6 +17,7 @@ gem 'slim-rails', '<= 3.1.3'
 gem 'therubyracer', '<= 0.12.3'
 gem 'turbolinks', '<= 5.1.1'
 gem 'typhoeus', '<= 1.3.0'
+gem 'elasticsearch'
 
 group :development, :test do
   gem 'factory_bot_rails', '<= 4.10.0'

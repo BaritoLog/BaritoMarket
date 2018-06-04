@@ -10,5 +10,5 @@ class Api::AppController < ApiController
     }
   end
 
-  def es_query; end
+  def es_post; end
 end
