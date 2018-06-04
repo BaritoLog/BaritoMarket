@@ -2,7 +2,7 @@ class ApiController < ApplicationController
   before_action :authenticate_token, :get_app
 
   def authenticate_token
-    if BaritoApp.secret_key_valid?(params[:token])
+    unless BaritoApp.secret_key_valid?(params[:token])
       body = {
         success: false,
         errors: ["Unauthorized: #{params[:token]} is not a valid App Token"],

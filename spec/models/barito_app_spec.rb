@@ -111,4 +111,16 @@ RSpec.describe BaritoApp, type: :model do
       expect(BaritoApp.generate_cluster_index).to eq(BaritoApp.all.size + 1)
     end
   end
+
+  context 'It should validate secret key' do
+    let(:barito_app) { create(:barito_app) }
+    it 'should return true for a valid key' do
+      expect(BaritoApp.secret_key_valid?(barito_app.secret_key)).
+        to eq(true)
+    end
+    it 'should return false for an invalid key' do
+      expect(BaritoApp.secret_key_valid?(SecureRandom.base64)).
+        not_to eq(true)
+    end
+  end
 end
