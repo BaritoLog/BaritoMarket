@@ -7,5 +7,5 @@ Figaro.require_keys(
   'DB_TIMEOUT',
   'RAILS_ENV',
   'RACK_ENV',
-  'CAS_BASE_URL'
+  'CAS_BASE_URL',
 )

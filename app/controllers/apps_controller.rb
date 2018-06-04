@@ -14,7 +14,7 @@ class AppsController < ApplicationController
     @app = BaritoApp.setup(
       barito_app_params[:name],
       barito_app_params[:tps_config].downcase,
-      barito_app_params[:app_group].downcase
+      barito_app_params[:app_group].downcase,
     )
 
     if @app.valid?

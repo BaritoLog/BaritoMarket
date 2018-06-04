@@ -16,7 +16,7 @@ RSpec.describe BaritoApp, type: :model do
       barito_app = BaritoApp.setup(
         barito_app_props.name,
         barito_app_props.tps_config,
-        barito_app_props.app_group
+        barito_app_props.app_group,
       )
       expect(barito_app.persisted?).to eq(true)
       expect(barito_app.setup_status).to eq(BaritoApp.setup_statuses[:pending])
@@ -27,7 +27,7 @@ RSpec.describe BaritoApp, type: :model do
       barito_app = BaritoApp.setup(
         barito_app_props.name,
         barito_app_props.tps_config,
-        'invalid_group'
+        'invalid_group',
       )
       expect(barito_app.persisted?).to eq(false)
       expect(barito_app.valid?).to eq(false)
@@ -36,8 +36,8 @@ RSpec.describe BaritoApp, type: :model do
     it 'shouldn\'t create application if tps_config is invalid' do
       barito_app = BaritoApp.setup(
         barito_app_props.name,
-        'invalid_config', 
-        barito_app_props.app_group
+        'invalid_config',
+        barito_app_props.app_group,
       )
       expect(barito_app.persisted?).to eq(false)
       expect(barito_app.valid?).to eq(false)
@@ -47,17 +47,18 @@ RSpec.describe BaritoApp, type: :model do
       barito_app = BaritoApp.setup(
         barito_app_props.name,
         barito_app_props.tps_config,
-        barito_app_props.app_group
+        barito_app_props.app_group,
       )
       expect(barito_app.cluster_name).to eq(
-        Rufus::Mnemo.from_i(BaritoApp.generate_cluster_index))
+        Rufus::Mnemo.from_i(BaritoApp.generate_cluster_index),
+      )
     end
 
     it 'should generate secret key' do
       barito_app = BaritoApp.setup(
         barito_app_props.name,
         barito_app_props.tps_config,
-        barito_app_props.app_group
+        barito_app_props.app_group,
       )
       expect(barito_app.secret_key).to eq(barito_app_props.secret_key)
     end

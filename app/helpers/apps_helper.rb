@@ -1,6 +1,6 @@
 module AppsHelper
   def status(app)
-    if app.app_status.eql?(BaritoApp.app_statuses[:inactive].downcase)
+    if app.app_status.eql?(BaritoApp.app_statuses[:inactive])
       app.setup_status
     else
       app.app_status
@@ -8,7 +8,7 @@ module AppsHelper
   end
 
   def inactive?(app)
-    app.app_status.eql?(BaritoApp.app_statuses[:inactive].downcase)
+    app.app_status.eql?(BaritoApp.app_statuses[:inactive])
   end
 
   def tps_size(app)

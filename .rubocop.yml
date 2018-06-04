@@ -1,6 +1,13 @@
 AllCops:
   Exclude:
     - db/schema.rb
+    - app/workers/*.rb
+    - app/services/**/*.rb
+    - spec/services/*.rb
+    - bin/*
+    - Rakefile
+    - lib/tasks/*.rake
+    - spec/workers/*.rb
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
@@ -50,6 +57,8 @@ Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
   Enabled: true
   EnforcedStyle: compact
+  Exclude:
+    - config/application.rb
 
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
@@ -96,6 +105,7 @@ Metrics/BlockLength:
   ExcludedMethods: []
   Exclude:
     - "spec/**/*"
+    - config/environments/*.rb
 
 Metrics/CyclomaticComplexity:
   Description: >-
