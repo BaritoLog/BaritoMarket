@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'berkshelf', '<= 7.0.2'
+gem 'uglifier'
 gem 'execjs', '<= 2.7.0'
 gem 'faker', '<= 1.8.7'
 gem 'figaro', '<= 1.1.1'
