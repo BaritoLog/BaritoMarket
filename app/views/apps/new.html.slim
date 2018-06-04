@@ -5,7 +5,7 @@
     - flash[:messages].each do |msg|
       = "- #{msg}"
       br
-= form_for(@app, url: '/app') do |f|
+= form_for(@app, url: apps_path) do |f|
   .form-group
     = f.label :name
     = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application / service'

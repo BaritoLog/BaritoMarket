@@ -1,4 +1,4 @@
-module AppHelper
+module AppsHelper
   def status(app)
     if app.app_status.eql?(BaritoApp.app_statuses[:inactive].downcase)
       app.setup_status

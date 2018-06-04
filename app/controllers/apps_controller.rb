@@ -1,6 +1,6 @@
-class AppController < ApplicationController
+class AppsController < ApplicationController
   def index
-    @app_list = BaritoApp.all
+    @apps = BaritoApp.all
   end
 
   def new
@@ -11,14 +11,16 @@ class AppController < ApplicationController
   end
 
   def create
-    attrs = params[:barito_app]
-    app = BaritoApp.setup(
-      attrs[:name], attrs[:tps_config].downcase, attrs[:app_group].downcase
+    @app = BaritoApp.setup(
+      barito_app_params[:name],
+      barito_app_params[:tps_config].downcase,
+      barito_app_params[:app_group].downcase
     )
-    if app.valid?
+
+    if @app.valid?
       return redirect_to root_path
     else
-      flash[:messages] = app.errors.full_messages
+      flash[:messages] = @app.errors.full_messages
       return redirect_to new_app_path
     end
   end
