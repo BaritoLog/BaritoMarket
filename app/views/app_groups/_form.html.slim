@@ -1,8 +1,0 @@
-- @model = @app_group
-= form_for @app_group do |f|
-  == render 'layouts/form_error'
-  .form-group
-    = f.label :name
-    = f.text_field :name, class: 'form-control'
-  .actions = f.submit 'Submit', class: 'btn btn-primary'
-  

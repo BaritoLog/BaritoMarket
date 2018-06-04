@@ -42,13 +42,6 @@ class BlueprintProcessor
     @errors = []
     return (@blueprint_status = 'FAILED') unless provision_instances!
     return (@blueprint_status = 'FAILED') unless provision_apps!
-
-    # Save consul host
-    # TODO: @giosakti can be refactored
-    app = App.find(@blueprint_hash['application_id'])
-    consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
-    app.update!(consul: (consul_hosts || []).sample)
-
     return (@blueprint_status = 'SUCCESS')
   end
 

@@ -1,41 +1,25 @@
-p#notice = notice
-
-.d-flex.justify-content-between.border-bottom
-  div
-    h2 = @app.name
-  .dropdown
-    button#app-menu.btn.dropdown-toggle[type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
-      i.fa.fa-cog[aria-hidden="true"]
-    .dropdown-menu.dropdown-menu-right[aria-labelledby="app-menu"]
-      a.dropdown-item[href=@app.kibana_address]
-        img.mr-2[src=image_url("kibana.png") style="width: .95em; height: .95em; vertical-align: text-top;"]
-        | Open Kibana
-      = link_to edit_app_path(@app), class: "dropdown-item" do
-        i.fa.fa-pencil-square-o.mr-2
-        | Edit Appication
-      = link_to @app, data: { confirm: 'Are you sure?' }, method: :delete, class: "dropdown-item" do
-        i.fa.fa-trash.mr-2[aria-hidden="true"] 
-        | Delete Application
-
-small
-  strong TPS Configuration:
-  = @tps_config.name(@app.tps_config_id)
-  '  | 
-  strong Application Group: 
-  = @app.app_group.name
-  
-.row.my-4
-  .col.form-group
-    label Receiver End Point
-    .input-group
-      input.copy-me.form-control[type="text" value=@app.receiver_end_point readonly]
-      a.btn-copy.input-group-append.m-0
-        .input-group-text
-          i.fa.fa-clipboard
-  .col.form-group
-    label Receiver End Point
-    .input-group
-      input.copy-me.form-control[type="text" value=@app.secret_key readonly]
-      a.btn-copy.input-group-append.m-0
-        .input-group-text
-          i.fa.fa-clipboard
+h3.mb-3 Application Details
+- if inactive?(@app)
+  .alert.alert-danger
+    pre You yet need to setup your app, by configuring it
+      Install FluentD Plugin from (https://github.com/BaritoLog/Barito-Fluent-Plugin)
+      HOST URL - https://barito-router.#{@app.cluster_name}.baritolog.com/postlog
+      Secret Key - #{@app.secret_key}
+p
+  b Application Name -
+  = @app.name
+  br
+p
+  b Application Group -
+  = @app.app_group
+  br
+p
+  b Application Status -
+  = status(@app)
+  br
+p
+  b TPS -
+  = "#{tps_name(@app)}(#{tps_size(@app)})"
+  br
+= link_to "Open Kibana", "#", class: 'btn btn-primary mr-2'
+= link_to "Upgrade", "#", class: 'btn btn-primary'

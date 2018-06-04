@@ -1,17 +1,22 @@
-h1 New Application
-.wizard
-  .step
-    a.ptr[href="#"] 1
-    .label Basic Information
-    .progress
-  .step
-    a.ptr[href="#"] 2
-    .label Infrastructure Setup
-    .progress
-  .step
-    a.ptr[href="#"] 3
-    .label Testing your logs
-    .progress
-== render 'form'
-
-= link_to 'Back', apps_path
+- if flash.key?(:messages)
+  .alert.alert-danger
+    b Issue creating application
+    br
+    - flash[:messages].each do |msg|
+      = "- #{msg}"
+      br
+= form_for(@app, url: apps_path) do |f|
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application / service'
+  .form-group
+    = f.label :tps_config, 'TPS Configuration'
+    = f.select :tps_config, @tps_options, { prompt: true }, { class: 'form-control' }
+    small.form-text.text-muted
+      | Please choose your TPS Configuration
+  .form-group
+    = f.label :app_group, 'Application Group'
+    = f.select :app_group, @app_groups, { prompt: true }, { class: 'form-control' }
+    small.form-text.text-muted
+      | Please choose your Application Group
+  .actions = f.submit 'Submit',class: 'btn btn-primary'

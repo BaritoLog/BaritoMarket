@@ -3,14 +3,14 @@ class BlueprintWorker
   sidekiq_options retry: false
 
   def perform(filepath)
-    begin
-      file = File.read(filepath)
-      blueprint_hash = JSON.parse(file)
-    rescue StandardError => e
-      puts "Caught the exception: #{e}"
-      exit -1
+    if File.exists?(filepath)
+      content = File.read(filepath)
+      begin
+        blueprint_hash = JSON.parse(content)
+        BlueprintProcessor.new(blueprint_hash).process!
+      rescue JSON::ParseError, StandardError => ex
+        logger.warn "Exception: #{ex}"
+      end
     end
-
-    BlueprintProcessor.new(blueprint_hash).process!
-  end 
+  end
 end

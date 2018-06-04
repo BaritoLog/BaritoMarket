@@ -2,81 +2,25 @@ doctype html
 html
   head
     title Barito Market
+    link [rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css' integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4' crossorigin='anonymous']
     link = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    script [src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous']
+    script [src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js' integrity='sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm' crossorigin='anonymous']
     link = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    meta [name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no']
     link = csrf_meta_tags
   body
-
-    ruby:
-      def current_class?(test_path)
-        request.path == test_path ? '-active' : ''
-      end
-      menus = [
-        {:text => 'Application', :icon => 'fa-microchip', :path => apps_path},
-        {:text => 'Application Group', :icon => 'fa-microchip', :path => app_groups_path},
-      ]
-      sign_out_path = EnabledFeatures.has?(:cas_integration) ? destroy_user_session_path : '#'
-    
-    #page.mx-auto[style="max-width: 1099px;"]
-      nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-        a.navbar-brand.font-weight-bold[href="/"]
-          | BARITO Market
-        button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"]
-          span.navbar-toggler-icon
-        #navbarSupportedContent.collapse.navbar-collapse
-          form.mx-auto.search-app
-            input.search-box[type="search" placeholder="Search by Application Name" aria-label="Search" size="40"]
-            i.fa.fa-search
-          ul.navbar-nav
-            li.nav-item
-              a.nav-link[href="#"] All Group
-            li.nav-item.dropdown
-              a#navbarDropdown.nav-link.dropdown-toggle[href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"]
-                |  Admin Tool
-              .dropdown-menu[aria-labelledby="navbarDropdown"]
-                - menus.each do |menu|
-                  link = link_to menu[:path], class: 'dropdown-item' 
-                    = menu[:text] 
-            li.nav-item
-              link = link_to 'Sign Out', sign_out_path, class: 'nav-link'
-      
-      main.px-3.pt-5.pb-4[role="main"]
-        ==yield
-      div#modal-holder
-      footer.page-footer.font-small.border-top.p-2
-        div.footer-copyright
-          | &copy; 
-          = Date.today.year
-          |  BaritoLog
-
-javascript:
-  (function() {
-    $(function() {
-      var modal_holder_selector, modal_selector;
-      modal_holder_selector = '#modal-holder';
-      modal_selector = '.modal';
-      $(document).on('click', 'a[data-modal]', function() {
-        var location;
-        location = $(this).attr('href');
-        $.get(location, function(data) {
-          return $(modal_holder_selector).html(data).find(modal_selector).modal();
-        });
-        return false;
-      });
-      return $(document).on('ajax:success', 'form[data-modal]', function(event, data, status, xhr) {
-        var url;
-        url = xhr.getResponseHeader('Location');
-        if (url) {
-          window.location = url;
-        } else {
-          $('.modal-backdrop').remove();
-          $(modal_holder_selector).html(data).find(modal_selector).modal();
-          if ($.isFunction(modalDidDismiss)) {
-              modalDidDismiss(data);
-          }
-        }
-        return false;
-      });
-    });
-
-  }).call(this);
+    .container-fluid.p-3.align-items-center.bg-white.border-bottom.box-shadow
+      .row
+        .col-2
+          = link_to "Barito Log", root_path
+        .col-8
+        .col-2.text-right
+          = link_to 'New Application', new_app_path, class: 'btn btn-block btn-primary'
+    .container-fluid.align-items-center.pt-4.pb-4.bg-light
+      .row
+        .col-md-12.text
+          ==yield
+    footer.pt-2.border-top.col-md-12
+      .row
+      .col-md-12 &copy; Copyright 2018 - 2019

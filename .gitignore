@@ -10,19 +10,22 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
-/tmp
 /public/assets
+/spec/examples.txt
+/tmp
 vendor
 tmp
-database.yml
 application.yml
+database.yml
 tps_config.yml
-chef-repo
 vagrant_work_dir
-blueprints/jobs/*.json
-blueprints/failed/*.json
 
 # Ignore ruby version manager files
 .ruby-gemset
 .ruby-version
 
+# Ignore blueprint files
+/blueprints/jobs/*
+!/blueprints/jobs/.keep
+/blueprints/failed/*
+!blueprints/failed/.keep

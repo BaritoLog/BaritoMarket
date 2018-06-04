@@ -46,7 +46,9 @@ RSpec.describe SauronProvisioner do
       it 'should make necessary calls to Sauron and return the response' do
         sauron_provisioner = SauronProvisioner.new(
           @sauron_host, @container_host, @container_host_name)
-        expect(sauron_provisioner.provision!('test-01', key_pair_name: @key_pair_name)).to eq({
+        provision_result = sauron_provisioner.
+          provision!('test-01', key_pair_name: @key_pair_name)
+        expect(provision_result).to eq({
           'success' => true,
           'data' => {
             'host' => 'xx.yy.zz.hh',

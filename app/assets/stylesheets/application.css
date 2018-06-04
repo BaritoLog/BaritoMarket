@@ -1,0 +1,56 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ */
+
+a.btn-primary { color: white!important;  }
+.app_list_name { width: 40%; }
+.app_list_config { width: 15%; }
+.app_list_group { width: 15%; }
+.app_list_status { width: 15%; }
+.app_list_actions { width: 15%; }
+
+.vertical-height {
+    min-height: 50%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 50vh; /* These two lines are counted as one :-)       */
+}
+
+.search-app{
+  background-color: white;
+  padding: 6px 15px;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+
+  .search-box{
+    border: 0;
+    outline: none;
+  }
+  .fa-search{
+    color: #606060;
+  }
+}
+
+.kibana-link{
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 10px;
+  padding-left: 26px;
+  border-radius: 4px;
+  background:url('../assets/kibana.png');
+  background-color: #808080;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 12px;
+  color: #808080;
+}
