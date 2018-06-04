@@ -57,18 +57,22 @@ RSpec.describe Blueprint, type: :model do
       Timecop.freeze
     end
 
+    around(:each) do |example|
+      @blueprint = Blueprint.new(app, env)
+      @file_path = "#{Rails.root}/blueprints/jobs/#{@blueprint.filename}"
+      example.run
+      File.delete(@file_path) if File.exist?(@file_path)
+    end
+
     it 'should create blueprint file' do
-      blueprint = Blueprint.new(app, env)
-      file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}"
-      expect(File.exist?(file_path)).to eq(true)
+      @blueprint.generate_file(env)
+      expect(File.exist?(@file_path)).to eq(true)
     end
 
     it 'should validate content of blueprint file' do
-      blueprint = Blueprint.new(app, env)
-      file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}"
-      nodes = blueprint.generate_nodes(env)
-      blueprint.generate_file(env)
-      content = File.read(file_path)
+      nodes = @blueprint.generate_nodes(env)
+      @blueprint.generate_file(env)
+      content = File.read(@file_path)
       blueprint_content = {
         application_id: app.id,
         cluster_name: app.cluster_name,

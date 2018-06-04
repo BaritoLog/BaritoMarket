@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe BlueprintProcessor do
   before(:each) do
-    @app = create(:barito_app)
+    @barito_app = create(:barito_app)
     @blueprint_hash = {
-      'application_id' => @app.id,
+      'application_id' => @barito_app.id,
       'cluster_name' => 'trac',
       'environment' => 'development',
       'application_tps' => 'medium',
@@ -35,14 +35,16 @@ RSpec.describe BlueprintProcessor do
             'key_pair_name' => 'barito'
           }       
         })
-        allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
+        allow(SauronProvisioner).to receive(:new).
+          and_return(sauron_provisioner)
 
         # Mock chef_solo_provisioner
         chef_solo_provisioner = double
         allow(chef_solo_provisioner).to receive(:provision!).and_return({
           'success' => true
         })
-        allow(ChefSoloProvisioner).to receive(:new).and_return(chef_solo_provisioner)
+        allow(ChefSoloProvisioner).to receive(:new).
+          and_return(chef_solo_provisioner)
       end
 
       it 'should populate nodes based on return value from provisioner' do
@@ -90,7 +92,8 @@ RSpec.describe BlueprintProcessor do
           'success' => false,
           'error' => '',         
         })
-        allow(SauronProvisioner).to receive(:new).and_return(sauron_provisioner)
+        allow(SauronProvisioner).to receive(:new).
+          and_return(sauron_provisioner)
       end
 
       it 'should populate nodes as failed if provisioning fails' do
