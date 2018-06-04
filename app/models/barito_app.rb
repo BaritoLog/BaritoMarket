@@ -68,6 +68,6 @@ class BaritoApp < ActiveRecord::Base
   end
 
   def self.secret_key_valid?(token)
-    BaritoApp.find_by_secret_key(token).blank?
+    BaritoApp.find_by_secret_key(token).present?
   end
 end
