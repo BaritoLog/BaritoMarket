@@ -10,8 +10,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
-/tmp
 /public/assets
+/spec/examples.txt
+/tmp
 vendor
 tmp
 application.yml

@@ -1,8 +1,6 @@
 require 'fileutils'
 
 namespace :blueprint do
-  SSH_CONFIG = "ssh-config"
-  
   desc 'blueprint related tasks'
   
   task :exec, [:path] => [:environment] do |t, args|
