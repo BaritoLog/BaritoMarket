@@ -62,6 +62,15 @@ RSpec.describe BaritoApp, type: :model do
       )
       expect(barito_app.secret_key).to eq(barito_app_props.secret_key)
     end
+
+    it 'should increase log_count' do
+      barito_app = BaritoApp.setup(
+        barito_app_props.name,
+        barito_app_props.tps_config,
+        barito_app_props.app_group,
+      )
+      expect(barito_app.increase_log_count(1)).to eq 1
+    end
   end
 
   context 'App Status Update' do

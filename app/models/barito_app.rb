@@ -63,6 +63,10 @@ class BaritoApp < ActiveRecord::Base
     errors.add(:tps_config, 'Invalid Config Value') unless config_types.include?(tps_config)
   end
 
+  def increase_log_count(new_count)
+    self.update_column(:log_count, self.log_count + new_count.to_i)
+  end
+
   def self.generate_cluster_index
     BaritoApp.all.size + 1
   end
