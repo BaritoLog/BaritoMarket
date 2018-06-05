@@ -10,7 +10,7 @@ RSpec.describe AppsController, type: :request do
     end
 
     it 'generate expected response' do
-      expect(response.body).to match /#{apps.map { |a| a.name }.join('|')}/
+      expect(response.body).to match /#{apps.map(&:name).join('|')}/
     end
   end
 end
