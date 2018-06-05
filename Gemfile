@@ -25,6 +25,7 @@ group :development, :test do
   gem 'rspec-rails', '<= 3.7.2'
   gem 'timecop', '<= 0.9.1'
   gem 'webmock', '<= 3.4.1'
+  gem 'rails-controller-testing'
 end
 
 group :development do
