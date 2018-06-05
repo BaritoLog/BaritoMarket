@@ -1,5 +1,6 @@
 class BaritoApp < ActiveRecord::Base
-  validates :name, :tps_config, :app_group, :secret_key, :cluster_name, :setup_status, :app_status, presence: true
+  validates :name, :tps_config, :app_group, :secret_key, :cluster_name, :setup_status, :app_status,
+    presence: true
   validates :app_group, inclusion: { in: Figaro.env.app_groups.split(',').map(&:downcase) }
   validate  :tps_config_valid_key?
 
@@ -25,19 +26,17 @@ class BaritoApp < ActiveRecord::Base
       name:         name,
       tps_config:   tps_config,
       app_group:    app_group,
-      secret_key:   SecureRandom.uuid.gsub(/\-/, ''),
+      secret_key:   BaritoApp.generate_key,
       cluster_name: Rufus::Mnemo.from_i(BaritoApp.generate_cluster_index),
       app_status:   BaritoApp.app_statuses[:inactive],
       setup_status: BaritoApp.setup_statuses[:pending],
     )
-
     if barito_app.valid?
       barito_app.save
       blueprint = Blueprint.new(barito_app, Rails.env)
       blueprint_path = blueprint.generate_file(barito_app)
       BlueprintWorker.perform_async(blueprint_path)
     end
-
     barito_app
   end
 
@@ -73,5 +72,9 @@ class BaritoApp < ActiveRecord::Base
 
   def self.secret_key_valid?(token)
     BaritoApp.find_by_secret_key(token).present?
+  end
+
+  def self.generate_key
+    SecureRandom.uuid.gsub(/\-/, '')
   end
 end

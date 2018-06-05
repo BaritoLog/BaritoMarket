@@ -10,7 +10,6 @@ RSpec.describe BaritoApp, type: :model do
       allow(BaritoApp).to receive(:generate_cluster_index).and_return(1000)
       allow(Rufus::Mnemo).to receive(:from_i).with(1000).
         and_return(barito_app_props.cluster_name)
-
       Sidekiq::Testing.fake!
     end
 
@@ -120,6 +119,14 @@ RSpec.describe BaritoApp, type: :model do
     it 'should return false for an invalid key' do
       expect(BaritoApp.secret_key_valid?(SecureRandom.base64)).
         not_to eq(true)
+    end
+  end
+
+  context 'It should generate secret_key' do
+    it 'should generate uuid without \'-\'' do
+      key = SecureRandom.uuid
+      allow(SecureRandom).to receive(:uuid).and_return(key)
+      expect(BaritoApp.generate_key).to eq(key.gsub('-', ''))
     end
   end
 end

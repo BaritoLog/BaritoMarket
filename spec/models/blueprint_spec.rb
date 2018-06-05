@@ -39,7 +39,8 @@ RSpec.describe Blueprint, type: :model do
       names = []
       tps_config['instances'].each do |type, count|
         (1..count).each do |number|
-          names << "#{blueprint.env_prefix[env.to_s]}-#{app.cluster_name}-#{type}-#{format('%02d', number.to_i)}"
+          names << "#{blueprint.env_prefix[env.to_s]}-#{app.cluster_name}-#{type}-" +
+            format('%02d', number)
         end
       end
       nodes.each do |node|
