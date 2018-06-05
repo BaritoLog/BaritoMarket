@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     get :profile, to: 'app#profile', defaults: { format: :jsomn }
-    post :increase_log_count, to: 'api/app#increase_log_count', defaults: { format: :json }
+    post :increase_log_count, to: 'app#increase_log_count', defaults: { format: :json }
     post :es_post, to: 'app#es_post', defaults: { format: :json }
   end
 
