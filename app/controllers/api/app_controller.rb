@@ -10,5 +10,12 @@ class Api::AppController < ApiController
     }
   end
 
+  def increase_log_count
+    @app.increase_log_count(params[:new_log_count])
+    render json: {
+      log_count: @app.log_count,
+    }
+  end
+
   def es_post; end
 end

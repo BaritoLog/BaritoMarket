@@ -8,6 +8,7 @@ AllCops:
     - Rakefile
     - lib/tasks/*.rake
     - spec/workers/*.rb
+    - chef-repo/**/*
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.

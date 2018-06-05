@@ -9,6 +9,8 @@ require 'webmock/rspec'
 require 'coveralls'
 require 'simplecov'
 require 'simplecov-console'
+require 'sidekiq/testing'
+require 'pry'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
