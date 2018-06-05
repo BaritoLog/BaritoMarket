@@ -5,7 +5,7 @@ RSpec.describe BaritoApp, type: :model do
     let(:barito_app_props) { build(:barito_app) }
 
     before do
-      allow(SecureRandom).to receive(:base64).
+      allow(SecureRandom).to receive(:uuid).
         and_return(barito_app_props.secret_key)
       allow(BaritoApp).to receive(:generate_cluster_index).and_return(1000)
       allow(Rufus::Mnemo).to receive(:from_i).with(1000).

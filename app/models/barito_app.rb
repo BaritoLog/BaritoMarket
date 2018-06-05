@@ -25,7 +25,7 @@ class BaritoApp < ActiveRecord::Base
       name:         name,
       tps_config:   tps_config,
       app_group:    app_group,
-      secret_key:   SecureRandom.base64,
+      secret_key:   SecureRandom.uuid.gsub(/\-/,''),
       cluster_name: Rufus::Mnemo.from_i(BaritoApp.generate_cluster_index),
       app_status:   BaritoApp.app_statuses[:inactive],
       setup_status: BaritoApp.setup_statuses[:pending],
