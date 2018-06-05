@@ -16,7 +16,6 @@ class AppsController < ApplicationController
       barito_app_params[:tps_config].downcase,
       barito_app_params[:app_group].downcase,
     )
-
     if @app.valid?
       return redirect_to root_path
     else

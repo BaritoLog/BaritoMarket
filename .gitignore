@@ -19,6 +19,7 @@ application.yml
 database.yml
 tps_config.yml
 vagrant_work_dir
+coverage
 
 # Ignore ruby version manager files
 .ruby-gemset

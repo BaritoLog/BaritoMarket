@@ -8,6 +8,7 @@ CAS_BASE_URL:                'http://localhost:3001'
 PROVISION_AVAILABLE_INSTANCES:    'yggdrasil,consul,zookeeper,kafka,elasticsearch,barito-flow-producer,barito-flow-consumer,kibana'
 APP_GROUPS:                  'barito'
 RECEIVER_END_POINT:          'http://dummy.end-point/'
+TIMESTAMP_FORMAT:            '%d-%m-%Y %H:%M'
 
 development:
   RAILS_ENV:                 'development'

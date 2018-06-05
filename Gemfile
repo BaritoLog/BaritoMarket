@@ -21,8 +21,16 @@ gem 'typhoeus', '<= 1.3.0'
 gem 'uglifier'
 
 group :development, :test do
+  gem 'cane', '<= 3.0'
+  gem 'capybara', '<= 3.2.1'
+  gem 'coveralls', '<= 0.8'
+  gem 'database_cleaner', '<= 1.7'
   gem 'factory_bot_rails', '<= 4.10.0'
   gem 'rspec-rails', '<= 3.7.2'
+  gem 'rubocop', '<= 0.56'
+  gem 'rubocop-rspec', '<= 1.25'
+  gem 'simplecov', '<= 0.14'
+  gem 'simplecov-console', '<= 0.4'
   gem 'timecop', '<= 0.9.1'
   gem 'webmock', '<= 3.4.1'
 end
