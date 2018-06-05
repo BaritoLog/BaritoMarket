@@ -10,6 +10,8 @@ RSpec.describe BaritoApp, type: :model do
       allow(BaritoApp).to receive(:generate_cluster_index).and_return(1000)
       allow(Rufus::Mnemo).to receive(:from_i).with(1000).
         and_return(barito_app_props.cluster_name)
+
+      Sidekiq::Testing.fake!
     end
 
     it 'should create the application' do
@@ -64,12 +66,9 @@ RSpec.describe BaritoApp, type: :model do
     end
 
     it 'should increase log_count' do
-      barito_app = BaritoApp.setup(
-        barito_app_props.name,
-        barito_app_props.tps_config,
-        barito_app_props.app_group,
-      )
-      expect(barito_app.increase_log_count(1)).to eq 1
+      barito_app = create(:barito_app)
+      barito_app.increase_log_count(1)
+      expect(barito_app.log_count).to eq 1
     end
   end
 
