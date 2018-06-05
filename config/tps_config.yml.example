@@ -5,11 +5,11 @@ development:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 1
       kafka: 1
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   medium:
@@ -18,11 +18,11 @@ development:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   large:
@@ -30,12 +30,12 @@ development:
     tps_limit: 1000
     instances:
       yggdrasil: 1
-      consul: 1
-      barito-flow-producer: 1
+      consul: 1      
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
 test:
@@ -45,11 +45,11 @@ test:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 1
       kafka: 1
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   medium:
@@ -58,11 +58,11 @@ test:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   large:
@@ -71,11 +71,11 @@ test:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
 staging:
@@ -85,11 +85,11 @@ staging:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 1
       kafka: 1
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   medium:
@@ -98,11 +98,11 @@ staging:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   large:
@@ -111,11 +111,11 @@ staging:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
 production:
@@ -125,11 +125,11 @@ production:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 1
       kafka: 1
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   medium:
@@ -138,11 +138,11 @@ production:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
 
   large:
@@ -151,9 +151,9 @@ production:
     instances:
       yggdrasil: 1
       consul: 1
-      barito-flow-producer: 1
       zookeeper: 3
       kafka: 3
-      barito-flow-consumer: 1
       elasticsearch: 1
+      barito-flow-producer: 1
+      barito-flow-consumer: 1
       kibana: 1
