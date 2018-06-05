@@ -1,12 +1,14 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
-# Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
-# Add additional requires below this line. Rails is not loaded until this point!
 require 'webmock/rspec'
+require 'database_cleaner'
+require 'webmock/rspec'
+require 'coveralls'
+require 'simplecov'
+require 'simplecov-console'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -57,4 +59,23 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.include AppsHelper, type: :feature
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+  Coveralls.wear!
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::Console])
+  SimpleCov.start
 end
