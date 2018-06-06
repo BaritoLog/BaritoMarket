@@ -1,4 +1,5 @@
 class BaritoApp < ActiveRecord::Base
+  CLUSTER_NAME_PADDING = 1000
   validates :name, :tps_config, :app_group, :secret_key, :cluster_name, :setup_status, :app_status,
     presence: true
   validates :app_group, inclusion: { in: Figaro.env.app_groups.split(',').map(&:downcase) }
@@ -14,14 +15,14 @@ class BaritoApp < ActiveRecord::Base
     blueprint_creation_error: 'BLUEPRINT_CREATION_ERROR',
     blueprint_executed: 'BLUEPRINT_EXECUTED',
     blueprint_executed_error: 'BLUEPRINT_EXECUTED_ERROR',
-    provisioning_stated: 'PROVISIONING_STARTED',
+    provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
     chef_bootstrap_started: 'CHEF_BOOTSTRAP_STARTED',
     chef_bootstrap_error: 'CHEF_BOOTSTRAP_ERROR',
     finished: 'FINISHED',
   }
 
-  def self.setup(name, tps_config, app_group)
+  def self.setup(name, tps_config, app_group, env)
     barito_app = BaritoApp.new(
       name:         name,
       tps_config:   tps_config,
@@ -33,8 +34,8 @@ class BaritoApp < ActiveRecord::Base
     )
     if barito_app.valid?
       barito_app.save
-      blueprint = Blueprint.new(barito_app, Rails.env)
-      blueprint_path = blueprint.generate_file(barito_app)
+      blueprint = Blueprint.new(barito_app, env)
+      blueprint_path = blueprint.generate_file
       BlueprintWorker.perform_async(blueprint_path)
     end
     barito_app
@@ -67,7 +68,7 @@ class BaritoApp < ActiveRecord::Base
   end
 
   def self.generate_cluster_index
-    BaritoApp.all.size + 1
+    BaritoApp.all.size + CLUSTER_NAME_PADDING
   end
 
   def self.secret_key_valid?(token)
