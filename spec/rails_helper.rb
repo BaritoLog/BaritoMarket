@@ -5,7 +5,6 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 require 'webmock/rspec'
 require 'database_cleaner'
-require 'webmock/rspec'
 require 'coveralls'
 require 'simplecov'
 require 'simplecov-console'
