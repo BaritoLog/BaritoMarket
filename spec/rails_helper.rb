@@ -62,6 +62,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include AppsHelper, type: :feature
   config.before(:suite) do
+    Sidekiq::Testing.fake!
     DatabaseCleaner.clean_with(:truncation)
   end
   config.before(:each) do

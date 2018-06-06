@@ -1,9 +1,11 @@
 require 'rails_helper'
 RSpec.feature 'List Applications', type: :feature do
+
   scenario 'No apps are registered' do
     visit root_path
     expect(page).to have_content('Looks like you have no access to any applications right now')
   end
+
   scenario 'Apps are registered' do
     apps = create_list(:barito_app, 5)
     visit root_path
