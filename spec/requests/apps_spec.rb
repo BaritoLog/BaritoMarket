@@ -28,9 +28,9 @@ RSpec.describe 'Apps management', type: :request do
   describe 'POST#create' do
     let(:new_barito_app) { build(:barito_app) }
     it 'should create new app in database' do
-      expect {
+      expect do
         post apps_path, params: { barito_app: new_barito_app.attributes }
-      }.to change { BaritoApp.count }.by(1)
+      end.to change { BaritoApp.count }.by(1)
     end
 
     it 'should return 302' do
@@ -45,7 +45,7 @@ RSpec.describe 'Apps management', type: :request do
       # expect(response.body).to match /#{barito_app.name}/
     end
 
-    context "when incoming params is not appropriate" do
+    context 'when incoming params is not appropriate' do
       it 'should have appropriate error message' do
         skip('Pending')
       end

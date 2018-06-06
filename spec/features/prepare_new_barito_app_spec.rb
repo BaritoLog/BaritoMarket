@@ -14,7 +14,9 @@ RSpec.feature 'New Application', type: :feature do
     end
 
     expect(page.find_field('barito_app_name').value).to eq new_barito_app.name
-    expect(page.find_field('barito_app_tps_config').value).to eq new_barito_app.tps_config.capitalize
+    expect(
+      page.find_field('barito_app_tps_config').value,
+    ).to eq new_barito_app.tps_config.capitalize
     expect(page.find_field('barito_app_app_group').value).to eq new_barito_app.app_group
   end
 end

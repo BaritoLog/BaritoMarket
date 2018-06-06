@@ -4,7 +4,7 @@ RSpec.feature 'Create Application', type: :feature do
   scenario 'Success create new barito apps' do
     new_barito_app = build(:barito_app)
     before_count = BaritoApp.count
-    
+
     visit new_app_path
     within('#new_barito_app') do
       fill_in 'barito_app_name', with: new_barito_app.name
@@ -21,7 +21,6 @@ RSpec.feature 'Create Application', type: :feature do
   scenario 'Failed create new barito app' do
     invalid_barito_app = build(:barito_app, :invalid)
     invalid_barito_app.valid?
-    before_count = BaritoApp.count
 
     visit new_app_path
     click_button 'Submit'
