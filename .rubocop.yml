@@ -1,6 +1,8 @@
 AllCops:
   Exclude:
-    - db/schema.rb
+    - config/initializers/*.rb
+    - config/environments/*.rb
+    - db/*.rb
     - app/workers/*.rb
     - app/services/**/*.rb
     - spec/services/*.rb
@@ -219,7 +221,7 @@ Style/LineEndConcatenation:
 Metrics/LineLength:
   Description: 'Limit lines to 80 characters.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#80-character-limits'
-  Max: 120
+  Max: 100
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'

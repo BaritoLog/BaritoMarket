@@ -122,4 +122,12 @@ RSpec.describe BaritoApp, type: :model do
         not_to eq(true)
     end
   end
+
+  context 'It should generate secret_key' do
+    it 'should generate uuid without \'-\'' do
+      key = SecureRandom.uuid
+      allow(SecureRandom).to receive(:uuid).and_return(key)
+      expect(BaritoApp.generate_key).to eq(key.gsub('-', ''))
+    end
+  end
 end
