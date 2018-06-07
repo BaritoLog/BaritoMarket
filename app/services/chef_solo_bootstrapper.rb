@@ -1,6 +1,6 @@
 require 'open3'
 
-class ChefSoloProvisioner
+class ChefSoloBootstrapper
   attr_accessor :chef_repo_dir
 
   def initialize(chef_repo_dir, opts = {})
@@ -9,7 +9,7 @@ class ChefSoloProvisioner
     @bootstrap_version = opts[:bootstrap_version] || "14.1.1"
   end
 
-  def provision!(host, username, opts = {})
+  def bootstrap!(host, username, opts = {})
     opts[:attrs] ||= {run_list: []}
 
     tmp_file = "/tmp/#{SecureRandom.uuid}.json"

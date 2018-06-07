@@ -38,13 +38,13 @@ RSpec.describe BlueprintProcessor do
         allow(SauronProvisioner).to receive(:new).
           and_return(sauron_provisioner)
 
-        # Mock chef_solo_provisioner
-        chef_solo_provisioner = double
-        allow(chef_solo_provisioner).to receive(:provision!).and_return({
+        # Mock chef_solo_bootstrapper
+        chef_solo_bootstrapper = double
+        allow(chef_solo_bootstrapper).to receive(:bootstrap!).and_return({
           'success' => true
         })
-        allow(ChefSoloProvisioner).to receive(:new).
-          and_return(chef_solo_provisioner)
+        allow(ChefSoloBootstrapper).to receive(:new).
+          and_return(chef_solo_bootstrapper)
       end
 
       it 'should populate nodes based on return value from provisioner' do
@@ -55,12 +55,11 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
             'node_container_config' => 'medium',
-            'provision_status' => 'APPS_PROVISIONED',
             'instance_attributes' => {
               'host' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
             },
-            'apps_attributes' => {
+            'bootstrap_attributes' => {
               'consul' => {
                 'hosts' => ['xx.yy.zz.hh']
               },
@@ -71,12 +70,11 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
-            'provision_status' => 'APPS_PROVISIONED',
             'instance_attributes' => {
               'host' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
             },
-            'apps_attributes' => {
+            'bootstrap_attributes' => {
               'run_list' => ['role[yggdrasil]']
             }
           }
@@ -111,13 +109,11 @@ RSpec.describe BlueprintProcessor do
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
             'node_container_config' => 'medium',
-            'provision_status' => 'FAIL_INSTANCE_PROVISIONING',
           },
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
-            'provision_status' => 'UNPROCESSED',
           }
         ]
       end
