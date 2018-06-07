@@ -13,10 +13,12 @@ RSpec.feature 'New Application', type: :feature do
       select new_barito_app.app_group, from: 'barito_app_app_group'
     end
 
-    expect(page.find_field('barito_app_name').value).to eq new_barito_app.name
-    expect(
-      page.find_field('barito_app_tps_config').value,
-    ).to eq new_barito_app.tps_config.capitalize
-    expect(page.find_field('barito_app_app_group').value).to eq new_barito_app.app_group
+    [
+      { field: 'barito_app_name', value: new_barito_app.name },
+      { field: 'barito_app_tps_config', value: new_barito_app.tps_config.capitalize },
+      { field: 'barito_app_app_group', value: new_barito_app.app_group },
+    ].each do |t|
+      expect(page.find_field(t[:field]).value).to eq t[:value]
+    end
   end
 end
