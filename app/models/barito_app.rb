@@ -11,14 +11,11 @@ class BaritoApp < ActiveRecord::Base
   }
   enum setup_statuses: {
     pending: 'PENDING',
-    blueprint_creation: 'BLUEPRINT_CREATION',
-    blueprint_creation_error: 'BLUEPRINT_CREATION_ERROR',
-    blueprint_executed: 'BLUEPRINT_EXECUTED',
-    blueprint_executed_error: 'BLUEPRINT_EXECUTED_ERROR',
     provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
-    chef_bootstrap_started: 'CHEF_BOOTSTRAP_STARTED',
-    chef_bootstrap_error: 'CHEF_BOOTSTRAP_ERROR',
+    provisioning_finished: 'PROVISIONING_FINISHED',
+    bootstrap_started: 'BOOTSTRAP_STARTED',
+    bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
   }
 
@@ -42,16 +39,18 @@ class BaritoApp < ActiveRecord::Base
   end
 
   def update_app_status(status)
-    if BaritoApp.app_statuses.key?(status.downcase.to_sym)
-      update_attribute(:app_status, BaritoApp.app_statuses[status.to_sym])
+    status = status.downcase.to_sym
+    if BaritoApp.app_statuses.key?(status)
+      update_attribute(:app_status, BaritoApp.app_statuses[status])
     else
       false
     end
   end
 
   def update_setup_status(status)
-    if BaritoApp.setup_statuses.key?(status.downcase.to_sym)
-      update_attribute(:setup_status, BaritoApp.setup_statuses[status.to_sym])
+    status = status.downcase.to_sym
+    if BaritoApp.setup_statuses.key?(status)
+      update_attribute(:setup_status, BaritoApp.setup_statuses[status])
     else
       false
     end

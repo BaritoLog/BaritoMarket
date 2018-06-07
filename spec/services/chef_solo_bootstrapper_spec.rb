@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ChefSoloProvisioner do
+RSpec.describe ChefSoloBootstrapper do
   before(:each) do
   end
 
@@ -14,8 +14,8 @@ RSpec.describe ChefSoloProvisioner do
       # Create tmp directory if not exist
       FileUtils.mkdir_p "#{Rails.root}/tmp/chef/nodes"
 
-      provisioner = ChefSoloProvisioner.new("#{Rails.root}/tmp/chef")
-      provisioner.provision!('localhost', 'user', attrs: @test_attributes)
+      bootstrapper = ChefSoloBootstrapper.new("#{Rails.root}/tmp/chef")
+      bootstrapper.bootstrap!('localhost', 'user', attrs: @test_attributes)
       expect(File).to exist("#{Rails.root}/tmp/chef/nodes/localhost.json")
     end
   end
