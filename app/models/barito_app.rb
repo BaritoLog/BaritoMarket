@@ -39,16 +39,18 @@ class BaritoApp < ActiveRecord::Base
   end
 
   def update_app_status(status)
-    if BaritoApp.app_statuses.key?(status.downcase.to_sym)
-      update_attribute(:app_status, BaritoApp.app_statuses[status.to_sym])
+    status = status.downcase.to_sym
+    if BaritoApp.app_statuses.key?(status)
+      update_attribute(:app_status, BaritoApp.app_statuses[status])
     else
       false
     end
   end
 
   def update_setup_status(status)
-    if BaritoApp.setup_statuses.key?(status.downcase.to_sym)
-      update_attribute(:setup_status, BaritoApp.setup_statuses[status.to_sym])
+    status = status.downcase.to_sym
+    if BaritoApp.setup_statuses.key?(status)
+      update_attribute(:setup_status, BaritoApp.setup_statuses[status])
     else
       false
     end
