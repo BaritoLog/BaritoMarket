@@ -13,6 +13,7 @@ class BlueprintProcessor
     @blueprint_hash = blueprint_hash
     @nodes = []
     @errors = []
+    @barito_app = BaritoApp.find(@blueprint_hash['application_id'])
 
     # Initialize Instance Provisioner
     @sauron_host            = (opts[:sauron_host] || '127.0.0.1:3000')
@@ -42,6 +43,11 @@ class BlueprintProcessor
     @errors = []
     return (@blueprint_status = 'FAILED') unless provision_instances!
     return (@blueprint_status = 'FAILED') unless provision_apps!
+
+    # Save consul host
+    consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
+    @barito_app.update!(consul_host: (consul_hosts || []).sample)
+
     return (@blueprint_status = 'SUCCESS')
   end
 

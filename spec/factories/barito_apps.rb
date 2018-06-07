@@ -7,5 +7,6 @@ FactoryBot.define do
     app_status      BaritoApp.app_statuses[:inactive]
     tps_config      %w(small medium large).sample
     cluster_name    Rufus::Mnemo.from_i(1000)
+    consul_host     Faker::Internet.domain_name
   end
 end
