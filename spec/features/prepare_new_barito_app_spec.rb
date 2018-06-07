@@ -16,7 +16,7 @@ RSpec.feature 'New Application', type: :feature do
     [
       { field: 'barito_app_name', value: new_barito_app.name },
       { field: 'barito_app_tps_config', value: new_barito_app.tps_config.capitalize },
-      { field: 'barito_app_app_group', value: new_barito_app.app_group },
+      { field: 'barito_app_app_group', value: new_barito_app.app_group }
     ].each do |t|
       expect(page.find_field(t[:field]).value).to eq t[:value]
     end
