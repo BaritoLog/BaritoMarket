@@ -11,14 +11,11 @@ class BaritoApp < ActiveRecord::Base
   }
   enum setup_statuses: {
     pending: 'PENDING',
-    blueprint_creation: 'BLUEPRINT_CREATION',
-    blueprint_creation_error: 'BLUEPRINT_CREATION_ERROR',
-    blueprint_executed: 'BLUEPRINT_EXECUTED',
-    blueprint_executed_error: 'BLUEPRINT_EXECUTED_ERROR',
     provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
-    chef_bootstrap_started: 'CHEF_BOOTSTRAP_STARTED',
-    chef_bootstrap_error: 'CHEF_BOOTSTRAP_ERROR',
+    provisioning_finished: 'PROVISIONING_FINISHED',
+    bootstrap_started: 'BOOTSTRAP_STARTED',
+    bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
   }
 
