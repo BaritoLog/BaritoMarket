@@ -9,6 +9,11 @@ PROVISION_AVAILABLE_INSTANCES:    'yggdrasil,consul,zookeeper,kafka,elasticsearc
 APP_GROUPS:                  'barito'
 RECEIVER_END_POINT:          'http://dummy.end-point/'
 TIMESTAMP_FORMAT:            '%d-%m-%Y %H:%M'
+SAURON_HOST:                 '127.0.0.1:3000'
+CONTAINER_HOST:              '127.0.0.1'
+CONTAINER_HOST_NAME:         'barito'
+CONTAINER_PRIVATE_KEY:       'barito'
+CONTAINER_USERNAME:          'ubuntu'
 
 development:
   RAILS_ENV:                 'development'

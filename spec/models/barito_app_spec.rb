@@ -17,6 +17,7 @@ RSpec.describe BaritoApp, type: :model do
         barito_app_props.name,
         barito_app_props.tps_config,
         barito_app_props.app_group,
+        Rails.env,
       )
       expect(barito_app.persisted?).to eq(true)
       expect(barito_app.setup_status).to eq(BaritoApp.setup_statuses[:pending])
@@ -28,6 +29,7 @@ RSpec.describe BaritoApp, type: :model do
         barito_app_props.name,
         barito_app_props.tps_config,
         'invalid_group',
+        Rails.env,
       )
       expect(barito_app.persisted?).to eq(false)
       expect(barito_app.valid?).to eq(false)
@@ -38,6 +40,7 @@ RSpec.describe BaritoApp, type: :model do
         barito_app_props.name,
         'invalid_config',
         barito_app_props.app_group,
+        Rails.env,
       )
       expect(barito_app.persisted?).to eq(false)
       expect(barito_app.valid?).to eq(false)
@@ -48,6 +51,7 @@ RSpec.describe BaritoApp, type: :model do
         barito_app_props.name,
         barito_app_props.tps_config,
         barito_app_props.app_group,
+        Rails.env,
       )
       expect(barito_app.cluster_name).to eq(
         Rufus::Mnemo.from_i(BaritoApp.generate_cluster_index),
@@ -59,6 +63,7 @@ RSpec.describe BaritoApp, type: :model do
         barito_app_props.name,
         barito_app_props.tps_config,
         barito_app_props.app_group,
+        Rails.env,
       )
       expect(barito_app.secret_key).to eq(barito_app_props.secret_key)
     end
@@ -67,6 +72,18 @@ RSpec.describe BaritoApp, type: :model do
       barito_app = create(:barito_app)
       barito_app.increase_log_count(1)
       expect(barito_app.log_count).to eq 1
+    end
+
+    it 'should generate blueprint file' do
+      barito_app = BaritoApp.setup(
+        barito_app_props.name,
+        barito_app_props.tps_config,
+        barito_app_props.app_group,
+        Rails.env,
+      )
+      blueprint = Blueprint.new(barito_app, Rails.env)
+      @file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}.json"
+      expect(File.exist?(@file_path)).to eq(true)
     end
   end
 
@@ -105,7 +122,7 @@ RSpec.describe BaritoApp, type: :model do
   context 'It should get the next cluster index' do
     let(:barito_app) { create(:barito_app) }
     it 'should get the the next cluster index' do
-      expect(BaritoApp.generate_cluster_index).to eq(BaritoApp.all.size + 1)
+      expect(BaritoApp.generate_cluster_index).to eq(BaritoApp.all.size + 1000)
     end
   end
 
