@@ -82,6 +82,13 @@ RSpec.describe BlueprintProcessor do
           }
         ]
       end
+
+      it 'should update consul host after provisioning is complete' do
+        blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
+        blueprint_processor.process!
+        @barito_app.reload
+        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh'
+      end
     end
 
     context 'failure' do
