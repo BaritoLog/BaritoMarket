@@ -144,7 +144,7 @@ class BlueprintProcessor
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new(kafka_hosts, es_host).
+        new(kafka_hosts, es_host, consul_hosts).
         generate
     when 'barito-flow-producer'
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
@@ -152,17 +152,19 @@ class BlueprintProcessor
         new(kafka_hosts, consul_hosts).
         generate
     when 'elasticsearch'
-      ChefHelper::ElasticsearchRoleAttributesGenerator.new.generate
+      ChefHelper::ElasticsearchRoleAttributesGenerator.
+        new(consul_hosts).
+        generate
     when 'kafka'
       zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       ChefHelper::KafkaRoleAttributesGenerator.
-        new(zookeeper_hosts, kafka_hosts).
+        new(zookeeper_hosts, kafka_hosts, consul_hosts).
         generate
     when 'kibana'
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::KibanaRoleAttributesGenerator.
-        new(es_host).
+        new(es_host, consul_hosts).
         generate
     when 'yggdrasil'
       ChefHelper::YggdrasilRoleAttributesGenerator.
@@ -172,7 +174,7 @@ class BlueprintProcessor
       host = node['instance_attributes']['host'] || node['name']
       zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
       ChefHelper::ZookeeperRoleAttributesGenerator.
-        new(host, zookeeper_hosts).
+        new(host, zookeeper_hosts, consul_hosts).
         generate
     else
       {}

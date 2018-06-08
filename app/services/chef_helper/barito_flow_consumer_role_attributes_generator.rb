@@ -1,10 +1,11 @@
 module ChefHelper
   class BaritoFlowConsumerRoleAttributesGenerator
-    def initialize(kafka_hosts, elasticsearch_host, opts = {})
+    def initialize(kafka_hosts, elasticsearch_host, consul_hosts, opts = {})
       @kafka_hosts = kafka_hosts
       @kafka_port = opts[:kafka_port] || 9092
       @elasticsearch_host = elasticsearch_host
       @elasticsearch_port = opts[:elasticsearch_port] || 9200
+      @consul_hosts = consul_hosts
       @role_name = opts[:role_name] || 'barito-flow-consumer'
     end
 
@@ -24,6 +25,10 @@ module ChefHelper
               'BARITO_FORWARDER_ELASTICSEARCH_URL' => elasticsearch_url
             }
           }
+        },
+        'consul' => {
+          'run_as_server' => false,
+          'hosts' => @consul_hosts
         },
         'run_list' => ["role[#{@role_name}]"]
       }
