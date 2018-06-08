@@ -8,6 +8,17 @@ class Api::AppController < ApiController
       consul_host: @app.consul_host,
       app_status: @app.app_status,
       updated_at: @app.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        # TODO: we should store this somewhere
+        service_names: {
+          producer: 'barito-flow-producer',
+          zookeeper: 'zookeeper',
+          kafka: 'kafka',
+          consumer: 'barito-flow-consumer',
+          elasticsearch: 'elasticsearch',
+          kibana: 'kibana',
+        },
+      },
     }
   end
 
