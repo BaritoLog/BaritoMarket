@@ -144,12 +144,14 @@ class BlueprintProcessor
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new(kafka_hosts, es_host, consul_hosts).
+        new(@barito_app.secret_key, kafka_hosts, es_host, consul_hosts).
         generate
     when 'barito-flow-producer'
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
+      tps_limit = config[@barito_app.tps_config]['tps_limit']
       ChefHelper::BaritoFlowProducerRoleAttributesGenerator.
-        new(kafka_hosts, consul_hosts).
+        new(kafka_hosts, consul_hosts, tps_limit: tps_limit).
         generate
     when 'elasticsearch'
       ChefHelper::ElasticsearchRoleAttributesGenerator.
