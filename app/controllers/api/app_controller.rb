@@ -5,6 +5,7 @@ class Api::AppController < ApiController
       app_group: @app.app_group,
       tps_config: @app.tps_config,
       cluster_name: @app.cluster_name,
+      consul_host: @app.consul_host,
       app_status: @app.app_status,
       updated_at: @app.updated_at.strftime(Figaro.env.timestamp_format),
     }

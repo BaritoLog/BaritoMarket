@@ -10,7 +10,7 @@ RSpec.describe 'App API', type: :request do
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
       get api_profile_path, params: { token: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
-      %w[name app_group tps_config cluster_name app_status].each do |key|
+      %w[name app_group tps_config cluster_name consul_host app_status].each do |key|
         expect(json_response.key?(key)).to eq(true)
         expect(json_response[key]).to eq(app.send(key.to_sym))
       end
