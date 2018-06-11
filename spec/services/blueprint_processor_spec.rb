@@ -85,7 +85,7 @@ RSpec.describe BlueprintProcessor do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         @barito_app.reload
-        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh'
+        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh:8500'
       end
     end
 

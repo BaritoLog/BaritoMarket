@@ -53,7 +53,8 @@ class BlueprintProcessor
 
     # Save consul host
     consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
-    @barito_app.update!(consul_host: (consul_hosts || []).sample)
+    consul_host = (consul_hosts || []).sample
+    @barito_app.update!(consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
 
     return true
   end

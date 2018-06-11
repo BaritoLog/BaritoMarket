@@ -68,7 +68,7 @@ class BaritoApp < ActiveRecord::Base
 
   def receiver_url
     "#{Figaro.env.router_protocol}://"\
-    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_post_port}"
+    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_post_port}/produce"
   end
 
   def viewer_url
