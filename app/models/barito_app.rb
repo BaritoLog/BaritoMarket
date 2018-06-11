@@ -66,6 +66,16 @@ class BaritoApp < ActiveRecord::Base
     update_column(:log_count, log_count + new_count.to_i)
   end
 
+  def receiver_url
+    "#{Figaro.env.router_protocol}://"\
+    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_post_port}"
+  end
+
+  def viewer_url
+    "#{Figaro.env.router_protocol}://"\
+    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_view_port}"
+  end
+
   def self.generate_cluster_index
     BaritoApp.all.size + CLUSTER_NAME_PADDING
   end
