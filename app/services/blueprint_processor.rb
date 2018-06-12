@@ -116,7 +116,7 @@ class BlueprintProcessor
 
     res = @bootstrapper.bootstrap!(
       node['name'],
-      node['host_ipaddress'],
+      node['instance_attributes']['host_ipaddress'],
       username,
       private_key: private_key,
       attrs: opts[:attrs]
