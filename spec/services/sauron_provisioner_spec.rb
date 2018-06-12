@@ -40,7 +40,7 @@ RSpec.describe SauronProvisioner do
           }.to_json
         })
 
-      stub_request(:get, "http://#{@sauron_host}/container").
+      stub_request(:get, "http://#{@sauron_host}/container.json").
         with(
           query: {
             'container_hostname' => 'test-01',

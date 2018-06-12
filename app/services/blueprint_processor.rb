@@ -95,9 +95,8 @@ class BlueprintProcessor
     @nodes.each do |node|
       attrs = generate_bootstrap_attributes(node, @nodes)
       return false unless bootstrap_instance!(
-        node['instance_attributes']['host_ipaddress'] || node['name'],
-        @username,
         node,
+        @username,
         private_keys_dir: @private_keys_dir,
         private_key_name: @private_key_name,
         attrs: attrs
@@ -106,7 +105,7 @@ class BlueprintProcessor
     return true
   end
 
-  def bootstrap_instance!(node_host, username, node, opts = {})
+  def bootstrap_instance!(node, username, opts = {})
     success = false
 
     # Get private key file path
@@ -116,7 +115,8 @@ class BlueprintProcessor
     end
 
     res = @bootstrapper.bootstrap!(
-      node_host,
+      node['name'],
+      node['host_ipaddress'],
       username,
       private_key: private_key,
       attrs: opts[:attrs]

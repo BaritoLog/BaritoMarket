@@ -126,7 +126,7 @@ RSpec.describe BaritoApp, type: :model do
       url = "#{Figaro.env.router_protocol}://"\
             "#{barito_app.cluster_name}.#{Figaro.env.router_domain}"\
             ":#{Figaro.env.router_post_port}"\
-            "/produce"
+            '/produce'
       expect(barito_app.receiver_url).to eq(url)
     end
   end

@@ -41,12 +41,12 @@ RSpec.describe 'App API', type: :request do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
-    
+
     it 'should return profile information of registered app when supplied cluster name' do
       app = create(:barito_app)
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
-      get api_profile_by_cluster_name_path, 
-        params: { cluster_name: app.cluster_name }, 
+      get api_profile_by_cluster_name_path,
+        params: { cluster_name: app.cluster_name },
         headers: headers
       json_response = JSON.parse(response.body)
       %w[name app_group tps_config cluster_name consul_host app_status].each do |key|
