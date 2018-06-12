@@ -45,7 +45,7 @@ class SauronProvisioner
 
   def show_container(hostname)
     req = Typhoeus::Request.new(
-      "#{@sauron_host}/container",
+      "#{@sauron_host}/container.json",
       method: :get,
       params: {
         'container_hostname' => hostname,
