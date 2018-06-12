@@ -80,7 +80,7 @@ class BlueprintProcessor
 
     if res['success'] == true
       node['instance_attributes'] = {
-        'host' => res.dig('data', 'host'),
+        'host_ipaddress' => res.dig('data', 'host_ipaddress'),
         'key_pair_name' => res.dig('data', 'key_pair_name')
       }
       success = true
@@ -95,7 +95,7 @@ class BlueprintProcessor
     @nodes.each do |node|
       attrs = generate_bootstrap_attributes(node, @nodes)
       return false unless bootstrap_instance!(
-        node['instance_attributes']['host'] || node['name'],
+        node['instance_attributes']['host_ipaddress'] || node['name'],
         @username,
         node,
         private_keys_dir: @private_keys_dir,
@@ -174,7 +174,7 @@ class BlueprintProcessor
         new.
         generate
     when 'zookeeper'
-      host = node['instance_attributes']['host'] || node['name']
+      host = node['instance_attributes']['host_ipaddress'] || node['name']
       zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
       ChefHelper::ZookeeperRoleAttributesGenerator.
         new(host, zookeeper_hosts, consul_hosts).
@@ -188,6 +188,6 @@ class BlueprintProcessor
     def fetch_hosts_address_by(hosts, filter_type, filter)
       nodes.
         select{ |host| host[filter_type] == filter }.
-        collect{ |host| host['instance_attributes']['host'] || host['name'] }
+        collect{ |host| host['instance_attributes']['host_ipaddress'] || host['name'] }
     end
 end
