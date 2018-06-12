@@ -18,7 +18,7 @@ module ChefHelper
           'producer' => {
             'env_vars' => {
               'BARITO_PRODUCER_ADDRESS'     => ':8080',
-              'BARITO_CONSUL_URL'           => "http://#{@consul_hosts.sample}",
+              'BARITO_CONSUL_URL'           => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
               'BARITO_CONSUL_KAFKA_NAME'    => 'kafka',
               'BARITO_KAFKA_BROKERS'        => kafka_hosts_and_port,
               'BARITO_KAFKA_PRODUCER_TOPIC' => 'barito-log',

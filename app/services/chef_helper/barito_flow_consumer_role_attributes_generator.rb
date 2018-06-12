@@ -25,7 +25,7 @@ module ChefHelper
         'barito-flow' => {
           'consumer' => {
             'env_vars' => {
-              'BARITO_CONSUL_URL'                 => "http://#{@consul_hosts.sample}",
+              'BARITO_CONSUL_URL'                 => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
               'BARITO_CONSUL_KAFKA_NAME'          => 'kafka',
               'BARITO_CONSUL_ELASTICSEARCH_NAME'  => 'elasticsearch',
               'BARITO_KAFKA_BROKERS'              => kafka_hosts_and_port,
