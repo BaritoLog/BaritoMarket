@@ -18,7 +18,7 @@ CONTAINER_HOST:              '127.0.0.1'
 CONTAINER_HOST_NAME:         'barito'
 CONTAINER_PRIVATE_KEY:       'barito'
 CONTAINER_USERNAME:          'ubuntu'
-CONSUL_PORT:                 '8500'
+DEFAULT_CONSUL_PORT:         '8500'
 
 development:
   RAILS_ENV:                 'development'
