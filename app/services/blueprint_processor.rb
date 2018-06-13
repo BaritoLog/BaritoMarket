@@ -35,19 +35,25 @@ class BlueprintProcessor
 
     # Provision instances
     @barito_app.update_setup_status('PROVISIONING_STARTED')
+    Rails.logger.info "App:#{@barito_app.id} -- Provisioning started"
     if provision_instances!
       @barito_app.update_setup_status('PROVISIONING_FINISHED')
+      Rails.logger.info "App:#{@barito_app.id} -- Provisioning finished"
     else
       @barito_app.update_setup_status('PROVISIONING_ERROR')
+      Rails.logger.error "App:#{@barito_app.id} -- Provisioning error: #{@errors}"
       return false
     end
 
     # Bootstrap instances
     @barito_app.update_setup_status('BOOTSTRAP_STARTED')
+    Rails.logger.info "App:#{@barito_app.id} -- Bootstrap started"
     if bootstrap_instances!
       @barito_app.update_setup_status('FINISHED')
+      Rails.logger.info "App:#{@barito_app.id} -- Bootstrap finished"
     else
       @barito_app.update_setup_status('BOOTSTRAP_ERROR')
+      Rails.logger.error "App:#{@barito_app.id} -- Bootstrap error: #{@errors}"
       return false
     end
 
@@ -61,6 +67,7 @@ class BlueprintProcessor
 
   def provision_instances!
     @nodes.each do |node|
+      Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']}"
       return false unless provision_instance!(
         node, 
         private_key_name: @private_key_name
@@ -77,6 +84,7 @@ class BlueprintProcessor
       node['name'],
       key_pair_name: opts[:private_key_name]
     )
+    Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['instance_attributes'] = {
@@ -93,6 +101,7 @@ class BlueprintProcessor
 
   def bootstrap_instances!
     @nodes.each do |node|
+      Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']}"
       attrs = generate_bootstrap_attributes(node, @nodes)
       return false unless bootstrap_instance!(
         node,
@@ -121,6 +130,7 @@ class BlueprintProcessor
       private_key: private_key,
       attrs: opts[:attrs]
     )
+    Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['bootstrap_attributes'] = opts[:attrs]
