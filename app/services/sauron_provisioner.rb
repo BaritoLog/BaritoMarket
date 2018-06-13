@@ -12,6 +12,11 @@ class SauronProvisioner
     create_res = create_container!(hostname, opts)
     return respond_error(create_res['errors']) unless create_res['success'] == 'true'
 
+    # Give container time to initialize its networking
+    # TODO: a better way to do this is to do a continuous poll until it returns ipaddress
+    sleep(10)
+    
+    # Get container details
     show_res = show_container(hostname)
 
     return {
