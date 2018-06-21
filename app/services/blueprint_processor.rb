@@ -35,31 +35,39 @@ class BlueprintProcessor
 
     # Provision instances
     @barito_app.update_setup_status('PROVISIONING_STARTED')
+    Rails.logger.info "App:#{@barito_app.id} -- Provisioning started"
     if provision_instances!
       @barito_app.update_setup_status('PROVISIONING_FINISHED')
+      Rails.logger.info "App:#{@barito_app.id} -- Provisioning finished"
     else
       @barito_app.update_setup_status('PROVISIONING_ERROR')
+      Rails.logger.error "App:#{@barito_app.id} -- Provisioning error: #{@errors}"
       return false
     end
 
     # Bootstrap instances
     @barito_app.update_setup_status('BOOTSTRAP_STARTED')
+    Rails.logger.info "App:#{@barito_app.id} -- Bootstrap started"
     if bootstrap_instances!
       @barito_app.update_setup_status('FINISHED')
+      Rails.logger.info "App:#{@barito_app.id} -- Bootstrap finished"
     else
       @barito_app.update_setup_status('BOOTSTRAP_ERROR')
+      Rails.logger.error "App:#{@barito_app.id} -- Bootstrap error: #{@errors}"
       return false
     end
 
     # Save consul host
     consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
-    @barito_app.update!(consul_host: (consul_hosts || []).sample)
+    consul_host = (consul_hosts || []).sample
+    @barito_app.update!(consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
 
     return true
   end
 
   def provision_instances!
     @nodes.each do |node|
+      Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']}"
       return false unless provision_instance!(
         node, 
         private_key_name: @private_key_name
@@ -76,10 +84,11 @@ class BlueprintProcessor
       node['name'],
       key_pair_name: opts[:private_key_name]
     )
+    Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['instance_attributes'] = {
-        'host' => res.dig('data', 'host'),
+        'host_ipaddress' => res.dig('data', 'host_ipaddress'),
         'key_pair_name' => res.dig('data', 'key_pair_name')
       }
       success = true
@@ -92,11 +101,11 @@ class BlueprintProcessor
 
   def bootstrap_instances!
     @nodes.each do |node|
+      Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']}"
       attrs = generate_bootstrap_attributes(node, @nodes)
       return false unless bootstrap_instance!(
-        node['instance_attributes']['host'] || node['name'],
-        @username,
         node,
+        @username,
         private_keys_dir: @private_keys_dir,
         private_key_name: @private_key_name,
         attrs: attrs
@@ -105,7 +114,7 @@ class BlueprintProcessor
     return true
   end
 
-  def bootstrap_instance!(node_host, username, node, opts = {})
+  def bootstrap_instance!(node, username, opts = {})
     success = false
 
     # Get private key file path
@@ -115,11 +124,13 @@ class BlueprintProcessor
     end
 
     res = @bootstrapper.bootstrap!(
-      node_host,
+      node['name'],
+      node['instance_attributes']['host_ipaddress'],
       username,
       private_key: private_key,
       attrs: opts[:attrs]
     )
+    Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['bootstrap_attributes'] = opts[:attrs]
@@ -144,35 +155,39 @@ class BlueprintProcessor
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new(kafka_hosts, es_host).
+        new(@barito_app.secret_key, kafka_hosts, es_host, consul_hosts).
         generate
     when 'barito-flow-producer'
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
+      config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
+      tps_limit = config[@barito_app.tps_config]['tps_limit']
       ChefHelper::BaritoFlowProducerRoleAttributesGenerator.
-        new(kafka_hosts, consul_hosts).
+        new(kafka_hosts, consul_hosts, tps_limit: tps_limit).
         generate
     when 'elasticsearch'
-      ChefHelper::ElasticsearchRoleAttributesGenerator.new.generate
+      ChefHelper::ElasticsearchRoleAttributesGenerator.
+        new(consul_hosts).
+        generate
     when 'kafka'
       zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       ChefHelper::KafkaRoleAttributesGenerator.
-        new(zookeeper_hosts, kafka_hosts).
+        new(zookeeper_hosts, kafka_hosts, consul_hosts).
         generate
     when 'kibana'
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::KibanaRoleAttributesGenerator.
-        new(es_host).
+        new(es_host, consul_hosts).
         generate
     when 'yggdrasil'
       ChefHelper::YggdrasilRoleAttributesGenerator.
         new.
         generate
     when 'zookeeper'
-      host = node['instance_attributes']['host'] || node['name']
+      host = node['instance_attributes']['host_ipaddress'] || node['name']
       zookeeper_hosts = fetch_hosts_address_by(nodes, 'type', 'zookeeper')
       ChefHelper::ZookeeperRoleAttributesGenerator.
-        new(host, zookeeper_hosts).
+        new(host, zookeeper_hosts, consul_hosts).
         generate
     else
       {}
@@ -183,6 +198,6 @@ class BlueprintProcessor
     def fetch_hosts_address_by(hosts, filter_type, filter)
       nodes.
         select{ |host| host[filter_type] == filter }.
-        collect{ |host| host['instance_attributes']['host'] || host['name'] }
+        collect{ |host| host['instance_attributes']['host_ipaddress'] || host['name'] }
     end
 end

@@ -1,5 +1,5 @@
 class ApiController < ApplicationController
-  before_action :authenticate_token, :get_app
+  before_action :authenticate_token
 
   def authenticate_token
     required_keys = [:token]
@@ -11,10 +11,6 @@ class ApiController < ApplicationController
       errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
     end
     render json: errors, status: errors[:code] unless errors.blank?
-  end
-
-  def get_app
-    @app = BaritoApp.find_by_secret_key(params[:token])
   end
 
   def build_errors(code, errors = [])

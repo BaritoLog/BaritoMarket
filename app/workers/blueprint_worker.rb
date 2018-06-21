@@ -18,7 +18,7 @@ class BlueprintWorker
           private_key_name: Figaro.env.container_private_key,
           username: Figaro.env.container_username
         ).process!
-      rescue JSON::ParseError, StandardError => ex
+      rescue JSON::ParserError, StandardError => ex
         logger.warn "Exception: #{ex}"
       end
     end

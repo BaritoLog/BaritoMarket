@@ -31,7 +31,7 @@ RSpec.describe BlueprintProcessor do
         allow(sauron_provisioner).to receive(:provision!).and_return({
           'success' => true,
           'data' => {
-            'host' => 'xx.yy.zz.hh',
+            'host_ipaddress' => 'xx.yy.zz.hh',
             'key_pair_name' => 'barito'
           }       
         })
@@ -56,7 +56,7 @@ RSpec.describe BlueprintProcessor do
             'type' => 'consul',
             'node_container_config' => 'medium',
             'instance_attributes' => {
-              'host' => 'xx.yy.zz.hh',
+              'host_ipaddress' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
             },
             'bootstrap_attributes' => {
@@ -71,7 +71,7 @@ RSpec.describe BlueprintProcessor do
             'type' => 'yggdrasil',
             'node_container_config' => 'medium',
             'instance_attributes' => {
-              'host' => 'xx.yy.zz.hh',
+              'host_ipaddress' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
             },
             'bootstrap_attributes' => {
@@ -85,7 +85,7 @@ RSpec.describe BlueprintProcessor do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         @barito_app.reload
-        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh'
+        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh:8500'
       end
     end
 

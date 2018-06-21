@@ -35,8 +35,32 @@ RSpec.describe SauronProvisioner do
             'success' => 'true',
             'error' => '',
             'data' => {
-              'ip_address' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
+            }
+          }.to_json
+        })
+
+      stub_request(:get, "http://#{@sauron_host}/container.json").
+        with(
+          query: {
+            'container_hostname' => 'test-01',
+            'lxd_host_ipaddress' => @container_host,
+          },
+          headers: {
+            'Content-Type' => 'application/json',
+            'Expect' => '',
+            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+            'Expect' => '',
+            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
+          },
+          body: {
+            'data' => {
+              'ipaddress' => 'xx.yy.zz.hh',
             }
           }.to_json
         })
@@ -51,7 +75,7 @@ RSpec.describe SauronProvisioner do
         expect(provision_result).to eq({
           'success' => true,
           'data' => {
-            'host' => 'xx.yy.zz.hh',
+            'host_ipaddress' => 'xx.yy.zz.hh',
             'key_pair_name' => 'barito'
           }
         })

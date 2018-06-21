@@ -1,10 +1,13 @@
 h3.mb-3 Application Details
 - if inactive?(@app)
   .alert.alert-danger
-    pre You yet need to setup your app, by configuring it
+    pre You need to setup Your app, by using these configurations:
       Install FluentD Plugin from (https://github.com/BaritoLog/Barito-Fluent-Plugin)
-      HOST URL - https://barito-router.#{@app.cluster_name}.baritolog.com/postlog
+      Receiver URL - #{@app.receiver_url}
       Secret Key - #{@app.secret_key}
+      
+.alert.alert-info
+  pre You can access Your Logs at - #{@app.viewer_url}
 p
   b Application Name -
   = @app.name

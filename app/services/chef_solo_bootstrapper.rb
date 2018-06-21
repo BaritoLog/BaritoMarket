@@ -9,7 +9,7 @@ class ChefSoloBootstrapper
     @bootstrap_version = opts[:bootstrap_version] || "14.1.1"
   end
 
-  def bootstrap!(host, username, opts = {})
+  def bootstrap!(host_name, host_ipaddress, username, opts = {})
     opts[:attrs] ||= {run_list: []}
 
     tmp_file = "/tmp/#{SecureRandom.uuid}.json"
@@ -24,13 +24,13 @@ class ChefSoloBootstrapper
     cmd_stack << "knife solo bootstrap"
     cmd_stack << "--bootstrap-version=#{@bootstrap_version}"
     (cmd_stack << "-i #{opts[:private_key]}") if opts[:private_key].present?
-    cmd_stack << "#{username}@#{host}"
+    cmd_stack << "#{username}@#{host_ipaddress || host_name}"
     cmd_stack << "#{tmp_file}"
 
     stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
     
     # Put node json file
-    node_file = "#{@nodes_dir}/#{host}.json"
+    node_file = "#{@nodes_dir}/#{host_name}.json"
     FileUtils.cp tmp_file, node_file
     FileUtils.rm tmp_file
 
