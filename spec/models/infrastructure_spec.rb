@@ -1,6 +1,76 @@
 require 'rails_helper'
 
 RSpec.describe Infrastructure, type: :model do
+  context 'Setup Application' do
+    let(:infrastructure_props) { build(:infrastructure) }
+
+    before do
+      allow(Infrastructure).to receive(:generate_cluster_index).
+        and_return(1000)
+      allow(Rufus::Mnemo).to receive(:from_i).with(1000).
+        and_return(infrastructure_props.cluster_name)
+      Sidekiq::Testing.fake!
+    end
+
+    it 'should create the infrastructure' do
+      infrastructure = Infrastructure.setup(
+        infrastructure_props.name,
+        infrastructure_props.capacity,
+        infrastructure_props.app_group_id,
+        Rails.env,
+      )
+      expect(infrastructure.persisted?).to eq(true)
+      expect(infrastructure.provisioning_status).to eq(Infrastructure.provisioning_statuses[:pending])
+      expect(infrastructure.status).to eq(Infrastructure.statuses[:inactive])
+    end
+
+    it 'shouldn\'t create infrastructure if app_group is invalid' do
+      infrastructure = Infrastructure.setup(
+        infrastructure_props.name,
+        infrastructure_props.capacity,
+        'invalid_group',
+        Rails.env,
+      )
+      expect(infrastructure.persisted?).to eq(false)
+      expect(infrastructure.valid?).to eq(false)
+    end
+
+    it 'shouldn\'t create infrastructure if capacity is invalid' do
+      infrastructure = Infrastructure.setup(
+        infrastructure_props.name,
+        'invalid_config',
+        infrastructure_props.app_group_id,
+        Rails.env,
+      )
+      expect(infrastructure.persisted?).to eq(false)
+      expect(infrastructure.valid?).to eq(false)
+    end
+
+    it 'should generate cluster name' do
+      infrastructure = Infrastructure.setup(
+        infrastructure_props.name,
+        infrastructure_props.capacity,
+        infrastructure_props.app_group_id,
+        Rails.env,
+      )
+      expect(infrastructure.cluster_name).to eq(
+        Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
+      )
+    end
+
+    it 'should generate blueprint file' do
+      infrastructure = Infrastructure.setup(
+        infrastructure_props.name,
+        infrastructure_props.capacity,
+        infrastructure_props.app_group_id,
+        Rails.env,
+      )
+      blueprint = Blueprint.new(infrastructure, Rails.env)
+      @file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}.json"
+      expect(File.exist?(@file_path)).to eq(true)
+    end
+  end
+
   context 'Status Update' do
     let(:infrastructure) { create(:infrastructure) }
 

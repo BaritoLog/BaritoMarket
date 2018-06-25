@@ -1,7 +1,7 @@
 class Infrastructure < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
-  validates :name, :capacity, :cluster_name, :provisioning_status, :status,
-    presence: true
+  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, presence: true
+  validate  :capacity_valid_key?
 
   belongs_to :app_group
 
@@ -18,6 +18,31 @@ class Infrastructure < ApplicationRecord
     bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
   }
+
+  def capacity_valid_key?
+    config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
+    config_types = config.keys.map(&:downcase)
+    errors.add(:capacity, 'Invalid Config Value') unless config_types.include?(capacity)
+  end
+
+  def self.setup(name, capacity, app_group_id, env)
+    infrastructure = Infrastructure.new(
+      name:                 name,
+      cluster_name: Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
+      capacity:             capacity,
+      provisioning_status:  Infrastructure.provisioning_statuses[:pending],
+      status:               Infrastructure.statuses[:inactive],
+      app_group_id:         app_group_id,
+    )
+
+    if infrastructure.valid?
+      infrastructure.save
+      blueprint = Blueprint.new(infrastructure, env)
+      blueprint_path = blueprint.generate_file
+      BlueprintWorker.perform_async(blueprint_path)
+    end
+    infrastructure
+  end
 
   def update_status(status)
     status = status.downcase.to_sym
