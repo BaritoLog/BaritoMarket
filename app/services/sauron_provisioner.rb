@@ -14,7 +14,7 @@ class SauronProvisioner
 
     # Give container time to initialize its networking
     # TODO: a better way to do this is to do a continuous poll until it returns ipaddress
-    sleep(10)
+    sleep(10) unless Rails.env.test?
     
     # Get container details
     show_res = show_container(hostname)
