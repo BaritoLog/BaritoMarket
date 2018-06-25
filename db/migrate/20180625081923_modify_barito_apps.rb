@@ -21,7 +21,7 @@ class ModifyBaritoApps < ActiveRecord::Migration[5.2]
           app_group: app_group
         )
 
-        max_tps = config[infrastructure.capacity]['tps_limit']
+        max_tps = config[infrastructure.capacity]['max_tps']
         barito_app.update!(
           app_group_id: app_group.id,
           topic_name: barito_app.name.parameterize.underscore,
