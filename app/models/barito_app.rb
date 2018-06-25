@@ -68,12 +68,12 @@ class BaritoApp < ActiveRecord::Base
 
   def receiver_url
     "#{Figaro.env.router_protocol}://"\
-    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_post_port}/produce"
+    "#{Figaro.env.router_domain}/produce"
   end
 
   def viewer_url
-    "#{Figaro.env.router_protocol}://"\
-    "#{cluster_name}.#{Figaro.env.router_domain}:#{Figaro.env.router_view_port}"
+    "#{Figaro.env.viewer_protocol}://"\
+    "#{cluster_name}.#{Figaro.env.viewer_domain}"
   end
 
   def self.generate_cluster_index
