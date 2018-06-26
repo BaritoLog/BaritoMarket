@@ -10,7 +10,6 @@ RSpec.describe BaritoApp, type: :model do
       allow(BaritoApp).to receive(:generate_cluster_index).and_return(1000)
       allow(Rufus::Mnemo).to receive(:from_i).with(1000).
         and_return(barito_app_props.cluster_name)
-      Sidekiq::Testing.fake!
     end
 
     it 'should create the application' do
