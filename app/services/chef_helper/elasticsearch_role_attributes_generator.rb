@@ -11,7 +11,9 @@ module ChefHelper
           'jdk_version' => '8'
         },
         'elasticsearch' => {
-          'version' => '5.6.9'
+          'version' => '5.6.9',
+          'allocated_memory' => 12000000,
+          'max_allocated_memory' => 16000000
         },
         'consul' => {
           'run_as_server' => false,
