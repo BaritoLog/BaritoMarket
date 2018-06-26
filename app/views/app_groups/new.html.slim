@@ -1,0 +1,18 @@
+- if flash.key?(:messages)
+  .alert.alert-danger
+    b Issue creating application group
+    br
+    - flash[:messages].each do |msg|
+      = "- #{msg}"
+      br
+= form_tag(app_groups_path) do
+  = fields_for :app_group do |f|
+    .form-group
+      = f.label :name
+      = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application group'
+    .form-group
+      = label_tag :capacity, 'Capacity'
+      = select_tag 'app_group[capacity]', options_for_select(@capacity_options), { class: 'form-control' }
+      small.form-text.text-muted
+        | Please choose your Capacity
+  .actions = submit_tag 'Submit', class: 'btn btn-primary'

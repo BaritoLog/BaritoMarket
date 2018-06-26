@@ -1,11 +1,11 @@
 class BlueprintProcessor
-  attr_accessor :blueprint_hash, :nodes, :errors, :barito_app
+  attr_accessor :blueprint_hash, :nodes, :errors, :infrastructure
 
   def initialize(blueprint_hash, opts = {})
     @blueprint_hash = blueprint_hash
     @nodes = []
     @errors = []
-    @barito_app = BaritoApp.find(@blueprint_hash['application_id'])
+    @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
 
     # Initialize Provisioner
     @sauron_host          = (opts[:sauron_host] || '127.0.0.1:3000')
@@ -34,40 +34,40 @@ class BlueprintProcessor
     @errors = []
 
     # Provision instances
-    @barito_app.update_setup_status('PROVISIONING_STARTED')
-    Rails.logger.info "App:#{@barito_app.id} -- Provisioning started"
+    @infrastructure.update_provisioning_status('PROVISIONING_STARTED')
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning started"
     if provision_instances!
-      @barito_app.update_setup_status('PROVISIONING_FINISHED')
-      Rails.logger.info "App:#{@barito_app.id} -- Provisioning finished"
+      @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
+      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning finished"
     else
-      @barito_app.update_setup_status('PROVISIONING_ERROR')
-      Rails.logger.error "App:#{@barito_app.id} -- Provisioning error: #{@errors}"
+      @infrastructure.update_provisioning_status('PROVISIONING_ERROR')
+      Rails.logger.error "Infrastructure:#{@infrastructure.id} -- Provisioning error: #{@errors}"
       return false
     end
 
     # Bootstrap instances
-    @barito_app.update_setup_status('BOOTSTRAP_STARTED')
-    Rails.logger.info "App:#{@barito_app.id} -- Bootstrap started"
+    @infrastructure.update_provisioning_status('BOOTSTRAP_STARTED')
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrap started"
     if bootstrap_instances!
-      @barito_app.update_setup_status('FINISHED')
-      Rails.logger.info "App:#{@barito_app.id} -- Bootstrap finished"
+      @infrastructure.update_provisioning_status('FINISHED')
+      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrap finished"
     else
-      @barito_app.update_setup_status('BOOTSTRAP_ERROR')
-      Rails.logger.error "App:#{@barito_app.id} -- Bootstrap error: #{@errors}"
+      @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
+      Rails.logger.error "Infrastructure:#{@infrastructure.id} -- Bootstrap error: #{@errors}"
       return false
     end
 
     # Save consul host
     consul_hosts = fetch_hosts_address_by(@nodes, 'type', 'consul')
     consul_host = (consul_hosts || []).sample
-    @barito_app.update!(consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
+    @infrastructure.update!(consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
 
     return true
   end
 
   def provision_instances!
     @nodes.each do |node|
-      Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']}"
+      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning #{node['name']}"
       return false unless provision_instance!(
         node, 
         private_key_name: @private_key_name
@@ -84,7 +84,7 @@ class BlueprintProcessor
       node['name'],
       key_pair_name: opts[:private_key_name]
     )
-    Rails.logger.info "App:#{@barito_app.id} -- Provisioning #{node['name']} -- #{res}"
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['instance_attributes'] = {
@@ -101,7 +101,7 @@ class BlueprintProcessor
 
   def bootstrap_instances!
     @nodes.each do |node|
-      Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']}"
+      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrapping #{node['name']}"
       attrs = generate_bootstrap_attributes(node, @nodes)
       return false unless bootstrap_instance!(
         node,
@@ -130,7 +130,7 @@ class BlueprintProcessor
       private_key: private_key,
       attrs: opts[:attrs]
     )
-    Rails.logger.info "App:#{@barito_app.id} -- Bootstrapping #{node['name']} -- #{res}"
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrapping #{node['name']} -- #{res}"
 
     if res['success'] == true
       node['bootstrap_attributes'] = opts[:attrs]
@@ -155,12 +155,11 @@ class BlueprintProcessor
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
       es_host = fetch_hosts_address_by(nodes, 'type', 'elasticsearch').first
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new(@barito_app.secret_key, kafka_hosts, es_host, consul_hosts).
+        new(@infrastructure.secret_key, kafka_hosts, es_host, consul_hosts).
         generate
     when 'barito-flow-producer'
       kafka_hosts = fetch_hosts_address_by(nodes, 'type', 'kafka')
-      config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
-      max_tps = config[@barito_app.tps_config]['max_tps']
+      max_tps = TPS_CONFIG[@infrastructure.capacity]['max_tps']
       ChefHelper::BaritoFlowProducerRoleAttributesGenerator.
         new(kafka_hosts, consul_hosts, max_tps: max_tps).
         generate

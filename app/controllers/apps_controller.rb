@@ -1,37 +1,27 @@
 class AppsController < ApplicationController
-  def index
-    @apps = BaritoApp.all
-  end
-
-  def new
-    @app = BaritoApp.new
-    @app_groups = Figaro.env.app_groups.split(',')
-    config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
-    @tps_options = config.keys.map(&:capitalize)
-  end
-
   def create
-    @app = BaritoApp.setup(
-      barito_app_params[:name],
-      barito_app_params[:tps_config].downcase,
-      barito_app_params[:app_group].downcase,
-      Rails.env,
-    )
-    if @app.valid?
-      return redirect_to root_path
+    @app = BaritoApp.setup(app_params)
+    if @app.persisted?
+      return redirect_to @app.app_group
     else
       flash[:messages] = @app.errors.full_messages
-      return redirect_to new_app_path
+      return redirect_to @app.app_group
     end
   end
 
-  def show
+  def destroy
     @app = BaritoApp.find(params[:id])
+    @app.destroy
+    return redirect_to @app.app_group
   end
 
   private
-
-  def barito_app_params
-    params.require(:barito_app).permit(:name, :tps_config, :app_group)
-  end
+    def app_params
+      params.require(:barito_app).permit(
+        :app_group_id, 
+        :name, 
+        :topic_name, 
+        :max_tps
+      )
+    end
 end

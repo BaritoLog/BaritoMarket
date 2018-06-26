@@ -2,22 +2,19 @@ require 'rails_helper'
 
 RSpec.describe BlueprintProcessor do
   before(:each) do
-    @barito_app = create(:barito_app)
+    @infrastructure = create(:infrastructure)
     @blueprint_hash = {
-      'application_id' => @barito_app.id,
+      'infrastructure_id' => @infrastructure.id,
       'cluster_name' => 'trac',
       'environment' => 'development',
-      'application_tps' => 'medium',
       'nodes' => [
         {
           'name' => 'd-trac-consul-01',
           'type' => 'consul',
-          'node_container_config' => 'medium'
         },
         {
           'name' => 'd-trac-yggdrasil-01',
           'type' => 'yggdrasil',
-          'node_container_config' => 'medium'
         }
       ]
     }
@@ -54,7 +51,6 @@ RSpec.describe BlueprintProcessor do
           {
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
-            'node_container_config' => 'medium',
             'instance_attributes' => {
               'host_ipaddress' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
@@ -69,7 +65,6 @@ RSpec.describe BlueprintProcessor do
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
-            'node_container_config' => 'medium',
             'instance_attributes' => {
               'host_ipaddress' => 'xx.yy.zz.hh',
               'key_pair_name' => 'barito'
@@ -84,8 +79,8 @@ RSpec.describe BlueprintProcessor do
       it 'should update consul host after provisioning is complete' do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
-        @barito_app.reload
-        expect(@barito_app.consul_host).to eq 'xx.yy.zz.hh:8500'
+        @infrastructure.reload
+        expect(@infrastructure.consul_host).to eq 'xx.yy.zz.hh:8500'
       end
     end
 
@@ -108,12 +103,10 @@ RSpec.describe BlueprintProcessor do
           {
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
-            'node_container_config' => 'medium',
           },
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
-            'node_container_config' => 'medium',
           }
         ]
       end
