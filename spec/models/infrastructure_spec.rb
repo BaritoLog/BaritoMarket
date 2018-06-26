@@ -14,10 +14,10 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should create the infrastructure' do
       infrastructure = Infrastructure.setup(
-        infrastructure_props.name,
-        infrastructure_props.capacity,
-        infrastructure_props.app_group_id,
         Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: infrastructure_props.app_group_id,
       )
       expect(infrastructure.persisted?).to eq(true)
       expect(infrastructure.provisioning_status).to eq(Infrastructure.provisioning_statuses[:pending])
@@ -26,10 +26,10 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'shouldn\'t create infrastructure if app_group is invalid' do
       infrastructure = Infrastructure.setup(
-        infrastructure_props.name,
-        infrastructure_props.capacity,
-        'invalid_group',
         Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: 'invalid_group',
       )
       expect(infrastructure.persisted?).to eq(false)
       expect(infrastructure.valid?).to eq(false)
@@ -37,10 +37,10 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'shouldn\'t create infrastructure if capacity is invalid' do
       infrastructure = Infrastructure.setup(
-        infrastructure_props.name,
-        'invalid_config',
-        infrastructure_props.app_group_id,
         Rails.env,
+        name: infrastructure_props.name,
+        capacity: 'invalid_config',
+        app_group_id: infrastructure_props.app_group_id,
       )
       expect(infrastructure.persisted?).to eq(false)
       expect(infrastructure.valid?).to eq(false)
@@ -48,10 +48,10 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should generate cluster name' do
       infrastructure = Infrastructure.setup(
-        infrastructure_props.name,
-        infrastructure_props.capacity,
-        infrastructure_props.app_group_id,
         Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: infrastructure_props.app_group_id,
       )
       expect(infrastructure.cluster_name).to eq(
         Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
@@ -60,10 +60,10 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should generate blueprint file' do
       infrastructure = Infrastructure.setup(
-        infrastructure_props.name,
-        infrastructure_props.capacity,
-        infrastructure_props.app_group_id,
         Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: infrastructure_props.app_group_id,
       )
       blueprint = Blueprint.new(infrastructure, Rails.env)
       @file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}.json"
@@ -119,6 +119,13 @@ RSpec.describe Infrastructure, type: :model do
       url = "#{Figaro.env.viewer_protocol}://"\
             "#{infrastructure.cluster_name}.#{Figaro.env.viewer_domain}"
       expect(infrastructure.viewer_url).to eq(url)
+    end
+  end
+
+  context 'It should get the app group name' do
+    let(:infrastructure) { create(:infrastructure) }
+    it 'should return the app group name' do
+      expect(infrastructure.app_group_name).to eq(infrastructure.app_group.name)
     end
   end
 

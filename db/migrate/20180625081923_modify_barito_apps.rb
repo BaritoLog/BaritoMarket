@@ -7,8 +7,6 @@ class ModifyBaritoApps < ActiveRecord::Migration[5.2]
       add_column :barito_apps, :max_tps, :integer
       rename_column :barito_apps, :app_status, :status
 
-      config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
-
       BaritoApp.all.each do |barito_app|
         app_group = AppGroup.create!(name: barito_app.name)
         infrastructure = Infrastructure.create!(
@@ -21,7 +19,7 @@ class ModifyBaritoApps < ActiveRecord::Migration[5.2]
           app_group: app_group
         )
 
-        max_tps = config[infrastructure.capacity]['max_tps']
+        max_tps = TPS_CONFIG[infrastructure.capacity]['max_tps']
         barito_app.update!(
           app_group_id: app_group.id,
           topic_name: barito_app.name.parameterize.underscore,

@@ -17,7 +17,10 @@ class Blueprint
   def generate_file
     nodes = generate_nodes
     blueprint = {
-      infrastructure_id: @infrastructure.id, cluster_name: @infrastructure.cluster_name, environment: @env, nodes: nodes
+      infrastructure_id: @infrastructure.id, 
+      cluster_name: @infrastructure.cluster_name, 
+      environment: @env, 
+      nodes: nodes
     }
     filepath = "#{Rails.root}/blueprints/jobs/#{filename}.json"
     File.open(filepath, 'w+') do |f|

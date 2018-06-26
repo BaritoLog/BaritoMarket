@@ -20,19 +20,18 @@ class Infrastructure < ApplicationRecord
   }
 
   def capacity_valid_key?
-    config = YAML.load_file("#{Rails.root}/config/tps_config.yml")[Rails.env]
-    config_types = config.keys.map(&:downcase)
+    config_types = TPS_CONFIG.keys.map(&:downcase)
     errors.add(:capacity, 'Invalid Config Value') unless config_types.include?(capacity)
   end
 
-  def self.setup(name, capacity, app_group_id, env)
+  def self.setup(env, params)
     infrastructure = Infrastructure.new(
-      name:                 name,
+      name:                 params[:name],
       cluster_name: Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
-      capacity:             capacity,
+      capacity:             params[:capacity],
       provisioning_status:  Infrastructure.provisioning_statuses[:pending],
       status:               Infrastructure.statuses[:inactive],
-      app_group_id:         app_group_id,
+      app_group_id:         params[:app_group_id],
     )
 
     if infrastructure.valid?
@@ -70,6 +69,10 @@ class Infrastructure < ApplicationRecord
   def viewer_url
     "#{Figaro.env.viewer_protocol}://"\
     "#{cluster_name}.#{Figaro.env.viewer_domain}"
+  end
+
+  def app_group_name
+    app_group&.name
   end
 
   def self.generate_cluster_index

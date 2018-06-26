@@ -1,6 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe BaritoApp, type: :model do
+  context 'Setup Application' do
+    let(:barito_app_props) { build(:barito_app) }
+
+    it 'should create the barito_app' do
+      barito_app = BaritoApp.setup(
+        app_group_id: barito_app_props.app_group_id,
+        name: barito_app_props.name,
+        topic_name: barito_app_props.topic_name,
+        secret_key: BaritoApp.generate_key,
+        max_tps: barito_app_props.max_tps,
+        status: BaritoApp.statuses[:inactive],
+      )
+      expect(barito_app.persisted?).to eq(true)
+      expect(barito_app.status).to eq(BaritoApp.statuses[:inactive])
+    end
+  end
+
   context 'Status Update' do
     let(:barito_app) { create(:barito_app) }
 
@@ -34,6 +51,33 @@ RSpec.describe BaritoApp, type: :model do
       key = SecureRandom.uuid
       allow(SecureRandom).to receive(:uuid).and_return(key)
       expect(BaritoApp.generate_key).to eq(key.gsub('-', ''))
+    end
+  end
+
+  context 'It should get the app group name' do
+    let(:barito_app) { create(:barito_app) }
+    it 'should return the app group name' do
+      expect(barito_app.app_group_name).to eq(barito_app.app_group.name)
+    end
+  end
+
+  context 'It should get the cluster name' do
+    let(:infrastructure) { create(:infrastructure) }
+    let(:barito_app) { 
+      create(:barito_app, app_group: infrastructure.app_group) }
+    it 'should return the cluster name' do
+      expect(barito_app.cluster_name).
+        to eq(barito_app.app_group.infrastructure.cluster_name)
+    end
+  end
+
+  context 'It should get the consul host' do
+    let(:infrastructure) { create(:infrastructure) }
+    let(:barito_app) { 
+      create(:barito_app, app_group: infrastructure.app_group) }
+    it 'should return the consul host' do
+      expect(barito_app.consul_host).
+        to eq(barito_app.app_group.infrastructure.consul_host)
     end
   end
 end

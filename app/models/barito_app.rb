@@ -10,6 +10,18 @@ class BaritoApp < ActiveRecord::Base
     active: 'ACTIVE',
   }
 
+  def self.setup(app_params)
+    app = BaritoApp.create(
+      app_group_id: app_params[:app_group_id],
+      name: app_params[:name],
+      topic_name: app_params[:topic_name],
+      secret_key: BaritoApp.generate_key,
+      max_tps: app_params[:max_tps],
+      status: BaritoApp.statuses[:inactive],
+    )
+    app
+  end
+
   def update_status(status)
     status = status.downcase.to_sym
     if BaritoApp.statuses.key?(status)
@@ -29,5 +41,17 @@ class BaritoApp < ActiveRecord::Base
 
   def self.generate_key
     SecureRandom.uuid.gsub(/\-/, '')
+  end
+
+  def app_group_name
+    app_group&.name
+  end
+
+  def cluster_name
+    app_group&.infrastructure&.cluster_name
+  end
+
+  def consul_host
+    app_group&.infrastructure&.consul_host
   end
 end
