@@ -71,6 +71,19 @@ ActiveRecord::Schema.define(version: 2018_07_17_040929) do
     t.index ["name"], name: "index_groups_on_name"
   end
 
+  create_table "infrastructure_components", force: :cascade do |t|
+    t.string "hostname"
+    t.string "category"
+    t.integer "sequence"
+    t.string "message"
+    t.string "status"
+    t.string "ipaddress"
+    t.bigint "infrastructure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
+  end
+
   create_table "infrastructures", force: :cascade do |t|
     t.string "name"
     t.string "cluster_name"
