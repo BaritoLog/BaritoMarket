@@ -1,9 +1,10 @@
 class BlueprintProcessor
-  attr_accessor :blueprint_hash, :nodes, :errors, :infrastructure
+  attr_accessor :blueprint_hash, :nodes, :infrastructure_components, :errors, :infrastructure
 
   def initialize(blueprint_hash, opts = {})
     @blueprint_hash = blueprint_hash
     @nodes = []
+    @infrastructure_components = []
     @errors = []
     @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
 
@@ -31,6 +32,11 @@ class BlueprintProcessor
   def process!
     # Reset nodes and errors
     @nodes = @blueprint_hash['nodes'].dup
+
+    @blueprint_hash['nodes'].each_with_index do |node, seq|
+      @infrastructure_components << InfrastructureComponent.add(@infrastructure, node, seq)
+    end
+
     @errors = []
 
     # Provision instances
@@ -64,36 +70,40 @@ class BlueprintProcessor
 
     return true
   end
-
   def provision_instances!
-    @nodes.each do |node|
-      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning #{node['name']}"
+    @infrastructure_components.each do |component|
+      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Provisioning #{component.hostname}"
       return false unless provision_instance!(
-        node,
+        component,
         private_key_name: @private_key_name
       )
     end
     return true
   end
 
-  def provision_instance!(node, opts = {})
+  def provision_instance!(component, opts = {})
     success = false
 
+    component.update_status('PROVISIONING_STARTED')
     # Execute provisioning
     res = @provisioner.provision!(
-      node['name'],
+      component.hostname,
       key_pair_name: opts[:private_key_name]
     )
-    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning #{node['name']} -- #{res}"
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Provisioning #{component.hostname} -- #{res}"
 
     if res['success'] == true
-      node['instance_attributes'] = {
-        'host_ipaddress' => res.dig('data', 'host_ipaddress'),
-        'key_pair_name' => res.dig('data', 'key_pair_name')
-      }
+      component.update_ipaddress(res.dig('data', 'host_ipaddress'))
+      component.update_status('PROVISIONING_FINISHED')
+
+      # TODO add key_pair_name column in infrastructure table
+      # @infrastructure.key_pair_name = res.dig('data', 'key_pair_name')
+      # @infrastructure.save! unless @infrastructure.key_pair_name==res.dig('data', 'key_pair_name')
+
       success = true
     else
       @errors << { message: res['error'] }
+      component.update_status('PROVISIONING_ERROR', @errors.to_s)
     end
 
     return success
