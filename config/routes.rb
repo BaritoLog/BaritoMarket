@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   resources :apps,
     only: %i[create destroy], 
     defaults: { format: :html }
+  resources :groups,
+    defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
 end
