@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   require 'sidekiq/web'
 
   get 'ping', to: 'application#ping'

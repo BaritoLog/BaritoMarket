@@ -4,19 +4,24 @@ html
     title Barito Market
     link [rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css' integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4' crossorigin='anonymous']
     link = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
-    script [src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous']
+    script [src='https://code.jquery.com/jquery-3.3.1.min.js' integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' crossorigin='anonymous']
+    script [src='https://cdnjs.cloudflare.com/ajax/libs/jquery-ujs/1.2.2/rails.min.js']
     script [src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js' integrity='sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm' crossorigin='anonymous']
+
     link = javascript_include_tag 'application', 'data-turbolinks-track' => true
     meta [name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no']
     link = csrf_meta_tags
   body
     .container-fluid.p-3.align-items-center.bg-white.border-bottom.box-shadow
       .row
-        .col-2
+        .col
           = link_to "Barito Log", root_path
-        .col-8
-        .col-2.text-right
+        .col-4.text-right
           = link_to 'New Application Group', new_app_group_path, class: 'btn btn-block btn-primary'
+          - if user_signed_in?
+            = " | "
+            = link_to 'Sign Out', destroy_user_session_path, method: :delete
+
     .container-fluid.align-items-center.pt-4.pb-4.bg-light
       .row
         .col-md-12.text

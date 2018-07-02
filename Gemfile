@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'berkshelf', '<= 7.0.2'
+gem 'devise'
+gem 'devise_cas_authenticatable'
 gem 'elasticsearch'
 gem 'execjs', '<= 2.7.0'
 gem 'faker', '<= 1.8.7'
