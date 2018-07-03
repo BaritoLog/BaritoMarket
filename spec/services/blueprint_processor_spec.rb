@@ -30,7 +30,7 @@ RSpec.describe BlueprintProcessor do
           'data' => {
             'host_ipaddress' => 'xx.yy.zz.hh',
             'key_pair_name' => 'barito'
-          }       
+          }
         })
         allow(SauronProvisioner).to receive(:new).
           and_return(sauron_provisioner)
@@ -90,7 +90,7 @@ RSpec.describe BlueprintProcessor do
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
           'success' => false,
-          'error' => '',         
+          'error' => '',
         })
         allow(SauronProvisioner).to receive(:new).
           and_return(sauron_provisioner)

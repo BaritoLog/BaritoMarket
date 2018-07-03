@@ -373,7 +373,7 @@ Style/TrailingCommaInArrayLiteral:
     - comma
     - consistent_comma
     - no_comma
-  Enabled: true
+  Enabled: false
 
 Style/TrailingCommaInHashLiteral:
   Description: 'Checks for trailing comma in hash literals.'
