@@ -1,0 +1,26 @@
+- if @app_groups.empty?
+  img.mb-4[src="/barito_river.jpeg" style="width:350px;height:249px;"]
+  h1 Welcome to Barito
+  p
+    | Looks like you have no access to any application groups right now
+    br
+    | Click the button below to get started
+  = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
+- else
+  h3.mb-3 All Application Groups
+  table.table.table-bordered
+    thead.thead-dark
+      tr
+        th.text-center Name
+        th.text-center Capacity
+        th.text-center Provisioning Status
+        th.text-center Status
+        th.text-center Actions
+    tbody
+      - @app_groups.each do |app_group|
+        tr
+          td.text-center = link_to app_group.name, app_group_path(app_group)
+          td.text-center = app_group.infrastructure.capacity
+          td.text-center = app_group.infrastructure.provisioning_status
+          td.text-center = app_group.infrastructure.status
+          td.text-center Open Kibana | Delete

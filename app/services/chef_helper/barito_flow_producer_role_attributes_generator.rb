@@ -4,7 +4,7 @@ module ChefHelper
       @kafka_hosts  = kafka_hosts
       @kafka_port   = opts[:kafka_port] || 9092
       @consul_hosts = consul_hosts
-      @tps_limit    = opts[:tps_limit] || 10
+      @max_tps      = opts[:max_tps] || 10
       @role_name    = opts[:role_name] || 'barito-flow-producer'
     end
 
@@ -22,7 +22,7 @@ module ChefHelper
               'BARITO_CONSUL_KAFKA_NAME'    => 'kafka',
               'BARITO_KAFKA_BROKERS'        => kafka_hosts_and_port,
               'BARITO_KAFKA_PRODUCER_TOPIC' => 'barito-log',
-              'BARITO_PRODUCER_MAX_TPS'     => @tps_limit
+              'BARITO_PRODUCER_MAX_TPS'     => @max_tps
             }
           }
         },

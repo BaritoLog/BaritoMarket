@@ -1,7 +1,7 @@
 development:
   small:
     name: 'Small'
-    tps_limit: 100
+    max_tps: 100
     instances:
       yggdrasil: 1
       consul: 1
@@ -14,7 +14,7 @@ development:
 
   medium:
     name: 'Medium'
-    tps_limit: 500
+    max_tps: 500
     instances:
       yggdrasil: 1
       consul: 1
@@ -27,7 +27,7 @@ development:
 
   large:
     name: 'Large'
-    tps_limit: 1000
+    max_tps: 1000
     instances:
       yggdrasil: 1
       consul: 1      
@@ -41,7 +41,7 @@ development:
 test:
   small:
     name: 'Small'
-    tps_limit: 100
+    max_tps: 100
     instances:
       yggdrasil: 1
       consul: 1
@@ -54,7 +54,7 @@ test:
 
   medium:
     name: 'Medium'
-    tps_limit: 500
+    max_tps: 500
     instances:
       yggdrasil: 1
       consul: 1
@@ -67,7 +67,7 @@ test:
 
   large:
     name: 'Large'
-    tps_limit: 1000
+    max_tps: 1000
     instances:
       yggdrasil: 1
       consul: 1
@@ -81,7 +81,7 @@ test:
 staging:
   small:
     name: 'Small'
-    tps_limit: 100
+    max_tps: 100
     instances:
       yggdrasil: 1
       consul: 1
@@ -94,7 +94,7 @@ staging:
 
   medium:
     name: 'Medium'
-    tps_limit: 500
+    max_tps: 500
     instances:
       yggdrasil: 1
       consul: 1
@@ -107,7 +107,7 @@ staging:
 
   large:
     name: 'Large'
-    tps_limit: 1000
+    max_tps: 1000
     instances:
       yggdrasil: 1
       consul: 1
@@ -121,7 +121,7 @@ staging:
 production:
   small:
     name: 'Small'
-    tps_limit: 100
+    max_tps: 100
     instances:
       yggdrasil: 1
       consul: 1
@@ -134,7 +134,7 @@ production:
 
   medium:
     name: 'Medium'
-    tps_limit: 500
+    max_tps: 500
     instances:
       yggdrasil: 1
       consul: 1
@@ -147,7 +147,7 @@ production:
 
   large:
     name: 'Large'
-    tps_limit: 1000
+    max_tps: 1000
     instances:
       yggdrasil: 1
       consul: 1

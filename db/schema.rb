@@ -10,23 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_06_085632) do
+ActiveRecord::Schema.define(version: 2018_06_25_081923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "app_groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "barito_apps", force: :cascade do |t|
     t.string "name"
-    t.string "app_group"
-    t.string "tps_config"
     t.string "secret_key"
-    t.string "cluster_name"
-    t.string "app_status"
-    t.string "setup_status"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "log_count", default: 0
+    t.bigint "app_group_id"
+    t.string "topic_name"
+    t.integer "max_tps"
+    t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
+  end
+
+  create_table "infrastructures", force: :cascade do |t|
+    t.string "name"
+    t.string "cluster_name"
+    t.string "capacity"
+    t.string "provisioning_status"
+    t.string "status"
     t.string "consul_host"
+    t.bigint "app_group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
   end
 
 end
