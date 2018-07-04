@@ -5,7 +5,7 @@
     - flash[:messages].each do |msg|
       = "- #{msg}"
       br
-= form_tag(app_groups_path) do
+= form_tag(app_groups_path, id: 'app_group_form') do
   = fields_for :app_group do |f|
     .form-group
       = f.label :name

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'App API', type: :request do
+  before(:each) { sign_in }
+
   describe 'Profile by Cluster Name API' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
