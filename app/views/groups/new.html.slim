@@ -2,7 +2,7 @@
   .col-md-6
     - if flash.key?(:messages)
       .alert.alert-danger
-        b Issue creating application
+        b Issue creating group
         br
         - flash[:messages].each do |msg|
           = "- #{msg}"

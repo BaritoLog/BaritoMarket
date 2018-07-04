@@ -19,7 +19,7 @@ html
       #bm-main-navbar.collapse.navbar-collapse
         ul.navbar-nav.ml-auto
           form.form-inline.mt-2.mt-md-0
-            = link_to 'New Application Group', new_app_group_path, class: 'btn btn-block btn-primary'
+            = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
             - if user_signed_in?
               = link_to 'Groups', groups_path, class: 'btn btn-outline-primary ml-sm-2'
           - if user_signed_in?
