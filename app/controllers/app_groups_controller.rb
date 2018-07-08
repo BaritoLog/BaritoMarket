@@ -1,12 +1,18 @@
 class AppGroupsController < ApplicationController
   def index
-    @app_groups = AppGroup.all
+    @app_groups = policy_scope(AppGroup)
+  end
+
+  def search
+    @app_groups = AppGroup.where("name ILIKE :q", { q: "%#{params[:q]}%" })
+    render json: @app_groups
   end
 
   def show
     @app_group = AppGroup.find(params[:id])
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
+    @allow_action = policy(@app_group).allow_action?
   end
 
   def new
@@ -28,9 +34,11 @@ class AppGroupsController < ApplicationController
   private
 
   def app_group_params
+    params[:app_group][:user_id] = current_user.id
     params.require(:app_group).permit(
       :name,
-      :capacity
+      :capacity,
+      :user_id
     )
   end
 end

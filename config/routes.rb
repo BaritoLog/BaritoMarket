@@ -16,14 +16,25 @@ Rails.application.routes.draw do
       defaults: { format: :json }
   end
 
-  resources :app_groups, 
-    only: %i[index show new create], 
-    defaults: { format: :html }
+  get '/users/search', to: 'users#search', defaults: { format: :json }
+  get '/groups/search', to: 'groups#search', defaults: { format: :json }
+
+  resources :app_group_admins,
+    only: %i[create destroy]
+  resources :app_group_permissions,
+    only: %i[show create destroy]
+  resources :app_groups,
+    only: %i[index show new create],
+    defaults: { format: :html } do
+      collection do
+        get :search
+      end
+    end
   resources :apps,
-    only: %i[create destroy], 
+    only: %i[create destroy],
     defaults: { format: :html }
   resources :groups,
-    only: %i[index new create destroy],
+    except: %i[edit update],
     defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
