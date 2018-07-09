@@ -11,13 +11,7 @@ class GroupsController < ApplicationController
   def show
     @group = Group.find(params[:id])
     @group_user = GroupUser.new(group: @group)
-    @app_group_permission = AppGroupPermission.new(group: @group)
-
-    # if current_user.admin?
-      # @app_groups = policy_scope(AppGroup)
-    # else
-
-    # end
+    @group_users = GroupUser.includes(:user).where(group: @group)
   end
 
   def new
