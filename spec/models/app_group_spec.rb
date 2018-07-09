@@ -9,6 +9,7 @@ RSpec.describe AppGroup, type: :model do
         Rails.env,
         name: app_group_props.name,
         capacity: 'small',
+        user_id: app_group_props.user_id
       )
       expect(app_group.persisted?).to eq(true)
     end

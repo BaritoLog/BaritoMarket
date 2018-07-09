@@ -1,14 +1,17 @@
 require 'rails_helper'
 
 RSpec.feature 'View Applications', type: :feature do
+  let(:user) { create(:user) }
+
   before(:each) do
-    user = create(:user)
+    allow_any_instance_of(GateWrapper).to receive(:check_user_groups).and_return({groups: []})
+
     login_as(user)
   end
 
   scenario 'View registered applications' do
-    infrastructure = create(:infrastructure)
-    app_group = infrastructure.app_group
+    app_group = create(:app_group, user: user)
+    infrastructure = create(:infrastructure, app_group: app_group)
     barito_app = create(:barito_app, app_group: app_group)
 
     visit root_path

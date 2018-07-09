@@ -1,8 +1,11 @@
 require 'rails_helper'
 
 RSpec.feature 'List Application Groups', type: :feature do
+  let(:user) { create(:user) }
+
   before(:each) do
-    user = create(:user)
+    allow_any_instance_of(GateWrapper).to receive(:check_user_groups).and_return({groups: []})
+
     login_as user
   end
 
@@ -12,7 +15,7 @@ RSpec.feature 'List Application Groups', type: :feature do
   end
 
   scenario 'App groups are registered' do
-    app_groups = create_list(:app_group, 5)
+    app_groups = create_list(:app_group, 5, user: user)
     app_groups.each{ |x| create(:infrastructure, app_group: x) }
     visit root_path
     app_groups.each do |app_group|

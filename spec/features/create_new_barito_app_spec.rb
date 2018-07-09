@@ -1,13 +1,16 @@
 require 'rails_helper'
 
 RSpec.feature 'Create Application', type: :feature do
+  let(:user) { create(:user) }
+
   before(:each) do
-    user = create(:user)
+    allow_any_instance_of(GateWrapper).to receive(:check_user_groups).and_return({groups: []})
+
     login_as user
   end
 
   scenario 'Success create new barito apps' do
-    app_group = build(:app_group)
+    app_group = build(:app_group, user: user)
     before_count = AppGroup.count
 
     visit new_app_group_path
