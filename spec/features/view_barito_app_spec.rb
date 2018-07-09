@@ -5,12 +5,11 @@ RSpec.feature 'View Applications', type: :feature do
 
   before(:each) do
     allow_any_instance_of(GateWrapper).to receive(:check_user_groups).and_return({groups: []})
-
     login_as(user)
   end
 
   scenario 'View registered applications' do
-    app_group = create(:app_group, user: user)
+    app_group = create(:app_group, created_by: user)
     infrastructure = create(:infrastructure, app_group: app_group)
     barito_app = create(:barito_app, app_group: app_group)
 

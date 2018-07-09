@@ -10,7 +10,7 @@ RSpec.feature 'Create Application', type: :feature do
   end
 
   scenario 'Success create new barito apps' do
-    app_group = build(:app_group, user: user)
+    app_group = build(:app_group, created_by: user)
     before_count = AppGroup.count
 
     visit new_app_group_path

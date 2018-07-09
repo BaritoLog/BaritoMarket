@@ -63,7 +63,7 @@ RSpec.describe BaritoApp, type: :model do
 
   context 'It should get the cluster name' do
     let(:infrastructure) { create(:infrastructure) }
-    let(:barito_app) { 
+    let(:barito_app) {
       create(:barito_app, app_group: infrastructure.app_group) }
     it 'should return the cluster name' do
       expect(barito_app.cluster_name).
@@ -73,7 +73,7 @@ RSpec.describe BaritoApp, type: :model do
 
   context 'It should get the consul host' do
     let(:infrastructure) { create(:infrastructure) }
-    let(:barito_app) { 
+    let(:barito_app) {
       create(:barito_app, app_group: infrastructure.app_group) }
     it 'should return the consul host' do
       expect(barito_app.consul_host).

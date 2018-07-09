@@ -15,7 +15,7 @@ RSpec.feature 'List Application Groups', type: :feature do
   end
 
   scenario 'App groups are registered' do
-    app_groups = create_list(:app_group, 5, user: user)
+    app_groups = create_list(:app_group, 5, created_by: user)
     app_groups.each{ |x| create(:infrastructure, app_group: x) }
     visit root_path
     app_groups.each do |app_group|
