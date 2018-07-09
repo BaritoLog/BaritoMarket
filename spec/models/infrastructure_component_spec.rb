@@ -53,5 +53,31 @@ RSpec.describe InfrastructureComponent, type: :model do
       expect(status_update).to eq(true)
       expect(infrastructure_component.status.downcase).to eq(status)
     end
+
+    it 'should update infrastructure_component message with status if there is no message from response' do
+      status = InfrastructureComponent.statuses.keys.sample
+      status_update = infrastructure_component.update_status(status)
+      expect(status_update).to eq(true)
+      expect(infrastructure_component.message.downcase).to eq(status)
+    end
+
+    it 'should update infrastructure_component message' do
+      message = '{"success": "200"}'
+      status = InfrastructureComponent.statuses.keys.sample
+      status_update = infrastructure_component.update_status(status, message)
+      expect(status_update).to eq(true)
+      expect(infrastructure_component.message).to eq(message)
+    end
+  end
+
+  context 'IP Address Update' do
+    let(:infrastructure_component) { create(:infrastructure_component) }
+
+    it 'should update infrastructure_component ip address' do
+      ipaddress = 'xx.ww.yy.zz'
+      status_update = infrastructure_component.update_ipaddress(ipaddress)
+      expect(status_update).to eq(true)
+      expect(infrastructure_component.ipaddress).to eq(ipaddress)
+    end
   end
 end
