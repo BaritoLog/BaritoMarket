@@ -25,6 +25,8 @@ html
           - if user_signed_in?
             li.nav-item
               = link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link'
+            li.nav-item
+              = link_to current_user.display_name, '#', class: 'nav-link'
 
 
     .container-fluid.align-items-center.pt-4.pb-4.bg-light

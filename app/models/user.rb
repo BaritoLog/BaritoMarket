@@ -13,4 +13,9 @@ class User < ActiveRecord::Base
       end
     end
   end
+
+  def display_name
+    return username if email.blank?
+    email
+  end
 end
