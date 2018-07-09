@@ -9,7 +9,6 @@ class GroupUsersController < ApplicationController
   def destroy
     @group_user = GroupUser.find(params[:id])
     @group_user.destroy!
-    pry
     redirect_to group_path(@group_user.group)
   end
 

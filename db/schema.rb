@@ -10,15 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_02_093138) do
+ActiveRecord::Schema.define(version: 2018_07_08_154606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "app_group_admins", force: :cascade do |t|
+    t.bigint "app_group_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id", "user_id"], name: "index_app_group_admins_on_app_group_id_and_user_id", unique: true
+    t.index ["app_group_id"], name: "index_app_group_admins_on_app_group_id"
+    t.index ["user_id"], name: "index_app_group_admins_on_user_id"
+  end
+
+  create_table "app_group_permissions", force: :cascade do |t|
+    t.bigint "app_group_id"
+    t.bigint "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id", "group_id"], name: "index_app_group_permissions_on_app_group_id_and_group_id", unique: true
+    t.index ["app_group_id"], name: "index_app_group_permissions_on_app_group_id"
+    t.index ["group_id"], name: "index_app_group_permissions_on_group_id"
+  end
 
   create_table "app_groups", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_app_groups_on_user_id"
   end
 
   create_table "barito_apps", force: :cascade do |t|
