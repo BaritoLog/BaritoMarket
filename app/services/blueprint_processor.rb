@@ -165,7 +165,7 @@ class BlueprintProcessor
       kafka_hosts = fetch_hosts_address_by(infrastructure_components, 'category', 'kafka')
       es_host = fetch_hosts_address_by(infrastructure_components, 'category', 'elasticsearch').first
       ChefHelper::BaritoFlowConsumerRoleAttributesGenerator.
-        new(@infrastructure.secret_key, kafka_hosts, es_host, consul_hosts).
+        new(kafka_hosts, es_host, consul_hosts).
         generate
     when 'barito-flow-producer'
       kafka_hosts = fetch_hosts_address_by(infrastructure_components, 'category', 'kafka')

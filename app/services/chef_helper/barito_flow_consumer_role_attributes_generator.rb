@@ -1,11 +1,9 @@
 module ChefHelper
   class BaritoFlowConsumerRoleAttributesGenerator
-    def initialize(app_secret_key, 
-                   kafka_hosts, 
-                   elasticsearch_host, 
-                   consul_hosts, 
+    def initialize(kafka_hosts,
+                   elasticsearch_host,
+                   consul_hosts,
                    opts = {})
-      @app_secret_key     = app_secret_key
       @kafka_hosts        = kafka_hosts
       @kafka_port         = opts[:kafka_port] || 9092
       @elasticsearch_host = elasticsearch_host
@@ -32,10 +30,6 @@ module ChefHelper
               'BARITO_KAFKA_GROUP_ID'             => 'barito-group',
               'BARITO_KAFKA_CONSUMER_TOPICS'      => 'barito-log',
               'BARITO_ELASTICSEARCH_URL'          => elasticsearch_url,
-              'BARITO_PUSH_METRIC_URL'            => push_metric_url,
-              'BARITO_PUSH_METRIC_TOKEN'          => @app_secret_key,
-              'BARITO_PUSH_METRIC_INTERVAL'       => '30s',
-            }
           }
         },
         'consul' => {
