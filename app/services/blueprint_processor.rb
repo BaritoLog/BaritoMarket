@@ -1,9 +1,8 @@
 class BlueprintProcessor
-  attr_accessor :blueprint_hash, :nodes, :infrastructure_components, :errors, :infrastructure
+  attr_accessor :blueprint_hash, :infrastructure_components, :errors, :infrastructure
 
   def initialize(blueprint_hash, opts = {})
     @blueprint_hash = blueprint_hash
-    @nodes = []
     @infrastructure_components = []
     @errors = []
     @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
@@ -30,14 +29,12 @@ class BlueprintProcessor
   end
 
   def process!
-    # Reset nodes and errors
-    @nodes = @blueprint_hash['nodes'].dup
+    # Reset errors
+    @errors = []
 
     @blueprint_hash['nodes'].each_with_index do |node, seq|
       @infrastructure_components << InfrastructureComponent.add(@infrastructure, node, seq+1)
     end
-
-    @errors = []
 
     # Provision instances
     @infrastructure.update_provisioning_status('PROVISIONING_STARTED')
@@ -64,7 +61,7 @@ class BlueprintProcessor
     end
 
     # Save consul host
-    consul_hosts = fetch_hosts_address_by(@nodes, 'category', 'consul')
+    consul_hosts = fetch_hosts_address_by(@infrastructure_components, 'category', 'consul')
     consul_host = (consul_hosts || []).sample
     @infrastructure.update!(consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
 
@@ -196,7 +193,7 @@ class BlueprintProcessor
         new.
         generate
     when 'zookeeper'
-      host = node['instance_attributes']['host_ipaddress'] || node['name']
+      host = component.ipaddress || component.hostname
       zookeeper_hosts = fetch_hosts_address_by(infrastructure_components, 'category', 'zookeeper')
       ChefHelper::ZookeeperRoleAttributesGenerator.
         new(host, zookeeper_hosts, consul_hosts).
