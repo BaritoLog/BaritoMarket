@@ -48,7 +48,7 @@ class BaritoApp < ActiveRecord::Base
   end
 
   def cluster_name
-    app_group&.infrastructure&.cluster_name || super
+    app_group&.infrastructure&.cluster_name
   end
 
   def consul_host
