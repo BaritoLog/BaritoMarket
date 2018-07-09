@@ -1,5 +1,9 @@
 class User < ActiveRecord::Base
-  devise :cas_authenticatable, :trackable
+  if Figaro.env.enable_check_gate == 'true'
+    devise :cas_authenticatable, :trackable
+  else
+    devise :database_authenticatable, :trackable, :registerable
+  end
 
   def cas_extra_attributes=(extra_attributes)
     extra_attributes.each do |name, value|

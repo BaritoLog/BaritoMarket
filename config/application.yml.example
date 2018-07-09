@@ -19,6 +19,8 @@ CONTAINER_HOST_NAME:         'barito'
 CONTAINER_PRIVATE_KEY:       'barito'
 CONTAINER_USERNAME:          'ubuntu'
 DEFAULT_CONSUL_PORT:         '8500'
+GATE_URL:                    'http://localhost:3005'
+ENABLE_CHECK_GATE:           true
 
 development:
   RAILS_ENV:                 'development'
