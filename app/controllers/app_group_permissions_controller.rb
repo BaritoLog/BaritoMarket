@@ -1,12 +1,4 @@
 class AppGroupPermissionsController < ApplicationController
-  def show
-    @app_group = AppGroup.find(params[:id])
-    @app_group_admin = AppGroupAdmin.new(app_group: @app_group)
-    @app_group_admins = AppGroupAdmin.includes(:user).where(app_group: @app_group)
-    @app_group_permission = AppGroupPermission.new(app_group: @app_group)
-    @group_permissions = AppGroupPermission.includes(:group).where(app_group: @app_group)
-  end
-
   def create
     @app_group_permission = AppGroupPermission.new(app_group_permission_params)
 

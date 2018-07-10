@@ -22,10 +22,13 @@ Rails.application.routes.draw do
   resources :app_group_admins,
     only: %i[create destroy]
   resources :app_group_permissions,
-    only: %i[show create destroy]
+    only: %i[create destroy]
   resources :app_groups,
     only: %i[index show new create],
     defaults: { format: :html } do
+      member do
+        get :manage_access
+      end
       collection do
         get :search
       end

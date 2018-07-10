@@ -20,10 +20,10 @@ p
   = @app_group.infrastructure.status
   br
 
-= link_to "Open Kibana", "#", class: 'btn btn-primary mr-2'
+= link_to 'Open Kibana', '#', class: 'btn btn-primary mr-2'
 - if @allow_action
-  = link_to "Upgrade", "#", class: 'btn btn-primary mr-2'
-  = link_to 'Assign Member', app_group_permission_path(@app_group), class: 'btn btn-primary'
+  = link_to 'Upgrade', '#', class: 'btn btn-primary mr-2'
+  = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary'
 
 br
 br
@@ -56,7 +56,7 @@ h4.mb-3 All Applications
           td.text-center
             - if @allow_action
               = link_to "Delete", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
-      
+
       - if @allow_action
         tr
           td.text-center = f.text_field :name

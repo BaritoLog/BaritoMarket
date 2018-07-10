@@ -1,4 +1,9 @@
 class AppGroupsController < ApplicationController
+  before_action :set_app_group, only: [:show, :manage_access]
+  before_action only: [:show, :manage_access] do
+    authorize @app_group
+  end
+
   def index
     @app_groups = policy_scope(AppGroup)
   end
@@ -9,7 +14,6 @@ class AppGroupsController < ApplicationController
   end
 
   def show
-    @app_group = AppGroup.find(params[:id])
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
     @allow_action = policy(@app_group).allow_action?
@@ -31,6 +35,13 @@ class AppGroupsController < ApplicationController
     end
   end
 
+  def manage_access
+    @app_group_admin = AppGroupAdmin.new(app_group: @app_group)
+    @app_group_admins = AppGroupAdmin.includes(:user).where(app_group: @app_group)
+    @app_group_permission = AppGroupPermission.new(app_group: @app_group)
+    @group_permissions = AppGroupPermission.includes(:group).where(app_group: @app_group)
+  end
+
   private
 
   def app_group_params
@@ -40,5 +51,9 @@ class AppGroupsController < ApplicationController
       :capacity,
       :user_id
     )
+  end
+
+  def set_app_group
+    @app_group = AppGroup.find(params[:id])
   end
 end

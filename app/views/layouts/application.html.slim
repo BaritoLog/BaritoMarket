@@ -32,6 +32,10 @@ html
     .container-fluid.align-items-center.pt-4.pb-4.bg-light
       .row
         .col-md-12.text
+          - if flash.key?(:alert) && flash[:alert].class == String
+            .alert.alert-danger.text-center
+              = flash[:alert]
+
           ==yield
     footer.pt-2.border-top.col-md-12
       .row
