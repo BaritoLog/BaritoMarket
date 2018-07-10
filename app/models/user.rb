@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
     devise :database_authenticatable, :trackable, :registerable
   end
 
-  validates :username: uniqueness: true, allow_blank: true
+  validates :username, uniqueness: true, allow_blank: true
   validates :email, uniqueness: true, allow_blank: true
 
   def cas_extra_attributes=(extra_attributes)
