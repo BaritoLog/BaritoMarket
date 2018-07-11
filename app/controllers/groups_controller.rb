@@ -20,6 +20,7 @@ class GroupsController < ApplicationController
   end
 
   def new
+    authorize Group
     @group = Group.new
   end
 

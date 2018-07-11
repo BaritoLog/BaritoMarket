@@ -7,8 +7,12 @@ class GroupPolicy < ApplicationPolicy
     index?
   end
 
+  def new?
+    user.admin?
+  end
+
   def create?
-    index?
+    new?
   end
 
   def destroy?
