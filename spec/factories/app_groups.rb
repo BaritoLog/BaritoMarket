@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :app_group do
     association :created_by, factory: :user
-    name Faker::Lorem.word
+    sequence(:name) { |n| "#{Faker::Cat.name} #{n}" }
   end
 end

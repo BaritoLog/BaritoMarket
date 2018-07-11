@@ -2,23 +2,29 @@ require 'rails_helper'
 
 RSpec.feature 'List Groups', type: :feature do
   let(:user) { create(:user) }
+  let(:admin) { create(:user, :admin) }
 
   before(:each) do
-    allow_any_instance_of(GateWrapper).to receive(:check_user_groups).and_return({groups: []})
-
-    login_as user
+    set_check_user_groups({ groups: [] })
   end
 
-  scenario 'No groups are registered' do
-    visit groups_path
-    expect(page).to have_content('No group registered')
+  context 'As Superadmin' do
+    scenario 'User can see list of registered groups' do
+      login_as admin
+      groups = create_list(:group, 5)
+      visit groups_path
+      groups.each do |group|
+        expect(page).to have_content(group.name)
+      end
+    end
   end
 
-  scenario 'Groups are registered' do
-    groups = create_list(:group, 5)
-    visit groups_path
-    groups.each do |group|
-      expect(page).to have_content(group.name)
+  context 'As Plain User' do
+    scenario 'User not allowed to access this page' do
+      login_as user
+      visit groups_path
+
+      expect(page).to have_current_path(root_path)
     end
   end
 end
