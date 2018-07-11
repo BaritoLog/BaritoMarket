@@ -91,7 +91,6 @@ RSpec.feature 'Group Management', type: :feature do
       scenario 'User can assign user to group' do
         group = create(:group)
 
-        binding.pry
         login_as admin
         visit group_path(group)
 
