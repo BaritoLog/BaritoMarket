@@ -9,8 +9,6 @@ RSpec.feature 'Group Management', type: :feature do
   describe 'View groups list' do
     context 'As Superadmin' do
       scenario 'User can see list of registered groups' do
-        puts '*' * 100
-        puts Capybara.javascript_driver
         login_as admin
         groups = create_list(:group, 5)
         visit groups_path
@@ -86,7 +84,7 @@ RSpec.feature 'Group Management', type: :feature do
     end
   end
 
-  describe 'Assign User to Group' do
+  describe 'Assign User to Group', js: true do
     context 'As Superadmin' do
       scenario 'User can assign user to group' do
         group = create(:group)
@@ -95,8 +93,10 @@ RSpec.feature 'Group Management', type: :feature do
         visit group_path(group)
 
         expect(page).to have_content("Group - #{group.name}")
-        skip 'Still have problem with javascript driver'
-        # set_select2_option(selector: '#assign_member_user_id', text: group.name, value: group.id)
+        set_select2_option(selector: '#assign_member_user_id', text: "#{user.username} - #{user.email}", value: user.id)
+
+        click_button 'Add'
+        expect(page).to have_content("#{user.username} - #{user.email}")
       end
     end
 

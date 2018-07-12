@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'webmock/rspec'
 require 'database_cleaner'
 require 'coveralls'
+require 'selenium/webdriver'
 require 'simplecov'
 require 'simplecov-console'
 require 'sidekiq/testing'
@@ -30,10 +31,13 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+Capybara.javascript_driver = :selenium_chrome_headless
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include Warden::Test::Helpers
   config.include GateWrapperHelper
+  config.include AppViewHelper
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -64,21 +68,28 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.before(:suite) do
     ENV['ENABLE_CHECK_GATE'] = 'true'
+
+    WebMock.disable_net_connect!(:allow_localhost => true)
     Sidekiq::Testing.fake!
     DatabaseCleaner.clean_with(:truncation)
   end
+
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
   end
+
   config.before(:each, js: true) do
     DatabaseCleaner.strategy = :truncation
   end
+
   config.before(:each) do
     DatabaseCleaner.start
   end
+
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
   Coveralls.wear!
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::Console])
   SimpleCov.start
