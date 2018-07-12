@@ -5,14 +5,14 @@ class AppGroupPermissionsController < ApplicationController
     unless @app_group_permission.save
       flash[:errors] = @app_group_permission.errors.full_messages
     end
-    redirect_to app_group_permission_path(@app_group_permission.app_group)
+    redirect_to manage_access_app_group_path(@app_group_permission.app_group)
   end
 
   def destroy
     @app_group_permission = AppGroupPermission.find(params[:id])
     @app_group_permission.destroy!
 
-    redirect_to app_group_permission_path(@app_group_permission.app_group)
+    redirect_to manage_access_app_group_path(@app_group_permission.app_group)
   end
 
   private

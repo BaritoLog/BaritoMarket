@@ -3,7 +3,7 @@ class AppGroupPolicy < ApplicationPolicy
     return true if user.admin? || record.created_by == user
 
     if Figaro.env.enable_check_gate == 'true'
-      gate_groups = GateWrapper.new(user).check_user_groups['groups'] || []
+      gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
       groups = AppGroupPermission.joins(:group).where('groups.name IN (?)', gate_groups)
       app_group_ids = groups.pluck(:app_group_id)
     else
@@ -30,14 +30,22 @@ class AppGroupPolicy < ApplicationPolicy
     def resolve
       return scope.all if user.admin?
 
+      admin_group_ids = AppGroupAdmin.where(user: user).pluck(:app_group_id)
+
       if Figaro.env.enable_check_gate == 'true'
-        gate_groups = GateWrapper.new(user).check_user_groups['groups'] || []
+        gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
         groups = AppGroupPermission.joins(:group).where('groups.name IN (?)', gate_groups)
-        scope.where(created_by: user).or(scope.where(id: groups.pluck(:app_group_id)))
+        scope.
+          where(created_by: user).
+          or(scope.where(id: groups.pluck(:app_group_id))).
+          or(scope.where(id: admin_group_ids))
       else
         group_ids = user.groups.pluck(:id)
         app_group_ids = AppGroupPermission.where(group_id: group_ids)
-        scope.where(created_by: user).or(scope.where(id: app_group_ids))
+        scope.
+          where(created_by: user).
+          or(scope.where(id: app_group_ids)).
+          or(scope.where(id: admin_group_ids))
       end
     end
   end

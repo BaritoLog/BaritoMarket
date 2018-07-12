@@ -6,14 +6,14 @@ class AppGroupAdminsController < ApplicationController
       flash[:errors] = @app_group_admin.errors.full_messages
     end
 
-    redirect_to app_group_permission_path(@app_group_admin.app_group_id)
+    redirect_to manage_access_app_group_path(@app_group_admin.app_group_id)
   end
 
   def destroy
     @app_group_admin = AppGroupAdmin.find(params[:id])
     @app_group_admin.destroy!
 
-    redirect_to app_group_permission_path(@app_group_admin.app_group_id)
+    redirect_to manage_access_app_group_path(@app_group_admin.app_group_id)
   end
 
   private
