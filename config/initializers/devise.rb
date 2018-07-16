@@ -62,7 +62,7 @@ Devise.setup do |config|
   # config.cas_single_sign_out_mapping_strategy = :redis_cache
 
   # If you need to specify some extra configs for rubycas-client, you can do this via:
-  config.cas_client_config_options = {
-    extra_attributes_session_key: :cas_extra_attributes
-  }
+  # config.cas_client_config_options = {
+  #   extra_attributes_session_key: :cas_extra_attributes
+  # }
 end
