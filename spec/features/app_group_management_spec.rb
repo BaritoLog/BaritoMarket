@@ -145,7 +145,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         find('form#new_app_group_permission input[value="Add"]').click
         expect(page).to have_content(group.name)
 
-        find("a[href='#{app_group_permission_path(group)}']").click
+        find("a[href='#{app_group_permission_path(AppGroupPermission.first)}']").click
         expect(page).not_to have_content(group.name)
       end
     end
@@ -182,9 +182,8 @@ RSpec.feature 'Application Group Management', type: :feature do
         find('form#new_app_group_permission input[value="Add"]').click
         expect(page).to have_content(group.name)
 
-        find("a[href='#{app_group_permission_path(group)}']").click
+        find("a[href='#{app_group_permission_path(AppGroupPermission.first)}']").click
         expect(page).not_to have_content(group.name)
-        
       end
     end
   end

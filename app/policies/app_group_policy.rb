@@ -2,6 +2,8 @@ class AppGroupPolicy < ApplicationPolicy
   def show?
     return true if user.admin? || record.created_by == user
 
+    admin_group_ids = AppGroupAdmin.where(user: user).pluck(:app_group_id)
+
     if Figaro.env.enable_check_gate == 'true'
       gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
       groups = AppGroupPermission.joins(:group).where('groups.name IN (?)', gate_groups)
@@ -11,7 +13,11 @@ class AppGroupPolicy < ApplicationPolicy
       app_group_ids = AppGroupPermission.where(group_id: group_ids)
     end
 
-    record.class.where(created_by: user).or(record.class.where(id: app_group_ids)).count > 0
+    record.class.
+      where(created_by: user).
+      or(record.class.where(id: app_group_ids)).
+      or(record.class.where(id: admin_group_ids)).
+      count > 0
   end
 
   def manage_access?
