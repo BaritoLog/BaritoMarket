@@ -35,6 +35,8 @@ html
           - if flash.key?(:alert) && flash[:alert].class == String
             .alert.alert-danger.text-center
               = flash[:alert]
+              = button_tag class: 'close', data: { dismiss: 'alert' }, 'aria-label': 'Close' do
+                span [aria-hidden="true"] &times;
 
           ==yield
     footer.pt-2.border-top.col-md-12

@@ -17,6 +17,7 @@ class AppGroupsController < ApplicationController
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
     @allow_action = policy(@app_group).allow_action?
+    @allow_upgrade = policy(@app_group).allow_upgrade?
   end
 
   def new
@@ -35,11 +36,21 @@ class AppGroupsController < ApplicationController
     end
   end
 
+  def delete
+    # NOTE: @opan
+    # Not real delete, we just flag it as 'delete'
+    # need to add 'deleted_at' column on 'app_groups' table
+  end
+
   def manage_access
-    @app_group_admin = AppGroupAdmin.new(app_group: @app_group)
-    @app_group_admins = AppGroupAdmin.includes(:user).where(app_group: @app_group)
-    @app_group_permission = AppGroupPermission.new(app_group: @app_group)
-    @group_permissions = AppGroupPermission.includes(:group).where(app_group: @app_group)
+    @app_group_user = AppGroupUser.new(app_group: @app_group)
+    @app_group_users = AppGroupUser.
+      joins(:user, :role).
+      group('users.email, users.username, user_id').
+      select("user_id, string_agg(role_id::character varying, ',') AS roles, users.email, users.username")
+
+    @role_member = AppGroupRole.as_member
+    @roles = AppGroupRole.where.not(name: 'member')
   end
 
   private

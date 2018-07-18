@@ -18,11 +18,18 @@ Rails.application.routes.draw do
 
   get '/users/search', to: 'users#search', defaults: { format: :json }
   get '/groups/search', to: 'groups#search', defaults: { format: :json }
+  match '/app_group_users/:user_id/set_role', to: 'app_group_users#set_role', via: [:put, :patch], as: 'set_role_app_group_user'
+  delete '/app_group_users/:user_id/delete/:app_group_id', to: 'app_group_users#destroy', as: 'app_group_user'
 
   resources :app_group_admins,
-    only: %i[create destroy]
+    only: %i[create destroy],
+    defaults: { format: :html }
   resources :app_group_permissions,
-    only: %i[create destroy]
+    only: %i[create destroy],
+    defaults: { format: :html }
+  resources :app_group_users,
+    only: %i[create update],
+    defaults: { format: :html }
   resources :app_groups,
     only: %i[index show new create],
     defaults: { format: :html } do

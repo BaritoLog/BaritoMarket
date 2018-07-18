@@ -14,5 +14,5 @@ table.table.table-bordered
         td = 'No group registered'
     - @groups.each do |group|
       tr
-        td = link_to group.name, group_path(group)
+        td.text-center = link_to group.name, group_path(group)
         td.text-center = link_to 'Delete', group_path(group), data: { method: :delete }

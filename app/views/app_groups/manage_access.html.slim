@@ -3,38 +3,29 @@
     h3.mb-3= "Application Group - #{@app_group.name}"
     hr
 
-    h4.mb-3 Administrator
-    = form_for(@app_group_admin) do |f|
+    h4.mb-3 Members
+    = form_for(@app_group_user) do |f|
       = f.hidden_field :app_group_id
       .form-group
-        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_admin_user_id'
+        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
       .form-group
         = f.submit 'Add', class: 'btn btn-primary'
     br
     ul.list-group
-      - @app_group_admins.each do |admin|
+      - @app_group_users.each do |member|
         li.list-group-item
           .row.no-gutters
-            .col-10= admin.user.username + ' - ' + admin.user.email
-            .col-2.text-right= link_to 'Delete', app_group_admin_path(admin), class: 'btn btn-danger', data: { method: :delete }
-
-      - if @app_group_admins.blank?
-        li.list-group-item.text-center There is no admin assigned here yet
-
-    hr
-
-    h4.mb-3 Groups
-    = form_for(@app_group_permission) do |f|
-      = f.hidden_field :app_group_id
-      .form-group
-        = f.select :group_id, [], {}, class: 'form-control', id: 'assign_group_id'
-      .form-group
-        = f.submit 'Add', class: 'btn btn-primary'
-
-    br
-    ul.list-group
-      - @group_permissions.each do |perm|
-        li.list-group-item
+            .col-10= member.username + ' - ' + member.email
+            .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger', data: { method: :delete }
           .row.no-gutters
-            .col-10= perm.group.name
-            .col-2.text-right= link_to 'Delete', app_group_permission_path(perm), class: 'btn btn-danger', data: { method: :delete }
+            .col-12
+              = form_tag(set_role_app_group_user_path(user_id: member.user_id), method: :patch, class: 'form-inline mt-2') do
+                = hidden_field_tag :app_group_id, @app_group.id
+                = hidden_field_tag 'app_group_user[app_group_id]', @app_group.id
+                .form-group.mr-2
+                  = select_tag 'app_group_user[role_id]', options_from_collection_for_select(@roles, :id, :name, member.roles.split(',').find { |i| i.to_i != @role_member.id }), include_blank: true, class: 'form-control', id: "set_role_user_#{member.user_id}", prompt: 'Unset role'
+                .form-group
+                  = submit_tag 'Set', class: 'btn btn-primary'
+
+      - if @app_group_users.blank?
+        li.list-group-item.text-center There is no members registered yet

@@ -1,4 +1,4 @@
-class BaritoApp < ActiveRecord::Base
+class BaritoApp < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
   validates :app_group, :name, :topic_name, :secret_key, :status,
     presence: true

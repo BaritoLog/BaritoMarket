@@ -21,8 +21,9 @@ p
   br
 
 = link_to 'Open Kibana', '#', class: 'btn btn-primary mr-2'
-- if @allow_action
+- if @allow_upgrade
   = link_to 'Upgrade', '#', class: 'btn btn-primary mr-2'
+- if @allow_action
   = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary'
 
 br
@@ -46,23 +47,23 @@ h4.mb-3 All Applications
     tbody
       - @apps.each do |barito_app|
         tr
-          td.text-center = barito_app.name
-          td.text-center = barito_app.topic_name
-          td.text-center = barito_app.secret_key
-          td.text-center = barito_app.max_tps
-          td.text-center = barito_app.status
-          td.text-center = barito_app.log_count
-          td.text-center = barito_app.created_at
+          td.text-center= barito_app.name
+          td.text-center= barito_app.topic_name
+          td.text-center= barito_app.secret_key
+          td.text-center= barito_app.max_tps
+          td.text-center= barito_app.status
+          td.text-center= barito_app.log_count
+          td.text-center= barito_app.created_at
           td.text-center
-            - if @allow_action
+            - if @allow_upgrade
               = link_to "Delete", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
 
-      - if @allow_action
+      - if @allow_upgrade
         tr
-          td.text-center = f.text_field :name
-          td.text-center = f.text_field :topic_name
+          td.text-center= f.text_field :name
+          td.text-center= f.text_field :topic_name
           td.text-center
-          td.text-center = f.text_field :max_tps
+          td.text-center= f.text_field :max_tps
           td.text-center
           td.text-center
           td.text-center

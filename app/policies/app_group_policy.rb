@@ -2,57 +2,42 @@ class AppGroupPolicy < ApplicationPolicy
   def show?
     return true if user.admin? || record.created_by == user
 
-    admin_group_ids = AppGroupAdmin.where(user: user).pluck(:app_group_id)
-
-    if Figaro.env.enable_check_gate == 'true'
-      gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
-      groups = AppGroupPermission.joins(:group).where('groups.name IN (?)', gate_groups)
-      app_group_ids = groups.pluck(:app_group_id)
-    else
-      group_ids = user.groups.pluck(:id)
-      app_group_ids = AppGroupPermission.where(group_id: group_ids)
-    end
-
-    record.class.
-      where(created_by: user).
-      or(record.class.where(id: app_group_ids)).
-      or(record.class.where(id: admin_group_ids)).
-      count > 0
+    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+    app_group_ids.include?(record.id)
   end
 
   def manage_access?
     return true if user.admin? || record.created_by == user
 
-    AppGroupAdmin.where(app_group: record, user: user).count > 0
+    AppGroupUser.
+      joins(:role).
+      where(user: user, app_group_roles: { name: AppGroupRole.allow_manage_access }).count > 0
   end
 
   def allow_action?
+    manage_access?
+  end
+
+  def allow_upgrade?
     return true if user.admin? || record.created_by == user
 
-    AppGroupAdmin.where(user: user, app_group: record).count > 0
+    AppGroupUser.
+      joins(:role).
+      where(user: user, app_group_roles: { name: AppGroupRole.allow_upgrade }).count > 0
   end
 
   class Scope < Scope
     def resolve
       return scope.all if user.admin?
 
-      admin_group_ids = AppGroupAdmin.where(user: user).pluck(:app_group_id)
-
       if Figaro.env.enable_check_gate == 'true'
         gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
-        groups = AppGroupPermission.joins(:group).where('groups.name IN (?)', gate_groups)
-        scope.
-          where(created_by: user).
-          or(scope.where(id: groups.pluck(:app_group_id))).
-          or(scope.where(id: admin_group_ids))
-      else
-        group_ids = user.groups.pluck(:id)
-        app_group_ids = AppGroupPermission.where(group_id: group_ids)
-        scope.
-          where(created_by: user).
-          or(scope.where(id: app_group_ids)).
-          or(scope.where(id: admin_group_ids))
+        return scope.all if Group.where(name: gate_groups).count > 0
       end
+
+      app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+      scope.where(created_by: user).
+        or(scope.where(id: app_group_ids))
     end
   end
 end
