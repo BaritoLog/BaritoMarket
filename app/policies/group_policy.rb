@@ -1,6 +1,6 @@
 class GroupPolicy < ApplicationPolicy
   def index?
-    if Figaro.env.enable_check_gate == 'true'
+    if Figaro.env.enable_cas_integration == 'true'
       gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
       return Group.all if Group.where(name: gate_groups).count > 0
     end
