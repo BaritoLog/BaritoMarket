@@ -9,14 +9,7 @@ class GateWrapper
 
   def check_user_groups
     uri = URI(@url + '/nss/user/groups.json')
-    uri.query = URI.encode_www_form({ email: @user.email, token: @user.auth_token })
-    response = Net::HTTP.get(uri)
-    JSON.parse(response)
-  end
-
-  def get_user_profile
-    uri = URI(@url + '/users/profile')
-    uri.query = URI.encode_www_form({ token: @user.auth_token })
+    uri.query = URI.encode_www_form({ email: @user.username, token: Figaro.env.gate_access_token })
     response = Net::HTTP.get(uri)
     JSON.parse(response)
   end

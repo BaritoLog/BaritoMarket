@@ -10,37 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_08_154606) do
+ActiveRecord::Schema.define(version: 2018_07_17_040929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "app_group_admins", force: :cascade do |t|
-    t.bigint "app_group_id"
-    t.bigint "user_id"
+  create_table "app_group_roles", force: :cascade do |t|
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_group_id", "user_id"], name: "index_app_group_admins_on_app_group_id_and_user_id", unique: true
-    t.index ["app_group_id"], name: "index_app_group_admins_on_app_group_id"
-    t.index ["user_id"], name: "index_app_group_admins_on_user_id"
   end
 
-  create_table "app_group_permissions", force: :cascade do |t|
+  create_table "app_group_users", force: :cascade do |t|
     t.bigint "app_group_id"
-    t.bigint "group_id"
+    t.bigint "user_id"
+    t.bigint "role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_group_id", "group_id"], name: "index_app_group_permissions_on_app_group_id_and_group_id", unique: true
-    t.index ["app_group_id"], name: "index_app_group_permissions_on_app_group_id"
-    t.index ["group_id"], name: "index_app_group_permissions_on_group_id"
+    t.index ["app_group_id", "user_id", "role_id"], name: "index_app_group_users_on_app_group_id_and_user_id_and_role_id", unique: true
+    t.index ["app_group_id"], name: "index_app_group_users_on_app_group_id"
+    t.index ["role_id"], name: "index_app_group_users_on_role_id"
+    t.index ["user_id"], name: "index_app_group_users_on_user_id"
   end
 
   create_table "app_groups", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_app_groups_on_user_id"
+    t.bigint "created_by_id"
+    t.datetime "deleted_at"
+    t.index ["created_by_id"], name: "index_app_groups_on_created_by_id"
   end
 
   create_table "barito_apps", force: :cascade do |t|
@@ -91,4 +90,5 @@ ActiveRecord::Schema.define(version: 2018_07_08_154606) do
     t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
+  add_foreign_key "app_groups", "users", column: "created_by_id"
 end

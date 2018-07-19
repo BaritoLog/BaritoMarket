@@ -20,6 +20,7 @@ CONTAINER_HOST_NAME:         'barito'
 CONTAINER_PRIVATE_KEY:       'barito'
 CONTAINER_USERNAME:          'ubuntu'
 DEFAULT_CONSUL_PORT:         '8500'
+GATE_ACCESS_TOKEN:           'securerandomstring'
 
 development:
   RAILS_ENV:                 'development'

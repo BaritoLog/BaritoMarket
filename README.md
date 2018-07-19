@@ -34,6 +34,7 @@ Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8
 
 * Set `GATE_URL` to current running GATE server
 * You can turn off GATE integration by setting `ENABLE_CAS_INTEGRATION` to `false` in `application.yml`
+* Set `GATE_ACCESS_TOKEN` to communicate with GATE API
 
 ### Running
 * Run `RAILS_ENV=development bundle exec rake` to run the build

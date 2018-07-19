@@ -67,7 +67,7 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.before(:suite) do
-    ENV['ENABLE_CHECK_GATE'] = 'true'
+    ENV['ENABLE_CAS_INTEGRATION'] = 'true'
 
     WebMock.disable_net_connect!(:allow_localhost => true)
     Sidekiq::Testing.fake!
