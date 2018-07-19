@@ -5,7 +5,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
     create_table :users do |t|
       ## CAS authenticatable
       t.string :username, default: ''
-      t.string :auth_token, default: ''
       t.boolean :admin, default: false, null: false
 
       ## Database authenticatable

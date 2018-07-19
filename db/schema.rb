@@ -34,6 +34,13 @@ ActiveRecord::Schema.define(version: 2018_07_02_093138) do
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
   end
 
+  create_table "groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_groups_on_name"
+  end
+
   create_table "infrastructures", force: :cascade do |t|
     t.string "name"
     t.string "cluster_name"
@@ -47,16 +54,11 @@ ActiveRecord::Schema.define(version: 2018_07_02_093138) do
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
   end
 
-  create_table "groups", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "gid"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_groups_on_name"
-  end
-
   create_table "users", force: :cascade do |t|
-    t.string "username", null: false
+    t.string "username", default: ""
+    t.boolean "admin", default: false, null: false
+    t.string "email", default: ""
+    t.string "encrypted_password", default: ""
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
@@ -64,7 +66,8 @@ ActiveRecord::Schema.define(version: 2018_07_02_093138) do
     t.inet "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["username"], name: "index_users_on_username", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true, where: "((email IS NOT NULL) AND ((email)::text <> ''::text))"
+    t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
 end

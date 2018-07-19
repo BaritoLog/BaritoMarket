@@ -5,6 +5,7 @@ DB_POOL:                     '5'
 DB_TIMEOUT:                  '5000'
 ENABLE_CAS_INTEGRATION:      'false'
 CAS_BASE_URL:                'http://localhost:3001'
+GATE_URL:                    'http://localhost:3005'
 PROVISION_AVAILABLE_INSTANCES:    'yggdrasil,consul,zookeeper,kafka,elasticsearch,barito-flow-producer,barito-flow-consumer,kibana'
 APP_GROUPS:                  'barito'
 MARKET_END_POINT:            'http://market.barito.local/'
@@ -19,8 +20,6 @@ CONTAINER_HOST_NAME:         'barito'
 CONTAINER_PRIVATE_KEY:       'barito'
 CONTAINER_USERNAME:          'ubuntu'
 DEFAULT_CONSUL_PORT:         '8500'
-GATE_URL:                    'http://localhost:3005'
-ENABLE_CHECK_GATE:           true
 
 development:
   RAILS_ENV:                 'development'
