@@ -23,7 +23,7 @@
                 = hidden_field_tag :app_group_id, @app_group.id
                 = hidden_field_tag 'app_group_user[app_group_id]', @app_group.id
                 .form-group.mr-2
-                  = select_tag 'app_group_user[role_id]', options_from_collection_for_select(@roles, :id, :name, member.roles.split(',').find { |i| i.to_i != @role_member.id }), include_blank: true, class: 'form-control', id: "set_role_user_#{member.user_id}", prompt: 'Unset role'
+                  = select_tag 'app_group_user[role_id]', options_from_collection_for_select(@roles, :id, :name, member.roles.split(',').find { |i| i.to_i != @role_member.id }), include_blank: true, class: 'form-control', id: "set_role_user_#{member.user_id}", prompt: 'No role'
                 .form-group
                   = submit_tag 'Set', class: 'btn btn-primary'
 

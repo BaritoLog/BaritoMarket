@@ -1,6 +1,11 @@
 class GroupPolicy < ApplicationPolicy
   def index?
-    user.admin?
+    if Figaro.env.enable_check_gate == 'true'
+      gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
+      return Group.all if Group.where(name: gate_groups).count > 0
+    end
+
+    user.admin? || GroupUser.where(user: user).count > 0
   end
 
   def show?
@@ -8,11 +13,11 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def new?
-    user.admin?
+    index?
   end
 
   def create?
-    new?
+    index?
   end
 
   def destroy?

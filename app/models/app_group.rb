@@ -3,10 +3,8 @@ class AppGroup < ApplicationRecord
 
   belongs_to :created_by, foreign_key: :created_by_id, class_name: 'User'
   has_many :barito_apps
-  # has_many :app_group_admins
-  # has_many :admins, through: :app_group_admins, source: :user
-  # has_many :app_group_permissions
-  # has_many :groups, through: :app_group_permissions
+  has_many :app_group_users
+  has_many :users, through: :app_group_users
   has_one :infrastructure
 
   def self.setup(env, params)

@@ -18,8 +18,19 @@ RSpec.feature 'Group Management', type: :feature do
       end
     end
 
-    context 'As Plain User' do
-      scenario 'User cannot see group lists' do
+    context 'As Authorized User based on Group from Gate' do
+      scenario 'User that registered to some groups in Gate and exists in BaritoMarket can see list of groups' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        group = create(:group, name: 'barito-superadmin')
+
+        login_as user
+        visit groups_path
+
+        expect(page).to have_current_path(groups_path)
+        expect(page).to have_content(group.name)
+      end
+
+      scenario 'User that not registered to some groups in Gate and/or exists in BaritoMarket cannot see list of groups' do
         login_as user
         visit groups_path
 
@@ -47,8 +58,26 @@ RSpec.feature 'Group Management', type: :feature do
       end
     end
 
-    context 'As Plain User' do
-      scenario 'User cannot create group' do
+    context 'As Authorized User based on Group from Gate' do
+      scenario 'User that registered to some groups in Gate and exists in BaritoMarket can create new group' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        group = create(:group, name: 'barito-superadmin')
+        prep_group = build(:group)
+
+        login_as user
+        visit new_group_path
+
+        within('#new_group') do
+          fill_in 'group_name', with: prep_group.name
+        end
+
+        click_button 'Submit'
+
+        expect(page).to have_current_path(groups_path)
+        expect(page).to have_content(prep_group.name)
+      end
+
+      scenario 'User that not registered to some groups in Gate and/or exists in BaritoMarket cannot create new group' do
         login_as user
         visit new_group_path
 
@@ -74,8 +103,23 @@ RSpec.feature 'Group Management', type: :feature do
       end
     end
 
-    context 'As Plain User' do
-      scenario 'User cannot delete any group' do
+    context 'As Authorized User based on Group from Gate' do
+      scenario 'User that registered to some groups in Gate and exists in BaritoMarket can delete group' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        group = create(:group, name: 'barito-superadmin')
+
+        login_as user
+        visit groups_path
+
+        expect(page).to have_content(group.name)
+        expect(page).to have_content('Delete')
+
+        click_link 'Delete'
+        expect(page).not_to have_content(group.name)
+        expect(page).not_to have_content('Delete')
+      end
+
+      scenario 'User that registered to some groups in Gate and exists in BaritoMarket cannot delete group' do
         login_as user
         visit new_group_path
 
@@ -84,29 +128,29 @@ RSpec.feature 'Group Management', type: :feature do
     end
   end
 
-  describe 'Assign User to Group', js: true do
-    context 'As Superadmin' do
-      scenario 'User can assign user to group' do
-        group = create(:group)
+  # describe 'Assign User to Group', js: true do
+    # context 'As Superadmin' do
+      # scenario 'User can assign user to group' do
+        # group = create(:group)
 
-        login_as admin
-        visit group_path(group)
+        # login_as admin
+        # visit group_path(group)
 
-        expect(page).to have_content("Group - #{group.name}")
-        set_select2_option(selector: '#assign_member_user_id', text: "#{user.username} - #{user.email}", value: user.id)
+        # expect(page).to have_content("Group - #{group.name}")
+        # set_select2_option(selector: '#assign_member_user_id', text: "#{user.username} - #{user.email}", value: user.id)
 
-        click_button 'Add'
-        expect(page).to have_content("#{user.username} - #{user.email}")
-      end
-    end
+        # click_button 'Add'
+        # expect(page).to have_content("#{user.username} - #{user.email}")
+      # end
+    # end
 
-    context 'As Plain User' do
-      scenario 'User cannot delete any group' do
-        login_as user
-        visit new_group_path
+    # context 'As Plain User' do
+      # scenario 'User cannot delete any group' do
+        # login_as user
+        # visit new_group_path
 
-        expect(page).to have_current_path(root_path)
-      end
-    end
-  end
+        # expect(page).to have_current_path(root_path)
+      # end
+    # end
+  # end
 end
