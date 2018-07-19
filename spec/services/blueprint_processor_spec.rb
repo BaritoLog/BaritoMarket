@@ -26,10 +26,15 @@ RSpec.describe BlueprintProcessor do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
+          'success' => 'true',
+          'error' => '',
+          'data' => {
+          }
+        })
+        allow(sauron_provisioner).to receive(:show_container).and_return({
           'success' => true,
           'data' => {
             'host_ipaddress' => 'xx.yy.zz.hh',
-            'key_pair_name' => 'barito'
           }
         })
         allow(SauronProvisioner).to receive(:new).
@@ -42,6 +47,12 @@ RSpec.describe BlueprintProcessor do
         })
         allow(ChefSoloBootstrapper).to receive(:new).
           and_return(chef_solo_bootstrapper)
+      end
+
+      it 'should find infrastructure from opts if blueprint_hash is nil' do
+        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @infrastructure.id)
+        blueprint_processor.process!(blueprint_processor.infrastructure.infrastructure_components)
+        expect(blueprint_processor.infrastructure).to eq @infrastructure
       end
 
       it 'should populate infrastructure_components based on return value from provisioner' do
@@ -121,10 +132,15 @@ RSpec.describe BlueprintProcessor do
         # Mock sauron_provisioner
         sauron_provisioner = double
         allow(sauron_provisioner).to receive(:provision!).and_return({
+          'success' => 'true',
+          'error' => '',
+          'data' => {
+          }
+        })
+        allow(sauron_provisioner).to receive(:show_container).and_return({
           'success' => true,
           'data' => {
             'host_ipaddress' => 'xx.yy.zz.hh',
-            'key_pair_name' => 'barito'
           }
         })
         allow(SauronProvisioner).to receive(:new).
@@ -144,10 +160,9 @@ RSpec.describe BlueprintProcessor do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         expect(blueprint_processor.infrastructure_components.first.status).to eq 'BOOTSTRAP_ERROR'
-        expect(blueprint_processor.infrastructure_components.last.status).to eq 'PROVISIONING_FINISHED'
+        expect(blueprint_processor.infrastructure_components.last.status).to eq 'PROVISIONING_STARTED'
         @infrastructure.reload
         expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_ERROR'
-
       end
     end
   end

@@ -7,25 +7,11 @@ class SauronProvisioner
   end
 
   def provision!(hostname, opts = {})
+
     create_res = create_container!(hostname, opts)
     return respond_error(create_res['errors']) unless create_res['success'] == 'true'
 
-    # Get container details
-    ipaddress = nil
-    count = 0
-    while ipaddress == nil || count == 30
-      sleep(5) unless Rails.env.test?
-      show_res = show_container(hostname)
-      ipaddress = show_res.dig('data', 'ipaddress')
-      count += 1
-    end
-
-    return {
-      'success' => true,
-      'data' => {
-        'host_ipaddress' => ipaddress
-      }
-    }
+    return create_res
   end
 
   def create_container!(hostname, opts = {})

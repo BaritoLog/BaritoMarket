@@ -33,30 +33,6 @@ RSpec.describe SauronProvisioner do
             }
           }.to_json
         })
-
-      stub_request(:get, "http://#{@sauron_host}/container.json").
-        with(
-          query: {
-            'container_hostname' => 'test-01',
-          },
-          headers: {
-            'Content-Type' => 'application/json',
-            'Expect' => '',
-            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
-          }
-        ).to_return({
-          status: 200,
-          headers: {
-            'Content-Type' => 'application/json',
-            'Expect' => '',
-            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
-          },
-          body: {
-            'data' => {
-              'ipaddress' => 'xx.yy.zz.hh',
-            }
-          }.to_json
-        })
     end
 
     context 'using SauronProvisioner' do
@@ -66,9 +42,9 @@ RSpec.describe SauronProvisioner do
         provision_result = sauron_provisioner.
           provision!('test-01')
         expect(provision_result).to eq({
-          'success' => true,
+          'success' => 'true',
+          'error' => '',
           'data' => {
-            'host_ipaddress' => 'xx.yy.zz.hh'
           }
         })
       end

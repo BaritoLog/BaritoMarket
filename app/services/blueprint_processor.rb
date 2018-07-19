@@ -9,13 +9,7 @@ class BlueprintProcessor
 
     # Initialize Provisioner
     @sauron_host          = (opts[:sauron_host] || '127.0.0.1:3000')
-    @container_host       = (opts[:container_host] || '127.0.0.1')
-    @container_host_name  = (opts[:container_host_name] || 'localhost')
-    @provisioner          = SauronProvisioner.new(
-      @sauron_host,
-      @container_host,
-      @container_host_name
-    )
+    @provisioner          = SauronProvisioner.new(@sauron_host)
 
     # Initialize Bootstrapper
     @chef_repo_dir        = (opts[:chef_repo_dir] || '/opt/chef-repo')
@@ -37,10 +31,9 @@ class BlueprintProcessor
     end
 
     # Provision instances
-    @infrastructure.update_provisioning_status('PROVISIONING_STARTED')
     Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning started"
     if provision_instances!
-      @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
+      @infrastructure.update_provisioning_status('PROVISIONING_STARTED')
       Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning finished"
     else
       @infrastructure.update_provisioning_status('PROVISIONING_ERROR')
@@ -81,7 +74,6 @@ class BlueprintProcessor
   def provision_instance!(component, opts = {})
     success = false
 
-    component.update_status('PROVISIONING_STARTED')
     # Execute provisioning
     res = @provisioner.provision!(
       component.hostname,
@@ -89,14 +81,8 @@ class BlueprintProcessor
     )
     Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Provisioning #{component.hostname} -- #{res}"
 
-    if res['success'] == true
-      component.update_ipaddress(res.dig('data', 'host_ipaddress'))
-      component.update_status('PROVISIONING_FINISHED')
-
-      # TODO add key_pair_name column in infrastructure table
-      # @infrastructure.key_pair_name = res.dig('data', 'key_pair_name')
-      # @infrastructure.save! unless @infrastructure.key_pair_name==res.dig('data', 'key_pair_name')
-
+    if res['success'] == "true"
+      component.update_status('PROVISIONING_STARTED')
       success = true
     else
       @errors << { message: res['error'] }
@@ -108,6 +94,7 @@ class BlueprintProcessor
 
   def bootstrap_instances!
     @infrastructure_components.each do |component|
+      return false unless check_ipaddress!(component)
       Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Bootstrapping #{component.hostname}"
       attrs = generate_bootstrap_attributes(component, @infrastructure_components)
       return false unless bootstrap_instance!(
@@ -121,6 +108,29 @@ class BlueprintProcessor
     return true
   end
 
+  def check_ipaddress!(component)
+    ipaddress = nil
+    count = 0
+
+    while ipaddress == nil || count == Figaro.env.max_retry.to_i
+      sleep(Figaro.env.wait_interval.to_i) unless Rails.env.test?
+      show_res = @provisioner.show_container(component.hostname)
+      ipaddress = show_res.dig('data', 'host_ipaddress')
+      count += 1
+    end
+
+    unless ipaddress
+      component.update_status('PROVISIONING_ERROR', @errors.to_s)
+      @infrastructure.update_provisioning_status('PROVISIONING_ERROR')
+      return false
+    else
+      component.update_ipaddress(ipaddress)
+      @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
+      component.update_status('PROVISIONING_FINISHED')
+      return true
+    end
+  end
+
   def bootstrap_instance!(component, username, opts = {})
     success = false
 
@@ -130,7 +140,6 @@ class BlueprintProcessor
     if opts[:private_keys_dir] && opts[:private_key_name]
       private_key = File.join(opts[:private_keys_dir], opts[:private_key_name])
     end
-
     res = @bootstrapper.bootstrap!(
       component.hostname,
       component.ipaddress,
@@ -204,7 +213,7 @@ class BlueprintProcessor
   end
 
   private
-    def fetch_hosts_address_by(hosts, filter_type, filter)
+    def fetch_hosts_address_by(infrastructure_components, filter_type, filter)
       infrastructure_components.
         select{ |component| component.send(filter_type.to_sym) == filter }.
         collect{ |component| component.ipaddress || component.hostname }
