@@ -2,14 +2,18 @@ Rails.application.routes.draw do
   devise_for :users
   require 'sidekiq/web'
 
-  get 'ping', to: 'application#ping'
+  get 'ping', to: 'health_checks#ping'
+
   namespace :api do
     post :increase_log_count,
-      to: 'apps#increase_log_count', defaults: { format: :json }
+      to: 'apps#increase_log_count',
+      defaults: { format: :json }
     get :profile,
-      to: 'apps#profile', defaults: { format: :json }
+      to: 'apps#profile',
+      defaults: { format: :json }
     get :profile_by_cluster_name, 
-      to: 'infrastructures#profile_by_cluster_name', defaults: { format: :json }
+      to: 'infrastructures#profile_by_cluster_name',
+      defaults: { format: :json }
   end
 
   resources :app_groups, 
