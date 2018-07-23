@@ -13,10 +13,14 @@ class ChefSoloBootstrapper
     opts[:attrs] ||= {run_list: []}
 
     tmp_file = "/tmp/#{SecureRandom.uuid}.json"
-    File.open(tmp_file, 'w+') { |f| 
+    File.open(tmp_file, 'w+') { |f|
       f.flock(File::LOCK_EX)
-      f.puts(opts[:attrs].to_json) 
+      f.puts(opts[:attrs].to_json)
     }
+
+    # Remove host
+    cmd_remove_host = "ssh-keygen -f '/root/.ssh/known_hosts' -R #{host_ipaddress}"
+    Open3.capture3(cmd_remove_host)
 
     # Construct command stack
     cmd_stack = []
@@ -28,7 +32,7 @@ class ChefSoloBootstrapper
     cmd_stack << "#{tmp_file}"
 
     stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
-    
+
     # Put node json file
     node_file = "#{@nodes_dir}/#{host_name}.json"
     FileUtils.cp tmp_file, node_file
