@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
-  let(:admin) { create(:user, :admin) }
 
   before(:each) do
     @app_group_a = create(:app_group, created_by: user_a)
@@ -13,7 +12,6 @@ RSpec.feature 'Application Group Management', type: :feature do
   end
 
   describe 'View applications group lists' do
-
     context 'As Owner/Superadmin' do
       scenario 'User can only see app group that they created' do
         login_as user_a

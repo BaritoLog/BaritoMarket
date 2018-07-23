@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.feature 'Barito App Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
-  let(:admin) { create(:user, :admin) }
 
   describe 'View registered barito apps list' do
     before(:each) do

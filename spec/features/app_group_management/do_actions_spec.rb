@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
-  let(:admin) { create(:user, :admin) }
 
   before(:each) do
     @app_group_a = create(:app_group, created_by: user_a)
@@ -13,7 +12,7 @@ RSpec.feature 'Application Group Management', type: :feature do
   end
 
   describe 'Do Updrade/Manage Access and Create/Delete Barito App' do
-    context 'As Owner or As Superadmin' do
+    context 'As Owner' do
       scenario 'User can do those actions' do
         login_as user_a
 

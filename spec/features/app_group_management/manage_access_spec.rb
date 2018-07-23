@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
-  let(:admin) { create(:user, :admin) }
+  let(:admin) { create(:user) }
 
   before(:each) do
     @app_group_a = create(:app_group, created_by: user_a)
@@ -15,6 +15,8 @@ RSpec.feature 'Application Group Management', type: :feature do
   describe 'Managing Access', js: true do
     context 'As Owner or Superadmin' do
       scenario 'User can add members to app group' do
+        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        create(:group, name: 'barito-superadmin')
         create(:app_group_role)
         login_as admin
 

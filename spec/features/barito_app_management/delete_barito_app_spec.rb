@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Barito App Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
-  let(:admin) { create(:user, :admin) }
+  let(:admin) { create(:user) }
 
   describe 'Delete barito app' do
     before(:each) do
@@ -14,10 +14,11 @@ RSpec.feature 'Barito App Management', type: :feature do
 
     context 'As Owner/As Superadmin' do
       scenario 'User can delete existing barito app' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
         login_as admin
 
         visit app_group_path(@app_group)
-
         expect(page).to have_content(@barito_app.name)
 
         click_link 'Delete'
@@ -32,7 +33,6 @@ RSpec.feature 'Barito App Management', type: :feature do
         login_as user_b
 
         visit app_group_path(@app_group)
-
         expect(page).to have_content(@barito_app.name)
 
         click_link 'Delete'

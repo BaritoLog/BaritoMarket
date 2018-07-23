@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(version: 2018_07_17_040929) do
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
   end
 
+  create_table "group_users", force: :cascade do |t|
+    t.bigint "group_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_users_on_group_id"
+    t.index ["user_id"], name: "index_group_users_on_user_id"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false

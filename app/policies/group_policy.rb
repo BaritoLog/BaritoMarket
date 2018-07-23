@@ -5,7 +5,7 @@ class GroupPolicy < ApplicationPolicy
       return Group.all if Group.where(name: gate_groups).count > 0
     end
 
-    user.admin? || GroupUser.where(user: user).count > 0
+    GroupUser.where(user: user).count > 0
   end
 
   def show?
