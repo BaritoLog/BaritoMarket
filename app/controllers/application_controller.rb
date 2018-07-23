@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include Pundit
 
   before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: :ping
 
   def ping
     render plain: 'ok', status: :ok
