@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.feature 'Group Management', type: :feature do
   let(:user) { create(:user) }
 
-  before(:each) { set_check_user_groups({ 'groups' => [] }) }
+  before(:each) do 
+    set_check_user_groups({ 'groups' => [] })
+  end
 
   describe 'View groups list' do
     context 'As Authorized User based on Group from Gate' do

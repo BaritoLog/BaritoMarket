@@ -6,6 +6,8 @@ RSpec.feature 'Application Group Management', type: :feature do
   let(:admin) { create(:user) }
 
   before(:each) do
+    set_check_user_groups({ 'groups' => [] })
+
     @app_group_a = create(:app_group, created_by: user_a)
     @app_group_b = create(:app_group, created_by: user_b)
 
@@ -15,7 +17,7 @@ RSpec.feature 'Application Group Management', type: :feature do
   describe 'Managing Access', js: true do
     context 'As Owner or Superadmin' do
       scenario 'User can add members to app group' do
-        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         create(:app_group_role)
         login_as admin

@@ -5,6 +5,8 @@ RSpec.feature 'Application Group Management', type: :feature do
   let(:user_b) { create(:user) }
 
   before(:each) do
+    set_check_user_groups({ 'groups' => [] })
+
     @app_group_a = create(:app_group, created_by: user_a)
     @app_group_b = create(:app_group, created_by: user_b)
 

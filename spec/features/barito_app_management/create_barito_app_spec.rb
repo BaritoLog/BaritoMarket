@@ -7,6 +7,8 @@ RSpec.feature 'Barito App Management', type: :feature do
 
   describe 'Create new barito app' do
     before(:each) do
+      set_check_user_groups({ 'groups' => [] })
+
       @app_group = create(:app_group, created_by: user_a)
       create(:infrastructure, app_group: @app_group)
     end
