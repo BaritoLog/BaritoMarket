@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Apps API', type: :request do
-  before(:each) { sign_in }
+  before(:each) { login_as(create(:user)) }
     
   describe 'Profile API' do
     let(:headers) do

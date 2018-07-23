@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'App API', type: :request do
-  before(:each) { sign_in }
+  before(:each) { login_as(create(:user)) }
 
   describe 'Profile by Cluster Name API' do
     let(:headers) do
