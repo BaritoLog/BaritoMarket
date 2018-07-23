@@ -1,0 +1,15 @@
+.row
+  .col-sm-2
+    h3.mb-3 All Groups
+  .col-sm-2
+    = link_to 'New Group', new_group_path, class: 'btn btn-outline-primary'
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th Name
+      th.text-center Actions
+  tbody
+    - @groups.each do |group|
+      tr
+        td = link_to group.name, group_path(group)
+        td.text-center = link_to 'Delete', group_path(group), data: { method: :delete }

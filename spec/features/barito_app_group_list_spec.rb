@@ -1,5 +1,11 @@
 require 'rails_helper'
+
 RSpec.feature 'List Application Groups', type: :feature do
+  before(:each) do
+    user = create(:user)
+    login_as user
+  end
+
   scenario 'No app groups are registered' do
     visit root_path
     expect(page).to have_content('Looks like you have no access to any application groups right now')

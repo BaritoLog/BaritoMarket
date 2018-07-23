@@ -4,19 +4,31 @@ html
     title Barito Market
     link [rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css' integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4' crossorigin='anonymous']
     link = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
-    script [src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous']
+    script [src='https://code.jquery.com/jquery-3.3.1.min.js' integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' crossorigin='anonymous']
     script [src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js' integrity='sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm' crossorigin='anonymous']
+
     link = javascript_include_tag 'application', 'data-turbolinks-track' => true
     meta [name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no']
     link = csrf_meta_tags
   body
-    .container-fluid.p-3.align-items-center.bg-white.border-bottom.box-shadow
-      .row
-        .col-2
-          = link_to "Barito Log", root_path
-        .col-8
-        .col-2.text-right
-          = link_to 'New Application Group', new_app_group_path, class: 'btn btn-block btn-primary'
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top.border-bottom
+      = link_to 'Barito Log', root_path, class: 'navbar-brand'
+      = button_tag type: 'button', class: 'navbar-toggler', data: { toggle: 'collapse', target: '#bm-main-navbar' }, 'aria-controls' => 'bm-main-navbar', 'aria-expanded' => false, 'aria-label' => 'Toggle navigation' do
+        span.navbar-toggler-icon
+
+      #bm-main-navbar.collapse.navbar-collapse
+        ul.navbar-nav.ml-auto
+          form.form-inline.mt-2.mt-md-0
+            = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
+            - if user_signed_in?
+              = link_to 'Groups', groups_path, class: 'btn btn-outline-primary ml-sm-2'
+          - if user_signed_in?
+            li.nav-item
+              = link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link'
+            li.nav-item
+              = link_to current_user.display_name, '#', class: 'nav-link'
+
+
     .container-fluid.align-items-center.pt-4.pb-4.bg-light
       .row
         .col-md-12.text

@@ -32,6 +32,9 @@ Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8
   - `RAILS_ENV=development bundle exec rake db:create db:migrate`
   - `RAILS_ENV=test bundle exec rake db:create db:migrate`
 
+* Set `GATE_URL` to current running GATE server
+* You can turn off GATE integration by setting `ENABLE_CAS_INTEGRATION` to `false` in `application.yml`
+
 ### Running
 * Run `RAILS_ENV=development bundle exec rake` to run the build
 * Run `RAILS_ENV=development bundle exec rake coverage:all` to generate coverage reports

@@ -12,8 +12,8 @@ class BlueprintProcessor
     @container_host       = (opts[:container_host] || '127.0.0.1')
     @container_host_name  = (opts[:container_host_name] || 'localhost')
     @provisioner          = SauronProvisioner.new(
-      @sauron_host, 
-      @container_host, 
+      @sauron_host,
+      @container_host,
       @container_host_name
     )
 
@@ -22,7 +22,7 @@ class BlueprintProcessor
     @bootstrapper         = ChefSoloBootstrapper.new(@chef_repo_dir)
 
     # Private keys
-    @private_keys_dir     = (opts[:private_keys_dir] || 
+    @private_keys_dir     = (opts[:private_keys_dir] ||
       "#{Rails.root}/config/private_keys")
     @private_key_name     = opts[:private_key_name]
     @username             = opts[:username]
@@ -69,7 +69,7 @@ class BlueprintProcessor
     @nodes.each do |node|
       Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Provisioning #{node['name']}"
       return false unless provision_instance!(
-        node, 
+        node,
         private_key_name: @private_key_name
       )
     end

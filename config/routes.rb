@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
+  devise_for :users
   require 'sidekiq/web'
 
   get 'ping', to: 'application#ping'
   namespace :api do
-    post :increase_log_count, 
+    post :increase_log_count,
       to: 'apps#increase_log_count', defaults: { format: :json }
     get :profile,
       to: 'apps#profile', defaults: { format: :json }
@@ -16,6 +17,9 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :apps,
     only: %i[create destroy], 
+    defaults: { format: :html }
+  resources :groups,
+    only: %i[index new create destroy],
     defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
