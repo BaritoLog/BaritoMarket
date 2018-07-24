@@ -31,9 +31,9 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-Capybara.register_driver :headless_chrome do |app|
+Capybara.register_driver :custom_headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w(headless disable-gpu) }
+    chromeOptions: { args: %w(--headless --disable-gpu) }
   )
 
   Capybara::Selenium::Driver.new app,
@@ -42,7 +42,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 # Capybara.javascript_driver = :selenium_chrome_headless
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :custom_headless_chrome
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

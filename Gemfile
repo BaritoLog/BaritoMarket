@@ -35,7 +35,7 @@ group :development, :test do
   gem 'rspec-rails', '<= 3.7.2'
   gem 'rubocop', '<= 0.56'
   gem 'rubocop-rspec', '<= 1.25'
-  gem 'selenium-webdriver', '~> 3.12.0'
+  gem 'selenium-webdriver'
   gem 'simplecov', '<= 0.14'
   gem 'simplecov-console', '<= 0.4'
   gem 'timecop', '<= 0.9.1'
