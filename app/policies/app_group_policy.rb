@@ -13,7 +13,7 @@ class AppGroupPolicy < ApplicationPolicy
 
     AppGroupUser.
       joins(:role).
-      where(user: user, app_group_roles: { name: AppGroupRole.allow_manage_access }).count > 0
+      where(user: user, app_group_roles: { name: [:owner] }).count > 0
   end
 
   def allow_action?
@@ -26,7 +26,7 @@ class AppGroupPolicy < ApplicationPolicy
 
     AppGroupUser.
       joins(:role).
-      where(user: user, app_group_roles: { name: AppGroupRole.allow_upgrade }).
+      where(user: user, app_group_roles: { name: [:admin, :owner] }).
       count > 0
   end
 
@@ -49,6 +49,8 @@ class AppGroupPolicy < ApplicationPolicy
     if Figaro.env.enable_cas_integration == 'true'
       gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
       return true if Group.where(name: gate_groups).count > 0
+    else
+      return true if user.groups.count > 0
     end
   end
 end

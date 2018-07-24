@@ -18,8 +18,8 @@ class AppGroupsController < ApplicationController
     @app = BaritoApp.new
     @allow_action = policy(@app_group).allow_action?
     @allow_upgrade = policy(@app_group).allow_upgrade?
-    @allow_delete_barito_app = @allow_upgrade
-    @allow_add_barito_app = @allow_upgrade
+    @allow_delete_barito_app = policy(@app).delete?
+    @allow_add_barito_app = policy(@app).create?
   end
 
   def new
