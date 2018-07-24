@@ -55,10 +55,10 @@ h4.mb-3 All Applications
           td.text-center= barito_app.log_count
           td.text-center= barito_app.created_at
           td.text-center
-            - if @allow_upgrade
+            - if @allow_delete_barito_app
               = link_to "Delete", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
 
-      - if @allow_upgrade
+      - if @allow_add_barito_app
         tr
           td.text-center= f.text_field :name
           td.text-center= f.text_field :topic_name

@@ -1,5 +1,9 @@
 class User < ApplicationRecord
-  devise :cas_authenticatable, :trackable
+  if Figaro.env.enable_cas_integration == 'true'
+    devise :cas_authenticatable, :trackable
+  else
+    devise :database_authenticatable, :trackable, :registerable
+  end
 
   has_many :app_group_users
   has_many :app_groups, through: :app_group_users
@@ -13,7 +17,4 @@ class User < ApplicationRecord
     return username if email.blank?
     email
   end
-
-  has_many :group_users
-  has_many :groups, through: :group_users
 end

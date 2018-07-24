@@ -18,6 +18,8 @@ class AppGroupsController < ApplicationController
     @app = BaritoApp.new
     @allow_action = policy(@app_group).allow_action?
     @allow_upgrade = policy(@app_group).allow_upgrade?
+    @allow_delete_barito_app = @allow_upgrade
+    @allow_add_barito_app = @allow_upgrade
   end
 
   def new
@@ -34,12 +36,6 @@ class AppGroupsController < ApplicationController
       flash[:messages] << @infrastructure.errors.full_messages
       return redirect_to new_app_group_path
     end
-  end
-
-  def delete
-    # NOTE: @opan
-    # Not real delete, we just flag it as 'delete'
-    # need to add 'deleted_at' column on 'app_groups' table
   end
 
   def manage_access
