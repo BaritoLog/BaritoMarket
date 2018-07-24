@@ -1,0 +1,23 @@
+.row.justify-content-center
+  .col-md-5.col-12
+    h3.mb-3= "Group - #{@group.name}"
+    hr
+    br
+
+    h4.mb-3 Members
+    = form_for(@group_user) do |f|
+      = f.hidden_field :group_id
+      .form-group
+        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
+      .form-group
+        = f.submit 'Add', class: 'btn btn-primary'
+    br
+    ul.list-group
+      - @group_users.each do |group|
+        li.list-group-item
+          .row.no-gutters
+            .col-10= group.user.username + ' - ' + group.user.email
+            .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger', data: { method: :delete }
+
+
+
