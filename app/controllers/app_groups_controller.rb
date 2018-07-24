@@ -9,7 +9,7 @@ class AppGroupsController < ApplicationController
   end
 
   def search
-    @app_groups = AppGroup.where("name ILIKE :q", { q: "%#{params[:q]}%" })
+    @app_groups = policy_scope(AppGroup).where("name ILIKE :q", { q: "%#{params[:q]}%" })
     render json: @app_groups
   end
 
