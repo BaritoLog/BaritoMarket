@@ -8,6 +8,7 @@ module ChefHelper
     def generate
       {
         'java' => {
+          "install_flavor" => "openjdk",
           'jdk_version' => '8'
         },
         'elasticsearch' => {
