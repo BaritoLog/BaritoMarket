@@ -34,7 +34,7 @@ RSpec.describe BlueprintProcessor do
         allow(sauron_provisioner).to receive(:show_container).and_return({
           'success' => true,
           'data' => {
-            'host_ipaddress' => 'xx.yy.zz.hh',
+            'ipaddress' => 'xx.yy.zz.hh',
           }
         })
         allow(SauronProvisioner).to receive(:new).
@@ -163,6 +163,121 @@ RSpec.describe BlueprintProcessor do
         expect(blueprint_processor.infrastructure_components.last.status).to eq 'PROVISIONING_STARTED'
         @infrastructure.reload
         expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_ERROR'
+      end
+    end
+
+    context 'Retry bootstrap' do
+      before(:each) do
+        @retry_infrastructure = create(:infrastructure)
+        failed_component = create(:infrastructure_component, infrastructure_id: @retry_infrastructure.id, status: 'BOOTSTRAP_ERROR')
+
+        # Mock sauron_provisioner
+        sauron_provisioner = double
+        allow(sauron_provisioner).to receive(:provision!).and_return({
+          'success' => 'true',
+          'error' => '',
+          'data' => {
+          }
+        })
+        allow(sauron_provisioner).to receive(:show_container).and_return({
+          'success' => true,
+          'data' => {
+            'ipaddress' => 'xx.yy.zz.hh',
+          }
+        })
+        allow(SauronProvisioner).to receive(:new).
+          and_return(sauron_provisioner)
+
+        # Mock chef_solo_bootstrapper
+        chef_solo_bootstrapper = double
+        allow(chef_solo_bootstrapper).to receive(:bootstrap!).and_return({
+         'success' => true
+        })
+        allow(ChefSoloBootstrapper).to receive(:new).
+         and_return(chef_solo_bootstrapper)
+      end
+
+      it "should run retry bootstrap successfully" do
+        expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'BOOTSTRAP_ERROR'
+
+        ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
+
+        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor.bootstrap_instances!(blueprint_processor.infrastructure.infrastructure_components)
+
+        expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'FINISHED'
+      end
+    end
+
+
+    context "Check ipaddress" do
+      before(:each) do
+        @retry_infrastructure = create(:infrastructure, provisioning_status: 'PROVISIONING_STARTED')
+        failed_component = create(:infrastructure_component, infrastructure_id: @retry_infrastructure.id, status: 'PROVISIONING_STARTED', ipaddress: nil)
+
+        # Mock sauron_provisioner
+        sauron_provisioner = double
+        allow(sauron_provisioner).to receive(:provision!).and_return({
+          'success' => 'true',
+          'error' => '',
+          'data' => {
+          }
+        })
+        allow(sauron_provisioner).to receive(:show_container).and_return({
+          'success' => true,
+          'data' => {
+            'ipaddress' => nil,
+          }
+        })
+        allow(SauronProvisioner).to receive(:new).
+          and_return(sauron_provisioner)
+
+        # Mock chef_solo_bootstrapper
+        chef_solo_bootstrapper = double
+        allow(chef_solo_bootstrapper).to receive(:bootstrap!).and_return({
+         'success' => true
+        })
+        allow(ChefSoloBootstrapper).to receive(:new).
+         and_return(chef_solo_bootstrapper)
+      end
+
+      it "should update status if ipaddress doesn't returned by Sauron" do
+        expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'PROVISIONING_STARTED'
+        expect(@retry_infrastructure.provisioning_status).to eq 'PROVISIONING_STARTED'
+
+        ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
+
+        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor.check_ipaddress!(ordered_infrastructure_components.first)
+        @retry_infrastructure.reload
+
+        expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'PROVISIONING_ERROR'
+        expect(@retry_infrastructure.provisioning_status).to eq 'PROVISIONING_ERROR'
+      end
+
+      it "should update status if ipaddress doesn't returned by Sauron" do
+        expect(@retry_infrastructure.infrastructure_components.first.ipaddress).to be_falsey
+
+        # Mock sauron_provisioner
+        sauron_provisioner = double
+        allow(sauron_provisioner).to receive(:show_container).and_return({
+          'success' => true,
+          'data' => {
+            'ipaddress' => 'aa.bb.cc.dd',
+          }
+        })
+        allow(SauronProvisioner).to receive(:new).
+          and_return(sauron_provisioner)
+
+        ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
+
+        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor.check_ipaddress!(ordered_infrastructure_components.first)
+        @retry_infrastructure.reload
+
+        expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'PROVISIONING_FINISHED'
+        expect(@retry_infrastructure.infrastructure_components.first.ipaddress).to eq 'aa.bb.cc.dd'
+        expect(@retry_infrastructure.provisioning_status).to eq 'PROVISIONING_FINISHED'
       end
     end
   end

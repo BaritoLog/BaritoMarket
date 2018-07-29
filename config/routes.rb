@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
 
+  mount Sidekiq::Web => '/sidekiq'
+
   devise_for :users
 
   get 'ping', to: 'health_checks#ping'
@@ -46,7 +48,11 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :infrastructures,
     only: %i[index show],
-    defaults: { format: :html }
+    defaults: { format: :html } do
+      collection do
+        post :retry
+      end
+    end
 
   root to: 'app_groups#index', defaults: { format: :html }
 end

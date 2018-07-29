@@ -11,4 +11,11 @@ RSpec.describe BlueprintProcessor do
       }.to change(BlueprintWorker.jobs, :size).by(1)
     end
   end
+  context 'Blueprint worker' do
+    it 'should start a blueprint worker successfully' do
+      expect {
+        BlueprintWorker.new.perform('blueprints/jobs/abcd_20180101111111.json')
+      }.not_to raise_error
+    end
+  end
 end

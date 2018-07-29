@@ -23,7 +23,7 @@ p
 br
 br
 
-h4.mb-3 All Applications
+h4.mb-3 All Infrastructure Components
 
 
 table.table.table-bordered
@@ -47,4 +47,10 @@ table.table.table-bordered
         td.text-center = component.bootstrap_attribute
         td.text-center = component.message
         td.text-center = component.status
-        td.text-center = link_to "Retry", app_path(component), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-warning'
+        td.text-center
+          - if show_retry_button(component.status)
+            = form_for(component, url: retry_path, method: :post) do |f|
+              = hidden_field_tag(:seq, component.sequence)
+              = hidden_field_tag(:status, component.status)
+              = hidden_field_tag(:infrastructure_id, @infrastructure.id)
+              = f.submit "Retry", class: 'btn btn-warning'

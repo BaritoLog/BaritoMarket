@@ -1,7 +1,7 @@
 class BlueprintProcessor
   attr_accessor :blueprint_hash, :infrastructure_components, :errors, :infrastructure
 
-  def initialize(blueprint_hash, opts = {})
+  def initialize(blueprint_hash=nil, opts = {})
     @blueprint_hash = blueprint_hash
     @infrastructure_components = []
     @errors = []
@@ -41,17 +41,11 @@ class BlueprintProcessor
       return false
     end
 
+    # Make sure all infrastructure components have ipaddress
+    return false unless infrastructure_components_complete!
+
     # Bootstrap instances
-    @infrastructure.update_provisioning_status('BOOTSTRAP_STARTED')
-    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrap started"
-    if bootstrap_instances!
-      @infrastructure.update_provisioning_status('FINISHED')
-      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrap finished"
-    else
-      @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
-      Rails.logger.error "Infrastructure:#{@infrastructure.id} -- Bootstrap error: #{@errors}"
-      return false
-    end
+    return false unless bootstrap_instances!
 
     # Save consul host
     consul_hosts = fetch_hosts_address_by(@infrastructure_components, 'category', 'consul')
@@ -92,43 +86,65 @@ class BlueprintProcessor
     return success
   end
 
-  def bootstrap_instances!
-    @infrastructure_components.each do |component|
-      return false unless check_ipaddress!(component)
-      Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Bootstrapping #{component.hostname}"
-      attrs = generate_bootstrap_attributes(component, @infrastructure_components)
-      return false unless bootstrap_instance!(
-        component,
-        @username,
-        private_keys_dir: @private_keys_dir,
-        private_key_name: @private_key_name,
-        attrs: attrs
-      )
+  def infrastructure_components_complete!(infrastructure_components=nil)
+    count = 0
+    is_provisioning_finished = !@infrastructure_components.any?{|component| !component.ipaddress}
+    while !is_provisioning_finished && DateTime.current < DateTime.current+5.minutes
+      sleep(Figaro.env.wait_interval.to_i) unless Rails.env.test?
+
+      @infrastructure_components.each do |component|
+        Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Check IP Address #{component.hostname}"
+        check_ipaddress!(component) unless component.ipaddress
+      end
+      is_provisioning_finished = !@infrastructure_components.any?{|component| !component.ipaddress}
+      count += 1
     end
+    return false unless is_provisioning_finished
     return true
   end
 
   def check_ipaddress!(component)
-    ipaddress = nil
-    count = 0
-
-    while ipaddress == nil || count == Figaro.env.max_retry.to_i
-      sleep(Figaro.env.wait_interval.to_i) unless Rails.env.test?
-      show_res = @provisioner.show_container(component.hostname)
-      ipaddress = show_res.dig('data', 'host_ipaddress')
-      count += 1
-    end
+    show_res = @provisioner.show_container(component.hostname)
+    ipaddress = show_res.dig('data', 'ipaddress')
 
     unless ipaddress
       component.update_status('PROVISIONING_ERROR', @errors.to_s)
       @infrastructure.update_provisioning_status('PROVISIONING_ERROR')
-      return false
     else
       component.update_ipaddress(ipaddress)
-      @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
       component.update_status('PROVISIONING_FINISHED')
-      return true
+      @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
     end
+  end
+
+  def bootstrap_instances!(infrastructure_components=nil, seq=1)
+    @infrastructure.update_provisioning_status('BOOTSTRAP_STARTED')
+    @infrastructure_components = infrastructure_components if infrastructure_components
+
+    @infrastructure_components.each do |component|
+      # return false unless check_ipaddress!(component)
+      if component.sequence >= seq
+        Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Bootstrapping #{component.hostname}"
+        attrs = generate_bootstrap_attributes(component, @infrastructure_components)
+        bootstrap_res = bootstrap_instance!(
+            component,
+            @username,
+            private_keys_dir: @private_keys_dir,
+            private_key_name: @private_key_name,
+            attrs: attrs
+          )
+
+        unless bootstrap_res
+          @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
+          Rails.logger.error "Infrastructure:#{@infrastructure.id} -- Bootstrap error: #{@errors}"
+          return false
+        end
+      end
+    end
+
+    @infrastructure.update_provisioning_status('FINISHED')
+    Rails.logger.info "Infrastructure:#{@infrastructure.id} -- Bootstrap finished"
+    return true
   end
 
   def bootstrap_instance!(component, username, opts = {})

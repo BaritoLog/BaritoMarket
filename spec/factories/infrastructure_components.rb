@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :infrastructure_component do
     association     :infrastructure
     hostname        Faker::Lorem.word
-    category            Faker::Lorem.word.underscore
+    category        Faker::Lorem.word.underscore
     message         Faker::Lorem.sentence
     status          InfrastructureComponent.statuses[:pending]
 
