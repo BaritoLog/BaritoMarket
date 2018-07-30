@@ -49,12 +49,6 @@ RSpec.describe BlueprintProcessor do
           and_return(chef_solo_bootstrapper)
       end
 
-      it 'should find infrastructure from opts if blueprint_hash is nil' do
-        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @infrastructure.id)
-        blueprint_processor.process!(blueprint_processor.infrastructure.infrastructure_components)
-        expect(blueprint_processor.infrastructure).to eq @infrastructure
-      end
-
       it 'should populate infrastructure_components based on return value from provisioner' do
         component_bootstrap_attributes = []
         bootstrap_attributes = [{
@@ -140,7 +134,7 @@ RSpec.describe BlueprintProcessor do
         allow(sauron_provisioner).to receive(:show_container).and_return({
           'success' => true,
           'data' => {
-            'host_ipaddress' => 'xx.yy.zz.hh',
+            'ipaddress' => 'xx.yy.zz.hh',
           }
         })
         allow(SauronProvisioner).to receive(:new).
@@ -160,7 +154,6 @@ RSpec.describe BlueprintProcessor do
         blueprint_processor = BlueprintProcessor.new(@blueprint_hash)
         blueprint_processor.process!
         expect(blueprint_processor.infrastructure_components.first.status).to eq 'BOOTSTRAP_ERROR'
-        expect(blueprint_processor.infrastructure_components.last.status).to eq 'PROVISIONING_STARTED'
         @infrastructure.reload
         expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_ERROR'
       end

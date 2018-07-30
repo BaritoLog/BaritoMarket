@@ -23,14 +23,4 @@ class InfrastructureComponent < ApplicationRecord
       false
     end
   end
-
-  def self.add(infrastructure, node, seq)
-    InfrastructureComponent.create(
-      infrastructure_id:  infrastructure.id,
-      hostname:           node[:name] || node['name'],
-      category:           node[:type] || node['type'],
-      sequence:           seq,
-      status:             InfrastructureComponent.statuses[:pending],
-    )
-  end
 end

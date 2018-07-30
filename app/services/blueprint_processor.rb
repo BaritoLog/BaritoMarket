@@ -5,7 +5,12 @@ class BlueprintProcessor
     @blueprint_hash = blueprint_hash
     @infrastructure_components = []
     @errors = []
-    @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
+
+    if @blueprint_hash
+      @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
+    else
+      @infrastructure = Infrastructure.find(opts[:infrastructure_id])
+    end
 
     # Initialize Provisioner
     @sauron_host          = (opts[:sauron_host] || '127.0.0.1:3000')
@@ -27,7 +32,8 @@ class BlueprintProcessor
     @errors = []
 
     @blueprint_hash['nodes'].each_with_index do |node, seq|
-      @infrastructure_components << InfrastructureComponent.add(@infrastructure, node, seq+1)
+      @infrastructure_components << @infrastructure.add_component(
+        node, seq + 1)
     end
 
     # Provision instances

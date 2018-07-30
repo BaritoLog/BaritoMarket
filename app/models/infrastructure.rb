@@ -44,6 +44,16 @@ class Infrastructure < ApplicationRecord
     infrastructure
   end
 
+  def add_component(attrs, seq)
+    InfrastructureComponent.create(
+      infrastructure_id:  self.id,
+      hostname:           attrs[:name] || attrs['name'],
+      category:           attrs[:type] || attrs['type'],
+      sequence:           seq,
+      status:             InfrastructureComponent.statuses[:pending],
+    )
+  end
+
   def update_status(status)
     status = status.downcase.to_sym
     if Infrastructure.statuses.key?(status)
