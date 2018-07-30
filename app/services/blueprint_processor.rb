@@ -1,16 +1,11 @@
 class BlueprintProcessor
   attr_accessor :blueprint_hash, :infrastructure_components, :errors, :infrastructure
 
-  def initialize(blueprint_hash=nil, opts = {})
-    @blueprint_hash = blueprint_hash
+  def initialize(blueprint_hash, opts = {})
+    @blueprint_hash = blueprint_hash.deep_symbolize_keys!
     @infrastructure_components = []
     @errors = []
-
-    if @blueprint_hash
-      @infrastructure = Infrastructure.find(@blueprint_hash['infrastructure_id'])
-    else
-      @infrastructure = Infrastructure.find(opts[:infrastructure_id])
-    end
+    @infrastructure = Infrastructure.find(@blueprint_hash[:infrastructure_id])
 
     # Initialize Provisioner
     @sauron_host          = (opts[:sauron_host] || '127.0.0.1:3000')
@@ -31,7 +26,7 @@ class BlueprintProcessor
     # Reset errors
     @errors = []
 
-    @blueprint_hash['nodes'].each_with_index do |node, seq|
+    @blueprint_hash[:nodes].each_with_index do |node, seq|
       @infrastructure_components << @infrastructure.add_component(
         node, seq + 1)
     end

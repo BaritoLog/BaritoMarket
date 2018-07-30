@@ -81,8 +81,8 @@ RSpec.describe BlueprintProcessor do
           hostnames << component.hostname
         end
 
-        @blueprint_hash['nodes'].each do |node|
-          expect(hostnames.include?(node['name'])).to eq(true)
+        @blueprint_hash[:nodes].each do |node|
+          expect(hostnames.include?(node[:name])).to eq(true)
         end
       end
 
@@ -195,7 +195,7 @@ RSpec.describe BlueprintProcessor do
 
         ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
 
-        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor = BlueprintProcessor.new(infrastructure_id: @retry_infrastructure.id)
         blueprint_processor.bootstrap_instances!(blueprint_processor.infrastructure.infrastructure_components)
 
         expect(@retry_infrastructure.infrastructure_components.first.status).to eq 'FINISHED'
@@ -240,7 +240,7 @@ RSpec.describe BlueprintProcessor do
 
         ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
 
-        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor = BlueprintProcessor.new(infrastructure_id: @retry_infrastructure.id)
         blueprint_processor.check_ipaddress!(ordered_infrastructure_components.first)
         @retry_infrastructure.reload
 
@@ -264,7 +264,7 @@ RSpec.describe BlueprintProcessor do
 
         ordered_infrastructure_components = @retry_infrastructure.infrastructure_components.order(:sequence)
 
-        blueprint_processor = BlueprintProcessor.new(nil, infrastructure_id: @retry_infrastructure.id)
+        blueprint_processor = BlueprintProcessor.new(infrastructure_id: @retry_infrastructure.id)
         blueprint_processor.check_ipaddress!(ordered_infrastructure_components.first)
         @retry_infrastructure.reload
 

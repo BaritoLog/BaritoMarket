@@ -9,9 +9,6 @@ class BlueprintWorker
         blueprint_hash = JSON.parse(content)
         BlueprintProcessor.new(
           blueprint_hash,
-
-          # TODO: remove these references when sauron can
-          # schedule containers automatically
           sauron_host: Figaro.env.sauron_host,
           private_key_name: Figaro.env.container_private_key,
           username: Figaro.env.container_username
