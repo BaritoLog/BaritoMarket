@@ -167,7 +167,7 @@ class BlueprintProcessor
 
     if res['success'] == true
       success = true
-      component.update_attribute(:bootstrap_attribute, opts[:attrs])
+      component.update_attribute(:bootstrap_attributes, opts[:attrs])
       component.update_status('FINISHED')
     else
       @errors << { message: res['error'], log: res['error_log'] }

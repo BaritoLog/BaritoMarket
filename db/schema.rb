@@ -75,13 +75,13 @@ ActiveRecord::Schema.define(version: 2018_07_17_040929) do
     t.string "hostname"
     t.string "category"
     t.integer "sequence"
-    t.string "message"
+    t.text "message"
     t.string "status"
     t.string "ipaddress"
     t.bigint "infrastructure_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "bootstrap_attribute", default: {}, null: false
+    t.jsonb "bootstrap_attributes", default: {}, null: false
     t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
   end
 

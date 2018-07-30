@@ -4,7 +4,7 @@ class CreateInfrastructureComponents < ActiveRecord::Migration[5.2]
       t.string      :hostname
       t.string      :category
       t.integer     :sequence
-      t.string      :message
+      t.text        :message
       t.string      :status
       t.string      :ipaddress
       t.references  :infrastructure

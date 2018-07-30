@@ -72,8 +72,8 @@ RSpec.describe BlueprintProcessor do
         blueprint_processor.infrastructure_components.each do |component|
           expect(component.status).to eq "FINISHED"
           expect(component.ipaddress).to eq "xx.yy.zz.hh"
-          component_bootstrap_attributes << component.bootstrap_attribute
-          expect(bootstrap_attributes.include?(component.bootstrap_attribute)).to eq(true)
+          component_bootstrap_attributes << component.bootstrap_attributes
+          expect(bootstrap_attributes.include?(component.bootstrap_attributes)).to eq(true)
         end
         expect(bootstrap_attributes).to eq(component_bootstrap_attributes)
       end
