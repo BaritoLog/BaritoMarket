@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     only: %i[create destroy],
     defaults: { format: :html }
   resources :infrastructures,
-    only: %i[index show],
+    only: %i[show],
     defaults: { format: :html } do
       member do
         post :retry
