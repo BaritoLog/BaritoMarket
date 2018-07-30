@@ -111,7 +111,7 @@ class BlueprintProcessor
       component.update_status('PROVISIONING_ERROR', @errors.to_s)
       @infrastructure.update_provisioning_status('PROVISIONING_ERROR')
     else
-      component.update_ipaddress(ipaddress)
+      component.update(ipaddress: ipaddress)
       component.update_status('PROVISIONING_FINISHED')
       @infrastructure.update_provisioning_status('PROVISIONING_FINISHED')
     end

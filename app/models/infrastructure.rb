@@ -3,8 +3,8 @@ class Infrastructure < ApplicationRecord
   validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, presence: true
   validate  :capacity_valid_key?
 
-  has_many :infrastructure_components
   belongs_to :app_group
+  has_many :infrastructure_components
 
   enum statuses: {
     inactive: 'INACTIVE',

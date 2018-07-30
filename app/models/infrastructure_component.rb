@@ -1,5 +1,6 @@
 class InfrastructureComponent < ApplicationRecord
-  validates :infrastructure, :hostname, :category, :sequence, :status, presence: true
+  validates :infrastructure, :hostname, :category, :sequence, :status, 
+    presence: true
 
   belongs_to :infrastructure
 
@@ -13,19 +14,11 @@ class InfrastructureComponent < ApplicationRecord
     finished: 'FINISHED',
   }
 
-  def update_status(status, message=nil)
+  def update_status(status, message = nil)
     status = status.downcase.to_sym
     if InfrastructureComponent.statuses.key?(status)
       update_attribute(:status, InfrastructureComponent.statuses[status])
       update_attribute(:message, message || status)
-    else
-      false
-    end
-  end
-
-  def update_ipaddress(ipaddress)
-    unless ipaddress.empty?
-      update_attribute(:ipaddress, ipaddress)
     else
       false
     end

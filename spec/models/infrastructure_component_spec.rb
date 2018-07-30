@@ -69,15 +69,4 @@ RSpec.describe InfrastructureComponent, type: :model do
       expect(infrastructure_component.message).to eq(message)
     end
   end
-
-  context 'IP Address Update' do
-    let(:infrastructure_component) { create(:infrastructure_component) }
-
-    it 'should update infrastructure_component ip address' do
-      ipaddress = 'xx.ww.yy.zz'
-      status_update = infrastructure_component.update_ipaddress(ipaddress)
-      expect(status_update).to eq(true)
-      expect(infrastructure_component.ipaddress).to eq(ipaddress)
-    end
-  end
 end
