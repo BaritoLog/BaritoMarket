@@ -18,14 +18,15 @@ class ChefSoloBootstrapper
       f.puts(opts[:attrs].to_json)
     }
 
-    # Remove host
-    cmd_remove_host = "ssh-keygen -f '/root/.ssh/known_hosts' -R #{host_ipaddress}"
-    Open3.capture3(cmd_remove_host)
+    # Remove box ip address from known_hosts
+    # TODO: Should find more secure ways
+    known_hosts_status = remove_known_hosts!(host_ipaddress)
+    return known_hosts_status unless known_hosts_status['success'] == true
 
-    # Construct command stack
+    # Do bootstrap
     cmd_stack = []
-    cmd_stack << "cd #{@chef_repo_dir} &&"
-    cmd_stack << "knife solo bootstrap"
+    cmd_stack << "cd #{@chef_repo_dir}"
+    cmd_stack << "&& knife solo bootstrap"
     cmd_stack << "--bootstrap-version=#{@bootstrap_version}"
     (cmd_stack << "-i #{opts[:private_key]}") if opts[:private_key].present?
     cmd_stack << "#{username}@#{host_ipaddress || host_name}"
@@ -38,6 +39,31 @@ class ChefSoloBootstrapper
     FileUtils.cp tmp_file, node_file
     FileUtils.rm tmp_file
 
+    if status.success?
+      return {
+        'success' => true
+      }
+    else
+      return {
+        'success' => false,
+        'error' => error_str,
+        'error_log' => stdout_str
+      }
+    end
+  end
+
+  def remove_known_hosts!(host_ipaddress)
+    shell_user, error_str, status = Open3.capture3('whoami')
+
+    cmd_stack = []
+    if shell_user == 'root'
+      cmd_stack << "ssh-keygen -f '/root/.ssh/known_hosts' -R #{host_ipaddress}"
+    else
+      cmd_stack << "ssh-keygen -f '/home/#{shell_user}/.ssh/known_hosts' -R #{host_ipaddress}"
+    end
+
+    stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
+    
     if status.success?
       return {
         'success' => true

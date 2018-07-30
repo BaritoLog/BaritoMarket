@@ -4,7 +4,7 @@ RSpec.describe ChefSoloBootstrapper do
   before(:each) do
   end
 
-  describe '#process!' do
+  describe '#bootstrap!' do
     it 'should create node json attributes file' do
       # Don't actually run knife solo
       status = double('status')
