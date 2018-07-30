@@ -75,10 +75,7 @@ class BlueprintProcessor
     success = false
 
     # Execute provisioning
-    res = @provisioner.provision!(
-      component.hostname,
-      key_pair_name: opts[:private_key_name]
-    )
+    res = @provisioner.provision!(component.hostname)
     Rails.logger.info "Infrastructure:#{@infrastructure.id} -- InfrastructureComponent:#{component.id} -- Provisioning #{component.hostname} -- #{res}"
 
     if res['success'] == "true"

@@ -35,19 +35,15 @@ RSpec.describe SauronProvisioner do
         })
     end
 
-    context 'using SauronProvisioner' do
-      it 'should make necessary calls to Sauron and return the response' do
-        sauron_provisioner = SauronProvisioner.new(
-          @sauron_host)
-        provision_result = sauron_provisioner.
-          provision!('test-01')
-        expect(provision_result).to eq({
-          'success' => 'true',
-          'error' => '',
-          'data' => {
-          }
-        })
-      end
+    it 'should make necessary calls to Sauron and return the response' do
+      sauron_provisioner = SauronProvisioner.new(@sauron_host)
+      provision_result = sauron_provisioner.provision!('test-01')
+      expect(provision_result).to eq({
+        'success' => 'true',
+        'error' => '',
+        'data' => {
+        }
+      })
     end
   end
 end

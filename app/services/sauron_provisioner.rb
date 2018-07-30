@@ -6,15 +6,13 @@ class SauronProvisioner
     @image = opts[:image] || 'ubuntu:16.04'
   end
 
-  def provision!(hostname, opts = {})
-
-    create_res = create_container!(hostname, opts)
+  def provision!(hostname)
+    create_res = create_container!(hostname)
     return respond_error(create_res['errors']) unless create_res['success'] == 'true'
-
     return create_res
   end
 
-  def create_container!(hostname, opts = {})
+  def create_container!(hostname)
     req = Typhoeus::Request.new(
       "#{@sauron_host}/containers",
       method: :post,
