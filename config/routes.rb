@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   resources :infrastructures,
     only: %i[index show],
     defaults: { format: :html } do
-      collection do
+      member do
         post :retry
       end
     end

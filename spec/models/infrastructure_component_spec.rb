@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe InfrastructureComponent, type: :model do
-  context 'Status Update' do
+  describe '#update_status' do
     let(:infrastructure_component) { create(:infrastructure_component) }
 
     it 'shouldn\'t update status for invalid status type' do
@@ -29,6 +29,16 @@ RSpec.describe InfrastructureComponent, type: :model do
       status_update = infrastructure_component.update_status(status, message)
       expect(status_update).to eq(true)
       expect(infrastructure_component.message).to eq(message)
+    end
+  end
+
+  describe '#bootstrap_error?' do
+    let(:infrastructure_component) { 
+      build(:infrastructure_component, status: 'BOOTSTRAP_ERROR') 
+    }
+
+    it 'should return true if status is BOOTSTRAP_ERROR' do
+      expect(infrastructure_component.bootstrap_error?).to eq true
     end
   end
 end

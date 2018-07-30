@@ -48,9 +48,7 @@ table.table.table-bordered
         td.text-center = component.message
         td.text-center = component.status
         td.text-center
-          - if show_retry_button(component.status)
-            = form_for(component, url: retry_path, method: :post) do |f|
-              = hidden_field_tag(:seq, component.sequence)
-              = hidden_field_tag(:status, component.status)
-              = hidden_field_tag(:infrastructure_id, @infrastructure.id)
+          - if show_retry_button(component)
+            = form_for(component, url: retry_infrastructure_path(@infrastructure.id), method: :post) do |f|
+              = hidden_field_tag(:infrastructure_component_id, component.id)
               = f.submit "Retry", class: 'btn btn-warning'

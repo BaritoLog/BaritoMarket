@@ -23,4 +23,8 @@ class InfrastructureComponent < ApplicationRecord
       false
     end
   end
+
+  def bootstrap_error?
+    self.status == 'BOOTSTRAP_ERROR'
+  end
 end
