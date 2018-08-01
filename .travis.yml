@@ -4,6 +4,7 @@ rvm:
   - 2.4.3
 addons:
   postgresql: "9.6"
+  chrome: stable
 services:
   - postgresql
 before_script:
@@ -36,5 +37,3 @@ deploy:
     tags: true
     repo: BaritoLog/BaritoMarket
     all_branches: true
-addons:
-  chrome: stable
