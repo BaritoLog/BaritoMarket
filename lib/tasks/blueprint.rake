@@ -14,6 +14,12 @@ namespace :blueprint do
       exit -1
     end
 
-    BlueprintProcessor.new(blueprint_hash).process!
+    BaritoBlueprint::Processor.new(
+      blueprint_hash,
+      sauron_host: Figaro.env.sauron_host,
+      chef_repo_dir: Figaro.env.chef_repo_dir,
+      private_key_name: Figaro.env.container_private_key,
+      username: Figaro.env.container_username
+    ).process!
   end
 end

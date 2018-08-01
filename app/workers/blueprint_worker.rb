@@ -7,9 +7,10 @@ class BlueprintWorker
       content = File.read(filepath)
       begin
         blueprint_hash = JSON.parse(content)
-        BlueprintProcessor.new(
+        BaritoBlueprint::Processor.new(
           blueprint_hash,
           sauron_host: Figaro.env.sauron_host,
+          chef_repo_dir: Figaro.env.chef_repo_dir,
           private_key_name: Figaro.env.container_private_key,
           username: Figaro.env.container_username
         ).process!

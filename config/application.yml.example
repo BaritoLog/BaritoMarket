@@ -19,6 +19,7 @@ CONTAINER_HOST:              '127.0.0.1'
 CONTAINER_HOST_NAME:         'barito'
 CONTAINER_PRIVATE_KEY:       'barito'
 CONTAINER_USERNAME:          'ubuntu'
+CHEF_REPO_DIR:               '/opt/chef-repo'
 DEFAULT_CONSUL_PORT:         '8500'
 GATE_ACCESS_TOKEN:           'securerandomstring'
 
