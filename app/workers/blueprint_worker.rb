@@ -11,6 +11,7 @@ class BlueprintWorker
           blueprint_hash,
           sauron_host: Figaro.env.sauron_host,
           chef_repo_dir: Figaro.env.chef_repo_dir,
+          private_keys_dir: Figaro.env.container_private_keys_dir,
           private_key_name: Figaro.env.container_private_key,
           username: Figaro.env.container_username
         ).process!

@@ -27,9 +27,7 @@ module BaritoBlueprint
       @infrastructure.update_provisioning_status('BOOTSTRAP_STARTED')
 
       @infrastructure_components.each do |component|
-        attrs = generate_bootstrap_attributes(
-          component, @infrastructure_components)
-        success = bootstrap_instance!(component, attrs)
+        success = bootstrap_instance!(component)
         unless success
           Processor.produce_log(@infrastructure, 'Bootstrap error')
           @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
@@ -42,7 +40,7 @@ module BaritoBlueprint
       return true
     end
 
-    def bootstrap_instance!(component, attrs)
+    def bootstrap_instance!(component)
       Processor.produce_log(
         @infrastructure, 
         "InfrastructureComponent:#{component.id}",
@@ -54,6 +52,10 @@ module BaritoBlueprint
       if @private_keys_dir && @private_key_name
         private_key = File.join(@private_keys_dir, @private_key_name)
       end
+
+      # Fetch bootstrap attributes
+      attrs = generate_bootstrap_attributes(
+        component, @infrastructure_components)
 
       # Execute bootstrapping
       res = @executor.bootstrap!(

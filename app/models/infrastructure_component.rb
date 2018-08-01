@@ -27,6 +27,22 @@ class InfrastructureComponent < ApplicationRecord
     end
   end
 
+  def any_errors?
+    [
+      'PROVISIONING_ERROR',
+      'PROVISIONING_CHECK_FAILED',
+      'BOOTSTRAP_ERROR',
+    ].include? self.status
+  end
+
+  def provisioning_error?
+    self.status == 'PROVISIONING_ERROR'
+  end
+
+  def provisioning_check_failed?
+    self.status == 'PROVISIONING_CHECK_FAILED'
+  end
+
   def bootstrap_error?
     self.status == 'BOOTSTRAP_ERROR'
   end

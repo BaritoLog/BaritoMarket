@@ -44,14 +44,14 @@ module BaritoBlueprint
         allow(@executor).
           to receive(:bootstrap!).
           and_return('success' => true)
-        expect(@bootstrapper.bootstrap_instance!(@component, {})).to eq true
+        expect(@bootstrapper.bootstrap_instance!(@component)).to eq true
       end
 
       it 'should return false if executor returns errors' do
         allow(@executor).
           to receive(:bootstrap!).
           and_return('success' => false)
-        expect(@bootstrapper.bootstrap_instance!(@component, {})).to eq false
+        expect(@bootstrapper.bootstrap_instance!(@component)).to eq false
       end
     end
 
