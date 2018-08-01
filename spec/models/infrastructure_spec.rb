@@ -1,6 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe Infrastructure, type: :model do
+  describe 'Add Infrastructure Component' do
+    let(:infrastructure) { create :infrastructure }
+    let(:env) { Rails.env }
+    before(:each) do
+      @blueprint = Blueprint.new(infrastructure, env)
+      @nodes = @blueprint.generate_nodes
+    end
+
+    it 'should generate correct number of components' do
+      @nodes.each_with_index do |node, seq|
+        infrastructure.add_component(node, seq + 1)
+      end
+      expect(infrastructure.infrastructure_components.count).
+        to eq(@nodes.count)
+    end
+  end
+
   context 'Setup Application' do
     let(:infrastructure_props) { build(:infrastructure) }
 

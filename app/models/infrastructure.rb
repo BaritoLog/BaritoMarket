@@ -4,6 +4,7 @@ class Infrastructure < ApplicationRecord
   validate  :capacity_valid_key?
 
   belongs_to :app_group
+  has_many :infrastructure_components
 
   enum statuses: {
     inactive: 'INACTIVE',
@@ -14,6 +15,9 @@ class Infrastructure < ApplicationRecord
     provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
     provisioning_finished: 'PROVISIONING_FINISHED',
+    provisioning_check_started: 'PROVISIONING_CHECK_STARTED',
+    provisioning_check_failed: 'PROVISIONING_CHECK_FAILED',
+    provisioning_check_succeed: 'PROVISIONING_CHECK_SUCCEED',
     bootstrap_started: 'BOOTSTRAP_STARTED',
     bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
@@ -41,6 +45,16 @@ class Infrastructure < ApplicationRecord
       BlueprintWorker.perform_async(blueprint_path)
     end
     infrastructure
+  end
+
+  def add_component(attrs, seq)
+    InfrastructureComponent.create(
+      infrastructure_id:  self.id,
+      hostname:           attrs[:name] || attrs['name'],
+      category:           attrs[:type] || attrs['type'],
+      sequence:           seq,
+      status:             InfrastructureComponent.statuses[:pending],
+    )
   end
 
   def update_status(status)

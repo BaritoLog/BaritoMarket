@@ -58,6 +58,10 @@ RSpec.describe Blueprint, type: :model do
       Timecop.freeze
     end
 
+    after do
+      Timecop.return
+    end
+
     around(:each) do |example|
       @blueprint = Blueprint.new(infrastructure, env)
       @file_path = "#{Rails.root}/blueprints/jobs/#{@blueprint.filename}.json"

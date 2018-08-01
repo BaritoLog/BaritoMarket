@@ -1,9 +1,11 @@
 module ChefHelper
-  class KibanaRoleAttributesGenerator
-    def initialize(elasticsearch_host, consul_hosts, opts = {})
-      @elasticsearch_host = elasticsearch_host
+  class KibanaRoleAttributesGenerator < GenericRoleAttributesGenerator
+    def initialize(component, infrastructure_components, opts = {})
+      @elasticsearch_host = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'elasticsearch')
       @elasticsearch_port = opts[:elasticsearch_port] || 9200
-      @consul_hosts = consul_hosts
+      @consul_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'kibana'
     end
 

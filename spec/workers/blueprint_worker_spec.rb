@@ -2,8 +2,8 @@ require 'rails_helper'
 require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
-RSpec.describe BlueprintProcessor do
-  context 'worker queueing' do
+RSpec.describe BlueprintWorker do
+  describe 'worker queueing' do
     it 'enqueues a blueprint worker' do
       expect {
         BlueprintWorker.

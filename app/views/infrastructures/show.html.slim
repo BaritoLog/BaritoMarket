@@ -1,0 +1,53 @@
+h3.mb-3 Infrastructure Details
+p
+  b Infrastructure Name -
+  = @infrastructure.name
+  br
+p
+  b Cluster Name -
+  = @infrastructure.cluster_name
+  br
+p
+  b Capacity -
+  = "#{@infrastructure.capacity}"
+  br
+p
+  b Provisioning Status -
+  = @infrastructure.provisioning_status
+  br
+p
+  b Status -
+  = @infrastructure.status
+  br
+
+br
+br
+
+h4.mb-3 All Infrastructure Components
+
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th.text-center Hostname
+      th.text-center Category
+      th.text-center Sequence
+      th.text-center IP Address
+      th.text-center Bootstrap Attributes
+      th.text-center Message
+      th.text-center Status
+      th.text-center Actions
+  tbody
+    - @infrastructure_components.each do |component|
+      tr
+        td.text-center = component.hostname
+        td.text-center = component.category
+        td.text-center = component.sequence
+        td.text-center = component.ipaddress
+        td.text-center = component.bootstrap_attributes
+        td.text-center = component.message
+        td.text-center = component.status
+        td.text-center
+          - if show_retry_button(component)
+            = form_for(component, url: retry_infrastructure_path(@infrastructure.id), method: :post) do |f|
+              = hidden_field_tag(:infrastructure_component_id, component.id)
+              = f.submit "Retry", class: 'btn btn-warning'

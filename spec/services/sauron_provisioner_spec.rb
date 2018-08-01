@@ -4,9 +4,6 @@ RSpec.describe SauronProvisioner do
   describe '#provision!' do
     before(:all) do
       @sauron_host = '127.0.0.1:3000'
-      @container_host = '127.0.0.1'
-      @container_host_name = 'localhost'
-      @key_pair_name = 'barito'
 
       # Mock Sauron API
       stub_request(:post, "http://#{@sauron_host}/containers").
@@ -15,8 +12,6 @@ RSpec.describe SauronProvisioner do
             'container' => {
               'image' => 'ubuntu:16.04',
               'container_hostname' => 'test-01',
-              'lxd_host_ipaddress' => @container_host,
-              'key_pair_name' => 'barito'
             }
           }.to_json,
           headers: {
@@ -35,51 +30,20 @@ RSpec.describe SauronProvisioner do
             'success' => 'true',
             'error' => '',
             'data' => {
-              'key_pair_name' => 'barito'
-            }
-          }.to_json
-        })
-
-      stub_request(:get, "http://#{@sauron_host}/container.json").
-        with(
-          query: {
-            'container_hostname' => 'test-01',
-            'lxd_host_ipaddress' => @container_host,
-          },
-          headers: {
-            'Content-Type' => 'application/json',
-            'Expect' => '',
-            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
-          }
-        ).to_return({
-          status: 200,
-          headers: {
-            'Content-Type' => 'application/json',
-            'Expect' => '',
-            'User-Agent' => 'Typhoeus - https://github.com/typhoeus/typhoeus'
-          },
-          body: {
-            'data' => {
-              'ipaddress' => 'xx.yy.zz.hh',
             }
           }.to_json
         })
     end
 
-    context 'using SauronProvisioner' do
-      it 'should make necessary calls to Sauron and return the response' do
-        sauron_provisioner = SauronProvisioner.new(
-          @sauron_host, @container_host, @container_host_name)
-        provision_result = sauron_provisioner.
-          provision!('test-01', key_pair_name: @key_pair_name)
-        expect(provision_result).to eq({
-          'success' => true,
-          'data' => {
-            'host_ipaddress' => 'xx.yy.zz.hh',
-            'key_pair_name' => 'barito'
-          }
-        })
-      end
+    it 'should make necessary calls to Sauron and return the response' do
+      sauron_provisioner = SauronProvisioner.new(@sauron_host)
+      provision_result = sauron_provisioner.provision!('test-01')
+      expect(provision_result).to eq({
+        'success' => 'true',
+        'error' => '',
+        'data' => {
+        }
+      })
     end
   end
 end

@@ -1,17 +1,15 @@
 module ChefHelper
-  class BaritoFlowConsumerRoleAttributesGenerator
-    def initialize(app_secret_key, 
-                   kafka_hosts, 
-                   elasticsearch_host, 
-                   consul_hosts, 
-                   opts = {})
-      @app_secret_key     = app_secret_key
-      @kafka_hosts        = kafka_hosts
-      @kafka_port         = opts[:kafka_port] || 9092
-      @elasticsearch_host = elasticsearch_host
+  class BaritoFlowConsumerRoleAttributesGenerator < GenericRoleAttributesGenerator
+    def initialize(component, infrastructure_components, opts = {})
+      @kafka_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'kafka')
+      @kafka_port = opts[:kafka_port] || 9092
+      @elasticsearch_host = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'elasticsearch')
       @elasticsearch_port = opts[:elasticsearch_port] || 9200
-      @consul_hosts       = consul_hosts
-      @role_name          = opts[:role_name] || 'barito-flow-consumer'
+      @consul_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'consul')
+      @role_name = opts[:role_name] || 'barito-flow-consumer'
     end
 
     def generate
@@ -32,9 +30,6 @@ module ChefHelper
               'BARITO_KAFKA_GROUP_ID'             => 'barito-group',
               'BARITO_KAFKA_CONSUMER_TOPICS'      => 'barito-log',
               'BARITO_ELASTICSEARCH_URL'          => elasticsearch_url,
-              'BARITO_PUSH_METRIC_URL'            => push_metric_url,
-              'BARITO_PUSH_METRIC_TOKEN'          => @app_secret_key,
-              'BARITO_PUSH_METRIC_INTERVAL'       => '30s',
             }
           }
         },

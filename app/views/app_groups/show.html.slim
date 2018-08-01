@@ -25,6 +25,7 @@ p
   = link_to 'Upgrade', '#', class: 'btn btn-primary mr-2'
 - if @allow_action
   = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary'
+  = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning'
 
 br
 br
