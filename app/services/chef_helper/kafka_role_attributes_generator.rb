@@ -1,9 +1,12 @@
 module ChefHelper
-  class KafkaRoleAttributesGenerator
-    def initialize(zookeeper_hosts, hosts, consul_hosts, opts = {})
-      @zookeeper_hosts = zookeeper_hosts
-      @hosts = hosts
-      @consul_hosts = consul_hosts
+  class KafkaRoleAttributesGenerator < GenericRoleAttributesGenerator
+    def initialize(component, infrastructure_components, opts = {})
+      @zookeeper_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'zookeeper')
+      @hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'kafka')
+      @consul_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'kafka'
     end
 

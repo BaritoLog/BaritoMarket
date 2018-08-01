@@ -1,9 +1,11 @@
 module ChefHelper
-  class ZookeeperRoleAttributesGenerator
-    def initialize(host, hosts, consul_hosts, opts = {})
-      @hosts = hosts
+  class ZookeeperRoleAttributesGenerator < GenericRoleAttributesGenerator
+    def initialize(component, infrastructure_components, opts = {})
+      @hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'zookeeper')
       @my_id = hosts.index(host) + 1
-      @consul_hosts = consul_hosts
+      @consul_hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'zookeeper'
     end
 
