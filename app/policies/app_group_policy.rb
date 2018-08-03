@@ -1,4 +1,13 @@
 class AppGroupPolicy < ApplicationPolicy
+  def new?
+    return true if get_user_groups
+    false
+  end
+
+  def create?
+    new?
+  end
+
   def show?
     return true if get_user_groups
     return true if record.created_by == user
@@ -28,6 +37,10 @@ class AppGroupPolicy < ApplicationPolicy
       joins(:role).
       where(user: user, app_group_roles: { name: [:admin, :owner] }).
       count > 0
+  end
+
+  def allow_see_apps?
+    allow_upgrade?
   end
 
   class Scope < Scope

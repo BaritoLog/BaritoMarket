@@ -24,49 +24,13 @@ p
 - if @allow_upgrade
   = link_to 'Upgrade', '#', class: 'btn btn-primary mr-2'
 - if @allow_action
-  = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary'
+  = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary mr-2'
   = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning'
 
 br
 br
 
-h4.mb-3 All Applications
-
-= form_for(@app, url: apps_path) do |f|
-  = f.hidden_field :app_group_id, value: @app_group.id
-  table.table.table-bordered
-    thead.thead-dark
-      tr
-        th.text-center Name
-        th.text-center Topic Name
-        th.text-center Secret Key
-        th.text-center Max TPS
-        th.text-center Status
-        th.text-center Log Count
-        th.text-center Created At
-        th.text-center Actions
-    tbody
-      - @apps.each do |barito_app|
-        tr
-          td.text-center= barito_app.name
-          td.text-center= barito_app.topic_name
-          td.text-center= barito_app.secret_key
-          td.text-center= barito_app.max_tps
-          td.text-center= barito_app.status
-          td.text-center= barito_app.log_count
-          td.text-center= barito_app.created_at
-          td.text-center
-            - if @allow_delete_barito_app
-              = link_to "Delete", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
-
-      - if @allow_add_barito_app
-        tr
-          td.text-center= f.text_field :name
-          td.text-center= f.text_field :topic_name
-          td.text-center
-          td.text-center= f.text_field :max_tps
-          td.text-center
-          td.text-center
-          td.text-center
-          td.text-center
-            = f.submit 'Create', class: 'btn btn-primary'
+- if @allow_see_apps
+  = render 'app_groups/applications', app: @app, app_group: @app_group, apps: @apps,
+                                      allow_delete: @allow_delete_barito_app,
+                                      allow_add: @allow_add_barito_app

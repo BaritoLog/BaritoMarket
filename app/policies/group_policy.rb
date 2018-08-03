@@ -6,8 +6,6 @@ class GroupPolicy < ApplicationPolicy
     else
       return true if user.groups.count > 0
     end
-
-    GroupUser.where(user: user).count > 0
   end
 
   def show?

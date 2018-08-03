@@ -5,11 +5,13 @@
     | Looks like you have no access to any application groups right now
     br
     | Click the button below to get started
-  = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
+  - if @allow_create_app_group
+    = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
 - else
   h3.mb-3 All Application Groups
 
-  p= link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
+  - if @allow_create_app_group
+    p= link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
   table.table.table-bordered
     thead.thead-dark
       tr
