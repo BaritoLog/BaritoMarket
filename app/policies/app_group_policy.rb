@@ -10,7 +10,6 @@ class AppGroupPolicy < ApplicationPolicy
 
   def show?
     return true if get_user_groups
-    return true if record.created_by == user
 
     app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
     app_group_ids.include?(record.id)
@@ -18,7 +17,6 @@ class AppGroupPolicy < ApplicationPolicy
 
   def manage_access?
     return true if get_user_groups
-    return true if record.created_by == user
 
     AppGroupUser.
       joins(:role).
@@ -31,7 +29,6 @@ class AppGroupPolicy < ApplicationPolicy
 
   def allow_upgrade?
     return true if get_user_groups
-    return true if record.created_by == user
 
     AppGroupUser.
       joins(:role).
@@ -51,8 +48,7 @@ class AppGroupPolicy < ApplicationPolicy
       end
 
       app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-      scope.where(created_by: user).
-        or(scope.where(id: app_group_ids))
+      scope.where(id: app_group_ids)
     end
   end
 

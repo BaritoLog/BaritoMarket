@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_17_040929) do
+ActiveRecord::Schema.define(version: 2018_08_06_050132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,9 +37,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_040929) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "created_by_id"
     t.datetime "deleted_at"
-    t.index ["created_by_id"], name: "index_app_groups_on_created_by_id"
   end
 
   create_table "barito_apps", force: :cascade do |t|
@@ -113,5 +111,4 @@ ActiveRecord::Schema.define(version: 2018_07_17_040929) do
     t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
-  add_foreign_key "app_groups", "users", column: "created_by_id"
 end

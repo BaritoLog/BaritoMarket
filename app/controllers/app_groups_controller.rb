@@ -56,11 +56,9 @@ class AppGroupsController < ApplicationController
   private
 
   def app_group_params
-    params[:app_group][:user_id] = current_user.id
     params.require(:app_group).permit(
       :name,
-      :capacity,
-      :user_id
+      :capacity
     )
   end
 
