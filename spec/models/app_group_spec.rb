@@ -8,8 +8,7 @@ RSpec.describe AppGroup, type: :model do
       app_group, infrastructure = AppGroup.setup(
         Rails.env,
         name: app_group_props.name,
-        capacity: 'small',
-        created_by_id: app_group_props.created_by_id
+        capacity: 'small'
       )
       expect(app_group.persisted?).to eq(true)
     end

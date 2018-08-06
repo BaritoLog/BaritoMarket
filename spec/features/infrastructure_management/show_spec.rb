@@ -26,5 +26,16 @@ RSpec.feature 'Infrastructure Management', type: :feature do
         end
       end
     end
+
+    context 'As other users' do
+      scenario 'User is not allowed to see infrastructure details' do
+        login_as user
+
+        visit infrastructure_path(@infrastructure.id)
+
+        expect(page).to have_current_path(root_path)
+        expect(page).to have_content('You are not authorized to perform this action')
+      end
+    end
   end
 end
