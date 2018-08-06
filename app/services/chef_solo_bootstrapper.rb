@@ -53,18 +53,11 @@ class ChefSoloBootstrapper
   end
 
   def remove_known_hosts!(host_ipaddress)
-    shell_user, error_str, status = Open3.capture3('whoami')
-
     cmd_stack = []
-    if shell_user == 'root'
-      cmd_stack << "ssh-keygen -f '/root/.ssh/known_hosts' -R #{host_ipaddress}"
-    else
-      cmd_stack << "ssh-keygen -f '/home/#{shell_user}/.ssh/known_hosts' -R #{host_ipaddress}"
-    end
-
+    cmd_stack << "ssh-keygen -R #{host_ipaddress}"
     stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
-    
-    if status.success?
+
+    if status.success? || stdout_str.include?('not found')
       return {
         'success' => true
       }
