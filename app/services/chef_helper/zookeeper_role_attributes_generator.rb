@@ -3,7 +3,7 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       @hosts = fetch_hosts_address_by(
         infrastructure_components, 'category', 'zookeeper')
-      @my_id = hosts.index(host) + 1
+      @my_id = (@hosts.index(component.ipaddress) || @hosts.index(component.hostname)) + 1
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'zookeeper'

@@ -47,7 +47,7 @@ table.table.table-bordered
         td.text-center = component.message
         td.text-center = component.status
         td.text-center
-          - if show_retry_button(component)
-            = form_for(component, url: retry_infrastructure_path(@infrastructure.id), method: :post) do |f|
+          - if show_retry_bootstrap_button(component)
+            = form_for(component, url: retry_bootstrap_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_component_id, component.id)
-              = f.submit "Retry", class: 'btn btn-warning'
+              = f.submit "Retry Bootstrap", class: 'btn btn-warning'

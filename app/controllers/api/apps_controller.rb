@@ -2,6 +2,7 @@ class Api::AppsController < ApiController
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
     render json: {
+      id: @app.id,
       name: @app.name,
       app_group_name: @app.app_group_name,
       max_tps: @app.max_tps,
@@ -21,13 +22,14 @@ class Api::AppsController < ApiController
         },
         kafka: {
           topic_name: @app.topic_name,
-          # TODO: should be filled later when components are saved in DB
-          # partition: ,
-          # replication_factor: ,
+          # TODO: should revised with values that are stored in DB
+          partition: 1,
+          replication_factor: 1,
           consumer_group: 'barito',
         },
         elasticsearch: {
           index_prefix: @app.topic_name,
+          document_type: 'barito',
         },
       },
     }
