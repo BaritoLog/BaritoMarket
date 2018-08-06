@@ -4,6 +4,7 @@ RSpec.feature 'Infrastructure Management', type: :feature do
   let(:user) { create(:user) }
 
   before(:each) do
+    set_check_user_groups({ 'groups' => [] })
     @infrastructure = create(:infrastructure)
     @infrastructure_components = []
     3.times.each do
@@ -12,8 +13,10 @@ RSpec.feature 'Infrastructure Management', type: :feature do
   end
 
   describe 'View infrastructure details' do
-    context 'As Owner/Superadmin' do
-      it 'shows' do
+    context 'As Superadmin' do
+      scenario 'User allowed to see infrastructure details' do
+        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        create(:group, name: 'barito-superadmin')
         login_as user
 
         visit infrastructure_path(@infrastructure.id)
