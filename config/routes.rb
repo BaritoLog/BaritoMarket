@@ -50,7 +50,7 @@ Rails.application.routes.draw do
     only: %i[show],
     defaults: { format: :html } do
       member do
-        post :retry
+        post :retry_bootstrap
       end
     end
 

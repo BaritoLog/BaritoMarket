@@ -32,13 +32,23 @@ RSpec.describe InfrastructureComponent, type: :model do
     end
   end
 
-  describe '#bootstrap_error?' do
+  describe '#allow_provision?' do
+    let(:infrastructure_component) { 
+      build(:infrastructure_component, status: 'PROVISIONING_ERROR') 
+    }
+
+    it 'should return true if component provisioning can be retried' do
+      expect(infrastructure_component.allow_provision?).to eq true
+    end
+  end
+
+  describe '#allow_bootstrap?' do
     let(:infrastructure_component) { 
       build(:infrastructure_component, status: 'BOOTSTRAP_ERROR') 
     }
 
-    it 'should return true if status is BOOTSTRAP_ERROR' do
-      expect(infrastructure_component.bootstrap_error?).to eq true
+    it 'should return true if component bootstrapping can be retried' do
+      expect(infrastructure_component.allow_bootstrap?).to eq true
     end
   end
 end
