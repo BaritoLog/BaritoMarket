@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Apps API', type: :request do
-  before(:each) { login_as(create(:user)) }
-    
   describe 'Profile API' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }

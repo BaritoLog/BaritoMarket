@@ -1,4 +1,4 @@
-class Api::InfrastructuresController < ApiController
+class Api::InfrastructuresController < Api::BaseController
   skip_before_action :authenticate_token, only: [:profile_by_cluster_name]
 
   def profile_by_cluster_name

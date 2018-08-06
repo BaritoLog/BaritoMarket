@@ -1,4 +1,4 @@
-class ApiController < ApplicationController
+class Api::BaseController < ActionController::Base
   before_action :authenticate_token
 
   def authenticate_token

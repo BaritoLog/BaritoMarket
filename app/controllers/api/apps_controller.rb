@@ -1,4 +1,4 @@
-class Api::AppsController < ApiController
+class Api::AppsController < Api::BaseController
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
     render json: {
