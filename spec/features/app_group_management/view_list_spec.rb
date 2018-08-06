@@ -7,20 +7,22 @@ RSpec.feature 'Application Group Management', type: :feature do
   before(:each) do
     set_check_user_groups({ 'groups' => [] })
 
-    @app_group_a = create(:app_group, created_by: user_a)
-    @app_group_b = create(:app_group, created_by: user_b)
+    @app_group_a = create(:app_group)
+    @app_group_b = create(:app_group)
 
     [@app_group_a, @app_group_b].each { |app_group| create(:infrastructure, app_group: app_group) }
   end
 
   describe 'View applications group lists' do
-    context 'As Owner/Superadmin' do
+    context 'As Superadmin' do
       scenario 'User can only see app group that they created' do
+        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        create(:group, name: 'barito-superadmin')
         login_as user_a
 
         visit root_path
         expect(page).to have_content(@app_group_a.name)
-        expect(page).not_to have_content(@app_group_b.name)
+        expect(page).to have_content(@app_group_b.name)
       end
     end
 
@@ -32,7 +34,7 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         visit root_path
         expect(page).to have_content(@app_group_a.name)
-        expect(page).to have_content(@app_group_b.name)
+        expect(page).not_to have_content(@app_group_b.name)
       end
     end
   end

@@ -8,12 +8,11 @@ RSpec.feature 'Barito App Management', type: :feature do
   describe 'Create new barito app' do
     before(:each) do
       set_check_user_groups({ 'groups' => [] })
-
-      @app_group = create(:app_group, created_by: user_a)
+      @app_group = create(:app_group)
       create(:infrastructure, app_group: @app_group)
     end
 
-    context 'As Owner/ As Superadmin' do
+    context 'As Superadmin' do
       scenario 'User can create/add barito app' do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
@@ -34,7 +33,7 @@ RSpec.feature 'Barito App Management', type: :feature do
     end
 
     context 'As Authorized User based on Role' do
-      scenario 'User with owner role can create barito app' do
+      scenario 'User with "owner" or "admin" role can create barito app' do
         create(:app_group_user, app_group: @app_group, role: create(:app_group_role, :owner), user: user_b)
 
         login_as user_b
@@ -52,7 +51,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         expect(page).to have_content(barito_app.name)
       end
 
-      scenario 'User with member role cannot create barito app' do
+      scenario 'User with "member" role cannot create barito app' do
         create(:app_group_user, app_group: @app_group, role: create(:app_group_role), user: user_b)
 
         login_as user_b

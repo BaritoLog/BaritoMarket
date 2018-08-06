@@ -1,7 +1,6 @@
 class BaritoAppPolicy < ApplicationPolicy
   def create?
     return true if get_user_groups
-    return true if record.app_group.try(:created_by) == user
 
     AppGroupUser.
       joins(:role).
