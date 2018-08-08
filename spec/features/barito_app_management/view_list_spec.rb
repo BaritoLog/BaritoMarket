@@ -27,7 +27,7 @@ RSpec.feature 'Barito App Management', type: :feature do
     end
 
     context 'As Authorized User based on Role' do
-      scenario 'User with "owner" or "admin" role can see the barito app list' do
+      scenario 'User with "owner" or "admin" or "member" role can see the barito app list' do
         create(:app_group_user, app_group: @app_group, role: create(:app_group_role, :admin), user: user_b)
         login_as user_b
 
@@ -35,16 +35,16 @@ RSpec.feature 'Barito App Management', type: :feature do
         click_link @app_group.name
 
         expect(page).to have_content(@barito_app.name)
-      end
 
-      scenario 'User registered as member in app group can see the barito app list' do
-        create(:app_group_user, app_group: @app_group, role: create(:app_group_role), user: user_b)
-        login_as user_b
+        logout
+
+        create(:app_group_user, app_group: @app_group, role: create(:app_group_role), user: user_a)
+        login_as user_a
 
         visit root_path
         click_link @app_group.name
 
-        expect(page).not_to have_content(@barito_app.name)
+        expect(page).to have_content(@barito_app.name)
       end
     end
   end

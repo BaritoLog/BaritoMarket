@@ -21,10 +21,9 @@ p
   br
 
 = link_to 'Open Kibana', '#', class: 'btn btn-primary mr-2'
-- if @allow_upgrade
-  = link_to 'Upgrade', '#', class: 'btn btn-primary mr-2'
-- if @allow_action
+- if @allow_manage_access
   = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary mr-2'
+- if @allow_see_infrastructure
   = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning'
 
 br

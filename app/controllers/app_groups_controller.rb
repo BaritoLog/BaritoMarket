@@ -17,8 +17,8 @@ class AppGroupsController < ApplicationController
   def show
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
-    @allow_action = policy(@app_group).allow_action?
-    @allow_upgrade = policy(@app_group).allow_upgrade?
+    @allow_manage_access = policy(@app_group).manage_access?
+    @allow_see_infrastructure = policy(Infrastructure).show?
     @allow_see_apps = policy(@app_group).allow_see_apps?
     @allow_delete_barito_app = policy(@app).delete?
     @allow_add_barito_app = policy(@app).create?

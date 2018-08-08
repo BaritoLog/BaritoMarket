@@ -25,7 +25,6 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).to have_content('Create')
         expect(page).to have_content('Manage Access')
-        expect(page).to have_content('Upgrade')
       end
     end
 
@@ -41,8 +40,6 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_current_path(app_group_path(@app_group_a))
         expect(page).to have_css('input[name="commit"][value="Create"]')
         expect(page).to have_content('Manage Access')
-        expect(page).to have_content('Upgrade')
-        
       end
 
       scenario 'User with role "admin" can do those actions' do
@@ -56,8 +53,6 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_current_path(app_group_path(@app_group_a))
         expect(page).to have_css('input[name="commit"][value="Create"]')
         expect(page).not_to have_content('Manage Access')
-        expect(page).to have_content('Upgrade')
-        
       end
 
       scenario 'User with role "member" cannot do any actions' do
@@ -71,7 +66,6 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_current_path(app_group_path(@app_group_a))
         expect(page).not_to have_css('input[name="commit"][value="Create"]')
         expect(page).not_to have_content('Manage Access')
-        expect(page).not_to have_content('Upgrade')
       end
     end
   end

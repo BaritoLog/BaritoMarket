@@ -47,7 +47,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         login_as user_b
         visit app_group_path(@app_group)
 
-        expect(page).not_to have_content(@barito_app.name)
+        expect(page).to have_content(@barito_app.name)
         expect(page).not_to have_css("a[href='#{app_path(@barito_app)}'][data-method='delete']")
       end
     end

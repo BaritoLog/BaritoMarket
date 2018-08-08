@@ -23,21 +23,10 @@ class AppGroupPolicy < ApplicationPolicy
       where(user: user, app_group_roles: { name: [:owner] }).count > 0
   end
 
-  def allow_action?
-    manage_access?
-  end
-
-  def allow_upgrade?
+  def allow_see_apps?
     return true if get_user_groups
 
-    AppGroupUser.
-      joins(:role).
-      where(user: user, app_group_roles: { name: [:admin, :owner] }).
-      count > 0
-  end
-
-  def allow_see_apps?
-    allow_upgrade?
+    user.app_groups.where(id: record.id).count > 0
   end
 
   class Scope < Scope
