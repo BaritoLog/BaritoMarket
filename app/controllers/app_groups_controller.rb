@@ -6,6 +6,7 @@ class AppGroupsController < ApplicationController
 
   def index
     @app_groups = policy_scope(AppGroup)
+    @allow_create_app_group = policy(Group).index?
   end
 
   def search
@@ -16,18 +17,21 @@ class AppGroupsController < ApplicationController
   def show
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
-    @allow_action = policy(@app_group).allow_action?
-    @allow_upgrade = policy(@app_group).allow_upgrade?
+    @allow_manage_access = policy(@app_group).manage_access?
+    @allow_see_infrastructure = policy(Infrastructure).show?
+    @allow_see_apps = policy(@app_group).allow_see_apps?
     @allow_delete_barito_app = policy(@app).delete?
     @allow_add_barito_app = policy(@app).create?
   end
 
   def new
+    authorize AppGroup
     @app_group = AppGroup.new
     @capacity_options = TPS_CONFIG.keys
   end
 
   def create
+    authorize AppGroup
     @app_group, @infrastructure = AppGroup.setup(Rails.env, app_group_params)
     if @app_group.valid? && @infrastructure.valid?
       return redirect_to root_path
@@ -52,11 +56,9 @@ class AppGroupsController < ApplicationController
   private
 
   def app_group_params
-    params[:app_group][:user_id] = current_user.id
     params.require(:app_group).permit(
       :name,
-      :capacity,
-      :user_id
+      :capacity
     )
   end
 
