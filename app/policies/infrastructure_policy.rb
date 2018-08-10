@@ -3,7 +3,7 @@ class InfrastructurePolicy < ApplicationPolicy
     return true if get_user_groups
   end
 
-  def retry?
+  def retry_bootstrap?
     show?
   end
 end
