@@ -3,7 +3,7 @@ development:
     name: 'Small'
     max_tps: 100
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 1
       kafka: 1
@@ -16,7 +16,7 @@ development:
     name: 'Medium'
     max_tps: 500
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -29,7 +29,7 @@ development:
     name: 'Large'
     max_tps: 1000
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1      
       zookeeper: 3
       kafka: 3
@@ -43,7 +43,7 @@ test:
     name: 'Small'
     max_tps: 100
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 1
       kafka: 1
@@ -56,7 +56,7 @@ test:
     name: 'Medium'
     max_tps: 500
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -69,7 +69,7 @@ test:
     name: 'Large'
     max_tps: 1000
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -83,7 +83,7 @@ staging:
     name: 'Small'
     max_tps: 100
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 1
       kafka: 1
@@ -96,7 +96,7 @@ staging:
     name: 'Medium'
     max_tps: 500
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -109,7 +109,7 @@ staging:
     name: 'Large'
     max_tps: 1000
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -123,7 +123,7 @@ production:
     name: 'Small'
     max_tps: 100
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 1
       kafka: 1
@@ -136,7 +136,7 @@ production:
     name: 'Medium'
     max_tps: 500
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
@@ -149,7 +149,7 @@ production:
     name: 'Large'
     max_tps: 1000
     instances:
-      yggdrasil: 1
+      yggdrasil: 0
       consul: 1
       zookeeper: 3
       kafka: 3
