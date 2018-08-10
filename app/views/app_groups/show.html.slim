@@ -20,7 +20,7 @@ p
   = @app_group.infrastructure.status
   br
 
-= link_to 'Open Kibana', '#', class: 'btn btn-primary mr-2'
+= link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary mr-2'
 - if @allow_manage_access
   = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary mr-2'
 - if @allow_see_infrastructure
