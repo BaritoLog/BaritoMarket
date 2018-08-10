@@ -17,6 +17,7 @@ class AppGroupsController < ApplicationController
   def show
     @apps = @app_group.barito_apps
     @app = BaritoApp.new
+    @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
 
     @allow_manage_access = policy(@app_group).manage_access?

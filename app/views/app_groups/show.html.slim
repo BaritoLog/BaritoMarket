@@ -20,7 +20,7 @@ p
   = @app_group.infrastructure.status
   br
 
-= link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary mr-2'
+= link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary mr-2', target: '_blank', rel: 'noopener noreferrer'
 - if @allow_manage_access
   = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary mr-2'
 - if @allow_see_infrastructure
@@ -28,6 +28,15 @@ p
 
 br
 br
+
+- unless @app.active?
+  .alert.alert-danger
+    pre You can configure your application by:
+      1. Install FluentD Plugin #{link_to 'here', 'https://github.com/BaritoLog/Barito-Fluent-Plugin', target: '_blank', rel: 'noopener noreferrer'}
+      2. Setup FluentD configuration by referencing #{link_to 'this readme', 'https://github.com/BaritoLog/Barito-Fluent-Plugin/blob/master/README.md', target: '_blank', rel: 'noopener noreferrer'}
+      3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
+
+  br
 
 - if @allow_see_apps
   = render 'app_groups/applications', app: @app, app_group: @app_group, apps: @apps,
