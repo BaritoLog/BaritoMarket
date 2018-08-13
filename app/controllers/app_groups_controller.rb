@@ -1,12 +1,13 @@
 class AppGroupsController < ApplicationController
-  before_action :set_app_group, only: [:show, :manage_access]
-  before_action only: [:show, :manage_access] do
+  before_action :set_app_group, only: [:show, :update, :manage_access]
+  before_action only: [:show, :update, :manage_access] do
     authorize @app_group
   end
 
   def index
     @app_groups = policy_scope(AppGroup)
     @allow_create_app_group = policy(Group).index?
+    @allow_set_status = policy(Infrastructure).toggle_status?
   end
 
   def search
@@ -25,6 +26,7 @@ class AppGroupsController < ApplicationController
     @allow_see_apps = policy(@app_group).allow_see_apps?
     @allow_delete_barito_app = policy(@app).delete?
     @allow_add_barito_app = policy(@app).create?
+    @allow_edit_metadata = policy(@app_group).update?
   end
 
   def new
@@ -43,6 +45,11 @@ class AppGroupsController < ApplicationController
       flash[:messages] << @infrastructure.errors.full_messages
       return redirect_to new_app_group_path
     end
+  end
+
+  def update
+    @app_group.update_attributes(app_group_params)
+    redirect_to app_group_path(@app_group)
   end
 
   def manage_access

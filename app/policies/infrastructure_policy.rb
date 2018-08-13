@@ -6,4 +6,9 @@ class InfrastructurePolicy < ApplicationPolicy
   def retry_bootstrap?
     show?
   end
+
+  def toggle_status?
+    return true if get_user_groups
+    false
+  end
 end

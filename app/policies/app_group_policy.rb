@@ -1,4 +1,11 @@
 class AppGroupPolicy < ApplicationPolicy
+  def show?
+    return true if get_user_groups
+
+    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+    app_group_ids.include?(record.id)
+  end
+
   def new?
     return true if get_user_groups
     false
@@ -8,11 +15,12 @@ class AppGroupPolicy < ApplicationPolicy
     new?
   end
 
-  def show?
+  def update?
     return true if get_user_groups
 
-    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-    app_group_ids.include?(record.id)
+    AppGroupUser.
+      joins(:role).
+      where(user: user, app_group_roles: { name: [:owner, :admin] }).count > 0
   end
 
   def manage_access?
