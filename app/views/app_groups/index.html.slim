@@ -23,8 +23,14 @@
     tbody
       - @app_groups.each do |app_group|
         tr
-          td.text-center = link_to app_group.name, app_group_path(app_group)
-          td.text-center = app_group.infrastructure.capacity
-          td.text-center = app_group.infrastructure.provisioning_status
-          td.text-center = app_group.infrastructure.status
-          td.text-center Open Kibana | Delete
+          td.text-center= link_to app_group.name, app_group_path(app_group)
+          td.text-center= app_group.infrastructure.capacity
+          td.text-center= app_group.infrastructure.provisioning_status
+          td.text-center
+            - if @allow_set_status
+              = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch do
+                = select_tag 'toggle_status',  options_for_select(Infrastructure.statuses, app_group.infrastructure.status), onchange: 'this.form.submit();'
+            - else
+              = app_group.infrastructure.status
+          td.text-center
+            = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'btn btn-primary mr-2', target: '_blank', rel: 'noopener noreferrer'

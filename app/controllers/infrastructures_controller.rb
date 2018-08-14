@@ -1,6 +1,6 @@
 class InfrastructuresController < ApplicationController
   before_action :set_infrastructure
-  before_action  do
+  before_action do
     authorize @infrastructure
   end
 
@@ -15,6 +15,13 @@ class InfrastructuresController < ApplicationController
       RetryBootstrapWorker.perform_async(@infrastructure_component.id)
     end
     redirect_to infrastructure_path(@infrastructure.id)
+  end
+
+  def toggle_status
+    @infrastructure.status = (@infrastructure.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
+    @infrastructure.save!
+
+    redirect_to app_groups_path
   end
 
   private

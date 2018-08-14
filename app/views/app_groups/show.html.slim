@@ -1,8 +1,12 @@
 h3.mb-3 Application Group Details
 p
   b Application Group Name -
-  = @app_group.name
-  br
+  - if @allow_edit_metadata
+    = form_for @app_group do |f|
+      = f.text_field :name
+  - else
+    = @app_group.name
+    br
 p
   b Cluster Name -
   = @app_group.infrastructure.cluster_name

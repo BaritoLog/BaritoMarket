@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     only: %i[create update],
     defaults: { format: :html }
   resources :app_groups,
-    only: %i[index show new create],
+    only: %i[index show new create update],
     defaults: { format: :html } do
       member do
         get :manage_access
@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :retry_bootstrap
+        patch :toggle_status
       end
     end
 
