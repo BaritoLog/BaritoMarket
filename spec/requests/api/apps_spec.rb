@@ -38,4 +38,22 @@ RSpec.describe 'Apps API', type: :request do
       expect(json_response['errors']).to eq([error_msg])
     end
   end
+
+  describe 'Dogapi API' do
+    let(:api_key) {'API_KEY'}
+    let(:dog) { Dogapi::Client.new(api_key) }
+    let(:api_url) {'api.datadoghq.com/api/v1'}
+
+    describe '#emit_point' do
+      it 'post metric to the datadog api' do
+        METRIC = 'test.metric'.freeze
+        POINT = 10
+
+        url = api_url + '/series'
+        stub_request(:post, /#{url}/).to_return(body: '{}').then.to_raise(StandardError)
+        expect(dog.send(:emit_point, METRIC, POINT)).to eq ['200', {}]
+
+      end
+    end
+  end
 end
