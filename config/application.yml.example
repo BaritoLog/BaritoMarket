@@ -23,6 +23,7 @@ CONTAINER_USERNAME:          'ubuntu'
 CHEF_REPO_DIR:               '/opt/chef-repo'
 DEFAULT_CONSUL_PORT:         '8500'
 GATE_ACCESS_TOKEN:           'securerandomstring'
+DATADOG_API_KEY:			 'datadogapikey'
 
 development:
   RAILS_ENV:                 'development'
