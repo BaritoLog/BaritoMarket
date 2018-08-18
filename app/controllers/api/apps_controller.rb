@@ -38,6 +38,12 @@ class Api::AppsController < Api::BaseController
   def increase_log_count
     @app = BaritoApp.find_by_secret_key(params[:token])
     @app.increase_log_count(params[:new_log_count])
+
+    if Figaro.env.datadog_api_key == 'true'
+      dog = Dogapi::Client.new(Figaro.env.datadog_api_key)
+      dog.emit_point("barito.#{@app.name}", params[:new_log_count])
+    end
+
     render json: {
       log_count: @app.log_count,
     }
