@@ -71,9 +71,9 @@ RSpec.describe 'Apps API', type: :request do
   end
 
   describe 'Dogapi API' do
-    let(:api_key) {'API_KEY'}
+    let(:api_key) { 'API_KEY' }
     let(:dog) { Dogapi::Client.new(api_key) }
-    let(:api_url) {'api.datadoghq.com/api/v1'}
+    let(:api_url) { 'api.datadoghq.com/api/v1' }
 
     describe '#emit_point' do
       it 'post metric to the datadog api' do
