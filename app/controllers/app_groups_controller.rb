@@ -1,4 +1,5 @@
 class AppGroupsController < ApplicationController
+  include Wisper::Publisher
   before_action :set_app_group, only: [:show, :update, :manage_access]
   before_action only: [:show, :update, :manage_access] do
     authorize @app_group
@@ -39,6 +40,7 @@ class AppGroupsController < ApplicationController
     authorize AppGroup
     @app_group, @infrastructure = AppGroup.setup(Rails.env, app_group_params)
     if @app_group.valid? && @infrastructure.valid?
+      broadcast(:team_count_changed)
       return redirect_to root_path
     else
       flash[:messages] = @app_group.errors.full_messages

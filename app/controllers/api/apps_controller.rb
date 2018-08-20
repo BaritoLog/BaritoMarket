@@ -1,4 +1,5 @@
 class Api::AppsController < Api::BaseController
+  include Wisper::Publisher
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
     render json: {
@@ -38,11 +39,7 @@ class Api::AppsController < Api::BaseController
   def increase_log_count
     @app = BaritoApp.find_by_secret_key(params[:token])
     @app.increase_log_count(params[:new_log_count])
-
-    if Figaro.env.datadog_integration == 'true'
-      dog = Dogapi::Client.new(Figaro.env.datadog_api_key)
-      dog.emit_point("barito.#{@app.name}", params[:new_log_count])
-    end
+    broadcast(:log_count_changed, @app.id, :new_log_count)
 
     render json: {
       log_count: @app.log_count,
