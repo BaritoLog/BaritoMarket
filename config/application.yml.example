@@ -24,6 +24,7 @@ CHEF_REPO_DIR:               '/opt/chef-repo'
 DEFAULT_CONSUL_PORT:         '8500'
 GATE_ACCESS_TOKEN:           'securerandomstring'
 DATADOG_API_KEY:			 'datadogapikey'
+DATADOG_INTEGRATION:         'false'
 
 development:
   RAILS_ENV:                 'development'
