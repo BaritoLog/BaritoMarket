@@ -42,6 +42,8 @@ class AppGroupPolicy < ApplicationPolicy
       if Figaro.env.enable_cas_integration == 'true'
         gate_groups = GateWrapper.new(user).check_user_groups.symbolize_keys[:groups] || []
         return scope.all if Group.where(name: gate_groups).count > 0
+      else
+        return scope.all if user.groups.count > 0
       end
 
       app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
