@@ -3,7 +3,7 @@ class AppsController < ApplicationController
   def create
     @app = BaritoApp.setup(app_params)
     if @app.persisted?
-      broadcast(:app_count_changed, @app.id, @app.app_group.barito_apps.count)
+      broadcast(:app_count_changed)
       return redirect_to @app.app_group
     else
       flash[:messages] = @app.errors.full_messages
@@ -13,7 +13,7 @@ class AppsController < ApplicationController
 
   def destroy
     @app = BaritoApp.find(params[:id])
-    broadcast(:app_count_changed, @app.id, @app.app_group.barito_apps.count)
+    broadcast(:app_count_changed)
     @app.destroy
     return redirect_to @app.app_group
   end

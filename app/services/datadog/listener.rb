@@ -15,21 +15,17 @@ module Datadog
       end
     end
 
-    def app_count_changed(app_id, new_app_count)
-      app = BaritoApp.find_by(id: app_id)
-      if app.nil?
-        return 
-      end
-
+    def app_count_changed
       if Figaro.env.datadog_integration == 'true'
-        @dog.emit_point("barito.#{app.app_group.name}", new_app_count)
+        count = BaritoApp.count
+        @dog.emit_point("barito.total_app", count)
       end
     end
 
     def team_count_changed
       if Figaro.env.datadog_integration == 'true'
         count = AppGroup.count
-        @dog.emit_point("barito.total_app_group", count)
+        @dog.emit_point("barito.total_team", count)
       end
     end
   end
