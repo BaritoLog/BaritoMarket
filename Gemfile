@@ -25,6 +25,7 @@ gem 'slim-rails', '<= 3.1.3'
 gem 'therubyracer', '<= 0.12.3'
 gem 'typhoeus', '<= 1.3.0'
 gem 'uglifier'
+gem 'wisper', '<= 2.0.0'
 
 group :development, :test do
   gem 'cane', '<= 3.0'
