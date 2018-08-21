@@ -1,17 +1,20 @@
 module Datadog
-  class Listener 
+  class Listener
     def initialize
       @dog = Dogapi::Client.new(Figaro.env.datadog_api_key)
     end
 
-    def log_count_changed(app_id, new_log_count)
+    def log_count_changed(app_id, log_count, new_log_count)
       app = BaritoApp.find_by(id: app_id)
+      log_count_per_app_group = BaritoApp.where(app_group_id: app.app_group_id).sum(&:log_count)
       if app.nil?
-        return 
+        return
       end
 
       if Figaro.env.datadog_integration == 'true'
-        @dog.emit_point("barito.#{app.name}", new_log_count)
+        @dog.emit_point("barito.#{app.name}.log_count", log_count)
+        @dog.emit_point("barito.#{app.app_group.name}.log_count", log_count_per_app_group)
+        @dog.emit_point("barito.#{app.name}.log_throughput", new_log_count)
       end
     end
 
