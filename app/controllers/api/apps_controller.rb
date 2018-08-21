@@ -1,5 +1,7 @@
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
+  skip_before_action :authenticate_token, only: [:authorize]
+
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
     render json: {
@@ -45,5 +47,24 @@ class Api::AppsController < Api::BaseController
     render json: {
       log_count: @app.log_count,
     }
+  end
+
+  def authorize
+    @user = User.find_by_username_or_email(params[:username])
+    @infra = Infrastructure.find_by_cluster_name(params[:cluster_name])
+
+    if @user.nil? || @infra.nil?
+      render json: "Unauthorized", status: :unauthorized
+      return
+    end
+
+    @app_group_user = AppGroupUser.where(user: @user, app_group: @infra.app_group)
+
+    if @app_group_user.first.nil?
+      render json: "Unauthorized", status: :unauthorized
+      return
+    end
+
+    render json: "", status: :ok
   end
 end
