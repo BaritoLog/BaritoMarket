@@ -87,24 +87,22 @@ RSpec.describe 'Apps API', type: :request do
   end
 
   describe 'Authorize API' do
+    let(:user_a) { create(:user) }
     context 'when valid username and valid cluster_name' do
       it 'should return 200' do
-        user = create(:user)
+        set_check_user_groups({ 'groups': ['barito-superadmin'] })
+        login_as user_a
+        create(:group, name: 'barito-superadmin')
         app_group = create(:app_group)
-        app_group_role = create(:app_group_role)
-        app_group_user = create(:app_group_user, user: user, app_group: app_group, role: app_group_role)
         infrastructure = create(:infrastructure, app_group: app_group)
-        get api_authorize_path, params: { cluster_name: infrastructure.cluster_name, username: user.username  }, headers: headers
+        get api_authorize_path, params: { cluster_name: infrastructure.cluster_name, username: user_a[:username]  }, headers: headers
 
         expect(response.status).to eq 200
       end
     end
     context 'when invalid username or invalid cluster_name' do
       it 'should return 401' do
-        user = create(:user)
         app_group = create(:app_group)
-        app_group_role = create(:app_group_role)
-        app_group_user = create(:app_group_user, user: user, app_group: app_group, role: app_group_role)
         infrastructure = create(:infrastructure, app_group: app_group)
         get api_authorize_path, params: { cluster_name: "some-random-name", username: "some-user"  }, headers: headers
 
