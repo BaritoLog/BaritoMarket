@@ -39,9 +39,12 @@ class Api::AppsController < Api::BaseController
 
   def increase_log_count
     @app = BaritoApp.find_by_secret_key(params[:token])
+    app_group = @app.app_group
+    app_group.increase_log_count(params[:new_log_count])
     @app.increase_log_count(params[:new_log_count])
     @app.reload
-    broadcast(:log_count_changed, @app.id, @app.log_count)
+    app_group.reload
+    broadcast(:log_count_changed, @app.id, params[:new_log_count])
 
     render json: {
       log_count: @app.log_count,
