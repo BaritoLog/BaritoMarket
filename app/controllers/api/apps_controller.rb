@@ -50,17 +50,9 @@ class Api::AppsController < Api::BaseController
   end
 
   def authorize
-    @user = User.find_by_username_or_email(params[:username])
-    @infra = Infrastructure.find_by_cluster_name(params[:cluster_name])
-
-    if @user.nil? || @infra.nil?
-      render json: "Unauthorized", status: :unauthorized
-      return
-    end
-
-    @app_group_user = AppGroupUser.where(user: @user, app_group: @infra.app_group)
-
-    if @app_group_user.first.nil?
+    @current_user = User.find_by_username_or_email(params[:username])
+    @infrastructure = Infrastructure.find_by_cluster_name(params[:cluster_name])
+    unless InfrastructurePolicy.new(@current_user, @infrastructure).exist?
       render json: "Unauthorized", status: :unauthorized
       return
     end

@@ -1,4 +1,5 @@
 class Api::BaseController < ActionController::Base
+  include Pundit
   before_action :authenticate_token
 
   def authenticate_token

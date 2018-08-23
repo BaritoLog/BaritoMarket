@@ -19,6 +19,6 @@ class User < ApplicationRecord
   end
 
   def self.find_by_username_or_email(username)
-    User.where("username = ? OR email = ?", username, username)
+    User.where("username = ? OR email = ?", username, username).first
   end
 end
