@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       to: 'infrastructures#profile_by_cluster_name',
       defaults: { format: :json }
     get :authorize,
-      to: 'apps#authorize',
+      to: 'infrastructures#authorize_by_username',
       defaults: { format: :json }
   end
 

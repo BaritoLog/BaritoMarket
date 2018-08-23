@@ -12,7 +12,7 @@ class InfrastructurePolicy < ApplicationPolicy
     false
   end
 
-  def exist?
+  def exists?
     return true if get_user_groups and not @record.nil?
   end
 end
