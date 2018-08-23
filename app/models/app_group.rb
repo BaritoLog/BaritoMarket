@@ -19,4 +19,8 @@ class AppGroup < ApplicationRecord
       [app_group, infrastructure]
     end
   end
+
+  def increase_log_count(new_count)
+    update_column(:log_count, log_count + new_count.to_i)
+  end
 end
