@@ -1,5 +1,6 @@
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
+
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
     render json: {

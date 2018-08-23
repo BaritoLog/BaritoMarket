@@ -1,5 +1,9 @@
 class Api::BaseController < ActionController::Base
+  include Pundit
+
   before_action :authenticate_token
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def authenticate_token
     required_keys = [:token]
@@ -23,5 +27,12 @@ class Api::BaseController < ActionController::Base
       valid = params.key?(key.to_sym) && !params[key.to_sym].blank?
     end
     valid
+  end
+
+  private
+
+  def user_not_authorized
+    render json: "Unauthorized", status: :unauthorized
+    return
   end
 end

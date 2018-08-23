@@ -17,4 +17,8 @@ class User < ApplicationRecord
     return username if email.blank?
     email
   end
+
+  def self.find_by_username_or_email(username)
+    User.where("username = ? OR email = ?", username, username).first
+  end
 end

@@ -1,5 +1,5 @@
 class Api::InfrastructuresController < Api::BaseController
-  skip_before_action :authenticate_token, only: [:profile_by_cluster_name]
+  skip_before_action :authenticate_token, only: [:profile_by_cluster_name, :authorize_by_username]
 
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
@@ -25,5 +25,14 @@ class Api::InfrastructuresController < Api::BaseController
         },
       },
     }
+  end
+
+  def authorize_by_username
+    @current_user = User.find_by_username_or_email(params[:username])
+    @infrastructure = Infrastructure.find_by_cluster_name(params[:cluster_name])
+
+    raise Pundit::NotAuthorizedError unless InfrastructurePolicy.new(@current_user, @infrastructure).exists?
+
+    render json: "", status: :ok
   end
 end
