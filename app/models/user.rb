@@ -18,7 +18,7 @@ class User < ApplicationRecord
     email
   end
 
-  def self.find_by_username_or_email(username)
-    User.where("username = ? OR email = ?", username, username).first
+  def self.find_by_username_or_email(input)
+    User.where("username = :input OR email = :input", input: input).first
   end
 end

@@ -32,7 +32,7 @@ html
     .container-fluid.align-items-center.pt-4.pb-4.bg-light
       .row
         .col-md-12.text
-          - if flash.key?(:alert) && flash[:alert].class == String
+          - if flash.key?(:alert) && flash[:alert].class == String && !flash[:alert].blank?
             .alert.alert-danger.text-center
               = flash[:alert]
               = button_tag class: 'close', data: { dismiss: 'alert' }, 'aria-label': 'Close' do
