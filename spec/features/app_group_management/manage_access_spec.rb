@@ -9,9 +9,8 @@ RSpec.feature 'Application Group Management', type: :feature do
     set_check_user_groups({ 'groups' => [] })
 
     @app_group_a = create(:app_group)
-    @app_group_b = create(:app_group)
 
-    [@app_group_a, @app_group_b].each { |app_group| create(:infrastructure, app_group: app_group) }
+    [@app_group_a].each { |app_group| create(:infrastructure, app_group: app_group) }
   end
 
   describe 'Managing Access', js: true do
@@ -57,6 +56,35 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).to have_content('Manage Access')
         expect(page).to have_css("form#new_barito_app")
+      end
+    end
+
+    context 'When set to only specific AppGroup' do
+      scenario 'Should only set to specifc AppGroup' do
+        @app_group_b = create(:app_group)
+        create(:infrastructure, app_group: @app_group_b)
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+        create(:app_group_role)
+
+        login_as admin
+
+        visit root_path
+        click_link @app_group_a.name
+
+        click_link 'Manage Access'
+        set_select2_option(selector: '#assign_member_user_id', text: user_a.email, value: user_a.id)
+        find('form#new_app_group_user input[value="Add"]').click
+
+        expect(page).to have_content(user_a.email)
+        expect(page).to have_css("a[href='#{app_group_user_path(user_id: user_a.id, app_group_id: @app_group_a.id)}']")
+
+        visit root_path
+        click_link @app_group_b.name
+
+        click_link 'Manage Access'
+        expect(page).not_to have_content(user_a.email)
+        expect(page).not_to have_css("a[href='#{app_group_user_path(user_id: user_a.id, app_group_id: @app_group_a.id)}']")
       end
     end
   end
