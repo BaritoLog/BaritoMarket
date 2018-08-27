@@ -15,7 +15,10 @@
       - @app_group_users.each do |member|
         li.list-group-item
           .row.no-gutters
-            .col-10= member.email || member.username
+            - if member.email.blank?
+              .col-10= member.username
+            - else
+              .col-10= member.email
             .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger', data: { method: :delete }
           .row.no-gutters
             .col-12
