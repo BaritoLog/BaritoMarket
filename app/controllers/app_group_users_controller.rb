@@ -27,7 +27,7 @@ class AppGroupUsersController < ApplicationController
 
   def destroy
     user = User.find(params[:user_id])
-    AppGroupUser.where(user: user).destroy_all
+    AppGroupUser.where(user: user, app_group_id: params[:app_group_id]).destroy_all
 
     redirect_to manage_access_app_group_path(params[:app_group_id])
   end
