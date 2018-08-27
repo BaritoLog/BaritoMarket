@@ -13,6 +13,9 @@ class InfrastructurePolicy < ApplicationPolicy
   end
 
   def exists?
-    return true if get_user_groups and not @record.nil?
+    return true if get_user_groups
+
+    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+    app_group_ids.include?(record.id)
   end
 end
