@@ -59,7 +59,8 @@ class AppGroupsController < ApplicationController
     @app_group_users = AppGroupUser.
       joins(:user, :role).
       group('users.email, users.username, user_id').
-      select("user_id, string_agg(role_id::character varying, ',') AS roles, users.email, users.username")
+      select("user_id, string_agg(role_id::character varying, ',') AS roles, users.email, users.username").
+      where(app_group_id: @app_group.id)
 
     @role_member = AppGroupRole.as_member
     @roles = AppGroupRole.where.not(name: 'member')
