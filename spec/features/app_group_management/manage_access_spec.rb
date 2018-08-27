@@ -87,5 +87,36 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).not_to have_css("a[href='#{app_group_user_path(user_id: user_a.id, app_group_id: @app_group_a.id)}']")
       end
     end
+
+    context 'Removing access to user' do
+      scenario 'Not removing User access in another AppGroup' do
+        @app_group_b = create(:app_group)
+        create(:infrastructure, app_group: @app_group_b)
+        member_role = create(:app_group_role)
+
+        [@app_group_a, @app_group_b].each do |app_group|
+          create(:app_group_user, app_group: app_group, role: member_role, user: user_a)
+          create(:app_group_user, app_group: app_group, role: member_role, user: user_b)
+        end
+
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+
+        login_as admin
+
+        visit root_path
+        click_link @app_group_a.name
+        click_link 'Manage Access'
+        find("a[href='/app_group_users/#{user_a.id}/delete/#{@app_group_a.id}']").click
+
+        expect(page).not_to have_content(user_a.email)
+
+        visit root_path
+        click_link @app_group_b.name
+        click_link 'Manage Access'
+
+        expect(page).to have_content(user_a.email)
+      end
+    end
   end
 end
