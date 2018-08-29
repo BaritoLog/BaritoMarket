@@ -37,6 +37,7 @@ module BaritoBlueprint
 
       Processor.produce_log(@infrastructure, 'Bootstrap finished')
       @infrastructure.update_provisioning_status('FINISHED')
+      @infrastructure.update_status('ACTIVE')
       return true
     end
 
@@ -77,6 +78,8 @@ module BaritoBlueprint
           "InfrastructureComponent:#{component.id}",
           "Bootstrapping #{component.hostname} finished")
         component.update_status('FINISHED')
+        valid_infrastructure = ready_components?(@infrastructure.infrastructure_components)
+        @infrastructure.update_status('ACTIVE') if valid_infrastructure
         return true
       else
         Processor.produce_log(
@@ -94,6 +97,15 @@ module BaritoBlueprint
       return {} unless generator.is_a? Class
       ChefHelper::GenericRoleAttributesGenerator.new.generate(
         generator.new(component, infrastructure_components))
+    end
+
+    def ready_components?(components)
+      components.all?{ |component| ready_component?(component)}
+    end
+
+    def ready_component?(component)
+      return false unless component.status == 'FINISHED'
+      return true
     end
   end
 end
