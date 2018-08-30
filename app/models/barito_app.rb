@@ -26,6 +26,11 @@ class BaritoApp < ApplicationRecord
     self.status == BaritoApp.statuses[:active]
   end
 
+  def available?
+    infrastructure = Infrastructure.find_by(app_group_id: app_group_id)
+    active? && infrastructure.active?
+  end
+
   def update_status(status)
     status = status.downcase.to_sym
     if BaritoApp.statuses.key?(status)

@@ -23,8 +23,8 @@ RSpec.describe 'App API', type: :request do
     end
 
     context 'when infrastructure inactive' do
-      it 'should return 401' do
-        error_msg = 'Unauthorized: Infrastructure not found or inactive'
+      it 'should return 404' do
+        error_msg = 'Infrastructure not found or inactive'
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
 
@@ -34,7 +34,7 @@ RSpec.describe 'App API', type: :request do
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
-        expect(json_response['code']).to eq 401
+        expect(json_response['code']).to eq 404
         expect(json_response['errors']).to eq [error_msg]
       end
     end
@@ -57,22 +57,22 @@ RSpec.describe 'App API', type: :request do
     end
 
     context 'when invalid username or invalid cluster_name' do
-      it 'should return 401' do
+      it 'should return 404' do
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
         get api_authorize_path, params: { cluster_name: "some-random-name", username: "some-user"  }, headers: headers
 
-        expect(response.status).to eq 401
+        expect(response.status).to eq 404
       end
     end
 
     context 'when valid username and cluster name but with inactive infrastructure' do
-      it 'should return 401' do
+      it 'should return 404' do
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
         get api_authorize_path, params: { cluster_name: infrastructure.cluster_name, username: user_a.username  }, headers: headers
 
-        expect(response.status).to eq 401
+        expect(response.status).to eq 404
       end
     end
   end

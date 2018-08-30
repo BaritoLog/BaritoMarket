@@ -8,9 +8,9 @@ class Api::InfrastructuresController < Api::BaseController
     if @infrastructure.blank? || !@infrastructure.active?
       render json: {
         success: false,
-        errors: ["Unauthorized: Infrastructure not found or inactive"],
-        code: 401
-      }, status: :unauthorized and return
+        errors: ["Infrastructure not found or inactive"],
+        code: 404
+      }, status: :not_found and return
     end
 
     render json: {
@@ -41,22 +41,13 @@ class Api::InfrastructuresController < Api::BaseController
     @infrastructure = Infrastructure.
       find_by_cluster_name(params[:cluster_name])
 
-    if @infrastructure.blank?
+    if @infrastructure.blank? || !@infrastructure.active?
       render json: {
         success: false, 
-        errors: ["Unauthorized: infrastructure #{params[:cluster_name]} is not exists"],
-        code: 401
-      }, status: :unauthorized and return 
+        errors: ["Infrastructure #{params[:cluster_name]} is not exists"],
+        code: 404
+      }, status: :not_found and return 
     end
-
-    if @infrastructure.status == Infrastructure.statuses[:inactive]
-      render json: {
-        success: false,
-        errors: ["Unauthorized: infrastructure #{params[:cluster_name]} is inactive"],
-        code: 401
-      }, status: :unauthorized and return 
-    end
-
 
     raise Pundit::NotAuthorizedError unless InfrastructurePolicy.new(
       @current_user, @infrastructure).exists?

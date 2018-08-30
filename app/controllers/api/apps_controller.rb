@@ -4,12 +4,12 @@ class Api::AppsController < Api::BaseController
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
 
-    if @app.blank? || !@app.active?
+    if @app.blank? || !@app.available?
       render json: {
         success: false,
-        errors: ["Unauthorized: App not found or inactive"],
-        code: 401
-      }, status: :unauthorized and return
+        errors: ["App not found or inactive"],
+        code: 404
+      }, status: :not_found and return
     end
 
     render json: {
