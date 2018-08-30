@@ -12,7 +12,7 @@ class RetryBootstrapWorker
         private_key_name: Figaro.env.container_private_key,
         username: Figaro.env.container_username,
       )
-      bootstrapper.bootstrap_instance!(infrastructure_component, true)
+      bootstrapper.bootstrap_instance!(infrastructure_component)
     rescue JSON::ParserError, StandardError => ex
       logger.warn "Exception: #{ex}"
       infrastructure_component.update_status('BOOTSTRAP_ERROR', ex.to_s)

@@ -78,8 +78,13 @@ module BaritoBlueprint
           "InfrastructureComponent:#{component.id}",
           "Bootstrapping #{component.hostname} finished")
         component.update_status('FINISHED')
+
+        @infrastructure.reload
         valid_infrastructure = ready_components?(@infrastructure.infrastructure_components)
-        @infrastructure.update_status('ACTIVE') if valid_infrastructure
+        if valid_infrastructure
+          @infrastructure.update_status('ACTIVE')
+          @infrastructure.update_provisioning_status('FINISHED')
+        end
         return true
       else
         Processor.produce_log(
@@ -88,6 +93,7 @@ module BaritoBlueprint
           "Bootstrapping #{component.hostname} error",
           "#{res['error']}")
         component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
+        @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
         return false
       end
     end
