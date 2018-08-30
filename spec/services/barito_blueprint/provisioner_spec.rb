@@ -4,7 +4,7 @@ module BaritoBlueprint
   RSpec.describe BaritoBlueprint::Provisioner do
     before(:each) do
       @infrastructure = create(:infrastructure)
-      @executor = SauronProvisioner.new('127.0.0.1:3000')
+      @executor = PathfinderProvisioner.new('127.0.0.1:3000', 'barito')
       @provisioner = Provisioner.new(
         @infrastructure, 
         @executor,
@@ -39,14 +39,14 @@ module BaritoBlueprint
       it 'should return true if executor returns success' do
         allow(@executor).
           to receive(:provision!).
-          and_return('success' => 'true')
+          and_return('success' => true)
         expect(@provisioner.provision_instance!(@component)).to eq true
       end
 
       it 'should return false if executor returns errors' do
         allow(@executor).
           to receive(:provision!).
-          and_return('success' => 'false')
+          and_return('success' => false)
         expect(@provisioner.provision_instance!(@component)).to eq false
       end
     end
@@ -62,7 +62,10 @@ module BaritoBlueprint
       end
 
       it 'should return false even if only one invalid component' do
-        allow(@provisioner).to receive(:check_instance).and_return(false)
+        allow(@provisioner).to receive(:check_instance).and_return([
+          false, 
+          { error: "" }
+        ])
         component = create(:infrastructure_component, 
           infrastructure: @infrastructure,
         )
@@ -104,7 +107,10 @@ module BaritoBlueprint
 
       it 'should return false if show_container doesn\'t return ip address' do
         allow(@executor).to receive(:show_container).and_return({})
-        expect(@provisioner.check_instance(@component)).to eq false
+        expect(@provisioner.check_instance(@component)).to eq [
+          false, 
+          { error: "" }
+        ]
       end
     end
 
