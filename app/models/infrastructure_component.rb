@@ -27,6 +27,11 @@ class InfrastructureComponent < ApplicationRecord
     end
   end
 
+  def ready?
+    return false unless component.status == 'FINISHED'
+    return true
+  end
+
   def allow_provision?
     [
       'PROVISIONING_ERROR',
