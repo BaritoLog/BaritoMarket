@@ -1,8 +1,8 @@
 module BaritoBlueprint
   class Provisioner
     DEFAULTS = {
-      timeout: 2.minutes,
-      check_interval: 3.seconds
+      timeout: 5.minutes,
+      check_interval: 5.seconds
     }
 
     def initialize(infrastructure, executor, opts = {})
