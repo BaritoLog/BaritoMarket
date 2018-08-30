@@ -17,7 +17,7 @@ class BaritoApp < ApplicationRecord
       topic_name: app_params[:topic_name],
       secret_key: BaritoApp.generate_key,
       max_tps: app_params[:max_tps],
-      status: BaritoApp.statuses[:inactive],
+      status: BaritoApp.statuses[:active],
     )
     app
   end
