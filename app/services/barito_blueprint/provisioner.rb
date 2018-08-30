@@ -35,7 +35,7 @@ module BaritoBlueprint
 
     def provision_instance!(component)
       Processor.produce_log(
-        @infrastructure, 
+        @infrastructure,
         "InfrastructureComponent:#{component.id}",
         "Provisioning #{component.hostname} started")
       component.update_status('PROVISIONING_STARTED')
@@ -43,20 +43,52 @@ module BaritoBlueprint
       # Execute provisioning
       res = @executor.provision!(component.hostname)
       Processor.produce_log(
-        @infrastructure, 
+        @infrastructure,
         "InfrastructureComponent:#{component.id}",
         "#{res}")
 
       if res['success'] == true
         Processor.produce_log(
-          @infrastructure, 
+          @infrastructure,
           "InfrastructureComponent:#{component.id}",
           "Provisioning #{component.hostname} finished")
         component.update_status('PROVISIONING_FINISHED')
         return true
       else
         Processor.produce_log(
-          @infrastructure, 
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('PROVISIONING_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+
+    def reschedule_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Provisioning #{component.hostname} started")
+      component.update_status('PROVISIONING_STARTED')
+
+      # Execute rescheduling
+      res = @executor.reschedule!(component.hostname)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} finished")
+        component.update_status('PROVISIONING_FINISHED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
           "InfrastructureComponent:#{component.id}",
           "Provisioning #{component.hostname} error",
           "#{res['error']}")
@@ -70,7 +102,7 @@ module BaritoBlueprint
 
       success = valid_instances?(@infrastructure_components)
       start_time = DateTime.current
-      while !success && 
+      while !success &&
         DateTime.current <= start_time + @defaults[:timeout]
 
         sleep(@defaults[:check_interval])

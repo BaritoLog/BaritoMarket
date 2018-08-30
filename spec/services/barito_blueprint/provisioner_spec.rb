@@ -6,7 +6,7 @@ module BaritoBlueprint
       @infrastructure = create(:infrastructure)
       @executor = PathfinderProvisioner.new('127.0.0.1:3000', 'abc', 'barito')
       @provisioner = Provisioner.new(
-        @infrastructure, 
+        @infrastructure,
         @executor,
         timeout: 1.second,
         check_interval: 0.second,
@@ -63,11 +63,31 @@ module BaritoBlueprint
       end
     end
 
+    describe '#reschedule_instance!' do
+      before(:each) do
+        @component = build(:infrastructure_component)
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:reschedule!).
+          and_return('success' => true)
+        expect(@provisioner.reschedule_instance!(@component)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:reschedule!).
+          and_return('success' => false)
+        expect(@provisioner.reschedule_instance!(@component)).to eq false
+      end
+    end
+
     describe '#check_and_update_instances' do
       before(:each) do
         2.times.each do
-          create(:infrastructure_component, 
-            infrastructure: @infrastructure, 
+          create(:infrastructure_component,
+            infrastructure: @infrastructure,
             ipaddress: '1.2.3.4',
           )
         end
@@ -76,7 +96,7 @@ module BaritoBlueprint
       context 'positive scenario' do
         before(:each) do
           allow(@provisioner).to receive(:check_instance).and_return([
-            true, 
+            true,
             { ipaddress: "1.2.3.4" }
           ])
         end
@@ -91,7 +111,7 @@ module BaritoBlueprint
         end
 
         it 'should make sure that every component has ip address' do
-          component = create(:infrastructure_component, 
+          component = create(:infrastructure_component,
             infrastructure: @infrastructure,
           )
           @provisioner.check_and_update_instances
@@ -103,10 +123,10 @@ module BaritoBlueprint
       context 'negative scenario' do
         before (:each) do
           allow(@provisioner).to receive(:check_instance).and_return([
-            false, 
+            false,
             { error: "" }
           ])
-          component = create(:infrastructure_component, 
+          component = create(:infrastructure_component,
             infrastructure: @infrastructure,
           )
         end

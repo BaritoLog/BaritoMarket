@@ -1,9 +1,9 @@
 class PathfinderProvisioner
   attr_accessor :pathfinder_host, :pathfinder_cluster
 
-  def initialize(pathfinder_host, 
-    pathfinder_token, 
-    pathfinder_cluster, 
+  def initialize(pathfinder_host,
+    pathfinder_token,
+    pathfinder_cluster,
     opts = {}
   )
 
@@ -32,7 +32,7 @@ class PathfinderProvisioner
       }
     )
     req.run
-    
+
     if req.response.success?
       return respond_success(req.response)
     else
@@ -56,10 +56,31 @@ class PathfinderProvisioner
     return respond_success(req.response)
   end
 
+  def reschedule!(hostname)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/reschedule",
+      method: :post,
+      params: {
+        'cluster_name' => @pathfinder_cluster,
+      },
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+
+    if req.response.success?
+      return respond_success(req.response)
+    else
+      return respond_error(req.response)
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)
-      { 
+      {
         'success' => true,
         'data' => {
           'ipaddress' => body.dig('data', 'ipaddress')

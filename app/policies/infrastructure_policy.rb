@@ -7,6 +7,10 @@ class InfrastructurePolicy < ApplicationPolicy
     show?
   end
 
+  def retry_provision?
+    show?
+  end
+
   def toggle_status?
     return true if get_user_groups
     false
