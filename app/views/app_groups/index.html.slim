@@ -28,8 +28,9 @@
           td.text-center= app_group.infrastructure.provisioning_status
           td.text-center
             - if @allow_set_status
-              = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch do
-                = select_tag 'toggle_status',  options_for_select(Infrastructure.statuses, app_group.infrastructure.status), onchange: 'this.form.submit();'
+              = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow' }
+              = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
+                = hidden_field_tag :toggle_status
             - else
               = app_group.infrastructure.status
           td.text-center

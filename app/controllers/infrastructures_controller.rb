@@ -19,7 +19,7 @@ class InfrastructuresController < ApplicationController
   end
 
   def toggle_status
-    @infrastructure.status = (@infrastructure.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
+    @infrastructure.status = params[:toggle_status] == 'true' ? 'ACTIVE' : 'INACTIVE'
     @infrastructure.save!
 
     redirect_to app_groups_path

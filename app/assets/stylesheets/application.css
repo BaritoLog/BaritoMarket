@@ -18,6 +18,18 @@ body {
   padding-top: 60px;
 }
 
+.btn-default {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #959595;
+}
+
+.btn-default.toggle-off {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
 a.btn-primary { color: white!important;  }
 .app_list_name { width: 40%; }
 .app_list_config { width: 15%; }
