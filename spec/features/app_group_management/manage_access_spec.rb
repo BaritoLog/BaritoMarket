@@ -43,7 +43,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).not_to have_content('Manage Access')
-        expect(page).to have_css("form#new_barito_app")
+        expect(page).to have_css("form#new_barito_app", visible: false)
       end
 
       scenario 'User with role "owner" can do just like superadmin' do
@@ -55,7 +55,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).to have_content('Manage Access')
-        expect(page).to have_css("form#new_barito_app")
+        expect(page).to have_css('form#new_barito_app', visible: false)
       end
     end
 

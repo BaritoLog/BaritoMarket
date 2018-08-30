@@ -93,6 +93,10 @@ class Infrastructure < ApplicationRecord
     app_group&.name
   end
 
+  def active?
+    self.status == Infrastructure.statuses[:active]
+  end
+
   def self.generate_cluster_index
     Infrastructure.all.size + CLUSTER_NAME_PADDING
   end

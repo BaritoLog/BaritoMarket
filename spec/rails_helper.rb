@@ -43,7 +43,6 @@ Capybara.register_driver :custom_headless_chrome do |app|
     desired_capabilities: capabilities
 end
 
-# Capybara.javascript_driver = :selenium_chrome_headless
 Capybara.javascript_driver = :custom_headless_chrome
 
 RSpec.configure do |config|
