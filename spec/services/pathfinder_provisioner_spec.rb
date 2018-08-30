@@ -4,6 +4,7 @@ RSpec.describe PathfinderProvisioner do
   describe '#provision!' do
     before(:all) do
       @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
 
       # Mock Pathfinder API
@@ -20,7 +21,7 @@ RSpec.describe PathfinderProvisioner do
           }.to_json,
           headers: {
             'Content-Type' => 'application/json',
-            'X-Auth-Token' => '',
+            'X-Auth-Token' => @pathfinder_token,
           }
         ).to_return({
           status: 201,
@@ -37,7 +38,7 @@ RSpec.describe PathfinderProvisioner do
     end
 
     it 'should make necessary calls to Pathfinder and return the response' do
-      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_cluster)
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
       provision_result = pathfinder_provisioner.provision!('test-01')
       expect(provision_result).to eq({
         'success' => true,

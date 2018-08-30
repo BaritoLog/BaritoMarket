@@ -1,8 +1,14 @@
 class PathfinderProvisioner
   attr_accessor :pathfinder_host, :pathfinder_cluster
 
-  def initialize(pathfinder_host, pathfinder_cluster, opts = {})
+  def initialize(pathfinder_host, 
+    pathfinder_token, 
+    pathfinder_cluster, 
+    opts = {}
+  )
+
     @pathfinder_host = pathfinder_host
+    @pathfinder_token = pathfinder_token
     @pathfinder_cluster = pathfinder_cluster
     @image = opts[:image] || '16.04'
   end
@@ -22,7 +28,7 @@ class PathfinderProvisioner
       }.to_json,
       headers: {
         'Content-Type' => 'application/json',
-        'X-Auth-Token' => ''
+        'X-Auth-Token' => @pathfinder_token
       }
     )
     req.run
@@ -43,7 +49,7 @@ class PathfinderProvisioner
       },
       headers: {
         'Content-Type' => 'application/json',
-        'X-Auth-Token' => ''
+        'X-Auth-Token' => @pathfinder_token
       }
     )
     req.run

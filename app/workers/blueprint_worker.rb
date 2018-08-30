@@ -10,6 +10,7 @@ class BlueprintWorker
         BaritoBlueprint::Processor.new(
           blueprint_hash,
           pathfinder_host: Figaro.env.pathfinder_host,
+          pathfinder_token: Figaro.env.pathfinder_token,
           pathfinder_cluster: Figaro.env.pathfinder_cluster,
           pathfinder_image: Figaro.env.pathfinder_image,
           chef_repo_dir: Figaro.env.chef_repo_dir,
