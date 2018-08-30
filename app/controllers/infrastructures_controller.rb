@@ -12,6 +12,7 @@ class InfrastructuresController < ApplicationController
     @infrastructure_component = InfrastructureComponent.find(
       params[:infrastructure_component_id])
     if @infrastructure_component.allow_bootstrap?
+      @infrastructure_component.update_status('BOOTSTRAP_STARTED')
       RetryBootstrapWorker.perform_async(@infrastructure_component.id)
     end
     redirect_to infrastructure_path(@infrastructure.id)

@@ -29,9 +29,22 @@ module BaritoBlueprint
         expect(@bootstrapper.bootstrap_instances!).to eq false
       end
 
+      it 'should update infrastructure provisioning_status to BOOTSTRAP_ERROR even if only one bootstrapping failure' do
+        allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(false)
+        @bootstrapper.bootstrap_instances!
+        expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_ERROR'
+      end
+
       it 'should return true if all bootstrapping succeed' do
         allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(true)
         expect(@bootstrapper.bootstrap_instances!).to eq true
+      end
+
+      it 'should update infrastructure status and provisioning_status if all bootstrapping succeed' do
+        allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(true)
+        @bootstrapper.bootstrap_instances!
+        expect(@infrastructure.provisioning_status).to eq 'FINISHED'
+        expect(@infrastructure.status).to eq 'ACTIVE'
       end
     end
 
@@ -47,11 +60,28 @@ module BaritoBlueprint
         expect(@bootstrapper.bootstrap_instance!(@component)).to eq true
       end
 
+      it 'should update component status if executor returns success' do
+        allow(@executor).
+          to receive(:bootstrap!).
+          and_return('success' => true)
+        @bootstrapper.bootstrap_instance!(@component)
+        expect(@component.status).to eq 'FINISHED'
+        expect(@infrastructure.status).to eq 'ACTIVE'
+      end
+
       it 'should return false if executor returns errors' do
         allow(@executor).
           to receive(:bootstrap!).
           and_return('success' => false)
         expect(@bootstrapper.bootstrap_instance!(@component)).to eq false
+      end
+
+      it 'should update component status if executor returns errors' do
+        allow(@executor).
+          to receive(:bootstrap!).
+          and_return('success' => false)
+        @bootstrapper.bootstrap_instance!(@component)
+        expect(@component.status).to eq 'BOOTSTRAP_ERROR'
       end
     end
 

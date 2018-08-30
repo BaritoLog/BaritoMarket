@@ -37,6 +37,7 @@ module BaritoBlueprint
 
       Processor.produce_log(@infrastructure, 'Bootstrap finished')
       @infrastructure.update_provisioning_status('FINISHED')
+      @infrastructure.update_status('ACTIVE')
       return true
     end
 
@@ -77,6 +78,13 @@ module BaritoBlueprint
           "InfrastructureComponent:#{component.id}",
           "Bootstrapping #{component.hostname} finished")
         component.update_status('FINISHED')
+
+        # Check if bootstrap successful for all components
+        @infrastructure.reload
+        if @infrastructure.components_ready?
+          @infrastructure.update_status('ACTIVE')
+          @infrastructure.update_provisioning_status('FINISHED')
+        end
         return true
       else
         Processor.produce_log(
@@ -85,6 +93,7 @@ module BaritoBlueprint
           "Bootstrapping #{component.hostname} error",
           "#{res['error']}")
         component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
+        @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
         return false
       end
     end

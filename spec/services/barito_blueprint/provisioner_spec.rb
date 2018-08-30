@@ -25,9 +25,21 @@ module BaritoBlueprint
         expect(@provisioner.provision_instances!).to eq false
       end
 
+      it 'should update infrastructure provisioning_status even if only one provisioning failure' do
+        allow(@provisioner).to receive(:provision_instance!).and_return(false)
+        @provisioner.provision_instances!
+        expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_ERROR'
+      end
+
       it 'should return true if all provisioning succeed' do
         allow(@provisioner).to receive(:provision_instance!).and_return(true)
         expect(@provisioner.provision_instances!).to eq true
+      end
+
+      it 'should update infrastructure provisioning_status if all provisioning succeed' do
+        allow(@provisioner).to receive(:provision_instance!).and_return(true)
+        @provisioner.provision_instances!
+        expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_FINISHED'
       end
     end
 
@@ -61,36 +73,52 @@ module BaritoBlueprint
         end
       end
 
-      it 'should return false even if only one invalid component' do
-        allow(@provisioner).to receive(:check_instance).and_return([
-          false, 
-          { error: "" }
-        ])
-        component = create(:infrastructure_component, 
-          infrastructure: @infrastructure,
-        )
-        expect(@provisioner.check_and_update_instances).to eq false
+      context 'positive scenario' do
+        before(:each) do
+          allow(@provisioner).to receive(:check_instance).and_return([
+            true, 
+            { ipaddress: "1.2.3.4" }
+          ])
+        end
+
+        it 'should return true if all components are valid' do
+          expect(@provisioner.check_and_update_instances).to eq true
+        end
+
+        it 'should update infrastructure provisioning_status if all components are valid' do
+          @provisioner.check_and_update_instances
+          expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_CHECK_SUCCEED'
+        end
+
+        it 'should make sure that every component has ip address' do
+          component = create(:infrastructure_component, 
+            infrastructure: @infrastructure,
+          )
+          @provisioner.check_and_update_instances
+          component.reload
+          expect(component.ipaddress).to_not eq nil
+        end
       end
 
-      it 'should return true if all components are valid' do
-        allow(@provisioner).to receive(:check_instance).and_return([
-          true, 
-          { ipaddress: "1.2.3.4" }
-        ])
-        expect(@provisioner.check_and_update_instances).to eq true
-      end
+      context 'negative scenario' do
+        before (:each) do
+          allow(@provisioner).to receive(:check_instance).and_return([
+            false, 
+            { error: "" }
+          ])
+          component = create(:infrastructure_component, 
+            infrastructure: @infrastructure,
+          )
+        end
 
-      it 'should make sure that every component has ip address' do
-        allow(@provisioner).to receive(:check_instance).and_return([
-          true, 
-          { ipaddress: "1.2.3.4" }
-        ])
-        component = create(:infrastructure_component, 
-          infrastructure: @infrastructure,
-        )
-        @provisioner.check_and_update_instances
-        component.reload
-        expect(component.ipaddress).to_not eq nil
+        it 'should return false even if only one invalid component' do
+          expect(@provisioner.check_and_update_instances).to eq false
+        end
+
+        it 'should update infrastructure provisioning_status even if only one invalid component' do
+          @provisioner.check_and_update_instances
+          expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_CHECK_FAILED'
+        end
       end
     end
 
@@ -104,16 +132,8 @@ module BaritoBlueprint
           { 'data' => { 'ipaddress' => '1.2.3.4' }}
         )
         expect(@provisioner.check_instance(@component)).to eq [
-          true, 
+          true,
           { ipaddress: "1.2.3.4" }
-        ]
-      end
-
-      it 'should return false if show_container doesn\'t return ip address' do
-        allow(@executor).to receive(:show_container).and_return({})
-        expect(@provisioner.check_instance(@component)).to eq [
-          false, 
-          { error: "" }
         ]
       end
     end

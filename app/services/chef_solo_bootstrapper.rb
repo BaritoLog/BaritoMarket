@@ -32,7 +32,15 @@ class ChefSoloBootstrapper
     cmd_stack << "#{username}@#{host_ipaddress || host_name}"
     cmd_stack << "#{tmp_file}"
 
-    stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
+    begin
+      stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
+    rescue JSON::ParserError, StandardError => ex
+      return {
+        'success' => false,
+        'error' => ex,
+        'error_log' => "Error when running #{cmd_stack.join(' ')}"
+      }
+    end
 
     # Put node json file
     node_file = "#{@nodes_dir}/#{host_name}.json"
