@@ -11,10 +11,10 @@ RSpec.describe BaritoApp, type: :model do
         topic_name: barito_app_props.topic_name,
         secret_key: BaritoApp.generate_key,
         max_tps: barito_app_props.max_tps,
-        status: BaritoApp.statuses[:inactive],
+        status: BaritoApp.statuses[:active],
       )
       expect(barito_app.persisted?).to eq(true)
-      expect(barito_app.status).to eq(BaritoApp.statuses[:inactive])
+      expect(barito_app.status).to eq(BaritoApp.statuses[:active])
     end
   end
 
