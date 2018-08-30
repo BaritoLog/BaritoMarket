@@ -22,6 +22,7 @@ class AppGroupsController < ApplicationController
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
 
+    @allow_set_status = policy(BaritoApp).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
     @allow_see_apps = policy(@app_group).allow_see_apps?
