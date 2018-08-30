@@ -63,23 +63,23 @@ module BaritoBlueprint
       end
     end
 
-    describe '#reschedule_instance!' do
+    describe '#reprovision_instance!' do
       before(:each) do
         @component = build(:infrastructure_component)
       end
 
       it 'should return true if executor returns success' do
         allow(@executor).
-          to receive(:reschedule!).
+          to receive(:reprovision!).
           and_return('success' => true)
-        expect(@provisioner.reschedule_instance!(@component)).to eq true
+        expect(@provisioner.reprovision_instance!(@component)).to eq true
       end
 
       it 'should return false if executor returns errors' do
         allow(@executor).
-          to receive(:reschedule!).
+          to receive(:reprovision!).
           and_return('success' => false)
-        expect(@provisioner.reschedule_instance!(@component)).to eq false
+        expect(@provisioner.reprovision_instance!(@component)).to eq false
       end
     end
 

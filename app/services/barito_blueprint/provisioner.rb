@@ -65,15 +65,15 @@ module BaritoBlueprint
       end
     end
 
-    def reschedule_instance!(component)
+    def reprovision_instance!(component)
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",
         "Provisioning #{component.hostname} started")
       component.update_status('PROVISIONING_STARTED')
 
-      # Execute rescheduling
-      res = @executor.reschedule!(component.hostname)
+      # Execute reprovisioning
+      res = @executor.reprovision!(component.hostname)
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",
