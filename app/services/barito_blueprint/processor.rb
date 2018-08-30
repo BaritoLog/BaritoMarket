@@ -12,7 +12,9 @@ module BaritoBlueprint
         @blueprint_hash[:infrastructure_id])
 
       # Provisioner and bootstrapper attributes
-      @sauron_host = opts[:sauron_host]
+      @pathfinder_host = opts[:pathfinder_host]
+      @pathfinder_cluster = opts[:pathfinder_cluster]
+      @pathfinder_image = opts[:pathfinder_image]
       @chef_repo_dir = opts[:chef_repo_dir]
 
       # Private keys
@@ -29,7 +31,8 @@ module BaritoBlueprint
 
       provisioner = Provisioner.new(
         @infrastructure,
-        SauronProvisioner.new(@sauron_host),
+        PathfinderProvisioner.new(
+          @pathfinder_host, @pathfinder_cluster, image: @pathfinder_image),
       )
       return false unless provisioner.provision_instances!
       return false unless provisioner.check_and_update_instances

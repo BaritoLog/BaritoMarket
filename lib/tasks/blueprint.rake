@@ -16,7 +16,9 @@ namespace :blueprint do
 
     BaritoBlueprint::Processor.new(
       blueprint_hash,
-      sauron_host: Figaro.env.sauron_host,
+      pathfinder_host: Figaro.env.pathfinder_host,
+      pathfinder_cluster: Figaro.env.pathfinder_cluster,
+      pathfinder_image: Figaro.env.pathfinder_image,
       chef_repo_dir: Figaro.env.chef_repo_dir,
       private_key_name: Figaro.env.container_private_key,
       username: Figaro.env.container_username
