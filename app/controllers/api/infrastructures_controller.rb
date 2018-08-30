@@ -4,6 +4,15 @@ class Api::InfrastructuresController < Api::BaseController
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
       cluster_name: params[:cluster_name])
+
+    if @infrastructure.blank? || !@infrastructure.active?
+      render json: {
+        success: false,
+        errors: ["Unauthorized: Infrastructure not found or inactive"],
+        code: 401
+      }, status: :unauthorized and return
+    end
+
     render json: {
       name: @infrastructure.name,
       app_group_name: @infrastructure.app_group_name,
