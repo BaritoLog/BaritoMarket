@@ -73,6 +73,10 @@ module BaritoBlueprint
       end
 
       it 'should return true if all components are valid' do
+        allow(@provisioner).to receive(:check_instance).and_return([
+          true, 
+          { ipaddress: "1.2.3.4" }
+        ])
         expect(@provisioner.check_and_update_instances).to eq true
       end
 
