@@ -35,11 +35,10 @@ class ChefSoloBootstrapper
     begin
       stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
     rescue JSON::ParserError, StandardError => ex
-      logger.warn "Exception: #{ex}"
       return {
         'success' => false,
         'error' => ex,
-        'error_log' => 'Error while running Open3#capture3'
+        'error_log' => "Error when running #{cmd_stack.join(' ')}"
       }
     end
 

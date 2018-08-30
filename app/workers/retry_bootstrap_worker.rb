@@ -2,8 +2,8 @@ class RetryBootstrapWorker
   include Sidekiq::Worker
 
   def perform(infrastructure_component_id)
-    infrastructure_component = InfrastructureComponent.find(
-        infrastructure_component_id)
+    infrastructure_component = InfrastructureComponent.
+      find(infrastructure_component_id)
     begin
       bootstrapper = BaritoBlueprint::Bootstrapper.new(
         infrastructure_component.infrastructure,

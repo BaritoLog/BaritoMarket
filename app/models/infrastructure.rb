@@ -57,6 +57,10 @@ class Infrastructure < ApplicationRecord
     )
   end
 
+  def components_ready?
+    infrastructure_components.all?{ |component| component.ready? }
+  end
+
   def update_status(status)
     status = status.downcase.to_sym
     if Infrastructure.statuses.key?(status)
