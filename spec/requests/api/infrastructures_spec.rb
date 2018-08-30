@@ -24,7 +24,7 @@ RSpec.describe 'App API', type: :request do
 
     context 'when infrastructure inactive' do
       it 'should return 404' do
-        error_msg = 'Infrastructure not found or inactive'
+        error_msg = 'Infrastructure not found'
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
 

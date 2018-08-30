@@ -8,7 +8,7 @@ class Api::InfrastructuresController < Api::BaseController
     if @infrastructure.blank? || !@infrastructure.active?
       render json: {
         success: false,
-        errors: ["Infrastructure not found or inactive"],
+        errors: ["Infrastructure not found"],
         code: 404
       }, status: :not_found and return
     end
