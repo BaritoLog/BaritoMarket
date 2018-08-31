@@ -12,6 +12,8 @@ class Api::AppsController < Api::BaseController
       }, status: :not_found and return
     end
 
+    @infrastructure = @app.app_group.infrastructure
+
     render json: {
       id: @app.id,
       name: @app.name,
@@ -33,9 +35,8 @@ class Api::AppsController < Api::BaseController
         },
         kafka: {
           topic_name: @app.topic_name,
-          # TODO: should revised with values that are stored in DB
-          partition: 1,
-          replication_factor: 1,
+          partition: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['partition'],
+          replication_factor: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['replication_factor'],
           consumer_group: 'barito',
         },
         elasticsearch: {

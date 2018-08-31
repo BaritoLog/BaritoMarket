@@ -8,7 +8,11 @@ RSpec.describe 'Apps API', type: :request do
   describe 'Profile API' do
     it 'should return profile information of registered app' do
       app_group = create(:app_group)
-      infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+      infrastructure = create(:infrastructure,
+                              app_group: app_group,
+                              status: Infrastructure.statuses[:active],
+                              capacity: "small"
+                             )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
       get api_profile_path, params: { token: app.secret_key }, headers: headers
@@ -19,6 +23,8 @@ RSpec.describe 'Apps API', type: :request do
       end
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['updated_at']).to eq(app_updated_at)
+      expect(json_response['meta']['kafka']['replication_factor']).to eq(1)
+      expect(json_response['meta']['kafka']['partition']).to eq(1)
     end
 
     context 'when invalid token' do
