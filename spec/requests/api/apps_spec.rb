@@ -8,8 +8,8 @@ RSpec.describe 'Apps API', type: :request do
   describe 'Profile API' do
     it 'should return profile information of registered app' do
       app_group = create(:app_group)
-      infrastructure = create(:infrastructure, app_group: app_group)
-      app = create(:barito_app, app_group: app_group)
+      infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+      app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
       get api_profile_path, params: { token: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
@@ -39,6 +39,36 @@ RSpec.describe 'Apps API', type: :request do
         json_response = JSON.parse(response.body)
         expect(json_response['code']).to eq(422)
         expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'when token is provided and valid but app is inactive' do
+      it 'should return 404' do
+        error_msg = 'App not found or inactive'
+        app_group = create(:app_group)
+        infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        app = create(:barito_app, app_group: app_group)
+        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to eq false
+        expect(json_response['code']).to eq 404
+        expect(json_response['errors']).to eq [error_msg]
+      end
+    end
+
+    context 'when token is provided and valid, app is active but infrastructure is inactive' do
+      it 'should return 404' do
+        error_msg = 'App not found or inactive'
+        app_group = create(:app_group)
+        infrastructure = create(:infrastructure, app_group: app_group)
+        app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
+        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to eq false
+        expect(json_response['code']).to eq 404
+        expect(json_response['errors']).to eq [error_msg]
       end
     end
   end

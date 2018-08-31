@@ -11,4 +11,8 @@ class BaritoAppPolicy < ApplicationPolicy
   def delete?
     create?
   end
+
+  def toggle_status?
+    create?
+  end
 end
