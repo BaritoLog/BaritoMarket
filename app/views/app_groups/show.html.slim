@@ -7,8 +7,12 @@
           dt.col-sm-3 Application Group Name:
           dd.col-sm-9
             - if @allow_edit_metadata
-              = form_for @app_group do |f|
-                = f.text_field :name
+              .input-group
+                = form_for @app_group do |f|
+                  .input-group-append
+                    = f.text_field :name, class: 'form-control'
+                    = f.button(:class => 'btn btn-outline-secondary btn-sm')
+                      i.fas.fa-check
             - else
               = @app_group.name
 
@@ -26,14 +30,25 @@
 
           dt.col-sm-3 Status:
           dd.col-sm-9
-            = @app_group.infrastructure.status
+            - if @allow_set_status
+              = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+              = form_tag toggle_status_infrastructure_path(@app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
+                = hidden_field_tag :toggle_status
+                = hidden_field_tag :app_group_id, @app_group.id 
 
       .card-footer.text-right
-        = link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary btn-sm mr-2', target: '_blank', rel: 'noopener noreferrer'
+        .btn.btn-primary.btn-sm.mr-2
+          i.fas.fa-search.mr-1
+          = link_to 'Open Kibana', @open_kibana_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
+        
         - if @allow_manage_access
-          = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary btn-sm mr-2'
+          .btn.btn-primary.btn-sm.mr-2
+            i.fas.fa-key.mr-1
+            = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'text-light', style: 'text-decoration: none'
         - if @allow_see_infrastructure
-          = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning btn-sm'
+          .btn.btn-primary.btn-sm
+            i.fas.fa-server.mr-1
+            = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'text-light', style: 'text-decoration: none'
 
   .col-sm-6
     .card
@@ -46,7 +61,6 @@
           2. Setup FluentD configuration by referencing #{link_to 'this readme', 'https://github.com/BaritoLog/Barito-Fluent-Plugin/blob/master/README.md', target: '_blank', rel: 'noopener noreferrer'}
           3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
 
- 
 br
 br         
 

@@ -43,7 +43,12 @@ class InfrastructuresController < ApplicationController
     @infrastructure.status = params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive]
     @infrastructure.save!
 
-    redirect_to app_groups_path
+    if params[:app_group_id]
+      app_group = AppGroup.find(params[:app_group_id])
+      redirect_to app_group_path(app_group)
+    else
+      redirect_to app_groups_path  
+    end
   end
 
   private

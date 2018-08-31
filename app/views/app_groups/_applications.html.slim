@@ -37,10 +37,10 @@ table.table.table-bordered.table-striped.table-md
       = form_for(app, url: apps_path) do |f|
         = f.hidden_field :app_group_id, value: app_group.id
         tr
-          td.text-center= f.text_field :name
-          td.text-center= f.text_field :topic_name
+          td.text-center= f.text_field :name, class: 'form-control'
+          td.text-center= f.text_field :topic_name, class: 'form-control'
           td.text-center
-          td.text-center= f.text_field :max_tps
+          td.text-center= f.text_field :max_tps, class: 'form-control'
           td.text-center
           td.text-center
           td.text-center
