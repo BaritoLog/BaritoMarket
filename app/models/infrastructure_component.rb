@@ -39,6 +39,13 @@ class InfrastructureComponent < ApplicationRecord
     ].include? self.status
   end
 
+  def allow_provisioning_check?
+    [
+      'PROVISIONING_FINISHED',
+      'PROVISIONING_CHECK_FAILED',
+    ].include? self.status
+  end
+
   def allow_bootstrap?
     [
       'PROVISIONING_CHECK_SUCCEED',

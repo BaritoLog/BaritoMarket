@@ -53,6 +53,10 @@ table.table.table-bordered
             = form_for(component, url: retry_provision_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_component_id, component.id)
               = f.submit "Retry Provision", class: 'btn btn-warning'
+          - if show_provisioning_check_button(component)
+            = form_for(component, url: provisioning_check_infrastructure_path(@infrastructure.id), method: :post) do |f|
+              = hidden_field_tag(:infrastructure_component_id, component.id)
+              = f.submit "Retry Check", class: 'btn btn-warning'
           - if show_retry_bootstrap_button(component)
             = form_for(component, url: retry_bootstrap_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_component_id, component.id)

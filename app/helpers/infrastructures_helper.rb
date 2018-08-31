@@ -3,6 +3,10 @@ module InfrastructuresHelper
     infrastructure_component.allow_provision?
   end
 
+  def show_provisioning_check_button(infrastructure_component)
+    infrastructure_component.allow_provisioning_check?
+  end
+
   def show_retry_bootstrap_button(infrastructure_component)
     infrastructure_component.allow_bootstrap?
   end

@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :retry_provision
+        post :provisioning_check
         post :retry_bootstrap
         patch :toggle_status
       end

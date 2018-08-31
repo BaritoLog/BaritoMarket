@@ -7,6 +7,10 @@ class InfrastructurePolicy < ApplicationPolicy
     show?
   end
 
+  def provisioning_check?
+    show?
+  end
+
   def retry_bootstrap?
     show?
   end
