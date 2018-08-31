@@ -100,31 +100,26 @@ module BaritoBlueprint
     def check_and_update_instances
       @infrastructure.update_provisioning_status('PROVISIONING_CHECK_STARTED')
 
-      success = valid_instances?(@infrastructure_components)
-      start_time = DateTime.current
-      while !success &&
-        DateTime.current <= start_time + @defaults[:timeout]
-
-        sleep(@defaults[:check_interval])
+      success = false
+      end_time = DateTime.current + @defaults[:timeout]
+      while !success && DateTime.current <= end_time
         @infrastructure_components.each do |component|
           unless valid_instance?(component)
             component.update_status('PROVISIONING_CHECK_STARTED')
-            check_success, attrs = check_instance(component)
-            component.update(ipaddress: attrs[:ipaddress]) if check_success
+            check_and_update_instance(component)
           end
         end
 
         success = valid_instances?(@infrastructure_components)
+        break if success
+
+        sleep(@defaults[:check_interval])
       end
 
       @infrastructure_components.each do |component|
-        check_success, attrs = check_instance(component)
-        if check_success
-          component.update_status('PROVISIONING_CHECK_SUCCEED')
-        else
-          component.update_status('PROVISIONING_CHECK_FAILED', attrs['error'])
-        end
+        check_and_update_instance(component, update_status: true)
       end
+      success = valid_instances?(@infrastructure_components)
 
       if success
         @infrastructure.
@@ -136,11 +131,17 @@ module BaritoBlueprint
       end
     end
 
-    def check_instance(component)
+    def check_and_update_instance(component, update_status: false)
       res = @executor.show_container(component.hostname)
       ipaddress = res.dig('data', 'ipaddress')
-      return false, error: res['error'].to_s unless ipaddress
-      return true, ipaddress: ipaddress
+      if ipaddress
+        component.update(ipaddress: ipaddress)
+        component.update_status('PROVISIONING_CHECK_SUCCEED') if update_status
+        return true
+      else
+        component.update_status('PROVISIONING_CHECK_FAILED', res['error'].to_s) if update_status
+        return false
+      end
     end
 
     def valid_instances?(components)

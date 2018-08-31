@@ -8,7 +8,7 @@ module BaritoBlueprint
       @provisioner = Provisioner.new(
         @infrastructure,
         @executor,
-        timeout: 1.second,
+        timeout: 0.second,
         check_interval: 0.second,
       )
     end
@@ -95,10 +95,12 @@ module BaritoBlueprint
 
       context 'positive scenario' do
         before(:each) do
-          allow(@provisioner).to receive(:check_instance).and_return([
-            true,
-            { ipaddress: "1.2.3.4" }
-          ])
+          allow(@provisioner).
+            to receive(:check_and_update_instance).
+            and_return(true)
+          allow(@provisioner).
+            to receive(:valid_instances?).
+            and_return(true)
         end
 
         it 'should return true if all components are valid' do
@@ -109,26 +111,16 @@ module BaritoBlueprint
           @provisioner.check_and_update_instances
           expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_CHECK_SUCCEED'
         end
-
-        it 'should make sure that every component has ip address' do
-          component = create(:infrastructure_component,
-            infrastructure: @infrastructure,
-          )
-          @provisioner.check_and_update_instances
-          component.reload
-          expect(component.ipaddress).to_not eq nil
-        end
       end
 
       context 'negative scenario' do
         before (:each) do
-          allow(@provisioner).to receive(:check_instance).and_return([
-            false,
-            { error: "" }
-          ])
-          component = create(:infrastructure_component,
-            infrastructure: @infrastructure,
-          )
+          allow(@provisioner).
+            to receive(:check_and_update_instance).
+            and_return(false)
+          allow(@provisioner).
+            to receive(:valid_instances?).
+            and_return(false)
         end
 
         it 'should return false even if only one invalid component' do
@@ -142,7 +134,7 @@ module BaritoBlueprint
       end
     end
 
-    describe '#check_instance' do
+    describe '#check_and_update_instance' do
       before(:each) do
         @component = build(:infrastructure_component)
       end
@@ -151,10 +143,7 @@ module BaritoBlueprint
         allow(@executor).to receive(:show_container).and_return(
           { 'data' => { 'ipaddress' => '1.2.3.4' }}
         )
-        expect(@provisioner.check_instance(@component)).to eq [
-          true,
-          { ipaddress: "1.2.3.4" }
-        ]
+        expect(@provisioner.check_and_update_instance(@component)).to eq true
       end
     end
 
