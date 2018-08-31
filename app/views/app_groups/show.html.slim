@@ -1,46 +1,54 @@
-h3.mb-3 Application Group Details
-p
-  b Application Group Name -
-  - if @allow_edit_metadata
-    = form_for @app_group do |f|
-      = f.text_field :name
-  - else
-    = @app_group.name
-    br
-p
-  b Cluster Name -
-  = @app_group.infrastructure.cluster_name
-  br
-p
-  b Capacity -
-  = "#{@app_group.infrastructure.capacity} (#{max_tps(@app_group.infrastructure)} TPS)"
-  br
-p
-  b Provisioning Status -
-  = @app_group.infrastructure.provisioning_status
-  br
-p
-  b Status -
-  = @app_group.infrastructure.status
-  br
+.row
+  .col-sm-6
+    .card
+      h5.card-header Application Group Details
+      .card-body
+        dl.row
+          dt.col-sm-3 Application Group Name:
+          dd.col-sm-9
+            - if @allow_edit_metadata
+              = form_for @app_group do |f|
+                = f.text_field :name
+            - else
+              = @app_group.name
 
-= link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary mr-2', target: '_blank', rel: 'noopener noreferrer'
-- if @allow_manage_access
-  = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary mr-2'
-- if @allow_see_infrastructure
-  = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning'
+          dt.col-sm-3 Cluster Name:
+          dd.col-sm-9
+            = @app_group.infrastructure.cluster_name
 
+          dt.col-sm-3 Capacity
+          dd.col-sm-9
+            = "#{@app_group.infrastructure.capacity.camelcase} (#{max_tps(@app_group.infrastructure)} TPS)"
+
+          dt.col-sm-3 Provisioning Status:
+          dd.col-sm-9
+            = @app_group.infrastructure.provisioning_status
+
+          dt.col-sm-3 Status:
+          dd.col-sm-9
+            = @app_group.infrastructure.status
+
+      .card-footer.text-right
+        = link_to 'Open Kibana', @open_kibana_url, class: 'btn btn-primary btn-sm mr-2', target: '_blank', rel: 'noopener noreferrer'
+        - if @allow_manage_access
+          = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'btn btn-primary btn-sm mr-2'
+        - if @allow_see_infrastructure
+          = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'btn btn-warning btn-sm'
+
+  .col-sm-6
+    .card
+      h5.card-header.bg-warning
+        i.fas.fa-info-circle.mr-1
+        | Information
+      .card-body
+        pre You can configure your application by:
+          1. Install FluentD Plugin #{link_to 'here', 'https://github.com/BaritoLog/Barito-Fluent-Plugin', target: '_blank', rel: 'noopener noreferrer'}
+          2. Setup FluentD configuration by referencing #{link_to 'this readme', 'https://github.com/BaritoLog/Barito-Fluent-Plugin/blob/master/README.md', target: '_blank', rel: 'noopener noreferrer'}
+          3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
+
+ 
 br
-br
-
-- unless @app.active?
-  .alert.alert-danger
-    pre You can configure your application by:
-      1. Install FluentD Plugin #{link_to 'here', 'https://github.com/BaritoLog/Barito-Fluent-Plugin', target: '_blank', rel: 'noopener noreferrer'}
-      2. Setup FluentD configuration by referencing #{link_to 'this readme', 'https://github.com/BaritoLog/Barito-Fluent-Plugin/blob/master/README.md', target: '_blank', rel: 'noopener noreferrer'}
-      3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
-
-  br
+br         
 
 - if @allow_see_apps
   = render 'app_groups/applications', app: @app, app_group: @app_group, apps: @apps,
