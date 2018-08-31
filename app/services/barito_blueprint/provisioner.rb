@@ -132,6 +132,7 @@ module BaritoBlueprint
     end
 
     def check_and_update_instance(component, update_status: false)
+      component.update(ipaddress: nil)
       res = @executor.show_container(component.hostname)
       ipaddress = res.dig('data', 'ipaddress')
       if ipaddress
