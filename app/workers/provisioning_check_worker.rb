@@ -1,4 +1,4 @@
-class RetryProvisionWorker
+class ProvisioningCheckWorker
   include Sidekiq::Worker
 
   def perform(infrastructure_component_id)
@@ -13,10 +13,12 @@ class RetryProvisionWorker
           Figaro.env.pathfinder_cluster,
           pathfinder_image: Figaro.env.pathfinder_image),
       )
-      provisioner.reprovision_instance!(infrastructure_component)
+      provisioner.check_and_update_instance(infrastructure_component,
+        update_status: true)
     rescue JSON::ParserError, StandardError => ex
       logger.warn "Exception: #{ex}"
-      infrastructure_component.update_status('PROVISIONING_ERROR', ex.to_s)
+      infrastructure_component.update_status('PROVISIONING_CHECK_FAILED',
+        ex.to_s)
     end
   end
 end

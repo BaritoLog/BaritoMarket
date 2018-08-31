@@ -56,7 +56,7 @@ class PathfinderProvisioner
     return respond_success(req.response)
   end
 
-  def reschedule!(hostname)
+  def reprovision!(hostname)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/reschedule",
       method: :post,
@@ -90,6 +90,6 @@ class PathfinderProvisioner
 
     def respond_error(response)
       body = JSON.parse(response.body)
-      { 'success' => false, 'error' => body['errors'] }
+      { 'success' => false, 'error' => body.dig('error', 'message') }
     end
 end

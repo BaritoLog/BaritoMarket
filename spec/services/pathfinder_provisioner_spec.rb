@@ -47,7 +47,7 @@ RSpec.describe PathfinderProvisioner do
     end
   end
 
-  describe '#reschedule!' do
+  describe '#reprovision!' do
     before(:all) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
@@ -79,8 +79,7 @@ RSpec.describe PathfinderProvisioner do
 
     it 'should make necessary calls to Pathfinder and return the response' do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      provision_result = pathfinder_provisioner.reschedule!('test-01')
-      p "provision_result", provision_result
+      provision_result = pathfinder_provisioner.reprovision!('test-01')
       expect(provision_result).to eq({
         'success' => true,
         'data' => {'ipaddress' => '127.0.0.1'},
