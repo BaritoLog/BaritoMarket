@@ -11,6 +11,9 @@ development:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 1
+      partition: 1
 
   medium:
     name: 'Medium'
@@ -24,6 +27,9 @@ development:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
   large:
     name: 'Large'
@@ -37,6 +43,9 @@ development:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
 test:
   small:
@@ -51,6 +60,9 @@ test:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 1
+      partition: 1
 
   medium:
     name: 'Medium'
@@ -64,6 +76,9 @@ test:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
   large:
     name: 'Large'
@@ -77,6 +92,9 @@ test:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
 staging:
   small:
@@ -91,6 +109,9 @@ staging:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 1
+      partition: 1
 
   medium:
     name: 'Medium'
@@ -104,6 +125,9 @@ staging:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
   large:
     name: 'Large'
@@ -117,6 +141,9 @@ staging:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
 production:
   small:
@@ -131,6 +158,9 @@ production:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 1
+      partition: 1
 
   medium:
     name: 'Medium'
@@ -144,6 +174,9 @@ production:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
 
   large:
     name: 'Large'
@@ -157,3 +190,6 @@ production:
       barito-flow-producer: 1
       barito-flow-consumer: 1
       kibana: 1
+    kafka_options:
+      replication_factor: 3
+      partition: 3
