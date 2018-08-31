@@ -38,7 +38,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).to have_current_path(app_group_path(@app_group_a))
-        expect(page).to have_css('input[name="commit"][value="Create"]')
+        expect(page).to have_button('Create')
         expect(page).to have_content('Manage Access')
       end
 
@@ -51,7 +51,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).to have_current_path(app_group_path(@app_group_a))
-        expect(page).to have_css('input[name="commit"][value="Create"]')
+        expect(page).to have_button('Create')
         expect(page).not_to have_content('Manage Access')
       end
 
@@ -64,7 +64,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).to have_current_path(app_group_path(@app_group_a))
-        expect(page).not_to have_css('input[name="commit"][value="Create"]')
+        expect(page).not_to have_button('Create')
         expect(page).not_to have_content('Manage Access')
       end
     end

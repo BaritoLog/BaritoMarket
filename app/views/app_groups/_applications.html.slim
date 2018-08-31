@@ -31,7 +31,7 @@ table.table.table-bordered.table-striped.table-md
           - if allow_delete
             .btn.btn-danger.btn-sm
               i.far.fa-trash-alt
-              = link_to "", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }
+              = link_to "", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{barito_app.id}"
 
     - if allow_add
       = form_for(app, url: apps_path) do |f|

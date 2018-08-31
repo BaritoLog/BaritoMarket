@@ -23,7 +23,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         visit app_group_path(@app_group)
         expect(page).to have_content(@barito_app.name)
 
-        click_link 'Delete'
+        find("#delete_app_button_#{@barito_app.id}").click
         expect(page).not_to have_content(@barito_app.name)
       end
     end
@@ -37,7 +37,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         visit app_group_path(@app_group)
         expect(page).to have_content(@barito_app.name)
 
-        click_link 'Delete'
+        find("#delete_app_button_#{@barito_app.id}").click
         expect(page).not_to have_content(@barito_app.name)
       end
 
