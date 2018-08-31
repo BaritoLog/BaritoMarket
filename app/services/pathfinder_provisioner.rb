@@ -90,6 +90,6 @@ class PathfinderProvisioner
 
     def respond_error(response)
       body = JSON.parse(response.body)
-      { 'success' => false, 'error' => body['errors'] }
+      { 'success' => false, 'error' => body.dig('error', 'message') }
     end
 end
