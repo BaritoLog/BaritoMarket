@@ -3,6 +3,14 @@ class InfrastructurePolicy < ApplicationPolicy
     return true if get_user_groups
   end
 
+  def retry_provision?
+    show?
+  end
+
+  def provisioning_check?
+    show?
+  end
+
   def retry_bootstrap?
     show?
   end
