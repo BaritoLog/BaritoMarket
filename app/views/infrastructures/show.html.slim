@@ -1,33 +1,38 @@
-h3.mb-3 Infrastructure Details
-p
-  b Infrastructure Name -
-  = @infrastructure.name
-  br
-p
-  b Cluster Name -
-  = @infrastructure.cluster_name
-  br
-p
-  b Capacity -
-  = "#{@infrastructure.capacity}"
-  br
-p
-  b Provisioning Status -
-  = @infrastructure.provisioning_status
-  br
-p
-  b Status -
-  = @infrastructure.status
-  br
+.row
+  .col-sm-6
+    .card
+      .h5.card-header Infrastructure Details
+      .card-body
+        dl.row
+          dt.col-sm-3 Infrastructure Name:
+          dd.col-sm-9
+            = @infrastructure.name
 
-= link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'btn btn-primary mr-2'
+          dt.col-sm-3 Cluster Name:
+          dd.col-sm-9
+            = @infrastructure.cluster_name
 
+          dt.col-sm-3 Capacity:
+          dd.col-sm-9
+            = @infrastructure.capacity.camelcase
+
+          dt.col-sm-3 Provisioning Status:
+          dd.col-sm-9
+            = @infrastructure.provisioning_status
+
+          dt.col-sm-3 Status:
+          dd.col-sm-9
+            = @infrastructure.status
+
+      .card-footer.text-right
+        .btn.btn-primary.btn-sm
+          = link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'text-light', style: 'text-decoration:none'
 br
 br
 
 h4.mb-3 All Infrastructure Components
 
-table.table.table-bordered
+table.table.table-bordered.table-striped.table-md
   thead.thead-dark
     tr
       th.text-center Hostname
