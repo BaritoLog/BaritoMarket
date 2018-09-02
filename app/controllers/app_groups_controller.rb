@@ -29,6 +29,7 @@ class AppGroupsController < ApplicationController
     @allow_delete_barito_app = policy(@app).delete?
     @allow_add_barito_app = policy(@app).create?
     @allow_edit_metadata = policy(@app_group).update?
+    @allow_delete_infrastructure = policy(Infrastructure).delete_infrastructure? && @app_group.infrastructure.allow_delete_infrastructure?
   end
 
   def new

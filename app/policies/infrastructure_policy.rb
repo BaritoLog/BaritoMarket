@@ -20,6 +20,14 @@ class InfrastructurePolicy < ApplicationPolicy
     false
   end
 
+  def delete_infrastructure?
+    return true if get_user_groups
+
+    AppGroupUser.
+      joins(:role).
+      where(user: user, app_group_roles: { name: [:owner] }).count > 0
+  end
+
   def exists?
     return true if get_user_groups
 

@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   match '/app_group_users/:user_id/set_role', to: 'app_group_users#set_role', via: [:put, :patch], as: 'set_role_app_group_user'
   delete '/app_group_users/:user_id/delete/:app_group_id', to: 'app_group_users#destroy', as: 'app_group_user'
   match '/apps/:app_group_id/toggle_status/:id', to: 'apps#toggle_status', via: [:put, :patch], as: 'toggle_status_app'
+  match '/app_groups/:app_group_id/delete_infrastructure/:id', to: 'infrastructures#delete_infrastructure', via: [:put, :patch], as: 'delete_infrastructure'
 
   resources :app_group_users,
     only: %i[create update],
@@ -56,6 +57,7 @@ Rails.application.routes.draw do
         post :provisioning_check
         post :retry_bootstrap
         patch :toggle_status
+        patch :delete_infrastructure
       end
     end
 

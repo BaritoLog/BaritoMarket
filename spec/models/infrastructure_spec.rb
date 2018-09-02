@@ -152,4 +152,32 @@ RSpec.describe Infrastructure, type: :model do
       expect(Infrastructure.generate_cluster_index).to eq(Infrastructure.all.size + 1000)
     end
   end
+
+  describe '#allow_delete_infrastructure?' do
+    let(:infrastructure_props) { build(:infrastructure) }
+
+    it 'should return true if infrastructure can be deleted' do
+      infrastructure = Infrastructure.setup(
+        Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: infrastructure_props.app_group_id
+      )
+      infrastructure.update_status('INACTIVE')
+      infrastructure.update_provisioning_status('FINISHED')
+      expect(infrastructure.allow_delete_infrastructure?).to eq true
+    end
+
+    it 'should return false if infrastructure cannot be deleted' do
+      infrastructure = Infrastructure.setup(
+        Rails.env,
+        name: infrastructure_props.name,
+        capacity: infrastructure_props.capacity,
+        app_group_id: infrastructure_props.app_group_id
+      )
+      infrastructure.update_status('ACTIVE')
+      infrastructure.update_provisioning_status('FINISHED')
+      expect(infrastructure.allow_delete_infrastructure?).to eq false
+    end
+  end
 end
