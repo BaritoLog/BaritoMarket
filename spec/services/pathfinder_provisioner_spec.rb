@@ -16,7 +16,7 @@ RSpec.describe PathfinderProvisioner do
           body: {
             'container' => {
               'hostname' => 'test-01',
-              'image' => '16.04',
+              'image' => '18.04',
             }
           }.to_json,
           headers: {

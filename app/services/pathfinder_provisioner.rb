@@ -10,7 +10,7 @@ class PathfinderProvisioner
     @pathfinder_host = pathfinder_host
     @pathfinder_token = pathfinder_token
     @pathfinder_cluster = pathfinder_cluster
-    @image = opts[:image] || '16.04'
+    @image = opts[:image] || '18.04'
   end
 
   def provision!(hostname)
