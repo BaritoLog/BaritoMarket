@@ -77,6 +77,31 @@ class PathfinderProvisioner
     end
   end
 
+  def delete_container!(hostname)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/schedule_deletion",
+      method: :post,
+      params: {
+        'cluster_name' => @pathfinder_cluster,
+      },
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true,
+        'data' => body
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)
