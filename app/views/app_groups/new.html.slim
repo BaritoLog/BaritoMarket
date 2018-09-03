@@ -5,14 +5,21 @@
     - flash[:messages].each do |msg|
       = "- #{msg}"
       br
-= form_tag(app_groups_path, id: 'app_group_form') do
-  = fields_for :app_group do |f|
-    .form-group
-      = f.label :name
-      = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application group'
-    .form-group
-      = label_tag :capacity, 'Capacity'
-      = select_tag 'app_group[capacity]', options_for_select(@capacity_options), { class: 'form-control' }
-      small.form-text.text-muted
-        | Please choose your Capacity
-  .actions = submit_tag 'Submit', class: 'btn btn-primary'
+.row
+  .col-sm-6
+    .card
+      h5.card-header Add New Application Group
+      = form_tag(app_groups_path, id: 'app_group_form') do
+        = fields_for :app_group do |f|
+          .card-body
+            .dl.row
+              dt.col-sm-3 Name
+              dd.col-sm-9
+                = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application group'
+              dt.col-sm-3 Capacity
+              dd.col-sm-9
+                = select_tag 'app_group[capacity]', options_for_select(@capacity_options), { class: 'form-control' }
+                small.form-text.text-muted
+                  | Please choose your Capacity
+          .card-footer.text-right
+            = submit_tag 'Submit', class: 'btn btn-primary'

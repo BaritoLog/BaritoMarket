@@ -8,30 +8,36 @@
   - if @allow_create_app_group
     = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
 - else
-  h3.mb-3 All Application Groups
-
-  - if @allow_create_app_group
-    p= link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
-  table.table.table-bordered
-    thead.thead-dark
-      tr
-        th.text-center Name
-        th.text-center Capacity
-        th.text-center Provisioning Status
-        th.text-center Status
-        th.text-center Actions
-    tbody
-      - @app_groups.each do |app_group|
-        tr
-          td.text-center= link_to app_group.name, app_group_path(app_group)
-          td.text-center= app_group.infrastructure.capacity
-          td.text-center= app_group.infrastructure.provisioning_status
-          td.text-center
-            - if @allow_set_status
-              = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow' }
-              = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
-                = hidden_field_tag :toggle_status
-            - else
-              = app_group.infrastructure.status
-          td.text-center
-            = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'btn btn-primary mr-2', target: '_blank', rel: 'noopener noreferrer'
+  .card
+    h5.card-header 
+      | All Application Groups
+      - if @allow_create_app_group
+        .btn.btn-success.btn-sm.float-right        
+          i.fas.fa-plus.mr-1
+          = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
+    .card-body
+      table.table.table-bordered.table-striped.table-md
+        thead.thead-dark
+          tr
+            th.text-center.col-sm-2 Name
+            th.text-center.col-sm-2 Capacity
+            th.text-center.col-sm-2 Provisioning Status
+            th.text-center.col-sm-1 Status
+            th.text-center.col-sm-1 Actions
+        tbody
+          - @app_groups.each do |app_group|
+            tr
+              td.text-center= link_to app_group.name, app_group_path(app_group)
+              td.text-center= app_group.infrastructure.capacity.camelcase
+              td.text-center= app_group.infrastructure.provisioning_status
+              td.text-center
+                - if @allow_set_status
+                  = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow', size: 'small' }
+                  = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
+                    = hidden_field_tag :toggle_status
+                - else
+                  = app_group.infrastructure.status
+              td.text-center
+                .btn.btn-primary.btn-sm
+                  i.fas.fa-search.mr-1
+                  = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
