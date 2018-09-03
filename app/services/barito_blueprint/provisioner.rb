@@ -1,5 +1,7 @@
 module BaritoBlueprint
   class Provisioner
+    include Wisper::Publisher
+
     DEFAULTS = {
       timeout: 5.minutes,
       check_interval: 5.seconds
@@ -138,6 +140,9 @@ module BaritoBlueprint
       if ipaddress
         component.update(ipaddress: ipaddress)
         component.update_status('PROVISIONING_CHECK_SUCCEED') if update_status
+        # update consul_host
+        broadcast(:consul_host_updated, component.id)
+
         return true
       else
         component.update_status('PROVISIONING_CHECK_FAILED', res['error'].to_s) if update_status
