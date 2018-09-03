@@ -1,5 +1,5 @@
 class InfrastructureComponent < ApplicationRecord
-  validates :infrastructure, :hostname, :category, :sequence, :status, 
+  validates :infrastructure, :hostname, :category, :sequence, :status,
     presence: true
 
   belongs_to :infrastructure
@@ -50,6 +50,7 @@ class InfrastructureComponent < ApplicationRecord
     [
       'PROVISIONING_CHECK_SUCCEED',
       'BOOTSTRAP_ERROR',
+      'FINISHED',
     ].include? self.status
   end
 end
