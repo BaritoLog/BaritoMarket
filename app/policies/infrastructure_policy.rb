@@ -20,7 +20,7 @@ class InfrastructurePolicy < ApplicationPolicy
     false
   end
 
-  def delete_infrastructure?
+  def delete?
     return true if get_user_groups
 
     AppGroupUser.

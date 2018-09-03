@@ -104,7 +104,7 @@ class Infrastructure < ApplicationRecord
     Infrastructure.all.size + CLUSTER_NAME_PADDING
   end
 
-  def allow_delete_infrastructure?
+  def allow_delete?
     [
       'PROVISIONING_FINISHED',
       'PROVISIONING_CHECK_FAILED',

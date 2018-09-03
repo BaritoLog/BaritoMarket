@@ -153,7 +153,7 @@ RSpec.describe Infrastructure, type: :model do
     end
   end
 
-  describe '#allow_delete_infrastructure?' do
+  describe '#allow_delete?' do
     let(:infrastructure_props) { build(:infrastructure) }
 
     it 'should return true if infrastructure can be deleted' do
@@ -165,7 +165,7 @@ RSpec.describe Infrastructure, type: :model do
       )
       infrastructure.update_status('INACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
-      expect(infrastructure.allow_delete_infrastructure?).to eq true
+      expect(infrastructure.allow_delete?).to eq true
     end
 
     it 'should return false if infrastructure cannot be deleted' do
@@ -177,7 +177,7 @@ RSpec.describe Infrastructure, type: :model do
       )
       infrastructure.update_status('ACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
-      expect(infrastructure.allow_delete_infrastructure?).to eq false
+      expect(infrastructure.allow_delete?).to eq false
     end
   end
 end

@@ -50,7 +50,7 @@
             i.fas.fa-server.mr-1
             = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'text-light', style: 'text-decoration: none'
         - if @allow_delete_infrastructure
-          button class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("delete_infrastructure_#{@app_group.infrastructure.id}")
+          button class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("destroy_infrastructure_#{@app_group.infrastructure.id}")
             i.far.fa-trash-alt.mr-1
             = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure), method: :patch, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 

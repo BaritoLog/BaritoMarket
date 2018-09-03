@@ -51,7 +51,7 @@ class InfrastructuresController < ApplicationController
     end
   end
 
-  def delete_infrastructure
+  def delete
     app_group = @infrastructure.app_group
     barito_apps = app_group.barito_apps
     barito_apps.each do |app|
