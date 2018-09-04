@@ -6,9 +6,7 @@ class AppGroupsController < ApplicationController
   end
 
   def index
-    @app_groups = policy_scope(AppGroup).
-      joins(:infrastructure).
-      where.not(infrastructures: { provisioning_status:'DELETED' })
+    @app_groups = policy_scope(AppGroup)
     @allow_create_app_group = policy(Group).index?
     @allow_set_status = policy(Infrastructure).toggle_status?
   end
