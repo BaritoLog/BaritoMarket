@@ -7,7 +7,8 @@ class AppsController < ApplicationController
   end
 
   def create
-    authorize BaritoApp
+    @app = BaritoApp.new(app_group_id: app_params[:app_group_id])
+    authorize @app
 
     @app = BaritoApp.setup(app_params)
     if @app.persisted?
