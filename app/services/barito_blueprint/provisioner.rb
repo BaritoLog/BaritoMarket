@@ -140,8 +140,7 @@ module BaritoBlueprint
       if ipaddress
         component.update(ipaddress: ipaddress)
         component.update_status('PROVISIONING_CHECK_SUCCEED') if update_status
-        # update consul_host
-        broadcast(:consul_host_updated, component.id)
+        broadcast(:instance_provisioned, component.id)
 
         return true
       else

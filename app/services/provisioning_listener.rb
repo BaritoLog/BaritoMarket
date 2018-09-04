@@ -1,6 +1,6 @@
 class ProvisioningListener
-  def consul_host_updated(component_id)
-    component = InfrastructureComponent.find(component_id)
+  def instance_provisioned(infrastructure_component_id)
+    component = InfrastructureComponent.find(infrastructure_component_id)
     if component.nil? or component.category != 'consul'
       return
     end
