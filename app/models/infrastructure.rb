@@ -21,6 +21,9 @@ class Infrastructure < ApplicationRecord
     bootstrap_started: 'BOOTSTRAP_STARTED',
     bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
+    delete_started: 'DELETE_STARTED',
+    delete_error: 'DELETE_ERROR',
+    deleted: 'DELETED',
   }
 
   def capacity_valid_key?
@@ -99,5 +102,16 @@ class Infrastructure < ApplicationRecord
 
   def self.generate_cluster_index
     Infrastructure.all.size + CLUSTER_NAME_PADDING
+  end
+
+  def allow_delete?
+    [
+      'PROVISIONING_FINISHED',
+      'PROVISIONING_CHECK_FAILED',
+      'PROVISIONING_CHECK_SUCCEED',
+      'BOOTSTRAP_ERROR',
+      'FINISHED',
+      'DELETE_ERROR'
+    ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 end

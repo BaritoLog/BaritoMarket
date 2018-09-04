@@ -56,6 +56,7 @@ Rails.application.routes.draw do
         post :provisioning_check
         post :retry_bootstrap
         patch :toggle_status
+        delete :delete
       end
     end
 

@@ -47,8 +47,20 @@ class InfrastructuresController < ApplicationController
       app_group = AppGroup.find(params[:app_group_id])
       redirect_to app_group_path(app_group)
     else
-      redirect_to app_groups_path  
+      redirect_to app_groups_path
     end
+  end
+
+  def delete
+    app_group = @infrastructure.app_group
+    barito_apps = app_group.barito_apps
+    barito_apps.each do |app|
+      app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
+    end
+    @infrastructure.update_provisioning_status('DELETE_STARTED')
+    DeleteInfrastructureWorker.perform_async(@infrastructure.id)
+
+    redirect_to app_groups_path
   end
 
   private

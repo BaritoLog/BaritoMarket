@@ -15,6 +15,9 @@ class InfrastructureComponent < ApplicationRecord
     bootstrap_started: 'BOOTSTRAP_STARTED',
     bootstrap_error: 'BOOTSTRAP_ERROR',
     finished: 'FINISHED',
+    delete_started: 'DELETE_STARTED',
+    delete_error: 'DELETE_ERROR',
+    deleted: 'DELETED',
   }
 
   def update_status(status, message = nil)

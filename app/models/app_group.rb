@@ -6,6 +6,11 @@ class AppGroup < ApplicationRecord
   has_many :users, through: :app_group_users
   has_one :infrastructure
 
+  scope :active, -> { 
+    joins(:infrastructure).
+      where.not(infrastructures: { provisioning_status:'DELETED' })
+  }
+
   def self.setup(env, params)
     ActiveRecord::Base.transaction do
       app_group = AppGroup.create(name: params[:name])

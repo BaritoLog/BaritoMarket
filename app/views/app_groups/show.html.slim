@@ -7,10 +7,10 @@
           dt.col-sm-3 Application Group Name:
           dd.col-sm-9
             - if @allow_edit_metadata
-              .input-group
-                = form_for @app_group do |f|
+              = form_for @app_group do |f|
+                .input-group.col-sm-5(style="padding-left:0px;")
+                  = f.text_field :name, class: 'form-control'
                   .input-group-append
-                    = f.text_field :name, class: 'form-control'
                     = f.button(:class => 'btn btn-outline-secondary btn-sm')
                       i.fas.fa-check
             - else
@@ -34,21 +34,25 @@
               = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
               = form_tag toggle_status_infrastructure_path(@app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_status
-                = hidden_field_tag :app_group_id, @app_group.id 
+                = hidden_field_tag :app_group_id, @app_group.id
 
       .card-footer.text-right
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-search.mr-1
           = link_to 'Open Kibana', @open_kibana_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
-        
+
         - if @allow_manage_access
           .btn.btn-primary.btn-sm.mr-2
             i.fas.fa-key.mr-1
             = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'text-light', style: 'text-decoration: none'
         - if @allow_see_infrastructure
-          .btn.btn-primary.btn-sm
+          .btn.btn-primary.btn-sm.mr-2
             i.fas.fa-server.mr-1
             = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'text-light', style: 'text-decoration: none'
+        - if @allow_delete_infrastructure
+          div class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("delete_infrastructure_#{@app_group.infrastructure.id}")
+            i.far.fa-trash-alt.mr-1
+            = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
   .col-sm-6
     .card
@@ -62,7 +66,7 @@
           3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
 
 br
-br         
+br
 
 - if @allow_see_apps
   = render 'app_groups/applications', app: @app, app_group: @app_group, apps: @apps,

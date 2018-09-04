@@ -149,6 +149,56 @@ module BaritoBlueprint
       end
     end
 
+    def delete_instances!
+      Processor.produce_log(@infrastructure, 'Delete started')
+      @infrastructure.update_provisioning_status('DELETE_STARTED')
+
+      @infrastructure_components.each do |component|
+        success = delete_instance!(component)
+        unless success
+          Processor.produce_log(@infrastructure, 'Delete error')
+          @infrastructure.update_provisioning_status('DELETE_ERROR')
+          return false
+        end
+      end
+
+      Processor.produce_log(@infrastructure, 'Delete finished')
+      @infrastructure.update_provisioning_status('DELETED')
+      return true
+    end
+
+    def delete_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Delete #{component.hostname} started")
+      component.update_status('DELETE_STARTED')
+
+      # Execute deleting
+      res = @executor.delete_container!(component.hostname)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Delete #{component.hostname} finished")
+        component.update_status('DELETED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Delete #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('DELETE_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+
     def valid_instances?(components)
       components.all?{ |component| valid_instance?(component)}
     end

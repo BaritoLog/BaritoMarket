@@ -188,5 +188,55 @@ module BaritoBlueprint
         expect(@provisioner.valid_instance?(component)).to eq true
       end
     end
+
+    describe '#delete_instances!' do
+      before(:each) do
+        2.times.each do
+          create(:infrastructure_component, infrastructure: @infrastructure)
+        end
+      end
+
+      it 'should return false even if only one deleting failure' do
+        allow(@provisioner).to receive(:delete_instance!).and_return(false)
+        expect(@provisioner.delete_instances!).to eq false
+      end
+
+      it 'should update infrastructure provisioning_status even if only one provisioning failure' do
+        allow(@provisioner).to receive(:delete_instance!).and_return(false)
+        @provisioner.delete_instances!
+        expect(@infrastructure.provisioning_status).to eq 'DELETE_ERROR'
+      end
+
+      it 'should return true if all deleting succeed' do
+        allow(@provisioner).to receive(:delete_instance!).and_return(true)
+        expect(@provisioner.delete_instances!).to eq true
+      end
+
+      it 'should update infrastructure provisioning_status if all deleting succeed' do
+        allow(@provisioner).to receive(:delete_instance!).and_return(true)
+        @provisioner.delete_instances!
+        expect(@infrastructure.provisioning_status).to eq 'DELETED'
+      end
+    end
+
+    describe '#delete_instance!' do
+      before(:each) do
+        @component = build(:infrastructure_component)
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:delete_container!).
+          and_return('success' => true)
+        expect(@provisioner.delete_instance!(@component)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:delete_container!).
+          and_return('success' => false)
+        expect(@provisioner.delete_instance!(@component)).to eq false
+      end
+    end
   end
 end
