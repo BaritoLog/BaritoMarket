@@ -16,7 +16,7 @@ class DeleteInfrastructureWorker
       provisioner.delete_instances!
     rescue JSON::ParserError, StandardError => ex
       logger.warn "Exception: #{ex}"
-      infrastructure.update_status('PROVISIONING_ERROR', ex.to_s)
+      infrastructure.update_status('DELETE_ERROR', ex.to_s)
     end
   end
 end

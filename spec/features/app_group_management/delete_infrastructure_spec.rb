@@ -24,7 +24,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(@app_group_a.infrastructure.status).to eq Infrastructure.statuses[:inactive]
 
         expect(page).to have_content(@app_group_a.infrastructure.cluster_name)
-        expect(page).to have_css("#destroy_infrastructure_#{@app_group_a.infrastructure.id}")
+        expect(page).to have_css("#delete_infrastructure_#{@app_group_a.infrastructure.id}")
 
         accept_alert do
           click_link 'Delete Infrastructure'
