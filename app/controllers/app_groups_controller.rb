@@ -20,11 +20,11 @@ class AppGroupsController < ApplicationController
 
   def show
     @apps = @app_group.barito_apps
-    @app = BaritoApp.new
+    @app = BaritoApp.new(app_group_id: @app_group.id)
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
 
-    @allow_set_status = policy(BaritoApp).toggle_status?
+    @allow_set_status = policy(@app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
     @allow_see_apps = policy(@app_group).allow_see_apps?

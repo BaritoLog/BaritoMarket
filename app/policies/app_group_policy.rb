@@ -18,7 +18,7 @@ class AppGroupPolicy < ApplicationPolicy
   def update?
     return true if get_user_groups
 
-    AppGroupUser.
+    record.app_group_users.
       joins(:role).
       where(user: user, app_group_roles: { name: [:owner, :admin] }).count > 0
   end
@@ -26,7 +26,7 @@ class AppGroupPolicy < ApplicationPolicy
   def manage_access?
     return true if get_user_groups
 
-    AppGroupUser.
+    record.app_group_users.
       joins(:role).
       where(user: user, app_group_roles: { name: [:owner] }).count > 0
   end
