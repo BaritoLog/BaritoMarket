@@ -145,6 +145,20 @@ module BaritoBlueprint
         )
         expect(@provisioner.check_and_update_instance(@component)).to eq true
       end
+
+      it 'should update consul_host in infrastructure if consul instance status provisioning finished and has ipaddress' do
+        @component.update!(category: 'consul')
+        infrastructure = @component.infrastructure
+        allow(@executor).to receive(:show_container).and_return(
+          { 'data' => { 'ipaddress' => '10.20.30.40' }}
+        )
+        expect(@provisioner.check_and_update_instance(@component)).to eq true
+        infrastructure.reload
+        consul_host = @component.ipaddress || @component.hostname
+
+        expect(@component.ipaddress).to eq "10.20.30.40"
+        expect(infrastructure.consul_host).to eq "#{consul_host}:#{Figaro.env.default_consul_port}"
+      end
     end
 
     describe '#valid_instances?' do

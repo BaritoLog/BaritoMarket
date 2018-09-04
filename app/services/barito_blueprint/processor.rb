@@ -19,7 +19,7 @@ module BaritoBlueprint
       @chef_repo_dir = opts[:chef_repo_dir]
 
       # Private keys
-      @private_keys_dir     = opts[:private_keys_dir] || 
+      @private_keys_dir     = opts[:private_keys_dir] ||
         DEFAULTS[:private_keys_dir]
       @private_key_name     = opts[:private_key_name]
       @username             = opts[:username]
@@ -39,7 +39,7 @@ module BaritoBlueprint
       return false unless provisioner.check_and_update_instances
 
       bootstrapper = Bootstrapper.new(
-        @infrastructure, 
+        @infrastructure,
         ChefSoloBootstrapper.new(@chef_repo_dir),
         private_keys_dir: @private_keys_dir,
         private_key_name: @private_key_name,
@@ -48,7 +48,6 @@ module BaritoBlueprint
       return false unless bootstrapper.bootstrap_instances!
 
       @infrastructure.reload
-      save_consul_host!(@infrastructure.infrastructure_components)
 
       return true
     end
@@ -59,19 +58,5 @@ module BaritoBlueprint
       log |= msgs
       Rails.logger.info log.join(' -- ')
     end
-
-    private
-      def fetch_hosts_address_by(components, filter_type, filter)
-        components.
-          select{ |c| c.send(filter_type.to_sym) == filter }.
-          collect{ |c| c.ipaddress || c.hostname }
-      end
-
-      def save_consul_host!(components)
-        consul_hosts = fetch_hosts_address_by(components, 'category', 'consul')
-        consul_host = (consul_hosts || []).sample
-        @infrastructure.update!(
-          consul_host: "#{consul_host}:#{Figaro.env.default_consul_port}")
-      end
   end
 end
