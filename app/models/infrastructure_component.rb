@@ -31,7 +31,7 @@ class InfrastructureComponent < ApplicationRecord
   end
 
   def ready?
-    return false unless component.status == 'FINISHED'
+    return false unless self.status == 'FINISHED'
     return true
   end
 
