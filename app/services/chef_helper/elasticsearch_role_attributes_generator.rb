@@ -8,10 +8,6 @@ module ChefHelper
 
     def generate
       {
-        'java' => {
-          "install_flavor" => "openjdk",
-          'jdk_version' => '8'
-        },
         'elasticsearch' => {
           'version' => '5.6.9',
           'allocated_memory' => 12000000,
