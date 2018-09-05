@@ -16,7 +16,7 @@ module ChefHelper
       kafka_hosts_and_port = @kafka_hosts.
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }
       kafka_hosts_and_port = kafka_hosts_and_port.join(',')
-      elasticsearch_url = "http://#{@elasticsearch_host}:#{@elasticsearch_port}"
+      elasticsearch_url = "http://#{@elasticsearch_host.first}:#{@elasticsearch_port}"
       push_metric_url = "#{Figaro.env.market_end_point}/api/increase_log_count"
 
       {
