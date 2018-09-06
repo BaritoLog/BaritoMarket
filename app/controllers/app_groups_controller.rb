@@ -6,7 +6,7 @@ class AppGroupsController < ApplicationController
   end
 
   def index
-    @app_groups = policy_scope(AppGroup)
+    @app_groups = policy_scope(AppGroup).order(:created_at)
     @allow_create_app_group = policy(Group).index?
     @allow_set_status = policy(Infrastructure).toggle_status?
   end
@@ -58,14 +58,13 @@ class AppGroupsController < ApplicationController
 
   def manage_access
     @app_group_user = AppGroupUser.new(app_group: @app_group)
-    @app_group_users = AppGroupUser.
-      joins(:user, :role).
-      group('users.email, users.username, user_id').
-      select("user_id, string_agg(role_id::character varying, ',') AS roles, users.email, users.username").
-      where(app_group_id: @app_group.id)
+    @app_group_users = AppGroupUser.includes(:user, :role).where(app_group_id: @app_group.id).order(:created_at)
 
-    @role_member = AppGroupRole.as_member
-    @roles = AppGroupRole.where.not(name: 'member')
+    @roles = {
+      member: AppGroupRole.find_by_name('member'),
+      admin: AppGroupRole.find_by_name('admin'),
+      owner: AppGroupRole.find_by_name('owner')
+    }
   end
 
   private

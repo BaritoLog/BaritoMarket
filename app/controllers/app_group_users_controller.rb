@@ -1,7 +1,7 @@
 class AppGroupUsersController < ApplicationController
   def create
     app_group_user = AppGroupUser.new(app_group_user_params)
-    app_group_user.role = AppGroupRole.as_member
+    app_group_user.role = AppGroupRole.find_by_name('member')
     app_group_user.save
 
     redirect_to manage_access_app_group_path(app_group_user.app_group_id)
@@ -9,17 +9,11 @@ class AppGroupUsersController < ApplicationController
 
   def set_role
     user = User.find(params[:user_id])
+    app_group_user = user.app_group_user
 
-    # Delete existing roles first, excluding `member`
-    AppGroupUser.
-      where(
-        'user_id = :user_id AND role_id != :role_id',
-        user_id: user.id, role_id: AppGroupRole.as_member.id).
-      delete_all
-
-
-    app_group_user = AppGroupUser.new(app_group_user_params)
-    app_group_user.user = user
+    # Make sure only valid role that can be set to user
+    role = AppGroupRole.find(params[:role_id])
+    app_group_user.role = role || AppGroupRole.find_by_name('member')
     app_group_user.save
 
     redirect_to manage_access_app_group_path(app_group_user.app_group_id)

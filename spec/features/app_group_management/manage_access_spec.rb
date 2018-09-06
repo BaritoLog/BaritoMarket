@@ -19,6 +19,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         create(:app_group_role)
+        [:admin, :owner].each { |role| create(:app_group_role, role) }
         login_as admin
 
         visit root_path
@@ -58,7 +59,9 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_css('form#new_barito_app', visible: false)
       end
     end
+  end
 
+  describe 'Set Role', js: true do
     context 'When set to only specific AppGroup' do
       scenario 'Should only set to specifc AppGroup' do
         @app_group_b = create(:app_group)
@@ -66,6 +69,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         create(:app_group_role)
+        [:admin, :owner].each { |role| create(:app_group_role, role) }
 
         login_as admin
 
@@ -93,6 +97,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         @app_group_b = create(:app_group)
         create(:infrastructure, app_group: @app_group_b)
         member_role = create(:app_group_role)
+        [:admin, :owner].each { |role| create(:app_group_role, role) }
 
         [@app_group_a, @app_group_b].each do |app_group|
           create(:app_group_user, app_group: app_group, role: member_role, user: user_a)
@@ -117,6 +122,23 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).to have_content(user_a.email)
       end
+    end
+
+    scenario 'User only have one Role' do
+      admin_role = create(:app_group_role, :admin)
+      create(:app_group_user, app_group: @app_group_a, role: create(:app_group_role), user: user_b)
+      create(:app_group_user, app_group: @app_group_a, role: create(:app_group_role, :owner), user: user_a)
+      login_as user_a
+
+      visit root_path
+      click_link @app_group_a.name
+      click_link 'Manage Access'
+
+      expect(page).to have_content(user_b.email)
+      expect(user_b.app_group_user.role.name).to eq 'member'
+      find("a[href='#{set_role_app_group_user_path(user_id: user_b.id, role_id: admin_role)}']").click
+
+      expect(user_b.reload.app_group_user.role.name).to eq 'admin'
     end
   end
 end

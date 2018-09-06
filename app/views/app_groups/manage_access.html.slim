@@ -11,26 +11,23 @@
       .form-group
         = f.submit 'Add', class: 'btn btn-primary'
         = link_to 'Back to Application Group', app_group_path(@app_group), class: 'btn btn-primary ml-2'
-        
+
     br
     ul.list-group
       - @app_group_users.each do |member|
         li.list-group-item
-          .row.no-gutters
-            - if member.email.blank?
-              .col-10= member.username
-            - else
-              .col-10= member.email
+          .row
+            .col-10
+              = member.user.display_name
+              | &nbsp;
+              span.badge.badge-secondary.badge-info
+                | &nbsp;As&nbsp;
+                = member.role.name
+
             .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger', data: { method: :delete }
-          .row.no-gutters
-            .col-12
-              = form_tag(set_role_app_group_user_path(user_id: member.user_id), method: :patch, class: 'form-inline mt-2') do
-                = hidden_field_tag :app_group_id, @app_group.id
-                = hidden_field_tag 'app_group_user[app_group_id]', @app_group.id
-                .form-group.mr-2
-                  = select_tag 'app_group_user[role_id]', options_from_collection_for_select(@roles, :id, :name, member.roles.split(',').find { |i| i.to_i != @role_member.id }), include_blank: true, class: 'form-control', id: "set_role_user_#{member.user_id}", prompt: 'No role'
-                .form-group
-                  = submit_tag 'Set', class: 'btn btn-primary'
+          .row
+            .col-8
+              = set_role_buttons(member, @roles)
 
       - if @app_group_users.blank?
         li.list-group-item.text-center There is no members registered yet

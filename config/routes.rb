@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
   get '/users/search', to: 'users#search', defaults: { format: :json }
   get '/groups/search', to: 'groups#search', defaults: { format: :json }
-  match '/app_group_users/:user_id/set_role', to: 'app_group_users#set_role', via: [:put, :patch], as: 'set_role_app_group_user'
+  match '/app_group_users/:user_id/set_role/:role_id', to: 'app_group_users#set_role', via: [:put, :patch], as: 'set_role_app_group_user'
   delete '/app_group_users/:user_id/delete/:app_group_id', to: 'app_group_users#destroy', as: 'app_group_user'
   match '/apps/:app_group_id/toggle_status/:id', to: 'apps#toggle_status', via: [:put, :patch], as: 'toggle_status_app'
 
