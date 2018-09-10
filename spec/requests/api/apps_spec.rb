@@ -80,9 +80,9 @@ RSpec.describe 'Apps API', type: :request do
   end
 
   describe 'Increase Log count API' do
-    context 'when empty application group' do
+    context 'when empty metrics' do
       it 'should return 404' do
-        post api_increase_log_count_path, params: { application_groups: []}, headers: headers
+        post api_increase_log_count_path, params: {metrics: []}, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(response.status).to eq 404
@@ -95,7 +95,7 @@ RSpec.describe 'Apps API', type: :request do
         app = create(:barito_app, app_group: app_group)
 
         expect(app.log_count).to be_zero
-        post api_increase_log_count_path, params: { application_groups: [{token: app.secret_key, new_log_count: 10 }]}, headers: headers
+        post api_increase_log_count_path, params: {metrics: [{token: app.secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(response.status).to eq 200
@@ -107,7 +107,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
         error_msg = "#{secret_key} : is not a valid App Token"
-        post api_increase_log_count_path, params: { application_groups: [{token: secret_key, new_log_count: 10 }]}, headers: headers
+        post api_increase_log_count_path, params: {metrics: [{token: secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq 404

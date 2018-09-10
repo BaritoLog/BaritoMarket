@@ -49,37 +49,46 @@ class Api::AppsController < Api::BaseController
   end
 
   def increase_log_count
-    @app_groups = params[:application_groups]
+    # Metrics are sent in batch
+    metrics = log_count_params[:metrics]
     errors = []
-    success_token = []
-    unless @app_groups.empty? or @app_groups.blank?
-      @app_groups.each do |metric|
-        app_secret = (metric['token'].nil?) ? "" : metric['token']
-        @app = BaritoApp.find_by_secret_key(app_secret)
-        if @app.blank?
+    log_count_data = []
+
+    if not metrics.blank?
+      metrics.each do |metric|
+        # Find app based on secret
+        app_secret = metric[:token] || ""
+        app = BaritoApp.find_by_secret_key(app_secret)
+        if app.blank?
           errors << "#{app_secret} : is not a valid App Token"
           next
         end
-        app_group = @app.app_group
+
+        # Increase log count on both app_group and app
+        app_group = app.app_group
         app_group.increase_log_count(metric[:new_log_count])
-        @app.increase_log_count(metric[:new_log_count])
-        @app.reload
-        app_group.reload
-        success_token << { token: metric[:token], log_count: @app.log_count }
-        broadcast(:log_count_changed, @app.id, metric[:new_log_count])
+        app.increase_log_count(metric[:new_log_count])
+
+        app.reload
+        log_count_data << { token: metric[:token], log_count: app.log_count }
+        broadcast(:log_count_changed, app.id, metric[:new_log_count])
       end
     end
 
-    if not errors.empty?
+    if errors.empty? && !metrics.blank?
       render json: {
-          success: false,
-          errors: errors,
-          code: 404
-      }, status: :not_found and return
+        data: log_count_data
+      }, status: :ok
+    else
+      render json: {
+        success: false,
+        errors: errors,
+        code: 404
+      }, status: :not_found
     end
+  end
 
-    render json: {
-        data: success_token
-    }, status: :ok
+  def log_count_params
+    params.permit({metrics: [:token, :new_log_count]})
   end
 end
