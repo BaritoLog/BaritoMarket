@@ -50,14 +50,14 @@ class Api::AppsController < Api::BaseController
 
   def increase_log_count
     # Metrics are sent in batch
-    metrics = log_count_params[:metrics]
+    app_group_metrics = metric_params[:application_groups]
     errors = []
     log_count_data = []
 
-    if not metrics.blank?
-      metrics.each do |metric|
+    if not app_group_metrics.blank?
+      app_group_metrics.each do |app_metric|
         # Find app based on secret
-        app_secret = metric[:token] || ""
+        app_secret = app_metric[:token] || ""
         app = BaritoApp.find_by_secret_key(app_secret)
         if app.blank?
           errors << "#{app_secret} : is not a valid App Token"
@@ -66,16 +66,23 @@ class Api::AppsController < Api::BaseController
 
         # Increase log count on both app_group and app
         app_group = app.app_group
-        app_group.increase_log_count(metric[:new_log_count])
-        app.increase_log_count(metric[:new_log_count])
+        app_group.increase_log_count(app_metric[:new_log_count])
+        app.increase_log_count(app_metric[:new_log_count])
 
         app.reload
-        log_count_data << { token: metric[:token], log_count: app.log_count }
-        broadcast(:log_count_changed, app.id, metric[:new_log_count])
+        log_count_data << {
+          token: app_metric[:token],
+          log_count: app.log_count
+        }
+
+        broadcast(:log_count_changed,
+          app.id,
+          app_metric[:new_log_count]
+        )
       end
     end
 
-    if errors.empty? && !metrics.blank?
+    if errors.empty? && !app_group_metrics.blank?
       render json: {
         data: log_count_data
       }, status: :ok
@@ -88,7 +95,7 @@ class Api::AppsController < Api::BaseController
     end
   end
 
-  def log_count_params
-    params.permit({metrics: [:token, :new_log_count]})
+  def metric_params
+    params.permit({application_groups: [:token, :new_log_count]})
   end
 end
