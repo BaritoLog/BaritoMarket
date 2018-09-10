@@ -16,9 +16,7 @@ var users = {
         processResults: function(data) {
           return {
             results: $.map(data, function(user, i) {
-              text = user.username;
-              if (!text) text = user.email;
-              return { id: user.id, text: text }
+              return { id: user.id, text: user.display_name }
             })
           };
         }

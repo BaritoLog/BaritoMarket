@@ -85,6 +85,7 @@ RSpec.describe 'Apps API', type: :request do
         app_group = create(:app_group)
         app = create(:barito_app, app_group: app_group)
 
+        expect(app.log_count).to be_zero
         post api_increase_log_count_path, params: { token: app.secret_key, new_log_count: 10 }, headers: headers
         json_response = JSON.parse(response.body)
 
