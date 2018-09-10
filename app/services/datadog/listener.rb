@@ -26,14 +26,14 @@ module Datadog
 
     def app_count_changed
       return unless @dog
-      count = BaritoApp.count
-      @dog.emit_point("barito.total_app", count)
+      app_count = AppGroup.joins(:barito_apps, :infrastructure).where.not(infrastructures: { provisioning_status: "DELETED" }).count
+      @dog.emit_point("barito.total_app", app_count)
     end
 
     def team_count_changed
       return unless @dog
-      count = AppGroup.count
-      @dog.emit_point("barito.total_team", count)
+      team_count = AppGroup.joins(:infrastructure).where.not(infrastructures: { provisioning_status: "DELETED"}).count
+      @dog.emit_point("barito.total_team", team_count)
     end
   end
 end

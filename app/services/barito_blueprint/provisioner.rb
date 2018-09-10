@@ -164,6 +164,8 @@ module BaritoBlueprint
 
       Processor.produce_log(@infrastructure, 'Delete finished')
       @infrastructure.update_provisioning_status('DELETED')
+      broadcast(:team_count_changed)
+      broadcast(:app_count_changed)
       return true
     end
 
