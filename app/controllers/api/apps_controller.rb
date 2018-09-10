@@ -1,5 +1,6 @@
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
+  skip_before_action :authenticate_token, :only => [:increase_log_count]
 
   def profile
     @app = BaritoApp.find_by_secret_key(params[:token])
@@ -48,16 +49,37 @@ class Api::AppsController < Api::BaseController
   end
 
   def increase_log_count
-    @app = BaritoApp.find_by_secret_key(params[:token])
-    app_group = @app.app_group
-    app_group.increase_log_count(params[:new_log_count])
-    @app.increase_log_count(params[:new_log_count])
-    @app.reload
-    app_group.reload
-    broadcast(:log_count_changed, @app.id, params[:new_log_count])
+    @app_groups = params[:application_groups]
+    errors = []
+    success_token = []
+    unless @app_groups.empty? or @app_groups.blank?
+      @app_groups.each do |metric|
+        app_secret = (metric['token'].nil?) ? "" : metric['token']
+        @app = BaritoApp.find_by_secret_key(app_secret)
+        if @app.blank?
+          errors << "#{app_secret} : is not a valid App Token"
+          next
+        end
+        app_group = @app.app_group
+        app_group.increase_log_count(metric[:new_log_count])
+        @app.increase_log_count(metric[:new_log_count])
+        @app.reload
+        app_group.reload
+        success_token << { token: metric[:token], log_count: @app.log_count }
+        broadcast(:log_count_changed, @app.id, metric[:new_log_count])
+      end
+    end
+
+    if not errors.empty?
+      render json: {
+          success: false,
+          errors: errors,
+          code: 404
+      }, status: :not_found and return
+    end
 
     render json: {
-      log_count: @app.log_count,
-    }
+        data: success_token
+    }, status: :ok
   end
 end
