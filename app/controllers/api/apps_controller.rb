@@ -50,12 +50,14 @@ class Api::AppsController < Api::BaseController
 
   def increase_log_count
     @app_groups = params[:application_groups]
-    unless @app_groups.empty?
-      errors = []
+    errors = []
+    success_token = []
+    unless @app_groups.empty? or @app_groups.blank?
       @app_groups.each do |metric|
-        @app = BaritoApp.find_by_secret_key(metric[:token])
-        if @app.blank? || !@app.available?
-          errors << "#{metric[:token]} : App not found or inactive"
+        app_secret = (metric['token'].nil?) ? "" : metric['token']
+        @app = BaritoApp.find_by_secret_key(app_secret)
+        if @app.blank?
+          errors << "#{app_secret} : is not a valid App Token"
           next
         end
         app_group = @app.app_group
@@ -63,18 +65,21 @@ class Api::AppsController < Api::BaseController
         @app.increase_log_count(metric[:new_log_count])
         @app.reload
         app_group.reload
+        success_token << { token: metric[:token], log_count: @app.log_count }
         broadcast(:log_count_changed, @app.id, metric[:new_log_count])
-      end
-
-      if not errors.empty?
-        render json: {
-            success: false,
-            errors: errors,
-            code: 404
-        }, status: :not_found and return
       end
     end
 
-    render json: "", status: :ok
+    if not errors.empty?
+      render json: {
+          success: false,
+          errors: errors,
+          code: 404
+      }, status: :not_found and return
+    end
+
+    render json: {
+        data: success_token
+    }, status: :ok
   end
 end
