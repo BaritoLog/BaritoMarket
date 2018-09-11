@@ -1,20 +1,18 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: [:show, :destroy]
-  before_action only: [:show, :destroy] do
-    authorize @group
-  end
-
-  def search
-    @groups = Group.where('name ILIKE :q', { q: "%#{params[:q]}%" })
-    render json: @groups
-  end
+  before_action :set_group, only: %i(show destroy)
 
   def index
     authorize Group
     @groups = Group.all
   end
 
+  def search
+    @groups = Group.where('name ILIKE :q', q: "%#{params[:q]}%")
+    render json: @groups
+  end
+
   def show
+    authorize @group
     @group_user = GroupUser.new(group: @group)
     @group_users = GroupUser.includes(:user).where(group: @group)
   end
@@ -37,6 +35,7 @@ class GroupsController < ApplicationController
   end
 
   def destroy
+    authorize @group
     @group.destroy!
     redirect_to groups_path
   end

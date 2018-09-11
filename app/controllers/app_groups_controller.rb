@@ -1,9 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: [:show, :update, :manage_access]
-  before_action only: [:show, :update, :manage_access] do
-    authorize @app_group
-  end
+  before_action :set_app_group, only: %i(show update manage_access)
 
   def index
     @app_groups = policy_scope(AppGroup).order(:created_at)
@@ -12,22 +9,24 @@ class AppGroupsController < ApplicationController
   end
 
   def search
-    @app_groups = policy_scope(AppGroup).where("name ILIKE :q", { q: "%#{params[:q]}%" })
+    @app_groups = policy_scope(AppGroup).
+      where('name ILIKE :q', q: "%#{params[:q]}%")
     render json: @app_groups
   end
 
   def show
+    authorize @app_group
     @apps = @app_group.barito_apps
-    @app = BaritoApp.new(app_group_id: @app_group.id)
+    @new_app = BaritoApp.new(app_group_id: @app_group.id)
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
 
-    @allow_set_status = policy(@app).toggle_status?
+    @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
     @allow_see_apps = policy(@app_group).allow_see_apps?
-    @allow_delete_barito_app = policy(@app).delete?
-    @allow_add_barito_app = policy(@app).create?
+    @allow_delete_barito_app = policy(@new_app).delete?
+    @allow_add_barito_app = policy(@new_app).create?
     @allow_edit_metadata = policy(@app_group).update?
     @allow_delete_infrastructure = policy(@app_group.infrastructure).delete?
   end
@@ -52,18 +51,23 @@ class AppGroupsController < ApplicationController
   end
 
   def update
+    authorize @app_group
     @app_group.update_attributes(app_group_params)
     redirect_to app_group_path(@app_group)
   end
 
   def manage_access
+    authorize @app_group
     @app_group_user = AppGroupUser.new(app_group: @app_group)
-    @app_group_users = AppGroupUser.includes(:user, :role).where(app_group_id: @app_group.id).order(:created_at)
+    @app_group_users = AppGroupUser.
+      includes(:user, :role).
+      where(app_group_id: @app_group.id).
+      order(:created_at)
 
     @roles = {
       member: AppGroupRole.find_by_name('member'),
       admin: AppGroupRole.find_by_name('admin'),
-      owner: AppGroupRole.find_by_name('owner')
+      owner: AppGroupRole.find_by_name('owner'),
     }
   end
 
@@ -72,7 +76,7 @@ class AppGroupsController < ApplicationController
   def app_group_params
     params.require(:app_group).permit(
       :name,
-      :capacity
+      :capacity,
     )
   end
 

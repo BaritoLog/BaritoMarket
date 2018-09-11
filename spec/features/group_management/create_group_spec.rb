@@ -9,7 +9,7 @@ RSpec.feature 'Group Management', type: :feature do
     context 'As Authorized User based on Group from Gate' do
       scenario 'User that registered to some groups in Gate and exists in BaritoMarket can create new group' do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
-        group = create(:group, name: 'barito-superadmin')
+        create(:group, name: 'barito-superadmin')
         prep_group = build(:group)
 
         login_as user

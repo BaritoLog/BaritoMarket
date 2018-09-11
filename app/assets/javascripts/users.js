@@ -1,7 +1,7 @@
 var users = {
   init: function() {
     $("#assign_member_user_id").select2({
-      placeholder: "Choose admin user",
+      placeholder: "Select user",
       minimumInputLength: 3,
       ajax: {
         url: "/users/search",

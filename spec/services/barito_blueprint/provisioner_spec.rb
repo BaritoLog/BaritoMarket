@@ -88,8 +88,7 @@ module BaritoBlueprint
         2.times.each do
           create(:infrastructure_component,
             infrastructure: @infrastructure,
-            ipaddress: '1.2.3.4',
-          )
+            ipaddress: '1.2.3.4')
         end
       end
 
@@ -137,26 +136,23 @@ module BaritoBlueprint
     describe '#check_and_update_instance' do
       before(:each) do
         @component = build(:infrastructure_component)
+        allow(@executor).to receive(:show_container).and_return(
+          'data' => { 'ipaddress' => '10.20.30.40' },
+        )
       end
 
       it 'should return true if show_container returns ip address properly' do
-        allow(@executor).to receive(:show_container).and_return(
-          { 'data' => { 'ipaddress' => '1.2.3.4' }}
-        )
         expect(@provisioner.check_and_update_instance(@component)).to eq true
       end
 
-      it 'should update consul_host in infrastructure if consul instance status provisioning finished and has ipaddress' do
+      it 'should update consul_host in infrastructure' do
         @component.update!(category: 'consul')
         infrastructure = @component.infrastructure
-        allow(@executor).to receive(:show_container).and_return(
-          { 'data' => { 'ipaddress' => '10.20.30.40' }}
-        )
         expect(@provisioner.check_and_update_instance(@component)).to eq true
         infrastructure.reload
         consul_host = @component.ipaddress || @component.hostname
 
-        expect(@component.ipaddress).to eq "10.20.30.40"
+        expect(@component.ipaddress).to eq '10.20.30.40'
         expect(infrastructure.consul_host).to eq "#{consul_host}:#{Figaro.env.default_consul_port}"
       end
     end

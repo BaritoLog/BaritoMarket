@@ -8,11 +8,10 @@ RSpec.describe 'Apps API', type: :request do
   describe 'Profile API' do
     it 'should return profile information of registered app' do
       app_group = create(:app_group)
-      infrastructure = create(:infrastructure,
-                              app_group: app_group,
-                              status: Infrastructure.statuses[:active],
-                              capacity: "small"
-                             )
+      create(:infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        capacity: "small")
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
       get api_profile_path, params: { token: app.secret_key }, headers: headers
@@ -52,7 +51,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group)
         get api_profile_path, params: { token: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
@@ -67,7 +66,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group)
+        create(:infrastructure, app_group: app_group)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
         get api_profile_path, params: { token: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
@@ -83,8 +82,6 @@ RSpec.describe 'Apps API', type: :request do
     context 'when empty application_groups metrics' do
       it 'should return 404' do
         post api_increase_log_count_path, params: {application_groups: []}, headers: headers
-        json_response = JSON.parse(response.body)
-
         expect(response.status).to eq 404
       end
     end

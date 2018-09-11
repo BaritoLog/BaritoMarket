@@ -1,7 +1,7 @@
 var app_groups = {
   init: function() {
     $("#assign_app_group_id").select2({
-      placeholder: "Select application groups",
+      placeholder: "Select app group",
       minimumInputLength: 3,
       ajax: {
         url: "/app_groups/search",

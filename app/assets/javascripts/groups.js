@@ -1,7 +1,7 @@
 var groups = {
   init: function() {
     $("#assign_group_id").select2({
-      placeholder: "Select groups",
+      placeholder: "Select group",
       minimumInputLength: 3,
       ajax: {
         url: "/groups/search",

@@ -56,7 +56,7 @@ RSpec.feature 'Barito App Management', type: :feature do
 
         login_as user_b
 
-        barito_app = build(:barito_app)
+        build(:barito_app)
         visit app_group_path(@app_group)
 
         expect(page).not_to have_css('form#new_barito_app input[type="submit"]')

@@ -16,23 +16,25 @@ module BaritoBlueprint
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
-          }
-        ]
+          },
+        ],
       }
       @processor = Processor.new(
-        @blueprint_hash, chef_repo_dir: Figaro.env.chef_repo_dir)
+        @blueprint_hash,
+        chef_repo_dir: Figaro.env.chef_repo_dir,
+      )
     end
 
     describe '#process!' do
       before(:each) do
         provisioner = double
-        allow(provisioner).to(receive(:provision_instances!).and_return true)
-        allow(provisioner).to(
-          receive(:check_and_update_instances).and_return true)
+        allow(provisioner).to(receive(:provision_instances!).and_return(true))
+        allow(provisioner).to(receive(:check_and_update_instances).
+          and_return(true))
         allow(Provisioner).to receive(:new).and_return(provisioner)
 
         bootstrapper = double
-        allow(bootstrapper).to(receive(:bootstrap_instances!).and_return true)
+        allow(bootstrapper).to(receive(:bootstrap_instances!).and_return(true))
         allow(Bootstrapper).to receive(:new).and_return(bootstrapper)
       end
 

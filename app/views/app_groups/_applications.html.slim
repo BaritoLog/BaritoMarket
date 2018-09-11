@@ -12,29 +12,29 @@ table.table.table-bordered.table-striped.table-md
       th.text-center.col-sm-2 Created At (UTC)
       th.text-center.col-sm-1 Actions
   tbody
-    - apps.each do |barito_app|
+    - apps.each do |app|
       tr
-        td.text-center= barito_app.name
-        td.text-center= barito_app.topic_name
-        td.text-center= barito_app.secret_key
-        td.text-center= barito_app.max_tps
+        td.text-center= app.name
+        td.text-center= app.topic_name
+        td.text-center= app.secret_key
+        td.text-center= app.max_tps
         td.text-center
           - if @allow_set_status
-            = check_box_tag "toggle_app_status_#{barito_app.id}", true, barito_app.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: barito_app.id, style: 'slow', size: 'small' }
-            = form_tag toggle_status_app_path(app_group_id: app_group.id, id: barito_app.id), method: :patch, id: "form_toggle_app_status_#{barito_app.id}" do
+            = check_box_tag "toggle_app_status_#{app.id}", true, app.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app.id, style: 'slow', size: 'small' }
+            = form_tag toggle_status_app_path(app_group_id: app_group.id, id: app.id), method: :patch, id: "form_toggle_app_status_#{app.id}" do
               = hidden_field_tag :toggle_status
           - else
-            = barito_app.status
-        td.text-center= barito_app.log_count
-        td.text-center= barito_app.created_at.strftime('%d %B %Y, %T')
+            = app.status
+        td.text-center= app.log_count
+        td.text-center= app.created_at.strftime('%d %B %Y, %T')
         td.text-center
           - if allow_delete
             .btn.btn-danger.btn-sm
-              = link_to "", app_path(barito_app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{barito_app.id}", class: 'far fa-trash-alt text-light'
+              = link_to "", app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{app.id}", class: 'far fa-trash-alt text-light'
 
 
     - if allow_add
-      = form_for(app, url: apps_path) do |f|
+      = form_for(new_app, url: apps_path) do |f|
         = f.hidden_field :app_group_id, value: app_group.id
         tr
           td.text-center= f.text_field :name, class: 'form-control'
@@ -48,4 +48,3 @@ table.table.table-bordered.table-striped.table-md
             = button_tag(:class => 'btn btn-success btn-sm') do
               i.fas.fa-plus.mr-1
               | Create  
-              

@@ -5,7 +5,7 @@ RSpec.describe AppGroup, type: :model do
     let(:app_group_props) { build(:app_group) }
 
     it 'should create the app_group' do
-      app_group, infrastructure = AppGroup.setup(
+      app_group, _ = AppGroup.setup(
         Rails.env,
         name: app_group_props.name,
         capacity: 'small'

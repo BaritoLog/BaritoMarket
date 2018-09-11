@@ -59,7 +59,7 @@ RSpec.describe 'App API', type: :request do
     context 'when invalid username or invalid cluster_name' do
       it 'should return 404' do
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group)
+        create(:infrastructure, app_group: app_group)
         get api_authorize_path, params: { cluster_name: "some-random-name", username: "some-user"  }, headers: headers
 
         expect(response.status).to eq 404

@@ -6,7 +6,7 @@ module BaritoBlueprint
       @infrastructure = create(:infrastructure)
       @executor = ChefSoloBootstrapper.new('/opt/chef-repo')
       @bootstrapper = Bootstrapper.new(
-        @infrastructure, 
+        @infrastructure,
         @executor,
         private_keys_dir: Figaro.env.private_keys_dir,
         private_key_name: Figaro.env.private_key_name,
@@ -29,7 +29,7 @@ module BaritoBlueprint
         expect(@bootstrapper.bootstrap_instances!).to eq false
       end
 
-      it 'should update infrastructure provisioning_status to BOOTSTRAP_ERROR even if only one bootstrapping failure' do
+      it 'should update infrastructure provisioning_status to BOOTSTRAP_ERROR on failure' do
         allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(false)
         @bootstrapper.bootstrap_instances!
         expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_ERROR'
@@ -40,7 +40,7 @@ module BaritoBlueprint
         expect(@bootstrapper.bootstrap_instances!).to eq true
       end
 
-      it 'should update infrastructure status and provisioning_status if all bootstrapping succeed' do
+      it 'should update infrastructure statuses if all bootstrapping succeed' do
         allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(true)
         @bootstrapper.bootstrap_instances!
         expect(@infrastructure.provisioning_status).to eq 'FINISHED'
@@ -90,14 +90,14 @@ module BaritoBlueprint
         generator = double('generator')
         allow(generator).
           to receive(:generate).
-          and_return({'hello' => 'world'})
+          and_return('hello' => 'world')
         allow(ChefHelper::ConsulRoleAttributesGenerator).
           to receive(:new).
           and_return(generator)
         component = create(:infrastructure_component, category: 'consul')
         expect(
-          @bootstrapper.generate_bootstrap_attributes(component, [component])
-        ).to eq({'hello' => 'world'})
+          @bootstrapper.generate_bootstrap_attributes(component, [component]),
+        ).to eq('hello' => 'world')
       end
     end
   end
