@@ -7,10 +7,9 @@
 ### Transports the Logs to where it should be
 
 ---
-Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will
-handle logs management, service discovery & log stream provisioning for GO-PAY System.
+Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will handle logs management, service discovery & log stream provisioning.
 
-Please see the details in [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
+Please see details in [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
 
 ### Prerequisite for development environment
 * Install [Homebrew](http://brew.sh/)

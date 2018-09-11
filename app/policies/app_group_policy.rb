@@ -38,7 +38,7 @@ class AppGroupPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if Figaro.env.enable_cas_integration == 'true'
-        gate_groups = GateWrapper.
+        gate_groups = GateClient.
           new(user).
           check_user_groups.
           symbolize_keys[:groups] || []

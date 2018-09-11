@@ -56,7 +56,7 @@ class ApplicationPolicy
   def get_user_groups
     return false if user.nil?
     if Figaro.env.enable_cas_integration == 'true'
-      gate_groups = GateWrapper.
+      gate_groups = GateClient.
         new(user).
         check_user_groups.
         symbolize_keys[:groups] || []
