@@ -4,22 +4,24 @@
 [![Inline docs](http://inch-ci.org/github/BaritoLog/BaritoMarket.svg)](http://inch-ci.org/github/BaritoLog/BaritoMarket)
 
 # Barito Market
-### Transports the Logs to where it should be
+### Transports logs to where it should be
 
 ---
 Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will handle logs management, service discovery & log stream provisioning.
 
-Please see details in [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
+Read the details [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
 
 ## Development Setup
 
 1. Ensure you have vagrant installed
-2. We should resize default vagrant disk (min 20GB). We can use vagrant plugin `git clone https://github.com/sprotheroe/vagrant-disksize.git`
-3. Run `vagrant plugin install vagrant-disksize`
-4. Clone this repo `git clone https://github.com/BaritoLog/BaritoMarket.git`
-5. Go to BaritoMarket directory and type `vagrant up --provision`
+2. Default vagrant disk should be resized (min 20GB). We will use vagrant plugin for this:
+   - Do `git clone https://github.com/sprotheroe/vagrant-disksize.git`
+   - Run `vagrant plugin install vagrant-disksize`
+3. Clone this repo `git clone https://github.com/BaritoLog/BaritoMarket.git`
+4. Go inside directory that you just cloned and type `vagrant up --provision`
+5. Grab a coffee, it will automatically setup everything :)
 
-Now you can open Barito Market from `http://192.168.20.10:8090`
-and Pathfinder from `http://192.168.20.10:8080`
+Now you can open Barito Market at `http://192.168.20.10:8090`
+and Pathfinder Container Manager at `http://192.168.20.10:8080`
 
-Run `vagrant ssh` if you want to login into virtual manchine
+Run `vagrant ssh` if you want to login into virtual manchine that was just created.
