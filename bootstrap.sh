@@ -70,7 +70,8 @@ sudo cat > bootstrap.json << EOF
       "db_password": "XXXXXXXXXXXXXX",
       "pathfinder_host": "127.0.0.1:8080",
       "pathfinder_cluster": "default",
-      "enable_cas_integration": "false"
+      "pathfinder_token": "pathfinder",
+      "enable_cas_integration": false
     }
   },
   "pathfinder-mono": {
@@ -120,9 +121,10 @@ EOF
 sudo chef-solo -c ./solo.rb -j ./bootstrap.json
 
 echo "Adding private key into barito_market config"
-cd /opt/chef-repo/chef-repo
-cp ~/.ssh/id_rsa .
-sudo chmod 600 id_rsa
+cd /opt/barito_market/shared/private_keys/
+cp ~/.ssh/id_rsa barito
+sudo chown barito_market:barito_market barito
+sudo chmod 600 barito
 
 echo "Running initial seed barito-market"
 cd /opt/barito_market/BaritoMarket
