@@ -7,6 +7,7 @@ module ChefHelper
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'kibana'
+      @base_path = component.cluster_name
     end
 
     def generate
@@ -15,7 +16,8 @@ module ChefHelper
       {
         'kibana' => {
           'config' => {
-            'elasticsearch.url' => elasticsearch_url
+            'elasticsearch.url' => elasticsearch_url,
+            'server.basePath' => "/#{@base_path}"
           }
         },
         'consul' => {
