@@ -96,7 +96,9 @@ sudo cat > bootstrap.json << EOF
   "pathfinder-node": {
     "custom_hostname": "node-01",
     "lxd_cluster_password": "pathfinder",
-    "ssh_authorized_key": "$pubkey"
+    "ssh_authorized_key": "$pubkey",
+    "underlay_subnet": "192.168.20.0/24",
+    "overlay_subnet": "172.20.0.0/16"
   },
   "pathfinder-agent": {
     "version": "0.3.1",

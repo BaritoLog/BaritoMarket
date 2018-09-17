@@ -14,9 +14,12 @@ Please see details in [here](https://docs.google.com/presentation/d/1u_13mW8K3C5
 ## Development Setup
 
 1. Ensure you have vagrant installed
-2. We should resize default vagrant disk (min 20GB), We can use vagrant plugin `git clone https://github.com/sprotheroe/vagrant-disksize.git`
+2. We should resize default vagrant disk (min 20GB). We can use vagrant plugin `git clone https://github.com/sprotheroe/vagrant-disksize.git`
 3. Run `vagrant plugin install vagrant-disksize`
-4. Clone this repo `git clone https://github.com/BaritoLog/barito-market-cookbook.git`
-5. Enter directory that you just cloned and type `vagrant up --provision`
+4. Clone this repo `git clone https://github.com/BaritoLog/BaritoMarket.git`
+5. Go to BaritoMarket directory and type `vagrant up --provision`
 
-Now you can either open `http://192.168.33.10:8090` or do `vagrant ssh`
+Now you can open Barito Market from `http://192.168.20.10:8090`
+and Pathfinder from `http://192.168.20.10:8080`
+
+Run `vagrant ssh` if you want to login into virtual manchine
