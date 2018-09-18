@@ -8,7 +8,7 @@ class AppGroupUsersController < ApplicationController
 
   def set_role
     user = User.find(params[:user_id])
-    app_group_user = user.app_group_user
+    app_group_user = user.app_group_users.find_by(app_group_id: params[:app_group_id])
 
     # Make sure only valid role that can be set to user
     role = AppGroupRole.find_by(id: params[:role_id])

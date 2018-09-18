@@ -27,7 +27,7 @@
             .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger', data: { method: :delete }
           .row
             .col-8
-              = set_role_buttons(member, @roles)
+              = set_role_buttons(member, @roles, app_group_id: @app_group.id)
 
       - if @app_group_users.blank?
         li.list-group-item.text-center There is no members registered yet
