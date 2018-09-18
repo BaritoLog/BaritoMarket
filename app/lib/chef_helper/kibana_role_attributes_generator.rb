@@ -7,7 +7,7 @@ module ChefHelper
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'kibana'
-      @base_path = component.cluster_name
+      @base_path = component.infrastructure.cluster_name
     end
 
     def generate
