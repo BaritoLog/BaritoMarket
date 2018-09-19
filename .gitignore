@@ -30,3 +30,7 @@ coverage
 !/blueprints/jobs/.keep
 /blueprints/failed/*
 !blueprints/failed/.keep
+
+# Ignore .vagrant
+.vagrant
+*.log
