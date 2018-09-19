@@ -9,7 +9,7 @@ module ChefHelper
     def generate
       {
         'elasticsearch' => {
-          'version' => '5.6.9',
+          'version' => '6.3.0',
           'allocated_memory' => 12000000,
           'max_allocated_memory' => 16000000
         },

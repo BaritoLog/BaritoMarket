@@ -15,6 +15,7 @@ module ChefHelper
 
       {
         'kibana' => {
+          'version' => '6.3.0',
           'config' => {
             'elasticsearch.url' => elasticsearch_url,
             'server.basePath' => "/#{@base_path}"
