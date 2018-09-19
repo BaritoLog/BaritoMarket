@@ -14,7 +14,7 @@ class PathfinderProvisioner
   end
 
   def provision!(hostname)
-    req = Typhoeus::Request.new(
+    request = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers.json",
       method: :post,
       params: {
@@ -31,13 +31,8 @@ class PathfinderProvisioner
         'X-Auth-Token' => @pathfinder_token
       }
     )
-    req.run
 
-    if req.response.success?
-      return respond_success(req.response)
-    else
-      return respond_error(req.response)
-    end
+    do_request(request)
   end
 
   def show_container(hostname)
@@ -57,7 +52,7 @@ class PathfinderProvisioner
   end
 
   def reprovision!(hostname)
-    req = Typhoeus::Request.new(
+    request = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/reschedule",
       method: :post,
       params: {
@@ -68,17 +63,11 @@ class PathfinderProvisioner
         'X-Auth-Token' => @pathfinder_token
       }
     )
-    req.run
-
-    if req.response.success?
-      return respond_success(req.response)
-    else
-      return respond_error(req.response)
-    end
+    do_request(request)
   end
 
   def delete_container!(hostname)
-    req = Typhoeus::Request.new(
+    request = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/schedule_deletion",
       method: :post,
       params: {
@@ -89,16 +78,21 @@ class PathfinderProvisioner
         'X-Auth-Token' => @pathfinder_token
       }
     )
-    req.run
 
-    if req.response.success?
-      body = JSON.parse(req.response.body)
+    request.run
+
+    if request.response.success?
+      body = JSON.parse(request.response.body)
       {
-        'success' => true,
-        'data' => body
+          'success' => true,
+          'data' => body
       }
+    elsif request.response.timed_out?
+      return respond_error_message("Provisioner time out")
+    elsif request.response.code == 0
+      return respond_error_message(request.response.return_message)
     else
-      return respond_error(req.response)
+      return respond_error(request.response)
     end
   end
 
@@ -114,7 +108,33 @@ class PathfinderProvisioner
     end
 
     def respond_error(response)
-      body = JSON.parse(response.body)
-      { 'success' => false, 'error' => body.dig('error', 'message') }
+      error_message = ""
+      begin
+        body = JSON.parse(response.body)
+        error_message = body.dig('error', 'message')
+      rescue JSON::ParserError => ex
+        error_message = ex.to_s
+      end
+      respond_error_message(error_message)
+    end
+
+    def respond_error_message(error_message)
+      { 'success' => false, 'error' => error_message}
+    end
+
+    def do_request(request)
+      request.on_complete do |response|
+        if response.success?
+          return respond_success(response)
+        elsif response.timed_out?
+          return respond_error_message("Provisioner time out")
+        elsif response.code == 0
+          return respond_error_message(response.return_message)
+        else
+          return respond_error(response)
+        end
+      end
+
+      request.run
     end
 end
