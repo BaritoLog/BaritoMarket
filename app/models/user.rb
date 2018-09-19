@@ -5,8 +5,8 @@ class User < ApplicationRecord
     devise :database_authenticatable, :trackable, :registerable
   end
 
-  has_one :app_group_user
-  has_many :app_groups, through: :app_group_user
+  has_many :app_group_users
+  has_many :app_groups, through: :app_group_users
   has_many :group_users
   has_many :groups, through: :group_users
 

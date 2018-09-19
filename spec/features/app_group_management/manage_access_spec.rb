@@ -135,10 +135,11 @@ RSpec.feature 'Application Group Management', type: :feature do
       click_link 'Manage Access'
 
       expect(page).to have_content(user_b.email)
-      expect(user_b.app_group_user.role.name).to eq 'member'
-      find("a[href='#{set_role_app_group_user_path(user_id: user_b.id, role_id: admin_role)}']").click
+      user_b_app_group_user = user_b.app_group_users.first
+      expect(user_b.app_group_users.first.role.name).to eq 'member'
+      find("a[href='#{set_role_app_group_user_path(user_id: user_b.id, role_id: admin_role, app_group_id: @app_group_a.id)}']").click
 
-      expect(user_b.reload.app_group_user.role.name).to eq 'admin'
+      expect(user_b.app_group_users.reload.first.role.name).to eq 'admin'
     end
   end
 end
