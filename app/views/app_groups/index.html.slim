@@ -41,3 +41,7 @@
                 .btn.btn-primary.btn-sm
                   i.fas.fa-search.mr-1
                   = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+                - if policy(app_group.infrastructure).delete?
+                .btn.btn-danger.btn-sm.text-light
+                  i.far.fa-trash-alt.mr-1
+                  = link_to "Delete ", delete_infrastructure_path(app_group.infrastructure.id), method: :delete, data: {confirm: 'Are you sure?'}, class: 'text-light', style: 'text-decoration: none'
