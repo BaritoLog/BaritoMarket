@@ -3,7 +3,7 @@ class AppGroupsController < ApplicationController
   before_action :set_app_group, only: %i(show update manage_access)
 
   def index
-    @app_groups = policy_scope(AppGroup).order(:created_at)
+    @app_groups = policy_scope(AppGroup).order(:name)
     @allow_create_app_group = policy(Group).index?
     @allow_set_status = policy(Infrastructure).toggle_status?
   end
@@ -53,6 +53,7 @@ class AppGroupsController < ApplicationController
   def update
     authorize @app_group
     @app_group.update_attributes(app_group_params)
+    @app_group.infrastructure.update_attributes(infrastructure_params)
     redirect_to app_group_path(@app_group)
   end
 
@@ -77,6 +78,12 @@ class AppGroupsController < ApplicationController
     params.require(:app_group).permit(
       :name,
       :capacity,
+    )
+  end
+
+  def infrastructure_params
+    params.require(:app_group).permit(
+        :name
     )
   end
 
