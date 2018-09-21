@@ -1,6 +1,6 @@
 module InfrastructuresHelper
   def show_retry_provision_button(infrastructure_component)
-    infrastructure_component.allow_provision? and infrastructure_component.provisioning_error?
+    infrastructure_component.allow_provision?
   end
 
   def show_provisioning_check_button(infrastructure_component)
