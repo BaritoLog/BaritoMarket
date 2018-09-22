@@ -21,7 +21,7 @@ module BaritoBlueprint
       Processor.produce_log(@infrastructure, 'Provisioning started')
       @infrastructure.update_provisioning_status('PROVISIONING_STARTED')
 
-      @infrastructure_components.each do |component|
+      @infrastructure_components.order(:sequence).each do |component|
         success = provision_instance!(component)
         unless success
           Processor.produce_log(@infrastructure, 'Provisioning error')
@@ -105,7 +105,7 @@ module BaritoBlueprint
       success = false
       end_time = DateTime.current + @defaults[:timeout]
       while !success && DateTime.current <= end_time
-        @infrastructure_components.each do |component|
+        @infrastructure_components.order(:sequence).each do |component|
           unless valid_instance?(component)
             component.update_status('PROVISIONING_CHECK_STARTED')
             check_and_update_instance(component)
@@ -118,7 +118,7 @@ module BaritoBlueprint
         sleep(@defaults[:check_interval])
       end
 
-      @infrastructure_components.each do |component|
+      @infrastructure_components.order(:sequence).each do |component|
         check_and_update_instance(component, update_status: true)
       end
       success = valid_instances?(@infrastructure_components)
@@ -153,7 +153,7 @@ module BaritoBlueprint
       Processor.produce_log(@infrastructure, 'Delete started')
       @infrastructure.update_provisioning_status('DELETE_STARTED')
 
-      @infrastructure_components.each do |component|
+      @infrastructure_components.order(:sequence).each do |component|
         success = delete_instance!(component)
         unless success
           Processor.produce_log(@infrastructure, 'Delete error')

@@ -26,7 +26,7 @@ module BaritoBlueprint
       Processor.produce_log(@infrastructure, 'Bootstrap started')
       @infrastructure.update_provisioning_status('BOOTSTRAP_STARTED')
 
-      @infrastructure_components.each do |component|
+      @infrastructure_components.order(:sequence).each do |component|
         success = bootstrap_instance!(component)
         unless success
           Processor.produce_log(@infrastructure, 'Bootstrap error')
