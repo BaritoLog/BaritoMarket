@@ -65,7 +65,10 @@ class ChefSoloBootstrapper
     cmd_stack << "ssh-keygen -R #{host_ipaddress}"
     stdout_str, error_str, status = Open3.capture3(cmd_stack.join(' '))
 
-    if status.success? || stdout_str.include?('not found')
+    if status.success? || 
+      error_str.include?('not found') ||
+      error_str.include?('No such file')
+
       return {
         'success' => true
       }
