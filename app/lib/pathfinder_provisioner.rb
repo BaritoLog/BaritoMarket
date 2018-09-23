@@ -72,6 +72,8 @@ class PathfinderProvisioner
 
     if req.response.success?
       return respond_success(req.response)
+    elsif req.response.response_code == 404
+      provision!(hostname)
     else
       return respond_error(req.response)
     end
