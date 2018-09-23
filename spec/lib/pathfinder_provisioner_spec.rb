@@ -29,7 +29,6 @@ RSpec.describe PathfinderProvisioner do
             'Content-Type' => 'application/json',
           },
           body: {
-            'error' => '',
             'data' => {
               'ipaddress' => '127.0.0.1'
             }
@@ -69,7 +68,6 @@ RSpec.describe PathfinderProvisioner do
             'Content-Type' => 'application/json',
           },
           body: {
-            'error' => '',
             'data' => {
               'ipaddress' => '127.0.0.1'
             }
@@ -109,7 +107,6 @@ RSpec.describe PathfinderProvisioner do
             'Content-Type' => 'application/json',
           },
           body: {
-            'error' => '',
             'data' => {
               'status' => 'SCHEDULE_DELETION'
             }
@@ -122,11 +119,8 @@ RSpec.describe PathfinderProvisioner do
       provision_result = pathfinder_provisioner.delete_container!('test-01')
       expect(provision_result).to eq({
         'success' => true,
-        "data" => {
-          "error" => "",
-          "data" => {
-            "status" => "SCHEDULE_DELETION"
-          }
+        'data' => {
+          'status' => 'SCHEDULE_DELETION'
         }
       })
     end

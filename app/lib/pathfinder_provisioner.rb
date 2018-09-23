@@ -95,7 +95,7 @@ class PathfinderProvisioner
       body = JSON.parse(req.response.body)
       {
         'success' => true,
-        'data' => body
+        'data' => body['data']
       }
     else
       return respond_error(req.response)
