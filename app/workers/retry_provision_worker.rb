@@ -11,7 +11,7 @@ class RetryProvisionWorker
           Figaro.env.pathfinder_host,
           Figaro.env.pathfinder_token,
           Figaro.env.pathfinder_cluster,
-          pathfinder_image: Figaro.env.pathfinder_image),
+          image: Figaro.env.pathfinder_image),
       )
       provisioner.reprovision_instance!(infrastructure_component)
     rescue JSON::ParserError, StandardError => ex

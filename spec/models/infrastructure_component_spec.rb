@@ -33,11 +33,15 @@ RSpec.describe InfrastructureComponent, type: :model do
   end
 
   describe '#allow_provision?' do
-    let(:infrastructure_component) {
-      build(:infrastructure_component, status: 'PROVISIONING_ERROR')
-    }
-
     it 'should return true if component provisioning can be retried' do
+      infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
+      infrastructure_component = build(:infrastructure_component, status: 'PROVISIONING_ERROR', infrastructure: infrastructure)
+      expect(infrastructure_component.allow_provision?).to eq true
+    end
+
+    it 'should return true if infrastructure provisioning is error' do
+      infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
+      infrastructure_component = build(:infrastructure_component, status: 'PENDING', infrastructure: infrastructure)
       expect(infrastructure_component.allow_provision?).to eq true
     end
   end

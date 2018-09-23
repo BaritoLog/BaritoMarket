@@ -11,7 +11,7 @@ class ProvisioningCheckWorker
           Figaro.env.pathfinder_host,
           Figaro.env.pathfinder_token,
           Figaro.env.pathfinder_cluster,
-          pathfinder_image: Figaro.env.pathfinder_image),
+          image: Figaro.env.pathfinder_image),
       )
       provisioner.check_and_update_instance(infrastructure_component,
         update_status: true)

@@ -104,6 +104,13 @@ class Infrastructure < ApplicationRecord
     Infrastructure.all.size + CLUSTER_NAME_PADDING
   end
 
+  def provisioning_error?
+    [
+      'PROVISIONING_ERROR',
+      'PROVISIONING_CHECK_FAILED'
+    ].include? self.provisioning_status
+  end
+
   def allow_delete?
     [
       'PROVISIONING_FINISHED',

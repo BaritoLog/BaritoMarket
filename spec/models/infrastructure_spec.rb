@@ -153,6 +153,13 @@ RSpec.describe Infrastructure, type: :model do
     end
   end
 
+  describe '#provisioning_error?' do
+    it 'should return true if provisioning is error' do
+      infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
+      expect(infrastructure.provisioning_error?).to eq true
+    end
+  end
+
   describe '#allow_delete?' do
     let(:infrastructure_props) { build(:infrastructure) }
 

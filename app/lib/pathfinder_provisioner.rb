@@ -72,6 +72,8 @@ class PathfinderProvisioner
 
     if req.response.success?
       return respond_success(req.response)
+    elsif req.response.response_code == 404
+      provision!(hostname)
     else
       return respond_error(req.response)
     end
@@ -95,7 +97,7 @@ class PathfinderProvisioner
       body = JSON.parse(req.response.body)
       {
         'success' => true,
-        'data' => body
+        'data' => body['data']
       }
     else
       return respond_error(req.response)

@@ -36,10 +36,13 @@ class InfrastructureComponent < ApplicationRecord
   end
 
   def allow_provision?
-    [
+    component_provisioning_error = [
       'PROVISIONING_ERROR',
       'PROVISIONING_CHECK_FAILED',
+      'PENDING'
     ].include? self.status
+
+    component_provisioning_error && self.infrastructure.provisioning_error?
   end
 
   def allow_provisioning_check?
