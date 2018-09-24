@@ -34,9 +34,13 @@ module ChefHelper
           'datadog_api_key': Figaro.env.datadog_api_key,
           'datadog_hostname': @hostname,
           'kafka': {
-            'host': 'localhost',
-            'port': 8090,
-            'cluster_name': "#{@cluster_name}"
+            'instances': [
+              {
+                'host': 'localhost',
+                'port': 8090,
+                'cluster_name': "#{@cluster_name}"
+              }
+            ]
           }
         }
         attrs['run_list'] << 'recipe[datadog::default]'

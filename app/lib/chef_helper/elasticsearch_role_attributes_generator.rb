@@ -30,7 +30,9 @@ module ChefHelper
           'datadog_api_key': Figaro.env.datadog_api_key,
           'datadog_hostname': @hostname,
           'elastic': {
-            'url': "http://#{@ipaddress}:#{@port}"
+            'instances': [
+              { 'url': "http://#{@ipaddress}:#{@port}" }
+            ]
           }
         }
         attrs['run_list'] << 'recipe[datadog::default]'
