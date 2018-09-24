@@ -31,7 +31,10 @@ module ChefHelper
           'datadog_hostname': @hostname,
           'elastic': {
             'instances': [
-              { 'url': "http://#{@ipaddress}:#{@port}" }
+              { 
+                'url': "http://#{@ipaddress}:#{@port}",
+                'tags': []
+              }
             ]
           }
         }

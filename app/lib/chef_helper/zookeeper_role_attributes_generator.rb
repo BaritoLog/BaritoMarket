@@ -33,7 +33,8 @@ module ChefHelper
               {
                 'host': 'localhost',
                 'port': 2181,
-                'cluster_name': "#{@cluster_name}"
+                'cluster_name': "#{@cluster_name}",
+                'tags': []
               }
             ]
           }
