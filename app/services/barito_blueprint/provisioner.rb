@@ -105,6 +105,7 @@ module BaritoBlueprint
       success = false
       end_time = DateTime.current + @defaults[:timeout]
       while !success && DateTime.current <= end_time
+        @infrastructure_components.reload
         @infrastructure_components.order(:sequence).each do |component|
           unless valid_instance?(component)
             component.update_status('PROVISIONING_CHECK_STARTED')
