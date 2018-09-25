@@ -8,6 +8,7 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'kibana'
       @base_path = component.infrastructure.cluster_name
+      @ipaddress = component.ipaddress
     end
 
     def generate
@@ -23,7 +24,12 @@ module ChefHelper
         },
         'consul' => {
           'run_as_server' => false,
-          'hosts' => @consul_hosts
+          'hosts' => @consul_hosts,
+          'config' => {
+            'consul.json' => {
+              'bind_addr' => @ipaddress
+            }
+          }
         },
         'run_list' => ["role[#{@role_name}]"]
       }

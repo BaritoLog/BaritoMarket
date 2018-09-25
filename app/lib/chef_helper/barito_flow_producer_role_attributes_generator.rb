@@ -8,6 +8,7 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @max_tps = TPS_CONFIG[component.infrastructure.capacity]['max_tps'] || 10
       @role_name = opts[:role_name] || 'barito-flow-producer'
+      @ipaddress = component.ipaddress
     end
 
     def generate
@@ -31,7 +32,12 @@ module ChefHelper
         },
         'consul' => {
           'run_as_server' => false,
-          'hosts' => @consul_hosts
+          'hosts' => @consul_hosts,
+          'config' => {
+            'consul.json' => {
+              'bind_addr' => @ipaddress
+            }
+          }
         },
         'run_list' => ["role[#{@role_name}]"]
       }
