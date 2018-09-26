@@ -38,6 +38,10 @@ module BaritoBlueprint
       return false unless provisioner.provision_instances!
       return false unless provisioner.check_and_update_instances
 
+      # Give time for the machines to finish initializing
+      # TODO: should find a better way to detect dpkg lock
+      sleep(5) unless Rails.env.test?
+
       bootstrapper = Bootstrapper.new(
         @infrastructure,
         ChefSoloBootstrapper.new(@chef_repo_dir),
