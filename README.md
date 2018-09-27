@@ -27,7 +27,7 @@ and Pathfinder Container Manager at `http://192.168.20.10:8080` (username: `admi
 Run `vagrant ssh` if you want to login into virtual machine that was just created.
 
 #### Newrelic Support
-If you want to enable Newrelic monitoring on your Gate deployment, you just have to create these additional keys on your environment variables:
+If you want to enable Newrelic monitoring on your BaritoMarket deployment, you just have to create these additional keys on your environment variables:
 ```
 NEWRELIC_LICENSE_KEY                - Your Newrelic license key
 NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
