@@ -6,7 +6,6 @@ table.table.table-bordered.table-striped.table-md
       th.text-center.col-sm-2 Name
       th.text-center.col-sm-1half Topic Name
       th.text-center.col-sm-2half App Secret
-      th.text-center.col-sm-1 Max TPS
       th.text-center.col-sm-1 Status
       th.text-center.col-sm-1 Log Count
       th.text-center.col-sm-2 Created At (UTC)
@@ -17,7 +16,6 @@ table.table.table-bordered.table-striped.table-md
         td.text-center= app.name
         td.text-center= app.topic_name
         td.text-center= app.secret_key
-        td.text-center= app.max_tps
         td.text-center
           - if @allow_set_status
             = check_box_tag "toggle_app_status_#{app.id}", true, app.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app.id, style: 'slow', size: 'small' }
@@ -40,7 +38,6 @@ table.table.table-bordered.table-striped.table-md
           td.text-center= f.text_field :name, class: 'form-control'
           td.text-center= f.text_field :topic_name, class: 'form-control'
           td.text-center
-          td.text-center= f.text_field :max_tps, class: 'form-control'
           td.text-center
           td.text-center
           td.text-center
