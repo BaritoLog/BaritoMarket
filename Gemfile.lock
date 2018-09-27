@@ -251,6 +251,7 @@ GEM
       net-ssh-gateway (>= 1.2.0)
     net-telnet (0.2.0)
     netrc (0.11.0)
+    newrelic_rpm (5.4.0.347)
     nio4r (2.3.1)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
@@ -504,6 +505,7 @@ DEPENDENCIES
   jquery-rails
   knife-solo (<= 0.7.0.pre3)
   listen (<= 3.1.5)
+  newrelic_rpm
   pg (<= 1.0.0)
   pry (<= 0.11.3)
   puma (<= 3.11.4)

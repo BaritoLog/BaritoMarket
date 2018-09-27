@@ -25,3 +25,11 @@ Now you can open Barito Market at `http://192.168.20.10:8090` (username: `supera
 and Pathfinder Container Manager at `http://192.168.20.10:8080` (username: `admin`, password: `pathfinder`)
 
 Run `vagrant ssh` if you want to login into virtual machine that was just created.
+
+#### Newrelic Support
+If you want to enable Newrelic monitoring on your Gate deployment, you just have to create these additional keys on your environment variables:
+```
+NEWRELIC_LICENSE_KEY                - Your Newrelic license key
+NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
+NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to runs
+```
