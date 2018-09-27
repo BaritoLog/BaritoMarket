@@ -38,8 +38,7 @@ class AppsController < ApplicationController
       params.require(:barito_app).permit(
         :app_group_id,
         :name,
-        :topic_name,
-        :max_tps
+        :topic_name
       )
     end
 

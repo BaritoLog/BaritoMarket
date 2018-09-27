@@ -24,7 +24,6 @@ RSpec.feature 'Barito App Management', type: :feature do
         within('#new_barito_app') do
           fill_in 'barito_app_topic_name', with: barito_app.name
           fill_in 'barito_app_name', with: barito_app.name
-          fill_in 'barito_app_max_tps', with: 50
         end
 
         click_button 'Create'
@@ -43,7 +42,6 @@ RSpec.feature 'Barito App Management', type: :feature do
         within('#new_barito_app') do
           fill_in 'barito_app_topic_name', with: barito_app.name
           fill_in 'barito_app_name', with: barito_app.name
-          fill_in 'barito_app_max_tps', with: 50
         end
 
         click_button 'Create'
