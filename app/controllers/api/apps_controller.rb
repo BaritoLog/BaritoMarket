@@ -1,5 +1,3 @@
-require 'benchmark'
-
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
   skip_before_action :authenticate_token, :only => [:increase_log_count]
