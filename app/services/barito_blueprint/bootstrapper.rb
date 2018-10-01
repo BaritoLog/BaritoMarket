@@ -2,9 +2,9 @@ module BaritoBlueprint
   class Bootstrapper
     BOOTSTRAP_ATTRIBUTES_GENERATORS = {
       'consul' => ChefHelper::ConsulRoleAttributesGenerator,
-      'barito-flow-consumer' => 
+      'barito-flow-consumer' =>
         ChefHelper::BaritoFlowConsumerRoleAttributesGenerator,
-      'barito-flow-producer' => 
+      'barito-flow-producer' =>
         ChefHelper::BaritoFlowProducerRoleAttributesGenerator,
       'elasticsearch' => ChefHelper::ElasticsearchRoleAttributesGenerator,
       'kafka' => ChefHelper::KafkaRoleAttributesGenerator,
@@ -15,7 +15,7 @@ module BaritoBlueprint
 
     def initialize(infrastructure, executor, opts = {})
       @infrastructure = infrastructure
-      @infrastructure_components = @infrastructure.infrastructure_components
+      @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
       @executor = executor
       @private_keys_dir = opts[:private_keys_dir]
       @private_key_name = opts[:private_key_name]
@@ -43,7 +43,7 @@ module BaritoBlueprint
 
     def bootstrap_instance!(component)
       Processor.produce_log(
-        @infrastructure, 
+        @infrastructure,
         "InfrastructureComponent:#{component.id}",
         "Bootstrapping #{component.hostname} started")
       component.update_status('BOOTSTRAP_STARTED')
@@ -67,14 +67,14 @@ module BaritoBlueprint
         attrs: attrs
       )
       Processor.produce_log(
-        @infrastructure, 
+        @infrastructure,
         "InfrastructureComponent:#{component.id}",
         "#{res}")
 
       if res['success'] == true
         component.update_attribute(:bootstrap_attributes, attrs)
         Processor.produce_log(
-          @infrastructure, 
+          @infrastructure,
           "InfrastructureComponent:#{component.id}",
           "Bootstrapping #{component.hostname} finished")
         component.update_status('FINISHED')
@@ -88,7 +88,7 @@ module BaritoBlueprint
         return true
       else
         Processor.produce_log(
-          @infrastructure, 
+          @infrastructure,
           "InfrastructureComponent:#{component.id}",
           "Bootstrapping #{component.hostname} error",
           "#{res['error']}")
