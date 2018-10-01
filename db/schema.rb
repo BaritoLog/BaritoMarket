@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_23_123800) do
+ActiveRecord::Schema.define(version: 2018_10_01_041348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 2018_08_23_123800) do
     t.string "topic_name"
     t.integer "max_tps"
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
+    t.index ["secret_key"], name: "index_barito_apps_on_secret_key"
+    t.index ["status"], name: "index_barito_apps_on_status"
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -95,6 +97,7 @@ ActiveRecord::Schema.define(version: 2018_08_23_123800) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
+    t.index ["status"], name: "index_infrastructures_on_status"
   end
 
   create_table "users", force: :cascade do |t|

@@ -11,8 +11,11 @@ class Api::BaseController < ActionController::Base
     if !validate_required_keys(required_keys)
       key_list = required_keys.join(',')
       errors = build_errors(422, ["Invalid Params: #{key_list} is a required parameter"])
-    elsif !BaritoApp.secret_key_valid?(params[:token])
-      errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
+    else
+      @app = BaritoApp.find_by_secret_key(params[:token])
+      if !@app.present?
+        errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
+      end
     end
     render json: errors, status: errors[:code] unless errors.blank?
   end
