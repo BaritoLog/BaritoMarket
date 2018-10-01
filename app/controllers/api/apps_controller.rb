@@ -3,8 +3,6 @@ class Api::AppsController < Api::BaseController
   skip_before_action :authenticate_token, :only => [:increase_log_count]
 
   def profile
-    @app = BaritoApp.find_by_secret_key(params[:token])
-
     if @app.blank? || !@app.available?
       render json: {
         success: false,

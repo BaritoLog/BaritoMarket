@@ -27,8 +27,7 @@ class BaritoApp < ApplicationRecord
   end
 
   def available?
-    infrastructure = Infrastructure.find_by(app_group_id: app_group_id)
-    active? && infrastructure.active?
+    active? && self.app_group.infrastructure.active?
   end
 
   def update_status(status)
