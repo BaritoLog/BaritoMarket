@@ -16,9 +16,9 @@ class DatadogListener
 
     @dog.batch_metrics do
       @dog.emit_point(
-        "barito.log_count", app.log_count, :app_group => "#{app_group.name}", :app_name => "#{app.name}")
+        "barito.log_count", app.log_count, :options => ["app_group:#{app_group.name}", "app_name:#{app.name}"])
       @dog.emit_point(
-        "barito.log_throughput", app_log_throughput, :app_group => "#{app_group.name}", :app_name => "#{app.name}")
+        "barito.log_throughput", app_log_throughput, :options => ["app_group:#{app_group.name}", "app_name:#{app.name}"])
     end
   end
 
