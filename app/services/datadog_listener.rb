@@ -13,16 +13,12 @@ class DatadogListener
       return
     end
     app_group = app.app_group
-    app_group_log_count = AppGroup.sum(:log_count)
 
     @dog.batch_metrics do
-      @dog.emit_point("barito.app.#{app_group.name}.#{app.name}.log_count", app.log_count)
       @dog.emit_point(
-        "barito.app_group.#{app_group.name}.log_count", app_group.log_count)
+        "barito.log_count", app.log_count, :app_group => "#{app_group.name}", :app_name => "#{app.name}")
       @dog.emit_point(
-        "barito.app.#{app_group.name}.#{app.name}.log_throughput", app_log_throughput)
-      @dog.emit_point(
-          "barito.app_group.log_count", app_group_log_count)
+        "barito.log_throughput", app_log_throughput, :app_group => "#{app_group.name}", :app_name => "#{app.name}")
     end
   end
 
