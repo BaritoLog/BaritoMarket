@@ -1,7 +1,7 @@
 class Api::BaseController < ActionController::Base
   include Pundit
 
-  before_action :authenticate_token
+  before_action :authenticate_app_token, :authenticate_app_group_token
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -19,6 +19,22 @@ class Api::BaseController < ActionController::Base
     end
     render json: errors, status: errors[:code] unless errors.blank?
   end
+
+  def authenticate_app_group_token
+    required_keys = [:app_group_token, :app_name]
+    errors = {}
+    unless validate_required_keys(required_keys)
+      key_list = required_keys.join(',')
+      errors = build_errors(422, ["Invalid Params: #{key_list} is a required parameter"])
+    else
+      @app_group = AppGroup.find_by_secret_key(params[:app_group_token])
+      unless @app_group.present?
+        errors = build_errors(401, ["Unauthorized: #{params[:app_group_token]} is not a valid App Token"])
+      else
+        @app = BaritoApp.find_by(
+          name: params[:app_name],
+          app_group_id: @app_group.id
+        )
       end
     end
     render json: errors, status: errors[:code] unless errors.blank?
@@ -32,6 +48,7 @@ class Api::BaseController < ActionController::Base
     valid = true
     required_keys.each do |key|
       valid = params.key?(key.to_sym) && !params[key.to_sym].blank?
+      return false unless valid
     end
     valid
   end

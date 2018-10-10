@@ -90,42 +90,39 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when token is provided and valid as app_group_token but params[:app_name] is not provided' do
-      it 'should return 404' do
-        error_msg = 'Params[:app_name] is required'
+    context 'when app_group_token is provided and valid but params[:app_name] is not provided' do
+      it 'should return 422' do
+        error_msg = 'Invalid Params: app_group_token,app_name is a required parameter'
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group)
-        get api_profile_path, params: { token: app_group.secret_key }, headers: headers
+        get api_profile_by_app_group_path, params: { app_group_token: app_group.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
-        expect(json_response['success']).to eq false
-        expect(json_response['code']).to eq 404
-        expect(json_response['errors']).to eq [error_msg]
+        expect(json_response['code']).to eq(422)
+        expect(json_response['errors']).to eq([error_msg])
       end
     end
 
-    context 'when token is provided and valid as app_group_token and params[:app_name] is provided but app is inactive' do
+    context 'when app_group_token is provided and valid and params[:app_name] is provided but app is inactive' do
       it 'should return 404' do
         error_msg = 'App is inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:inactive])
-        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        get api_profile_by_app_group_path, params: { app_group_token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
-        expect(json_response['code']).to eq 404
+        expect(json_response['code']).to eq 503
         expect(json_response['errors']).to eq [error_msg]
       end
     end
 
-    context 'when token is provided and valid as app_group_token and params[:app_name] is provided and app is active' do
+    context 'when app_group_token is provided and valid and params[:app_name] is provided and app is active' do
       it 'should return appropriate app' do
-        error_msg = 'App is inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
-        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        get api_profile_by_app_group_path, params: { app_group_token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)
@@ -133,12 +130,11 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when token is provided and valid as app_group_token and params[:app_name] is provided and app is blank' do
+    context 'when app_group_token is provided and valid and params[:app_name] is provided and app is blank' do
       it 'should create new app with params[:app_name]' do
-        error_msg = 'App is inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
-        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-02" }, headers: headers
+        get api_profile_by_app_group_path, params: { app_group_token: app_group.secret_key, app_name: "test-app-02" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)

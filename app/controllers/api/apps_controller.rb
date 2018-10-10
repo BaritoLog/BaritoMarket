@@ -1,6 +1,7 @@
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
-  skip_before_action :authenticate_token, :only => [:increase_log_count]
+  skip_before_action :authenticate_app_token, :only => [:increase_log_count, :profile_by_app_group]
+  skip_before_action :authenticate_app_group_token, :only => [:increase_log_count, :profile]
 
   def profile
     if @app.blank? || !@app.available?
@@ -13,35 +14,24 @@ class Api::AppsController < Api::BaseController
 
     get_app_profile(@app)
   end
+
+  def profile_by_app_group
     if @app.blank?
-      unless params[:app_name].present?
-        render json: {
-          success: false,
-          errors: ["Params[:app_name] is required"],
-          code: 404
-        }, status: :not_found and return
-      end
-      @app = BaritoApp.find_by(
+      app_params = {
+        app_group_id: @app_group.id,
         name: params[:app_name],
-        app_group_id: @app_group.id
-      )
-      if @app.blank?
-        app_params = {
-          app_group_id: @app_group.id,
-          name: params[:app_name],
-          topic_name: params[:app_name],
-          max_tps: Figaro.env.default_app_tps
-        }
-        @app = BaritoApp.setup(app_params)
-      end
+        topic_name: params[:app_name],
+        max_tps: Figaro.env.default_app_tps
+      }
+      @app = BaritoApp.setup(app_params)
     end
 
     unless @app.available?
       render json: {
         success: false,
         errors: ["App is inactive"],
-        code: 404
-      }, status: :not_found and return
+        code: 503
+      }, status: :service_unavailable and return
     end
 
     get_app_profile(@app)

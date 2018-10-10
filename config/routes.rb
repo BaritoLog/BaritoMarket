@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     get :profile,
       to: 'apps#profile',
       defaults: { format: :json }
+    get :profile_by_app_group,
+      to: 'apps#profile_by_app_group',
+      defaults: { format: :json }
     get :profile_by_cluster_name,
       to: 'infrastructures#profile_by_cluster_name',
       defaults: { format: :json }

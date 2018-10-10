@@ -1,5 +1,5 @@
 class Api::InfrastructuresController < Api::BaseController
-  skip_before_action :authenticate_token
+  skip_before_action :authenticate_app_token, :authenticate_app_group_token
 
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
@@ -43,10 +43,10 @@ class Api::InfrastructuresController < Api::BaseController
 
     if @infrastructure.blank? || !@infrastructure.active?
       render json: {
-        success: false, 
+        success: false,
         errors: ["Infrastructure #{params[:cluster_name]} is not exists"],
         code: 404
-      }, status: :not_found and return 
+      }, status: :not_found and return
     end
 
     raise Pundit::NotAuthorizedError unless InfrastructurePolicy.new(
