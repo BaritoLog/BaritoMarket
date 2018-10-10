@@ -14,7 +14,10 @@ class Api::BaseController < ActionController::Base
     else
       @app = BaritoApp.find_by_secret_key(params[:token])
       if !@app.present?
-        errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
+        @app_group = AppGroup.find_by_secret_key(params[:token])
+        if !@app_group.present?
+          errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
+        end
       end
     end
     render json: errors, status: errors[:code] unless errors.blank?

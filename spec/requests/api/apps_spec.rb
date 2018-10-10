@@ -49,7 +49,7 @@ RSpec.describe 'Apps API', type: :request do
 
     context 'when token is provided and valid but app is inactive' do
       it 'should return 404' do
-        error_msg = 'App not found or inactive'
+        error_msg = 'App is inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group)
@@ -64,7 +64,7 @@ RSpec.describe 'Apps API', type: :request do
 
     context 'when token is provided and valid, app is active but infrastructure is inactive' do
       it 'should return 404' do
-        error_msg = 'App not found or inactive'
+        error_msg = 'App is inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
@@ -74,6 +74,75 @@ RSpec.describe 'Apps API', type: :request do
         expect(json_response['success']).to eq false
         expect(json_response['code']).to eq 404
         expect(json_response['errors']).to eq [error_msg]
+      end
+    end
+
+    context 'when token is provided and valid as app_token, app is active and infrastructure is active' do
+      it 'should return appropriate app' do
+        app_group = create(:app_group)
+        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
+        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response.key?('app_group_name')).to eq(true)
+        expect(json_response['name']).to eq "test-app-01"
+      end
+    end
+
+    context 'when token is provided and valid as app_group_token but params[:app_name] is not provided' do
+      it 'should return 404' do
+        error_msg = 'Params[:app_name] is required'
+        app_group = create(:app_group)
+        create(:infrastructure, app_group: app_group)
+        get api_profile_path, params: { token: app_group.secret_key }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to eq false
+        expect(json_response['code']).to eq 404
+        expect(json_response['errors']).to eq [error_msg]
+      end
+    end
+
+    context 'when token is provided and valid as app_group_token and params[:app_name] is provided but app is inactive' do
+      it 'should return 404' do
+        error_msg = 'App is inactive'
+        app_group = create(:app_group)
+        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:inactive])
+        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to eq false
+        expect(json_response['code']).to eq 404
+        expect(json_response['errors']).to eq [error_msg]
+      end
+    end
+
+    context 'when token is provided and valid as app_group_token and params[:app_name] is provided and app is active' do
+      it 'should return appropriate app' do
+        error_msg = 'App is inactive'
+        app_group = create(:app_group)
+        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
+        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response.key?('app_group_name')).to eq(true)
+        expect(json_response['name']).to eq "test-app-01"
+      end
+    end
+
+    context 'when token is provided and valid as app_group_token and params[:app_name] is provided and app is blank' do
+      it 'should create new app with params[:app_name]' do
+        error_msg = 'App is inactive'
+        app_group = create(:app_group)
+        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        get api_profile_path, params: { token: app_group.secret_key, app_name: "test-app-02" }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response.key?('app_group_name')).to eq(true)
+        expect(json_response['name']).to eq "test-app-02"
       end
     end
   end

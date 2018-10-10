@@ -3,10 +3,33 @@ class Api::AppsController < Api::BaseController
   skip_before_action :authenticate_token, :only => [:increase_log_count]
 
   def profile
-    if @app.blank? || !@app.available?
+    if @app.blank?
+      unless params[:app_name].present?
+        render json: {
+          success: false,
+          errors: ["Params[:app_name] is required"],
+          code: 404
+        }, status: :not_found and return
+      end
+      @app = BaritoApp.find_by(
+        name: params[:app_name],
+        app_group_id: @app_group.id
+      )
+      if @app.blank?
+        app_params = {
+          app_group_id: @app_group.id,
+          name: params[:app_name],
+          topic_name: params[:app_name],
+          max_tps: Figaro.env.default_app_tps
+        }
+        @app = BaritoApp.setup(app_params)
+      end
+    end
+
+    unless @app.available?
       render json: {
         success: false,
-        errors: ["App not found or inactive"],
+        errors: ["App is inactive"],
         code: 404
       }, status: :not_found and return
     end
