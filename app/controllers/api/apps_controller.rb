@@ -3,6 +3,16 @@ class Api::AppsController < Api::BaseController
   skip_before_action :authenticate_token, :only => [:increase_log_count]
 
   def profile
+    if @app.blank? || !@app.available?
+      render json: {
+        success: false,
+        errors: ["App not found or inactive"],
+        code: 404
+      }, status: :not_found and return
+    end
+
+    get_app_profile(@app)
+  end
     if @app.blank?
       unless params[:app_name].present?
         render json: {
@@ -34,39 +44,7 @@ class Api::AppsController < Api::BaseController
       }, status: :not_found and return
     end
 
-    @infrastructure = @app.app_group.infrastructure
-
-    render json: {
-      id: @app.id,
-      name: @app.name,
-      app_group_name: @app.app_group_name,
-      max_tps: @app.max_tps,
-      cluster_name: @app.cluster_name,
-      consul_host: @app.consul_host,
-      status: @app.status,
-      updated_at: @app.updated_at.strftime(Figaro.env.timestamp_format),
-      meta: {
-        # TODO: we should store this somewhere
-        service_names: {
-          producer: 'barito-flow-producer',
-          zookeeper: 'zookeeper',
-          kafka: 'kafka',
-          consumer: 'barito-flow-consumer',
-          elasticsearch: 'elasticsearch',
-          kibana: 'kibana',
-        },
-        kafka: {
-          topic_name: @app.topic_name,
-          partition: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['partition'],
-          replication_factor: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['replication_factor'],
-          consumer_group: 'barito',
-        },
-        elasticsearch: {
-          index_prefix: @app.topic_name,
-          document_type: 'barito',
-        },
-      },
-    }
+    get_app_profile(@app)
   end
 
   def increase_log_count
@@ -118,5 +96,41 @@ class Api::AppsController < Api::BaseController
 
   def metric_params
     params.permit({application_groups: [:token, :new_log_count]})
+  end
+
+  def get_app_profile(app)
+    @infrastructure = app.app_group.infrastructure
+
+    render json: {
+      id: app.id,
+      name: app.name,
+      app_group_name: app.app_group_name,
+      max_tps: app.max_tps,
+      cluster_name: app.cluster_name,
+      consul_host: app.consul_host,
+      status: app.status,
+      updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        # TODO: we should store this somewhere
+        service_names: {
+          producer: 'barito-flow-producer',
+          zookeeper: 'zookeeper',
+          kafka: 'kafka',
+          consumer: 'barito-flow-consumer',
+          elasticsearch: 'elasticsearch',
+          kibana: 'kibana',
+        },
+        kafka: {
+          topic_name: app.topic_name,
+          partition: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['partition'],
+          replication_factor: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['replication_factor'],
+          consumer_group: 'barito',
+        },
+        elasticsearch: {
+          index_prefix: app.topic_name,
+          document_type: 'barito',
+        },
+      },
+    }
   end
 end

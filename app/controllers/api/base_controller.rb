@@ -5,19 +5,20 @@ class Api::BaseController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  def authenticate_token
-    required_keys = [:token]
+  def authenticate_app_token
+    required_keys = [:app_token]
     errors = {}
-    if !validate_required_keys(required_keys)
+    unless validate_required_keys(required_keys)
       key_list = required_keys.join(',')
       errors = build_errors(422, ["Invalid Params: #{key_list} is a required parameter"])
     else
-      @app = BaritoApp.find_by_secret_key(params[:token])
-      if !@app.present?
-        @app_group = AppGroup.find_by_secret_key(params[:token])
-        if !@app_group.present?
-          errors = build_errors(401, ["Unauthorized: #{params[:token]} is not a valid App Token"])
-        end
+      @app = BaritoApp.find_by_secret_key(params[:app_token])
+      unless @app.present?
+        errors = build_errors(401, ["Unauthorized: #{params[:app_token]} is not a valid App Token"])
+      end
+    end
+    render json: errors, status: errors[:code] unless errors.blank?
+  end
       end
     end
     render json: errors, status: errors[:code] unless errors.blank?

@@ -14,7 +14,7 @@ RSpec.describe 'Apps API', type: :request do
         capacity: "small")
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
-      get api_profile_path, params: { token: app.secret_key }, headers: headers
+      get api_profile_path, params: { app_token: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
       %w[name app_group_name max_tps cluster_name consul_host status].each do |key|
         expect(json_response.key?(key)).to eq(true)
@@ -26,34 +26,34 @@ RSpec.describe 'Apps API', type: :request do
       expect(json_response['meta']['kafka']['partition']).to eq(1)
     end
 
-    context 'when invalid token' do
+    context 'when invalid app_token' do
       it 'should return 401' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
         error_msg = "Unauthorized: #{secret_key} is not a valid App Token"
-        get api_profile_path, params: { token: secret_key }, headers: headers
+        get api_profile_path, params: { app_token: secret_key }, headers: headers
         json_response = JSON.parse(response.body)
         expect(json_response['code']).to eq(401)
         expect(json_response['errors']).to eq([error_msg])
       end
     end
 
-    context 'when token is not provided' do
+    context 'when app_token is not provided' do
       it 'should return 422' do
-        error_msg = 'Invalid Params: token is a required parameter'
-        get api_profile_path, params: { token: '' }, headers: headers
+        error_msg = 'Invalid Params: app_token is a required parameter'
+        get api_profile_path, params: { app_token: '' }, headers: headers
         json_response = JSON.parse(response.body)
         expect(json_response['code']).to eq(422)
         expect(json_response['errors']).to eq([error_msg])
       end
     end
 
-    context 'when token is provided and valid but app is inactive' do
+    context 'when app_token is provided and valid but app is inactive' do
       it 'should return 404' do
-        error_msg = 'App is inactive'
+        error_msg = 'App not found or inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group)
-        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        get api_profile_path, params: { app_token: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
@@ -62,13 +62,13 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when token is provided and valid, app is active but infrastructure is inactive' do
+    context 'when app_token is provided and valid, app is active but infrastructure is inactive' do
       it 'should return 404' do
-        error_msg = 'App is inactive'
+        error_msg = 'App not found or inactive'
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
-        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        get api_profile_path, params: { app_token: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
@@ -77,12 +77,12 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when token is provided and valid as app_token, app is active and infrastructure is active' do
+    context 'when app_token is provided and valid, app is active and infrastructure is active' do
       it 'should return appropriate app' do
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
-        get api_profile_path, params: { token: app.secret_key }, headers: headers
+        get api_profile_path, params: { app_token: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)
