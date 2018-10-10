@@ -16,6 +16,10 @@
             - else
               = @app_group.name
 
+          dt.col-sm-3 App Group Secret:
+          dd.col-sm-9
+            = @app_group.secret_key
+
           dt.col-sm-3 Cluster Name:
           dd.col-sm-9
             = @app_group.infrastructure.cluster_name

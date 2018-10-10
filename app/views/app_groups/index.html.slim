@@ -9,10 +9,10 @@
     = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
 - else
   .card
-    h5.card-header 
+    h5.card-header
       | All Application Groups
       - if @allow_create_app_group
-        .btn.btn-success.btn-sm.float-right        
+        .btn.btn-success.btn-sm.float-right
           i.fas.fa-plus.mr-1
           = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
     .card-body
@@ -20,6 +20,7 @@
         thead.thead-dark
           tr
             th.text-center.col-sm-2 Name
+            th.text-center.col-sm-2 App Group Secret
             th.text-center.col-sm-2 Capacity
             th.text-center.col-sm-2 Provisioning Status
             th.text-center.col-sm-1 Status
@@ -28,6 +29,7 @@
           - @app_groups.each do |app_group|
             tr
               td.text-center= link_to app_group.name, app_group_path(app_group)
+              td.text-center= app_group.secret_key
               td.text-center= app_group.infrastructure.capacity.camelcase
               td.text-center= app_group.infrastructure.provisioning_status
               td.text-center

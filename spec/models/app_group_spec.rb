@@ -8,6 +8,7 @@ RSpec.describe AppGroup, type: :model do
       app_group, _ = AppGroup.setup(
         Rails.env,
         name: app_group_props.name,
+        secret_key: AppGroup.generate_key,
         capacity: 'small'
       )
       expect(app_group.persisted?).to eq(true)
