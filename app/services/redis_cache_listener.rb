@@ -4,7 +4,7 @@ class RedisCacheListener
 
   def profile_response_updated(app_secret, profile_response)
     REDIS_CACHE.set(
-      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}", profile_response)
+      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}", profile_response.to_json)
   end
 
   def app_destroyed(app_secret)

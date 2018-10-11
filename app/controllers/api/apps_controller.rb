@@ -8,10 +8,10 @@ class Api::AppsController < Api::BaseController
       render json: errors, status: errors[:code] and return
     end
 
-    profile_response = REDIS_CACHE.get(
+    profile_response_json = REDIS_CACHE.get(
       "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret_params[:token]}")
-    if profile_response.present?
-      render json: profile_response and return
+    if profile_response_json.present?
+      render json: JSON.parse(profile_response_json) and return
     end
 
     # Try to fetch it from database if cache is missing
