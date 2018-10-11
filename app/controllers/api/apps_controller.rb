@@ -94,6 +94,7 @@ class Api::AppsController < Api::BaseController
     render json: {
       id: app.id,
       name: app.name,
+      app_secret: app.secret_key,
       app_group_name: app.app_group_name,
       max_tps: app.max_tps,
       cluster_name: app.cluster_name,
