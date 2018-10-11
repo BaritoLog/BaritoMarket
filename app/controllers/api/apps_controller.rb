@@ -8,7 +8,8 @@ class Api::AppsController < Api::BaseController
       render json: errors, status: errors[:code] and return
     end
 
-    profile_response = REDIS_CACHE.get("APP:#{app_secret_params[:token]}")
+    profile_response = REDIS_CACHE.get(
+      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret_params[:token]}")
     if profile_response.present?
       render json: profile_response and return
     end
@@ -25,7 +26,8 @@ class Api::AppsController < Api::BaseController
     end
 
     profile_response = generate_profile_response(app)
-    REDIS_CACHE.set("APP:#{app_secret_params[:token]}", profile_response)
+    broadcast(:profile_response_updated, 
+      app_secret_params[:token], profile_response)
 
     render json: profile_response
   end
