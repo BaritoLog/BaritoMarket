@@ -10,7 +10,11 @@ module ChefHelper
       @hostname = component.hostname
       @ipaddress = component.ipaddress
       @port = opts[:port] || 9200
-      @index_number_of_replicas = @hosts.size - 1
+      if @hosts.size <= 1
+        @index_number_of_replicas = 0
+      else
+        @index_number_of_replicas = 1
+      end
     end
 
     def generate
