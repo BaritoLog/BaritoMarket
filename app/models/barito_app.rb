@@ -43,8 +43,8 @@ class BaritoApp < ApplicationRecord
     update_column(:log_count, log_count + new_count.to_i)
   end
 
-  def self.secret_key_valid?(token)
-    BaritoApp.find_by_secret_key(token).present?
+  def self.secret_key_valid?(secret_key)
+    BaritoApp.find_by_secret_key(secret_key).present?
   end
 
   def self.generate_key
