@@ -2,7 +2,21 @@ class Api::AppsController < Api::BaseController
   include Wisper::Publisher
 
   def profile
-    if @app.blank? || !@app.available?
+    if app_secret_params[:token].blank?
+      errors = build_errors(422, 
+        ["Invalid Params: token is a required parameter"])
+      render json: errors, status: errors[:code] and return
+    end
+
+    profile_response = REDIS_CACHE.get("APP:#{app_secret_params[:token]}")
+    if profile_response.present?
+      render json: profile_response and return
+    end
+
+    # Try to fetch it from database if cache is missing
+    app = BaritoApp.find_by(secret_key: app_secret_params[:token])
+
+    if app.blank? || !app.available?
       render json: {
         success: false,
         errors: ["App not found or inactive"],
@@ -10,39 +24,10 @@ class Api::AppsController < Api::BaseController
       }, status: :not_found and return
     end
 
-    @infrastructure = @app.app_group.infrastructure
+    profile_response = generate_profile_response(app)
+    REDIS_CACHE.set("APP:#{app_secret_params[:token]}", profile_response)
 
-    render json: {
-      id: @app.id,
-      name: @app.name,
-      app_group_name: @app.app_group_name,
-      max_tps: @app.max_tps,
-      cluster_name: @app.cluster_name,
-      consul_host: @app.consul_host,
-      status: @app.status,
-      updated_at: @app.updated_at.strftime(Figaro.env.timestamp_format),
-      meta: {
-        # TODO: we should store this somewhere
-        service_names: {
-          producer: 'barito-flow-producer',
-          zookeeper: 'zookeeper',
-          kafka: 'kafka',
-          consumer: 'barito-flow-consumer',
-          elasticsearch: 'elasticsearch',
-          kibana: 'kibana',
-        },
-        kafka: {
-          topic_name: @app.topic_name,
-          partition: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['partition'],
-          replication_factor: TPS_CONFIG[@infrastructure.capacity]['kafka_options']['replication_factor'],
-          consumer_group: 'barito',
-        },
-        elasticsearch: {
-          index_prefix: @app.topic_name,
-          document_type: 'barito',
-        },
-      },
-    }
+    render json: profile_response
   end
 
   def increase_log_count
@@ -57,7 +42,7 @@ class Api::AppsController < Api::BaseController
         app_secret = app_metric[:token] || ""
         app = BaritoApp.find_by_secret_key(app_secret)
         if app.blank?
-          errors << "#{app_secret} : is not a valid App Token"
+          errors << "#{app_secret} : is not a valid App Secret"
           next
         end
 
@@ -92,7 +77,49 @@ class Api::AppsController < Api::BaseController
     end
   end
 
+  private
+
+  def app_secret_params
+    params.permit(:token)
+  end
+
   def metric_params
     params.permit({application_groups: [:token, :new_log_count]})
+  end
+
+  def generate_profile_response(app)
+    infrastructure = app.app_group.infrastructure
+
+    {
+      id: app.id,
+      name: app.name,
+      app_group_name: app.app_group_name,
+      max_tps: app.max_tps,
+      cluster_name: app.cluster_name,
+      consul_host: app.consul_host,
+      status: app.status,
+      updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        # TODO: we should store this somewhere
+        service_names: {
+          producer: 'barito-flow-producer',
+          zookeeper: 'zookeeper',
+          kafka: 'kafka',
+          consumer: 'barito-flow-consumer',
+          elasticsearch: 'elasticsearch',
+          kibana: 'kibana',
+        },
+        kafka: {
+          topic_name: app.topic_name,
+          partition: TPS_CONFIG[infrastructure.capacity]['kafka_options']['partition'],
+          replication_factor: TPS_CONFIG[infrastructure.capacity]['kafka_options']['replication_factor'],
+          consumer_group: 'barito',
+        },
+        elasticsearch: {
+          index_prefix: app.topic_name,
+          document_type: 'barito',
+        },
+      },
+    }
   end
 end
