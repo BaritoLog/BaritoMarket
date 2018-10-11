@@ -21,8 +21,9 @@ class AppsController < ApplicationController
   end
 
   def destroy
-    broadcast(:app_count_changed)
     @app.destroy
+    broadcast(:app_count_changed)
+    broadcast(:app_destroyed)
     return redirect_to @app.app_group
   end
 

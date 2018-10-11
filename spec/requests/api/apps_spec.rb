@@ -27,12 +27,12 @@ RSpec.describe 'Apps API', type: :request do
     end
 
     context 'when invalid token' do
-      it 'should return 401' do
+      it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
-        error_msg = "Unauthorized: #{secret_key} is not a valid App Token"
+        error_msg = "App not found or inactive"
         get api_profile_path, params: { token: secret_key }, headers: headers
         json_response = JSON.parse(response.body)
-        expect(json_response['code']).to eq(401)
+        expect(json_response['code']).to eq(404)
         expect(json_response['errors']).to eq([error_msg])
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when invalid token' do
       it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
-        error_msg = "#{secret_key} : is not a valid App Token"
+        error_msg = "#{secret_key} : is not a valid App Secret"
         post api_increase_log_count_path, params: {application_groups: [{token: secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 
