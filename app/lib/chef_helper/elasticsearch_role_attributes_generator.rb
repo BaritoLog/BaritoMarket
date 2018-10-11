@@ -3,11 +3,14 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'category', 'consul')
+      @hosts = fetch_hosts_address_by(
+        infrastructure_components, 'category', 'elasticsearch')
       @role_name = opts[:role_name] || 'elasticsearch'
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
       @port = opts[:port] || 9200
+      @index_number_of_replicas = @hosts.size - 1
     end
 
     def generate
@@ -16,7 +19,8 @@ module ChefHelper
           'version' => '6.3.0',
           'allocated_memory' => 12000000,
           'max_allocated_memory' => 16000000,
-          'cluster_name' => "#{@cluster_name}"
+          'cluster_name' => "#{@cluster_name}",
+          'index_number_of_replicas' => @index_number_of_replicas
         },
         'consul' => {
           'run_as_server' => false,
@@ -27,7 +31,7 @@ module ChefHelper
             }
           }
         },
-        'run_list' => ["role[#{@role_name}]"]
+        'run_list' => ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
       }
 
       if Figaro.env.datadog_integration == 'true'
