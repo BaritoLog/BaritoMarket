@@ -172,7 +172,7 @@ production:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 3
       kibana: 1
     kafka_options:
       replication_factor: 3
@@ -188,7 +188,7 @@ production:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
       replication_factor: 3

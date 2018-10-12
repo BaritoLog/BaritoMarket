@@ -26,13 +26,13 @@ RSpec.describe 'Apps API', type: :request do
       expect(json_response['meta']['kafka']['partition']).to eq(1)
     end
 
-    context 'when invalid app_token' do
-      it 'should return 401' do
+    context 'when invalid token' do
+      it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
-        error_msg = "Unauthorized: #{secret_key} is not a valid App Token"
+        error_msg = "App not found or inactive"
         get api_profile_path, params: { app_token: secret_key }, headers: headers
         json_response = JSON.parse(response.body)
-        expect(json_response['code']).to eq(401)
+        expect(json_response['code']).to eq(404)
         expect(json_response['errors']).to eq([error_msg])
       end
     end
@@ -90,9 +90,19 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
+    context 'when app_group_token is not provided' do
+      it 'should return 422' do
+        error_msg = 'Invalid Params: app_group_token is a required parameter'
+        get api_profile_by_app_group_path, params: { app_group_token: '', app_name: "test-app-01" }, headers: headers
+        json_response = JSON.parse(response.body)
+        expect(json_response['code']).to eq(422)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
     context 'when app_group_token is provided and valid but params[:app_name] is not provided' do
       it 'should return 422' do
-        error_msg = 'Invalid Params: app_group_token,app_name is a required parameter'
+        error_msg = 'Invalid Params: app_name is a required parameter'
         app_group = create(:app_group)
         get api_profile_by_app_group_path, params: { app_group_token: app_group.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
@@ -168,7 +178,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when invalid token' do
       it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
-        error_msg = "#{secret_key} : is not a valid App Token"
+        error_msg = "#{secret_key} : is not a valid App Secret"
         post api_increase_log_count_path, params: {application_groups: [{token: secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 

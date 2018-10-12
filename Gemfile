@@ -17,6 +17,7 @@ gem 'pg', '<= 1.0.0'
 gem 'puma', '<= 3.11.4'
 gem 'pundit'
 gem 'rails', '<= 5.2.0'
+gem 'redis', '<= 4.0.2'
 gem 'select2-rails'
 gem 'rufus-mnemo'
 gem 'sass-rails'
@@ -51,4 +52,8 @@ group :development do
   gem 'spring', '<= 2.0.2'
   gem 'spring-watcher-listen', '<= 2.0.1'
   gem 'web-console', '<= 3.6.2'
+end
+
+group :test do
+  gem 'fakeredis'
 end

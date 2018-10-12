@@ -1,5 +1,4 @@
 class Api::InfrastructuresController < Api::BaseController
-  skip_before_action :authenticate_app_token, :authenticate_app_group_token
 
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(

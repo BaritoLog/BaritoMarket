@@ -171,6 +171,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.8.7)
       i18n (>= 0.7)
+    fakeredis (0.7.0)
+      redis (>= 3.2, < 5.0)
     faraday (0.15.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
@@ -499,6 +501,7 @@ DEPENDENCIES
   execjs (<= 2.7.0)
   factory_bot_rails (<= 4.10.0)
   faker (<= 1.8.7)
+  fakeredis
   figaro (<= 1.1.1)
   jar-dependencies (<= 0.3.12)
   jbuilder (<= 2.7.0)
@@ -511,6 +514,7 @@ DEPENDENCIES
   puma (<= 3.11.4)
   pundit
   rails (<= 5.2.0)
+  redis (<= 4.0.2)
   rspec-rails (<= 3.7.2)
   rubocop (<= 0.56)
   rubocop-rspec (<= 1.25)
