@@ -1,7 +1,12 @@
 class BaritoApp < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
+  NAME_FORMAT         = /\A(?![\_\- ])[\p{Alpha}\d\_\- ]+(?<![\_\- ])\z/
+  TOPIC_NAME_FORMAT   = /\A(?![\_\-])[\p{Alpha}\d\_\-]+(?<![\_\-])\z/
+
   validates :app_group, :name, :topic_name, :secret_key, :status,
     presence: true
+  validates :name, format: { with: NAME_FORMAT }
+  validates :topic_name, format: { with: TOPIC_NAME_FORMAT }
 
   belongs_to :app_group
 
@@ -14,7 +19,7 @@ class BaritoApp < ApplicationRecord
     app = BaritoApp.create(
       app_group_id: app_params[:app_group_id],
       name: app_params[:name],
-      topic_name: app_params[:topic_name],
+      topic_name: app_params[:topic_name].gsub(/ /, '-'),
       secret_key: BaritoApp.generate_key,
       max_tps: app_params[:max_tps],
       status: BaritoApp.statuses[:active],

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_01_041348) do
+ActiveRecord::Schema.define(version: 2018_10_13_200351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 2018_10_01_041348) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "log_count", default: 0
+    t.string "secret_key"
+    t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end
 
   create_table "barito_apps", force: :cascade do |t|
@@ -51,6 +53,8 @@ ActiveRecord::Schema.define(version: 2018_10_01_041348) do
     t.bigint "app_group_id"
     t.string "topic_name"
     t.integer "max_tps"
+    t.index ["app_group_id", "name"], name: "index_barito_apps_on_app_group_id_and_name", unique: true
+    t.index ["app_group_id", "topic_name"], name: "index_barito_apps_on_app_group_id_and_topic_name", unique: true
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
     t.index ["secret_key"], name: "index_barito_apps_on_secret_key"
     t.index ["status"], name: "index_barito_apps_on_status"

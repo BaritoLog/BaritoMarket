@@ -9,10 +9,10 @@
     = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
 - else
   .card
-    h5.card-header 
+    h5.card-header
       | All Application Groups
       - if @allow_create_app_group
-        .btn.btn-success.btn-sm.float-right        
+        .btn.btn-success.btn-sm.float-right
           i.fas.fa-plus.mr-1
           = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
     .card-body

@@ -1,4 +1,5 @@
 class Api::InfrastructuresController < Api::BaseController
+
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
       cluster_name: params[:cluster_name])
@@ -41,10 +42,10 @@ class Api::InfrastructuresController < Api::BaseController
 
     if @infrastructure.blank? || !@infrastructure.active?
       render json: {
-        success: false, 
+        success: false,
         errors: ["Infrastructure #{params[:cluster_name]} is not exists"],
         code: 404
-      }, status: :not_found and return 
+      }, status: :not_found and return
     end
 
     raise Pundit::NotAuthorizedError unless InfrastructurePolicy.new(
