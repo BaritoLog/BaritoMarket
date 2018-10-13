@@ -4,7 +4,7 @@ class Api::BaseController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def build_errors(code, errors = [])
-    { sucess: false, errors: errors, code: code }
+    { success: false, errors: errors, code: code }
   end
 
   private
