@@ -35,4 +35,8 @@ class AppGroup < ApplicationRecord
   def self.generate_key
     SecureRandom.uuid.gsub(/\-/, '')
   end
+
+  def available?
+    self.infrastructure.active?
+  end
 end

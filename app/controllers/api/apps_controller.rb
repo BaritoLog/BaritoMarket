@@ -2,20 +2,17 @@ class Api::AppsController < Api::BaseController
   include Wisper::Publisher
 
   def profile
-    if app_secret_params[:app_secret].blank?
-      errors = build_errors(422,
-        ["Invalid Params: app_secret is a required parameter"])
-      render json: errors, status: errors[:code] and return
-    end
+    valid, error_response = validate_required_keys([:app_secret])
+    render json: error_response, status: error_response[:code] and return unless valid
 
     profile_response_json = REDIS_CACHE.get(
-      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret_params[:app_secret]}")
+      "#{APP_PROFILE_CACHE_PREFIX}:#{params[:app_secret]}")
     if profile_response_json.present?
       render json: JSON.parse(profile_response_json) and return
     end
 
     # Try to fetch it from database if cache is missing
-    app = BaritoApp.find_by(secret_key: app_secret_params[:app_secret])
+    app = BaritoApp.find_by(secret_key: params[:app_secret])
 
     if app.blank? || !app.available?
       render json: {
@@ -27,34 +24,40 @@ class Api::AppsController < Api::BaseController
 
     profile_response = generate_profile_response(app)
     broadcast(:profile_response_updated,
-      app_secret_params[:app_secret], profile_response)
+      params[:app_secret], profile_response)
 
     render json: profile_response
   end
 
   def profile_by_app_group
-    required_keys = [:app_group_token, :app_name]
-    resp = validate_required_keys(required_keys)
-    render json: resp[:errors], status: resp[:errors][:code] and return unless resp[:errors].blank?
+    valid, error_response = validate_required_keys(
+      [:app_group_secret, :app_name])
+    render json: error_response, status: error_response[:code] and return unless valid
 
-    app_group = AppGroup.find_by_secret_key(params[:app_group_token])
-    unless app_group.present?
-      errors = build_errors(401, ["Unauthorized: #{params[:app_group_token]} is not a valid App Token"])
-      render json: errors, status: errors[:code] and return
+    # Fetch App Group
+    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+
+    if app_group.blank? || !app_group.available?
+      render json: {
+        success: false,
+        errors: ["AppGroup not found or inactive"],
+        code: 404
+      }, status: :not_found and return
     end
 
+    # Fetch App
     app = BaritoApp.find_by(
       name: params[:app_name],
       app_group_id: app_group.id
     )
+
     if app.blank?
-      app_params = {
+      app = BaritoApp.setup({
         app_group_id: app_group.id,
         name: params[:app_name],
         topic_name: params[:app_name],
         max_tps: Figaro.env.default_app_tps
-      }
-      app = BaritoApp.setup(app_params)
+      })
     elsif !app.available?
       render json: {
         success: false,
@@ -117,10 +120,6 @@ class Api::AppsController < Api::BaseController
 
   private
 
-  def app_secret_params
-    params.permit(:app_secret)
-  end
-
   def metric_params
     params.permit({application_groups: [:token, :new_log_count]})
   end
@@ -162,20 +161,19 @@ class Api::AppsController < Api::BaseController
     }
   end
 
-  def validate_required_keys(required_keys = {})
-    resp = {
-      success: true,
-      errors: nil
-    }
+  def validate_required_keys(required_keys = [])
+    valid = false
+    error_response = {}
+
     required_keys.each do |key|
-      puts "params key", key
-      puts "params.permit(key.to_sym).blank?", params.permit(key.to_sym).blank?
-      resp[:success] = params.key?(key.to_sym) && !params[key.to_sym].blank?
-      unless resp[:success]
-        resp[:errors] = build_errors(422,
+      valid = params.key?(key.to_sym) && !params[key.to_sym].blank?
+      unless valid
+        error_response = build_errors(422,
         ["Invalid Params: #{key} is a required parameter"])
+        break
       end
     end
-    resp
+
+    [valid, error_response]
   end
 end
