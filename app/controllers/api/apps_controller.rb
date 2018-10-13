@@ -2,20 +2,20 @@ class Api::AppsController < Api::BaseController
   include Wisper::Publisher
 
   def profile
-    if app_secret_params[:app_token].blank?
+    if app_secret_params[:app_secret].blank?
       errors = build_errors(422,
-        ["Invalid Params: app_token is a required parameter"])
+        ["Invalid Params: app_secret is a required parameter"])
       render json: errors, status: errors[:code] and return
     end
 
-    profile_response = REDIS_CACHE.get(
-      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret_params[:app_token]}")
-    if profile_response.present?
-      render json: profile_response and return
+    profile_response_json = REDIS_CACHE.get(
+      "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret_params[:app_secret]}")
+    if profile_response_json.present?
+      render json: JSON.parse(profile_response_json) and return
     end
 
     # Try to fetch it from database if cache is missing
-    app = BaritoApp.find_by(secret_key: app_secret_params[:app_token])
+    app = BaritoApp.find_by(secret_key: app_secret_params[:app_secret])
 
     if app.blank? || !app.available?
       render json: {
@@ -27,7 +27,7 @@ class Api::AppsController < Api::BaseController
 
     profile_response = generate_profile_response(app)
     broadcast(:profile_response_updated,
-      app_secret_params[:app_token], profile_response)
+      app_secret_params[:app_secret], profile_response)
 
     render json: profile_response
   end
@@ -118,7 +118,7 @@ class Api::AppsController < Api::BaseController
   private
 
   def app_secret_params
-    params.permit(:app_token)
+    params.permit(:app_secret)
   end
 
   def metric_params
