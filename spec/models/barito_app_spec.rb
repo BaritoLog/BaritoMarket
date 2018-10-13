@@ -16,6 +16,18 @@ RSpec.describe BaritoApp, type: :model do
       expect(barito_app.persisted?).to eq(true)
       expect(barito_app.status).to eq(BaritoApp.statuses[:active])
     end
+
+    it 'should replace space with hyphen for topic name' do
+      barito_app = BaritoApp.setup(
+        app_group_id: barito_app_props.app_group_id,
+        name: barito_app_props.name,
+        topic_name: 'test topic name',
+        secret_key: BaritoApp.generate_key,
+        max_tps: barito_app_props.max_tps,
+        status: BaritoApp.statuses[:active],
+      )
+      expect(barito_app.topic_name).to eq('test-topic-name')
+    end
   end
 
   context 'Status Update' do

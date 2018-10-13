@@ -14,7 +14,7 @@ class BaritoApp < ApplicationRecord
     app = BaritoApp.create(
       app_group_id: app_params[:app_group_id],
       name: app_params[:name],
-      topic_name: app_params[:topic_name],
+      topic_name: app_params[:topic_name].gsub(/ /, '-'),
       secret_key: BaritoApp.generate_key,
       max_tps: app_params[:max_tps],
       status: BaritoApp.statuses[:active],
