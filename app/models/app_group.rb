@@ -39,4 +39,8 @@ class AppGroup < ApplicationRecord
   def available?
     self.infrastructure.active?
   end
+
+  def max_tps
+    TPS_CONFIG[self.infrastructure.capacity]['max_tps']
+  end
 end

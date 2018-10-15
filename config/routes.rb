@@ -43,7 +43,7 @@ Rails.application.routes.draw do
       end
     end
   resources :apps,
-    only: %i[create destroy],
+    only: %i[create destroy update],
     defaults: { format: :html }
   resources :groups,
     except: %i[edit update],
