@@ -27,6 +27,11 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         fill_in "app_group_name", with: "new_#{@app_group_a.name}"
         find("input#app_group_name").native.send_keys :enter
+
+        wait = Selenium::WebDriver::Wait.new ignore: Selenium::WebDriver::Error::NoAlertPresentError
+        alert = wait.until { page.driver.browser.switch_to.alert }
+        alert.accept
+
         expect(page).to have_css("input#app_group_name[value='new_#{@app_group_a.name}']")
       end
     end
@@ -44,6 +49,11 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         fill_in "app_group_name", with: "new_#{@app_group_a.name}"
         find("input#app_group_name").native.send_keys :enter
+
+        wait = Selenium::WebDriver::Wait.new ignore: Selenium::WebDriver::Error::NoAlertPresentError
+        alert = wait.until { page.driver.browser.switch_to.alert }
+        alert.accept
+
         expect(page).to have_css("input#app_group_name[value='new_#{@app_group_a.name}']")
       end
 

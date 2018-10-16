@@ -22,7 +22,7 @@ h4.mb-3 All Applications
             - if allow_add
               = form_for(app, url: app_path(app)) do |f|
                 .input-group(style="padding-left:0px;")
-                  = f.text_field :max_tps, class: 'form-control'
+                  = f.text_field :max_tps, class: 'form-control', id: "barito_app_#{app.id}_max_tps"
                   .input-group-append
                     = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update Max TPS value?' })
                       i.fas.fa-check
