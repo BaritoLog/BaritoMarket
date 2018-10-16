@@ -23,7 +23,7 @@ module ChefHelper
       {
         'barito-flow' => {
           'consumer' => {
-            'version' => 'v0.9.0',
+            'version' => 'v0.10.1',
             'env_vars' => {
               'BARITO_CONSUL_URL'                 => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
               'BARITO_CONSUL_KAFKA_NAME'          => 'kafka',
