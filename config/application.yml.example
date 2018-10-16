@@ -27,6 +27,7 @@ DATADOG_API_KEY:             'datadogapikey'
 DATADOG_INTEGRATION:         'false'
 REDIS_CACHE_HOST:            'localhost:6379'
 REDIS_CACHE_DB:              '1'
+DEFAULT_APP_MAX_TPS:         '20'
 
 development:
   RAILS_ENV:                 'development'

@@ -16,6 +16,10 @@ class BaritoAppPolicy < ApplicationPolicy
     create?
   end
 
+  def update?
+    create?
+  end
+
   def toggle_status?
     create?
   end

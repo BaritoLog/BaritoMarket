@@ -20,6 +20,16 @@ class AppsController < ApplicationController
     end
   end
 
+  def update
+    authorize @app
+    unless app_params[:max_tps].to_i <= @app.app_group.max_tps
+      flash[:alert] = "Max TPS (#{app_params[:max_tps]} TPS) should be less than AppGroup capacity (#{@app.app_group.max_tps} TPS)"
+      return redirect_to app_group_path(@app.app_group)
+    end
+    @app.update_attributes(app_params)
+    redirect_to app_group_path(@app.app_group)
+  end
+
   def destroy
     @app.destroy
     broadcast(:app_count_changed)
