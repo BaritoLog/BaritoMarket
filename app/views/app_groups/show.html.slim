@@ -11,7 +11,7 @@
                 .input-group.col-sm-5(style="padding-left:0px;")
                   = f.text_field :name, class: 'form-control'
                   .input-group-append
-                    = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update this Application Group Name value?' })
+                    = f.button(:class => 'btn btn-outline-secondary btn-sm')
                       i.fas.fa-check
             - else
               = @app_group.name

@@ -54,7 +54,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         alert = wait.until { page.driver.browser.switch_to.alert }
         alert.accept
 
-        expect(page).to have_content("Max TPS (#{new_value} TPS) should less than App Group Capacity (#{@app_group.max_tps} TPS)")
+        expect(page).to have_content("Max TPS (#{new_value} TPS) should be less than AppGroup capacity (#{@app_group.max_tps} TPS)")
       end
     end
 
