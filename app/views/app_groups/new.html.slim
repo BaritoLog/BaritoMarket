@@ -21,5 +21,8 @@
                 = select_tag 'app_group[capacity]', options_for_select(@capacity_options), { class: 'form-control' }
                 small.form-text.text-muted
                   | Please choose your Capacity
+              dt.col-sm-3 Log Retention Days
+              dd.col-sm-9
+                = f.text_field :log_retention_days, class: 'form-control', placeholder: 'ex: 30, 45'
           .card-footer.text-right
             = submit_tag 'Submit', class: 'btn btn-primary'

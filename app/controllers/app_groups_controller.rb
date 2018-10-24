@@ -78,6 +78,7 @@ class AppGroupsController < ApplicationController
     params.require(:app_group).permit(
       :name,
       :capacity,
+      :log_retention_days
     )
   end
 

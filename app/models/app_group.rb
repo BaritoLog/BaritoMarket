@@ -16,6 +16,7 @@ class AppGroup < ApplicationRecord
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
+        log_retention_days: params[:log_retention_days]
       )
       infrastructure = Infrastructure.setup(
         env,
