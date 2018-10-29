@@ -40,6 +40,30 @@ RSpec.describe 'App API', type: :request do
     end
   end
 
+  describe 'Profile for Curator' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return list of all active App with its retention policy for curator' do
+      app_group = create(:app_group)
+      infrastructure = create(:infrastructure, app_group: app_group)
+      infrastructure_component = create(:infrastructure_component, infrastructure: infrastructure, category: 'elasticsearch')
+      create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
+
+      get api_profile_curator_path,
+        params: { client_key: 'abcd1234' },
+        headers: headers
+      expect(response.body).to eq [
+        {
+          hostname: infrastructure_component.hostname,
+          ipaddress: infrastructure_component.ipaddress,
+          log_retention_days: app_group.log_retention_days
+        }
+      ].to_json
+    end
+  end
+
   describe 'Authorize API' do
     let(:user_a) { create(:user) }
 
