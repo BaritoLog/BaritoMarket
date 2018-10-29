@@ -35,6 +35,34 @@ class Api::InfrastructuresController < Api::BaseController
     }
   end
 
+  def profile_curator
+    if Figaro.env.es_curator_client_key != params[:client_key]
+    render json: {
+        success: false,
+        errors: ["Unauthorized"],
+        code: 401
+    }, status: :not_found and return
+    end
+
+    @profiles = []
+    @apps = BaritoApp.where(status: BaritoApp.statuses[:active])
+
+    @apps.each do |app|
+      @app_group = app.app_group
+      @infrastructure_component = @app_group.infrastructure.infrastructure_components.find_by_category('elasticsearch')
+      if @infrastructure_component.blank?
+        next
+      end
+      @profiles << {
+        hostname: @infrastructure_component.hostname,
+        ipaddress: @infrastructure_component.ipaddress,
+        log_retention_days: @app_group.log_retention_days
+      }
+    end
+
+    render json: @profiles
+  end
+
   def authorize_by_username
     @current_user = User.find_by_username_or_email(params[:username])
     @infrastructure = Infrastructure.

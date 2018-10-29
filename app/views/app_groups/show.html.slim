@@ -16,6 +16,10 @@
             - else
               = @app_group.name
 
+          dt.col-sm-3 Log Retention Days:
+          dd.col-sm-9
+            = @app_group.log_retention_days
+
           dt.col-sm-3 Secret:
           dd.col-sm-9
             = @app_group.secret_key
