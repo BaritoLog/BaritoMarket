@@ -22,8 +22,8 @@ Rails.application.routes.draw do
       to: 'infrastructures#authorize_by_username',
       defaults: { format: :json }
     get :profile_curator,
-        to: 'infrastructures#profile_curator',
-        defaults: { format: :json }
+      to: 'infrastructures#profile_curator',
+      defaults: { format: :json }
   end
 
   get '/users/search', to: 'users#search', defaults: { format: :json }
