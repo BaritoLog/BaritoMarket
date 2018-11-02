@@ -19,7 +19,7 @@ module ChefHelper
       {
         'barito-flow' => {
           'producer' => {
-            'version' => 'v0.11.1',
+            'version' => 'v0.11.3',
             'env_vars' => {
               'BARITO_PRODUCER_ADDRESS'     => ':8080',
               'BARITO_CONSUL_URL'           => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
