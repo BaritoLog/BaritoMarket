@@ -21,7 +21,7 @@ module ChefHelper
       attrs = {
         'elasticsearch' => {
           'version' => '6.3.0',
-          'allocated_memory' => 12000000,
+          'allocated_memory' => 8000000,
           'max_allocated_memory' => 16000000,
           'cluster_name' => "#{@cluster_name}",
           'index_number_of_replicas' => @index_number_of_replicas
