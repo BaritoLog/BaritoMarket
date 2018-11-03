@@ -25,7 +25,7 @@ development:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 3
       kibana: 1
     kafka_options:
       replication_factor: 3
@@ -36,15 +36,15 @@ development:
     max_tps: 1000
     instances:
       yggdrasil: 0
-      consul: 1      
+      consul: 1
       zookeeper: 3
-      kafka: 3
+      kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 3
+      replication_factor: 5
       partition: 3
 
 test:
@@ -74,7 +74,7 @@ test:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 3
       kibana: 1
     kafka_options:
       replication_factor: 3
@@ -87,13 +87,13 @@ test:
       yggdrasil: 0
       consul: 1
       zookeeper: 3
-      kafka: 3
+      kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 3
+      replication_factor: 5
       partition: 3
 
 staging:
@@ -123,7 +123,7 @@ staging:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 3
       kibana: 1
     kafka_options:
       replication_factor: 3
@@ -136,13 +136,13 @@ staging:
       yggdrasil: 0
       consul: 1
       zookeeper: 3
-      kafka: 3
+      kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 1
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 3
+      replication_factor: 5
       partition: 3
 
 production:
@@ -185,11 +185,11 @@ production:
       yggdrasil: 0
       consul: 1
       zookeeper: 3
-      kafka: 3
+      kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
       barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 3
+      replication_factor: 5
       partition: 3
