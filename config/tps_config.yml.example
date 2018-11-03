@@ -44,8 +44,8 @@ development:
       barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 5
-      partition: 3
+      replication_factor: 3
+      partition: 5
 
 test:
   small:
@@ -93,8 +93,8 @@ test:
       barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 5
-      partition: 3
+      replication_factor: 3
+      partition: 5
 
 staging:
   small:
@@ -142,8 +142,8 @@ staging:
       barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 5
-      partition: 3
+      replication_factor: 3
+      partition: 5
 
 production:
   small:
@@ -191,5 +191,5 @@ production:
       barito-flow-consumer: 5
       kibana: 1
     kafka_options:
-      replication_factor: 5
-      partition: 3
+      replication_factor: 3
+      partition: 5
