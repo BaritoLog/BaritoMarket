@@ -125,7 +125,7 @@ RSpec.describe Infrastructure, type: :model do
     it 'should generate proper receiver url for logs' do
       url = "#{Figaro.env.router_protocol}://"\
             "#{Figaro.env.router_domain}"\
-            '/produce'
+            '/produce_batch'
       expect(infrastructure.receiver_url).to eq(url)
     end
   end

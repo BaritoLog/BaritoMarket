@@ -84,7 +84,7 @@ class Infrastructure < ApplicationRecord
 
   def receiver_url
     "#{Figaro.env.router_protocol}://"\
-    "#{Figaro.env.router_domain}/produce"
+    "#{Figaro.env.router_domain}/produce_batch"
   end
 
   def viewer_url

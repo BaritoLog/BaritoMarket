@@ -18,7 +18,7 @@ class AppGroupsController < ApplicationController
     authorize @app_group
     @apps = @app_group.barito_apps.order(:name)
     @new_app = BaritoApp.new(app_group_id: @app_group.id)
-    @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce"
+    @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
 
     @allow_set_status = policy(@new_app).toggle_status?
