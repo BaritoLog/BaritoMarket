@@ -26,7 +26,8 @@ module ChefHelper
               'BARITO_CONSUL_KAFKA_NAME'    => 'kafka',
               'BARITO_KAFKA_BROKERS'        => kafka_hosts_and_port,
               'BARITO_KAFKA_PRODUCER_TOPIC' => 'barito-log',
-              'BARITO_PRODUCER_MAX_TPS'     => @max_tps
+              'BARITO_PRODUCER_MAX_TPS'     => @max_tps,
+              'BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL' => 10,
             }
           }
         },
