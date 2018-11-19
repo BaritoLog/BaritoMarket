@@ -25,11 +25,11 @@ development:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 3
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 3
+      partition: 5
 
   large:
     name: 'Large'
@@ -41,11 +41,11 @@ development:
       kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 5
+      barito-flow-consumer: 7
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 5
+      partition: 7
 
 test:
   small:
@@ -74,11 +74,11 @@ test:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 3
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 3
+      partition: 5
 
   large:
     name: 'Large'
@@ -90,11 +90,11 @@ test:
       kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 5
+      barito-flow-consumer: 7
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 5
+      partition: 7
 
 staging:
   small:
@@ -123,11 +123,11 @@ staging:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 3
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 3
+      partition: 5
 
   large:
     name: 'Large'
@@ -139,11 +139,11 @@ staging:
       kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 5
+      barito-flow-consumer: 7
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 5
+      partition: 7
 
 production:
   small:
@@ -172,11 +172,11 @@ production:
       kafka: 3
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 3
+      barito-flow-consumer: 5
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 3
+      partition: 5
 
   large:
     name: 'Large'
@@ -188,8 +188,8 @@ production:
       kafka: 5
       elasticsearch: 1
       barito-flow-producer: 1
-      barito-flow-consumer: 5
+      barito-flow-consumer: 7
       kibana: 1
     kafka_options:
       replication_factor: 3
-      partition: 5
+      partition: 7
