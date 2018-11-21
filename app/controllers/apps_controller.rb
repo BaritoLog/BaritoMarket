@@ -11,6 +11,8 @@ class AppsController < ApplicationController
     authorize @app
 
     @app = BaritoApp.setup(app_params)
+    broadcast(:app_group_profile_response_updated, @app.app_group.secret_key, @app.name, "app_group_profile")
+    broadcast(:profile_response_updated, @app.secret_key, "app_profile")
     if @app.persisted?
       broadcast(:app_count_changed)
       return redirect_to @app.app_group
@@ -27,7 +29,9 @@ class AppsController < ApplicationController
       return redirect_to app_group_path(@app.app_group)
     end
     @app.update_attributes(app_params)
-    broadcast(:app_updated, @app.secret_key)
+    if app_params[:max_tps]
+      broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
+    end
     redirect_to app_group_path(@app.app_group)
   end
 
@@ -35,7 +39,7 @@ class AppsController < ApplicationController
     secret_key = @app.secret_key
     @app.destroy
     broadcast(:app_count_changed)
-    broadcast(:app_destroyed, secret_key)
+    broadcast(:app_destroyed, @app.app_group.secret_key, secret_key, @app.name)
     return redirect_to @app.app_group
   end
 

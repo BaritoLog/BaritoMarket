@@ -7,12 +7,19 @@ class RedisCacheListener
       "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}", profile_response.to_json)
   end
 
-  def app_updated(app_secret)
-    REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
+  def app_group_profile_response_updated(app_group_secret, app_name, profile_response)
+    REDIS_CACHE.set(
+      "#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}", profile_response.to_json)
   end
 
-  def app_destroyed(app_secret)
+  def app_destroyed(app_group_secret, app_secret, app_name)
     REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
+    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")  
+  end
+
+  def app_updated(app_group_secret, app_secret, app_name)
+    REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
+    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")  
   end
 
   def app_group_updated(app_group_id)
@@ -20,6 +27,7 @@ class RedisCacheListener
     apps = app_group.barito_apps
     apps.each do |app|
       REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app.secret_key}")  
+      REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group.secret_key}:#{app.name}")  
     end
   end
 end
