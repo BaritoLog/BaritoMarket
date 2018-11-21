@@ -27,13 +27,15 @@ class AppsController < ApplicationController
       return redirect_to app_group_path(@app.app_group)
     end
     @app.update_attributes(app_params)
+    broadcast(:app_destroyed, @app.secret_key)
     redirect_to app_group_path(@app.app_group)
   end
 
   def destroy
+    secret_key = @app.secret_key
     @app.destroy
     broadcast(:app_count_changed)
-    broadcast(:app_destroyed)
+    broadcast(:app_destroyed, secret_key)
     return redirect_to @app.app_group
   end
 
