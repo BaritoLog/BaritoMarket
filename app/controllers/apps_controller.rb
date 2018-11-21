@@ -27,7 +27,7 @@ class AppsController < ApplicationController
       return redirect_to app_group_path(@app.app_group)
     end
     @app.update_attributes(app_params)
-    broadcast(:app_destroyed, @app.secret_key)
+    broadcast(:app_updated, @app.secret_key)
     redirect_to app_group_path(@app.app_group)
   end
 
