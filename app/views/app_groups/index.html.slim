@@ -20,6 +20,7 @@
         thead.thead-dark
           tr
             th.text-center.col-sm-2 Name
+            th.text-center.col-sm-2 Cluster Name
             th.text-center.col-sm-2 Capacity
             th.text-center.col-sm-2 Provisioning Status
             th.text-center.col-sm-1 Status
@@ -28,6 +29,7 @@
           - @app_groups.each do |app_group|
             tr
               td.text-center= link_to app_group.name, app_group_path(app_group)
+              td.text-center= app_group.infrastructure.cluster_name
               td.text-center= app_group.infrastructure.capacity.camelcase
               td.text-center= app_group.infrastructure.provisioning_status
               td.text-center
