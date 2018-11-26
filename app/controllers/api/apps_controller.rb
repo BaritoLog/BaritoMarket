@@ -34,6 +34,12 @@ class Api::AppsController < Api::BaseController
       [:app_group_secret, :app_name])
     render json: error_response, status: error_response[:code] and return unless valid
 
+    profile_response_json = REDIS_CACHE.get(
+      "#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{params[:app_group_secret]}:#{params[:app_name]}")
+    if profile_response_json.present?
+      render json: JSON.parse(profile_response_json) and return
+    end
+
     # Fetch App Group
     app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
 
@@ -67,6 +73,8 @@ class Api::AppsController < Api::BaseController
     end
 
     profile_response = generate_profile_response(app)
+    broadcast(:app_group_profile_response_updated,
+      params[:app_group_secret], params[:app_name], profile_response)
 
     render json: profile_response
   end
