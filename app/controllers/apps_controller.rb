@@ -33,9 +33,11 @@ class AppsController < ApplicationController
 
   def destroy
     secret_key = @app.secret_key
+    app_group_secret_key = @app.app_group.secret_key
+    app_name = @app.name
     @app.destroy
     broadcast(:app_count_changed)
-    broadcast(:app_destroyed, @app.app_group.secret_key, secret_key, @app.name)
+    broadcast(:app_destroyed, app_group_secret_key, secret_key, app_name)
     return redirect_to @app.app_group
   end
 
