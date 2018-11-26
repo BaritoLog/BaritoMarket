@@ -54,9 +54,7 @@ class AppGroupsController < ApplicationController
     authorize @app_group
     @app_group.update_attributes(app_group_params)
     @app_group.infrastructure.update_attributes(infrastructure_params)
-    if app_group_params[:name]
-      broadcast(:app_group_updated, @app_group.id)
-    end
+    broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
   end
 
