@@ -73,16 +73,13 @@ class Api::InfrastructuresController < Api::BaseController
     @infrastructure = Infrastructure.
       find_by_cluster_name(params[:cluster_name])
 
-    if @infrastructure.blank? || !@infrastructure.active?
+    if @current_user.blank? || @infrastructure.blank? || !@infrastructure.active? || !InfrastructurePolicy.new(@current_user, @infrastructure).exists?
       render json: {
         success: false,
-        errors: ["Infrastructure #{params[:cluster_name]} is not exists"],
-        code: 404
-      }, status: :not_found and return
+        errors: ["Forbidden"],
+        code: 403
+      }, status: :forbidden and return
     end
-
-    raise Pundit::NotAuthorizedError unless InfrastructurePolicy.new(
-      @current_user, @infrastructure).exists?
 
     render json: "", status: :ok
   end
