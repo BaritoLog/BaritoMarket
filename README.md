@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/BaritoLog/BaritoMarket.svg?branch=master)](https://travis-ci.org/BaritoLog/BaritoMarket)
-[![Coverage Status](https://coveralls.io/repos/github/BaritoLog/BaritoMarket/badge.svg?branch=master)](https://coveralls.io/github/BaritoLog/BaritoMarket?branch=master)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/BaritoLog/BaritoMarket)
-[![Inline docs](http://inch-ci.org/github/BaritoLog/BaritoMarket.svg)](http://inch-ci.org/github/BaritoLog/BaritoMarket)
 
 # Barito Market
 ### Transports logs to where it should be
@@ -9,9 +7,9 @@
 ---
 Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will handle logs management, service discovery & log stream provisioning.
 
-Read the details [here](https://docs.google.com/presentation/d/1u_13mW8K3C5n5Qov8mjmvpxBY4jGyIsAgjxvTXJbDrE/edit?usp=sharing)
+Read the details on our wiki, [here](https://github.com/BaritoLog/wiki)
 
-## Development Setup
+## Quick Development Setup
 
 1. Ensure you have vagrant installed
 2. Default vagrant disk should be resized (min 20GB). We will use vagrant plugin for this:
