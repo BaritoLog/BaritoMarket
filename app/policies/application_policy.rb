@@ -60,9 +60,23 @@ class ApplicationPolicy
         new(user).
         check_user_groups.
         symbolize_keys[:groups] || []
-      return true if Group.where(name: gate_groups).count.positive?
-    elsif user.groups.count.positive?
-      return true
+      return gate_groups
+    else
+      user_groups = []
+      user.groups.each do |group|
+        user_groups << group.name
+      end
+      return user_groups
     end
+  end
+
+  def is_barito_superadmin?
+    return false unless get_user_groups
+    get_user_groups.include?("barito-superadmin") 
+  end
+
+  def is_global_viewer?
+    return false unless get_user_groups
+    get_user_groups.include?("global-viewer")
   end
 end

@@ -1,6 +1,6 @@
 class GroupPolicy < ApplicationPolicy
   def index?
-    return true if get_user_groups
+    return true if is_barito_superadmin?
     false
   end
 
