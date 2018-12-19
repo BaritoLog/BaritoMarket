@@ -16,7 +16,6 @@ RSpec.feature 'Infrastructure Management', type: :feature do
     context 'As Superadmin' do
       scenario 'User allowed to see infrastructure details' do
         set_check_user_groups({ 'groups' => 'barito-superadmin' })
-        create(:group, name: 'barito-superadmin')
         login_as user
 
         visit infrastructure_path(@infrastructure.id)

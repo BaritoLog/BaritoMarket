@@ -9,7 +9,7 @@ RSpec.feature 'Group Management', type: :feature do
     context 'As Authorized User based on Group from Gate' do
       scenario 'User that registered to some groups in Gate and exists in BaritoMarket can delete group' do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
-        group = create(:group, name: 'barito-superadmin')
+        group = create(:group, name: 'barito-test')
 
         login_as user
         visit groups_path
@@ -17,9 +17,8 @@ RSpec.feature 'Group Management', type: :feature do
         expect(page).to have_content(group.name)
         expect(page).to have_content('Delete')
 
-        click_link 'Delete'
+        find("a[data-method='delete'][href='/groups/#{group.id}']").click
         expect(page).not_to have_content(group.name)
-        expect(page).not_to have_content('Delete')
       end
 
       scenario 'User that registered to some groups in Gate and exists in BaritoMarket cannot delete group' do
