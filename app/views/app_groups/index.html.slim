@@ -28,18 +28,22 @@
         tbody
           - @app_groups.each do |app_group|
             tr
-              td.text-center= link_to app_group.name, app_group_path(app_group)
+              - if allow_see_app_groups(app_group.id) || @is_barito_superadmin
+                td.text-center= link_to app_group.name, app_group_path(app_group)
+              - else
+                td.text-center= app_group.name
               td.text-center= app_group.infrastructure.cluster_name
               td.text-center= app_group.infrastructure.capacity.camelcase
               td.text-center= app_group.infrastructure.provisioning_status
               td.text-center
-                - if @allow_set_status
+                - if allow_set_status(app_group.id) || @is_barito_superadmin
                   = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow', size: 'small' }
                   = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
                     = hidden_field_tag :toggle_status
                 - else
                   = app_group.infrastructure.status
               td.text-center
-                .btn.btn-primary.btn-sm
-                  i.fas.fa-search.mr-1
-                  = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+                - if allow_see_app_groups(app_group.id) || @is_barito_superadmin
+                  .btn.btn-primary.btn-sm
+                    i.fas.fa-search.mr-1
+                    = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
