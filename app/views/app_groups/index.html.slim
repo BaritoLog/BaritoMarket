@@ -29,7 +29,13 @@
           - @app_groups.each do |app_group|
             tr
               - if allow_see_app_groups(app_group.id) || @is_barito_superadmin
-                td.text-center= link_to app_group.name, app_group_path(app_group)
+                td.text-center
+                  = link_to app_group.name, app_group_path(app_group)
+                  =  tag "i", class: ["fas", "fa-info-circle", "ml-1"], id: "toggle_apps_list_#{app_group.id}", data: { toggle: "popover", id: app_group.id, html: "true" }
+                  
+                  div id="toggle_apps_content_#{app_group.id}" style="display:none"
+                    = show_apps(app_group.id)
+
               - else
                 td.text-center= app_group.name
               td.text-center= app_group.infrastructure.cluster_name

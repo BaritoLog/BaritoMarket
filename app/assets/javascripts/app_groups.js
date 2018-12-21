@@ -30,6 +30,19 @@ var app_groups = {
       $form.find("#toggle_status").val(isChecked);
       $form.submit();
     });
+
+    $("[id^='toggle_apps_list_']").hover(function() {
+      var appGroupId = $(this).data("id");
+      $("#toggle_apps_list_" + appGroupId).popover({
+        placement: 'right',
+        title: 'List of apps',
+        trigger: 'hover',
+        html: true,
+        content: function () {
+          return $("#toggle_apps_content_" + appGroupId).html();
+        }
+      });
+    });
   }
 }
 
