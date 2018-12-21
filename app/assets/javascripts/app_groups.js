@@ -35,8 +35,8 @@ var app_groups = {
       var appGroupId = $(this).data("id");
       $("#toggle_apps_list_" + appGroupId).popover({
         placement: 'right',
-        title: 'List of apps',
-        trigger: 'hover',
+        title: 'Apps',
+        trigger: 'click',
         html: true,
         content: function () {
           return $("#toggle_apps_content_" + appGroupId).html();

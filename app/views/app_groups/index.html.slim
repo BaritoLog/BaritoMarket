@@ -31,7 +31,9 @@
               - if allow_see_app_groups(app_group.id) || @is_barito_superadmin
                 td.text-center
                   = link_to app_group.name, app_group_path(app_group)
-                  =  tag "i", class: ["fas", "fa-info-circle", "ml-1"], id: "toggle_apps_list_#{app_group.id}", data: { toggle: "popover", id: app_group.id, html: "true" }
+
+                  span class="apps-badge badge badge-barito" id="toggle_apps_list_#{app_group.id}" data={ toggle: "popover", id: app_group.id, html: "true" }
+                    = show_apps_count(app_group.id)
                   
                   div id="toggle_apps_content_#{app_group.id}" style="display:none"
                     = show_apps(app_group.id)
