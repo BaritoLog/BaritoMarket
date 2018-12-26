@@ -5,8 +5,6 @@ class AppGroupsController < ApplicationController
   def index
     @app_groups = policy_scope(AppGroup).order(:name)
     @allow_create_app_group = policy(AppGroup).new?
-    # @allow_set_status = policy(Infrastructure).toggle_status?
-    @is_barito_superadmin = policy(Group).index?
   end
 
   def search
