@@ -19,14 +19,4 @@ module AppGroupsHelper
       end
     end
   end
-
-  def allow_see_app_groups(app_group_id)
-    app_group_ids = AppGroupUser.where(user: current_user).pluck(:app_group_id)
-    app_group_ids.include?(app_group_id)
-  end
-
-  def allow_set_status(app_group_id)
-    role_id = AppGroupRole.find_by(name: "owner")
-    return true if AppGroupUser.find_by(user_id: current_user.id, app_group_id: app_group_id, role_id: role_id)
-  end
 end

@@ -30,6 +30,18 @@ class AppGroupPolicy < ApplicationPolicy
       count.positive?
   end
 
+  def see_app_groups?
+    return true if is_barito_superadmin?
+    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+    app_group_ids.include?(record.id)
+  end
+
+  def set_status?
+    return true if is_barito_superadmin?
+    role_id = AppGroupRole.find_by(name: "owner")
+    AppGroupUser.find_by(user_id: user.id, app_group_id: record.id, role_id: role_id)
+  end
+
   class Scope < Scope
     def resolve
       if Figaro.env.enable_cas_integration == 'true'
