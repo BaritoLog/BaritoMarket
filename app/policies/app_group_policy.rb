@@ -44,22 +44,34 @@ class AppGroupPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if Figaro.env.enable_cas_integration == 'true'
-        gate_groups = GateClient.
-          new(user).
-          check_user_groups.
-          symbolize_keys[:groups] || []
-        return scope.active if gate_groups.include?("barito-superadmin") or gate_groups.include?("global-viewer")
+      if Figaro.env.global_viewer == 'true'
+        return scope.active if get_merge_groups(user).include?('barito-superadmin') or get_merge_groups(user).include?('global-viewer')
       else
-        user_groups = []
-        user.groups.each do |group|
-          user_groups << group.name
-        end
-        return scope.active if user_groups.include?("barito-superadmin") or user_groups.include?("global-viewer")
-      end
+        return scope.active if get_gate_groups(user).include?('barito-superadmin') or get_user_groups(user).include?('barito-superadmin')
 
-      app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-      scope.active.where(id: app_group_ids)
+        app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+        scope.active.where(id: app_group_ids)
+      end
+    end
+
+    def get_gate_groups(user)
+      gate_groups = []
+      if Figaro.env.enable_cas_integration == 'true'
+        gate_groups = GateClient.new(user).check_user_groups.symbolize_keys[:groups]
+      end
+      return gate_groups
+    end
+
+    def get_user_groups(user)
+      user_groups = []
+      user.groups.each do |group|
+        user_groups << group.name
+      end
+      return user_groups
+    end
+
+    def get_merge_groups(user)
+      return (get_gate_groups(user) + get_user_groups(user)).uniq
     end
   end
 end

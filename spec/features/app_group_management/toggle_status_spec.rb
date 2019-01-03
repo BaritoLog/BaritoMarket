@@ -15,7 +15,7 @@ RSpec.feature 'Application Group Management', type: :feature do
   describe 'Toggle Status AppGroup or Infrastructure' do
     context 'As Superadmin' do
       scenario 'User can toggle AppGroup or Infrastructure status', js: true do
-        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         login_as user_a
 
