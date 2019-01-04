@@ -30,7 +30,7 @@ REDIS_CACHE_DB:              '1'
 DEFAULT_APP_MAX_TPS:         '20'
 DEFAULT_LOG_RETENTION_DAYS:  '30'
 ES_CURATOR_CLIENT_KEY:       'abcd1234'
-GLOBAL_VIEWER:               'true'
+GLOBAL_VIEWER:               'false'
 
 development:
   RAILS_ENV:                 'development'
