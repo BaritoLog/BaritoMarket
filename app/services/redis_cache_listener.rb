@@ -30,4 +30,10 @@ class RedisCacheListener
       REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group.secret_key}:#{app.name}")  
     end
   end
+
+  def gate_group_response_updated(username, gate_group_response)
+    REDIS_CACHE.set(
+      "#{GATE_GROUP_CACHE_PREFIX}:#{username}", gate_group_response)
+    REDIS_CACHE.expire("#{GATE_GROUP_CACHE_PREFIX}:#{username}", Figaro.env.redis_key_expiry)
+  end
 end
