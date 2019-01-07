@@ -1,5 +1,5 @@
 superadmin_group = Group.create(name: 'barito-superadmin')
-global_viewer_group = Group.create(name: 'global-viewer')
+global_viewer_group = Group.create(name: Figaro.env.global_viewer_role)
 
 if Figaro.env.enable_cas_integration == 'true'
   user = User.create(email: 'superadmin@barito.com', username: 'superadmin')

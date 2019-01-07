@@ -45,7 +45,7 @@ class AppGroupPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if Figaro.env.global_viewer == 'true'
-        return scope.active if get_merge_groups(user).include?('barito-superadmin') or get_merge_groups(user).include?('global-viewer')
+        return scope.active if get_merge_groups(user).include?('barito-superadmin') or get_merge_groups(user).include?(Figaro.env.global_viewer_role)
       else
         return scope.active if get_gate_groups(user).include?('barito-superadmin') or get_user_groups(user).include?('barito-superadmin')
 

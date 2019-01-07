@@ -20,7 +20,7 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user, username: 'test_user', email: 'test@test.com') }
 
     it "shoud add global viewer group to user if global viewer field in env is true" do 
-      expect(user.groups.any? { |g| g[:name] == "global-viewer" }.to_s).to eq(config["GLOBAL_VIEWER"])
+      expect(user.groups.any? { |g| g[:name] == Figaro.env.global_viewer_role }.to_s).to eq(config["GLOBAL_VIEWER"])
     end
   end
 end

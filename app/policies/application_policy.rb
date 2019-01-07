@@ -77,6 +77,6 @@ class ApplicationPolicy
 
   def is_global_viewer?
     return false unless get_user_groups
-    get_user_groups.include?("global-viewer")
+    get_user_groups.include?(Figaro.env.global_viewer_role)
   end
 end

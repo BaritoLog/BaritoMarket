@@ -31,6 +31,7 @@ DEFAULT_APP_MAX_TPS:         '20'
 DEFAULT_LOG_RETENTION_DAYS:  '30'
 ES_CURATOR_CLIENT_KEY:       'abcd1234'
 GLOBAL_VIEWER:               'false'
+GLOBAL_VIEWER_ROLE:          'global-viewer'
 
 development:
   RAILS_ENV:                 'development'
