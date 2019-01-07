@@ -63,6 +63,8 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', /selenium/])
     Sidekiq::Testing.fake!
     DatabaseCleaner.clean_with(:truncation)
+
+    require "#{File.dirname(__FILE__)}/seeds.rb"
   end
 
   config.before(:each) do

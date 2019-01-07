@@ -9,7 +9,6 @@ RSpec.feature 'Application Group Management', type: :feature do
       scenario 'User can create new application group' do
         set_check_user_groups({ 'groups': ['barito-superadmin'] })
         login_as user_a
-        create(:group, name: 'barito-superadmin')
         prep_app_group = build(:app_group)
 
         visit root_path

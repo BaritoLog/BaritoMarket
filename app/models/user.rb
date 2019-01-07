@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  after_create :add_global_viewer_group, if: :is_global_viewer?
+
   if Figaro.env.enable_cas_integration == 'true'
     devise :cas_authenticatable, :trackable
   else
@@ -20,5 +22,17 @@ class User < ApplicationRecord
 
   def self.find_by_username_or_email(input)
     User.where("username = :input OR email = :input", input: input).first
+  end
+
+  def add_global_viewer_group
+    group = Group.find_by(name: Figaro.env.global_viewer_role)
+    group_user = GroupUser.create(
+      group_id: group.id,
+      user_id: self.id
+    )
+  end
+
+  def is_global_viewer?
+    return true if Figaro.env.global_viewer == "true"
   end
 end

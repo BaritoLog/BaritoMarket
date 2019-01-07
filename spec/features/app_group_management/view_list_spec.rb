@@ -16,7 +16,7 @@ RSpec.feature 'Application Group Management', type: :feature do
   describe 'View applications group lists' do
     context 'As Superadmin' do
       scenario 'User can only see app group that they created' do
-        set_check_user_groups({ 'groups' => 'barito-superadmin' })
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         login_as user_a
 

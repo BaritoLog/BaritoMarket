@@ -4,8 +4,7 @@ class AppGroupsController < ApplicationController
 
   def index
     @app_groups = policy_scope(AppGroup).order(:name)
-    @allow_create_app_group = policy(Group).index?
-    @allow_set_status = policy(Infrastructure).toggle_status?
+    @allow_create_app_group = policy(AppGroup).new?
   end
 
   def search
@@ -24,7 +23,6 @@ class AppGroupsController < ApplicationController
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
-    @allow_see_apps = policy(@app_group).allow_see_apps?
     @allow_delete_barito_app = policy(@new_app).delete?
     @allow_add_barito_app = policy(@new_app).create?
     @allow_edit_metadata = policy(@app_group).update?
