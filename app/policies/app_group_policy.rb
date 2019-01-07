@@ -48,10 +48,10 @@ class AppGroupPolicy < ApplicationPolicy
         return scope.active if get_merge_groups(user).include?('barito-superadmin') or get_merge_groups(user).include?(Figaro.env.global_viewer_role)
       else
         return scope.active if get_gate_groups(user).include?('barito-superadmin') or get_user_groups(user).include?('barito-superadmin')
-
-        app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-        scope.active.where(id: app_group_ids)
       end
+
+      app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
+      scope.active.where(id: app_group_ids)
     end
 
     def get_gate_groups(user)
