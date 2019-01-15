@@ -30,6 +30,16 @@ body {
   border-color: #adadad;
 }
 
+.badge-barito{
+  color: #212529;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+.apps-badge{
+  margin-left: 5px;
+}
+
 a.btn-primary { color: white!important;  }
 .app_list_name { width: 40%; }
 .app_list_config { width: 15%; }
