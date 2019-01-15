@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require popper
 //= require select2-full
 //= require_tree .
 
