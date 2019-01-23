@@ -1,3 +1,5 @@
+# DEPRECATION NOTICE
+# This API and all of its inherited APIs will be deprecated in favor of v2
 class Api::AppsController < Api::BaseController
   include Wisper::Publisher
 
