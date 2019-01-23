@@ -22,7 +22,7 @@ RSpec.feature 'Ext. App Management', type: :feature do
 
         click_button 'Submit'
 
-        expect(page).to have_current_path(ext_apps_path)
+        expect(page).to have_current_path(ext_app_path(ExtApp.last.id))
         expect(page).to have_content(ext_app_attr.name)
       end
 
