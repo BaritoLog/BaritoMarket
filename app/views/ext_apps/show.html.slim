@@ -4,6 +4,12 @@
     hr
     br
     form
+      - if flash[:access_token]
+        .alert.alert-warning role="alert"
+          | Important! please make note of this token, you will see it only this once.
+        .form-group
+          label Access Token
+          = text_field_tag 'access_token', flash[:access_token], class: 'form-control', readonly: true
       .form-group
         label Description
         = text_field_tag 'description', @ext_app.description, class: 'form-control', readonly: true

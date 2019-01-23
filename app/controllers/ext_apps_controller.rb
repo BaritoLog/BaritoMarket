@@ -22,11 +22,13 @@ class ExtAppsController < ApplicationController
   def create
     authorize ExtApp
     @ext_app = ExtApp.new(ext_app_params)
-    @ext_app.access_token = SecureRandom.urlsafe_base64(64)
+    access_token = SecureRandom.urlsafe_base64(48)
+    @ext_app.access_token = access_token
     @ext_app.created_by_id = current_user.id
 
     if @ext_app.save
-      redirect_to ext_apps_path
+      flash[:access_token] = access_token
+      redirect_to ext_app_path(@ext_app)
     else
       flash[:messages] = @ext_app.errors.full_messages
       render :new
