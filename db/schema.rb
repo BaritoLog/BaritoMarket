@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_19_154400) do
+ActiveRecord::Schema.define(version: 2019_01_23_140900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,19 @@ ActiveRecord::Schema.define(version: 2018_12_19_154400) do
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
     t.index ["secret_key"], name: "index_barito_apps_on_secret_key"
     t.index ["status"], name: "index_barito_apps_on_status"
+  end
+
+  create_table "ext_apps", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "hashed_access_token", null: false
+    t.datetime "access_token_generated_at", null: false
+    t.bigint "created_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_ext_apps_on_created_by_id"
+    t.index ["hashed_access_token"], name: "index_ext_apps_on_hashed_access_token"
+    t.index ["name"], name: "index_ext_apps_on_name", unique: true
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -120,4 +133,5 @@ ActiveRecord::Schema.define(version: 2018_12_19_154400) do
     t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
+  add_foreign_key "ext_apps", "users", column: "created_by_id"
 end
