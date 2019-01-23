@@ -49,7 +49,11 @@ Rails.application.routes.draw do
     only: %i[create destroy update],
     defaults: { format: :html }
   resources :ext_apps,
-    defaults: { format: :html }
+    defaults: { format: :html } do
+      member do
+        post :regenerate_token
+      end
+    end
   resources :groups,
     except: %i[edit update],
     defaults: { format: :html }

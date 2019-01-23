@@ -10,6 +10,11 @@
         .form-group
           label Access Token
           = text_field_tag 'access_token', flash[:access_token], class: 'form-control', readonly: true
+      - else
+        .form-group
+          label Access Token
+          br
+          = link_to 'Regenerate Token', regenerate_token_ext_app_path(@ext_app), :data => {:confirm => 'Are you sure?'}, :method => :post
       .form-group
         label Description
         = text_field_tag 'description', @ext_app.description, class: 'form-control', readonly: true

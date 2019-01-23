@@ -27,4 +27,8 @@ class ExtAppPolicy < ApplicationPolicy
   def destroy?
     index?
   end
+
+  def regenerate_token?
+    index?
+  end
 end

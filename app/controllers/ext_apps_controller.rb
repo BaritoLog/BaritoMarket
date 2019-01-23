@@ -1,5 +1,5 @@
 class ExtAppsController < ApplicationController
-  before_action :set_ext_app, only: %i(show edit update destroy)
+  before_action :set_ext_app, only: %i(show edit update destroy regenerate_token)
 
   def index
     authorize ExtApp
@@ -49,6 +49,17 @@ class ExtAppsController < ApplicationController
     authorize @ext_app
     @ext_app.destroy
     redirect_to ext_apps_path
+  end
+
+  def regenerate_token
+    authorize @ext_app
+    access_token = SecureRandom.urlsafe_base64(48)
+    if @ext_app.update(access_token: access_token)
+      flash[:access_token] = access_token
+      redirect_to @ext_app
+    else
+      redirect_to @ext_app
+    end
   end
 
   private
