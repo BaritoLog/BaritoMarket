@@ -1,0 +1,16 @@
+.row.justify-content-center
+  .col-md-5.col-12
+    h3.mb-3= "Ext. App - #{@ext_app.name}"
+    hr
+    br
+    form
+      .form-group
+        label Description
+        = text_field_tag 'description', @ext_app.description, class: 'form-control', readonly: true
+      .form-group
+        label Created By
+        = text_field_tag 'created_by', @ext_app.created_by.username, class: 'form-control', readonly: true
+    .float-right
+      = link_to 'Back', ext_apps_path, class: 'btn btn-default'
+      = ' '
+      = link_to 'Edit', edit_ext_app_path(@ext_app), class: 'btn btn-default'

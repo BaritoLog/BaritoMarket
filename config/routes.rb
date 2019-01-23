@@ -48,6 +48,8 @@ Rails.application.routes.draw do
   resources :apps,
     only: %i[create destroy update],
     defaults: { format: :html }
+  resources :ext_apps,
+    defaults: { format: :html }
   resources :groups,
     except: %i[edit update],
     defaults: { format: :html }

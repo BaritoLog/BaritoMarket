@@ -1,0 +1,11 @@
+= form_with(model: ext_app, local: true) do |f|
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+  .form-group
+    = f.label :description
+    = f.text_field :description, class: 'form-control'
+  .float-right
+  	= link_to 'Back', ext_apps_path, class: 'btn btn-default'
+  	= ' '
+  	= f.submit 'Submit',class: 'btn btn-primary'

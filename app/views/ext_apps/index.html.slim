@@ -1,0 +1,24 @@
+.row
+  .col-sm-2
+    h3.mb-3 All Ext. Apps
+  .col-sm-10
+    .float-right
+      = link_to 'New Ext. App', new_ext_app_path, class: 'btn btn-outline-primary'
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th Name
+      th Created By
+      th.text-center Actions
+  tbody
+    - if @ext_apps.empty?
+      tr
+        td = 'No ext. app registered'
+    - @ext_apps.each do |ext_app|
+      tr
+        td.text-center = link_to ext_app.name, ext_app_path(ext_app)
+        td.text-center = ext_app.created_by.username
+        td.text-center
+          = link_to 'Edit', edit_ext_app_path(ext_app)
+          = ' - '
+          = link_to 'Delete', ext_app_path(ext_app), data: { method: :delete }
