@@ -1,0 +1,27 @@
+.row.justify-content-center
+  .col-md-5.col-12
+    h3.mb-3= "Ext. App - #{@ext_app.name}"
+    hr
+    br
+    form
+      - if flash[:access_token]
+        .alert.alert-warning role="alert"
+          | Important! please make note of this token, you will see it only this once.
+        .form-group
+          label Access Token
+          = text_field_tag 'access_token', flash[:access_token], class: 'form-control', readonly: true
+      - else
+        .form-group
+          label Access Token
+          br
+          = link_to 'Regenerate Token', regenerate_token_ext_app_path(@ext_app), :data => {:confirm => 'Are you sure?'}, :method => :post
+      .form-group
+        label Description
+        = text_field_tag 'description', @ext_app.description, class: 'form-control', readonly: true
+      .form-group
+        label Created By
+        = text_field_tag 'created_by', @ext_app.created_by.username, class: 'form-control', readonly: true
+    .float-right
+      = link_to 'Back', ext_apps_path, class: 'btn btn-default'
+      = ' '
+      = link_to 'Edit', edit_ext_app_path(@ext_app), class: 'btn btn-default'

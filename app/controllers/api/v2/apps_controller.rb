@@ -1,6 +1,4 @@
-# DEPRECATION NOTICE
-# This API and all of its inherited APIs will be deprecated in favor of v2
-class Api::AppsController < Api::BaseController
+class Api::V2::AppsController < Api::V2::BaseController
   include Wisper::Publisher
 
   def profile

@@ -1,0 +1,12 @@
+.row.justify-content-center
+  .col-md-6
+    h3 Edit Ext. App
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue editing ext. app
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+    #edit_ext_app
+      = render 'form', ext_app: @ext_app
