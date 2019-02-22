@@ -1,0 +1,19 @@
+.row
+  .col-sm-2
+    h3.mb-3 All Component Templates
+  .col-sm-10
+    .float-right
+      = link_to 'New Component Templates', new_component_template_path, class: 'btn btn-outline-primary'
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th Name
+      th.text-center Actions
+  tbody
+    - if @component_templates.empty?
+      tr
+        td = 'No component template yet'
+    - @component_templates.each do |component_template|
+      tr
+        td.text-center = link_to component_template.name, component_template_path(component_template)
+        td.text-center = link_to 'Delete', component_template_path(component_template), data: { method: :delete }
