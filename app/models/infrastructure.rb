@@ -43,9 +43,8 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      blueprint = Blueprint.new(infrastructure, env)
-      blueprint_path = blueprint.generate_file
-      BlueprintWorker.perform_async(blueprint_path)
+      component_template = ComponentTemplate.find(params[:component_template_id])
+      BlueprintWorker.perform_async(component_template.instances)
     end
     infrastructure
   end
