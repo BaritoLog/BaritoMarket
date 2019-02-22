@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_23_140900) do
+ActiveRecord::Schema.define(version: 2019_02_20_114400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,23 @@ ActiveRecord::Schema.define(version: 2019_01_23_140900) do
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
     t.index ["secret_key"], name: "index_barito_apps_on_secret_key"
     t.index ["status"], name: "index_barito_apps_on_status"
+  end
+
+  create_table "component_properties", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "attributes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "component_templates", force: :cascade do |t|
+    t.string "env"
+    t.string "name"
+    t.string "max_tps"
+    t.jsonb "instances"
+    t.jsonb "kafka_options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ext_apps", force: :cascade do |t|
