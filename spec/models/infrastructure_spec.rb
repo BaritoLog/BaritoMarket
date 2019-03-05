@@ -3,22 +3,23 @@ require 'rails_helper'
 RSpec.describe Infrastructure, type: :model do
   describe 'Add Infrastructure Component' do
     let(:infrastructure) { create :infrastructure }
+    let(:component_template) { create :component_template }
     let(:env) { Rails.env }
     before(:each) do
-      @blueprint = Blueprint.new(infrastructure, env)
-      @nodes = @blueprint.generate_nodes
+      @components = infrastructure.generate_components(env, component_template.instances)
     end
 
     it 'should generate correct number of components' do
-      @nodes.each_with_index do |node, seq|
+      @components.each_with_index do |node, seq|
         infrastructure.add_component(node, seq + 1)
       end
       expect(infrastructure.infrastructure_components.count).
-        to eq(@nodes.count)
+        to eq(@components.count)
     end
   end
 
   context 'Setup Application' do
+    let(:component_template) { create :component_template }
     let(:infrastructure_props) { build(:infrastructure) }
 
     before do
@@ -35,6 +36,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
+        component_template_id: component_template.id,
       )
       expect(infrastructure.persisted?).to eq(true)
       expect(infrastructure.provisioning_status).to eq(Infrastructure.provisioning_statuses[:pending])
@@ -47,17 +49,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: 'invalid_group',
-      )
-      expect(infrastructure.persisted?).to eq(false)
-      expect(infrastructure.valid?).to eq(false)
-    end
-
-    it 'shouldn\'t create infrastructure if capacity is invalid' do
-      infrastructure = Infrastructure.setup(
-        Rails.env,
-        name: infrastructure_props.name,
-        capacity: 'invalid_config',
-        app_group_id: infrastructure_props.app_group_id,
+        component_template_id: component_template.id,
       )
       expect(infrastructure.persisted?).to eq(false)
       expect(infrastructure.valid?).to eq(false)
@@ -69,22 +61,11 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
+        component_template_id: component_template.id,
       )
       expect(infrastructure.cluster_name).to eq(
         Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
       )
-    end
-
-    it 'should generate blueprint file' do
-      infrastructure = Infrastructure.setup(
-        Rails.env,
-        name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
-        app_group_id: infrastructure_props.app_group_id,
-      )
-      blueprint = Blueprint.new(infrastructure, Rails.env)
-      @file_path = "#{Rails.root}/blueprints/jobs/#{blueprint.filename}.json"
-      expect(File.exist?(@file_path)).to eq(true)
     end
   end
 
@@ -162,13 +143,15 @@ RSpec.describe Infrastructure, type: :model do
 
   describe '#allow_delete?' do
     let(:infrastructure_props) { build(:infrastructure) }
+    let(:component_template) { create(:component_template) }
 
     it 'should return true if infrastructure can be deleted' do
       infrastructure = Infrastructure.setup(
         Rails.env,
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
-        app_group_id: infrastructure_props.app_group_id
+        app_group_id: infrastructure_props.app_group_id,
+        component_template_id: component_template.id,
       )
       infrastructure.update_status('INACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
@@ -180,7 +163,8 @@ RSpec.describe Infrastructure, type: :model do
         Rails.env,
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
-        app_group_id: infrastructure_props.app_group_id
+        app_group_id: infrastructure_props.app_group_id,
+        component_template_id: component_template.id,
       )
       infrastructure.update_status('ACTIVE')
       infrastructure.update_provisioning_status('FINISHED')

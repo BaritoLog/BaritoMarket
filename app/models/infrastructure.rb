@@ -49,8 +49,11 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      component_template = ComponentTemplate.find(params[:component_template_id])
-      BlueprintWorker.perform_async(component_template.instances)
+      components = infrastructure.generate_components(env, component_template.instances)
+      BlueprintWorker.perform_async(
+        components,
+        infrastructure_id: infrastructure.id
+      )
     end
     infrastructure
   end
@@ -125,5 +128,20 @@ class Infrastructure < ApplicationRecord
       'FINISHED',
       'DELETE_ERROR'
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
+  end
+
+  def generate_components(env, instances)
+    components = []
+    instances.each do |key, value|
+      components += (1..value["count"]).map { |number| component_hash(value["name"], number, env, value["seq"]) }
+    end
+    components.sort_by {|obj| obj[:seq]}
+  end
+
+  private
+
+  def component_hash(type, count, env, seq)
+    name = "#{Infrastructure.env_prefixes[env.to_sym]}-#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
+    { name: name, type: type, seq: seq }
   end
 end
