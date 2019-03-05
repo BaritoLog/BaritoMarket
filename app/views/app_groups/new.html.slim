@@ -16,10 +16,10 @@
               dt.col-sm-3 Name
               dd.col-sm-9
                 = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application group'
-              dt.col-sm-3 Capacity
+              dt.col-sm-3 Component Template
               dd.col-sm-9
-                = select_tag 'app_group[capacity]', options_for_select(@capacity_options), { class: 'form-control' }
+                = select_tag 'app_group[component_template_id]', options_from_collection_for_select(ComponentTemplate.all, :id, :name), { class: 'form-control' }
                 small.form-text.text-muted
-                  | Please choose your Capacity
+                  | Please choose your Component Template
           .card-footer.text-right
             = submit_tag 'Submit', class: 'btn btn-primary'

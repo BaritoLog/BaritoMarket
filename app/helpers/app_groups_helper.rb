@@ -1,6 +1,6 @@
 module AppGroupsHelper
   def max_tps(infrastructure)
-    TPS_CONFIG[infrastructure.capacity]['max_tps']
+    infrastructure.component_template.try(:max_tps) || TPS_CONFIG[infrastructure.capacity]['max_tps']
   end
 
   def set_role_buttons(app_group_user, roles = {}, opts = {})

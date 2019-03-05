@@ -25,7 +25,6 @@ class AppGroup < ApplicationRecord
       infrastructure = Infrastructure.setup(
         env,
         name: params[:name],
-        capacity: params[:capacity],
         app_group_id: app_group.id,
         component_template_id: params[:component_template_id],
       )

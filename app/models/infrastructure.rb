@@ -25,20 +25,26 @@ class Infrastructure < ApplicationRecord
     delete_error: 'DELETE_ERROR',
     deleted: 'DELETED',
   }
-
-  def capacity_valid_key?
-    config_types = TPS_CONFIG.keys.map(&:downcase)
-    errors.add(:capacity, 'Invalid Config Value') unless config_types.include?(capacity)
-  end
+  enum env_prefixes: {
+    production: 'p', 
+    staging: 's', 
+    development: 'd', 
+    uat: 'u', 
+    internal: 'i', 
+    integration: 'g', 
+    test: 't',
+  }
 
   def self.setup(env, params)
+    component_template = ComponentTemplate.find(params[:component_template_id])
     infrastructure = Infrastructure.new(
       name:                 params[:name],
       cluster_name: Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
-      capacity:             params[:capacity],
+      capacity:             component_template.name,
       provisioning_status:  Infrastructure.provisioning_statuses[:pending],
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
+      component_template_id: component_template.id,
     )
 
     if infrastructure.valid?
