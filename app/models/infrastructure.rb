@@ -1,9 +1,9 @@
 class Infrastructure < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
-  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, presence: true
-  validate  :capacity_valid_key?
+  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, :component_template, presence: true
 
   belongs_to :app_group
+  belongs_to :component_template
   has_many :infrastructure_components
 
   enum statuses: {
