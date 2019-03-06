@@ -1,0 +1,35 @@
+.row
+  .col-sm-6
+    .card
+      .h5.card-header Component Template Details
+      .card-body
+        dl.row
+          dt.col-sm-3 Env:
+          dd.col-sm-9
+            = @component_template.env
+
+          dt.col-sm-3 Name:
+          dd.col-sm-9
+            = @component_template.name
+
+          dt.col-sm-3 Max Tps:
+          dd.col-sm-9
+            = @component_template.max_tps
+
+          dt.col-sm-3 Instances:
+          dd.col-sm-9
+            pre
+              code
+                = @instances
+
+          dt.col-sm-3 Kafka Options:
+          dd.col-sm-9
+            pre
+              code
+                = @kafka_options
+
+      .card-footer.text-right
+        .btn.btn-primary.btn-sm
+          = link_to 'Back to Component Template', component_template_path(@component_template), class: 'text-light', style: 'text-decoration:none'
+br
+br

@@ -1,7 +1,16 @@
 .row
-  .col-sm-2
+  .col-sm-12
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue deleting component template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+.row
+  .col-sm-6
     h3.mb-3 All Component Templates
-  .col-sm-10
+  .col-sm-6
     .float-right
       = link_to 'New Component Templates', new_component_template_path, class: 'btn btn-outline-primary'
 table.table.table-bordered

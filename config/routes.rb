@@ -81,7 +81,6 @@ Rails.application.routes.draw do
   resources :groups,
     except: %i[edit update],
     defaults: { format: :html }
-  resources :component_templates
   resources :group_users,
     only: %i[create destroy],
     defaults: { format: :html }
@@ -96,6 +95,9 @@ Rails.application.routes.draw do
         delete :delete
       end
     end
+  resources :component_templates,
+    only: %i[index show new destroy create update],
+    defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
 end
