@@ -1,15 +1,16 @@
 FactoryBot.define do
   factory :component_property do
     name                  %w(yggdrasil consul kibana yggdrasil zookeeper elasticsearch barito-flow-consumer barito-flow-producer).sample
-    component_attributes  "{\r\n  
-                              \"kafka\": {\r\n    \"seq\": 3,\r\n    \"count\": 3\r\n  },\r\n  
-                              \"consul\": {\r\n    \"seq\": 1,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"kibana\": {\r\n    \"seq\": 7,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"yggdrasil\": {\r\n    \"seq\": 0,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"zookeeper\": {\r\n    \"seq\": 2,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"elasticsearch\": {\r\n    \"seq\": 4,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"barito-flow-consumer\": {\r\n    \"seq\": 6,\r\n    \"count\": 1\r\n  },\r\n  
-                              \"barito-flow-producer\": {\r\n    \"seq\": 5,\r\n    \"count\": 1\r\n  }\r\n
-                          }"
+    component_attributes  "{\n  
+                              \"consul\": {\n    
+                                  \"hosts\": [\n\"172.20.10.252\"\n],\n    
+                                  \"config\": {\n      
+                                      \"consul.json\": {\n        
+                                          \"bind_addr\": \"172.20.10.252\"\n      
+                                        }\n    
+                                    }\n  
+                              },\n  
+                              \"run_list\": [\n\"role[consul]\"\n]\n
+                            }"
   end
 end
