@@ -49,7 +49,8 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(env, component_template.instances)
+      instances = JSON.parse(component_template.instances)
+      components = infrastructure.generate_components(env, instances)
       BlueprintWorker.perform_async(
         components,
         infrastructure_id: infrastructure.id
@@ -132,8 +133,8 @@ class Infrastructure < ApplicationRecord
 
   def generate_components(env, instances)
     components = []
-    instances.each do |key, value|
-      components += (1..value["count"]).map { |number| component_hash(value["name"], number, env, value["seq"]) }
+    instances.each do |type, value|
+      components += (1..value["count"]).map { |number| component_hash(type, number, env, value["seq"]) }
     end
     components.sort_by {|obj| obj[:seq]}
   end
