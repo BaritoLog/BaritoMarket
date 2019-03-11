@@ -98,6 +98,9 @@ Rails.application.routes.draw do
   resources :component_templates,
     only: %i[index show new destroy create update],
     defaults: { format: :html }
+  resources :component_properties,
+    only: %i[index show new destroy create update],
+    defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
 end

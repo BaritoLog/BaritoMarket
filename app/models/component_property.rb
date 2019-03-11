@@ -1,4 +1,5 @@
 class ComponentProperty < ApplicationRecord
-  validates :env, :name, :instances, presence: true
+  attr_accessor :infrastructure_component
+  validates :name, :component_attributes, presence: true
 
 end

@@ -1,0 +1,17 @@
+.row.justify-content-center
+  .col-md-6
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue creating component property
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+    = form_for(@component_property) do |f|
+      .form-group
+        = f.label :name
+        = f.text_field :name, class: 'form-control', placeholder: 'Name of your component'
+      .form-group
+        = f.label :component_attributes
+        = f.text_area :component_attributes, class: 'form-control', placeholder: 'Component attributes'
+      .actions = f.submit 'Submit',class: 'btn btn-primary'

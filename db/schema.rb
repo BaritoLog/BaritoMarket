@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
 
   create_table "component_properties", force: :cascade do |t|
     t.string "name"
-    t.jsonb "attributes"
+    t.jsonb "component_attributes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
