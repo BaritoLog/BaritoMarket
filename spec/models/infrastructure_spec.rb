@@ -6,8 +6,7 @@ RSpec.describe Infrastructure, type: :model do
     let(:component_template) { create :component_template }
     let(:env) { Rails.env }
     before(:each) do
-      instances = JSON.parse(component_template.instances)
-      @components = infrastructure.generate_components(env, instances)
+      @components = infrastructure.generate_components(env, component_template.instances)
     end
 
     it 'should generate correct number of components' do

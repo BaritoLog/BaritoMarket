@@ -49,8 +49,7 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      instances = JSON.parse(component_template.instances)
-      components = infrastructure.generate_components(env, instances)
+      components = infrastructure.generate_components(env, component_template.instances)
       BlueprintWorker.perform_async(
         components,
         infrastructure_id: infrastructure.id

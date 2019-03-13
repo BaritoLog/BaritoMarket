@@ -20,8 +20,8 @@ RSpec.feature 'Component Template Management', type: :feature do
           fill_in 'component_template_env', with: prep_component_template.env
           fill_in 'component_template_name', with: prep_component_template.name
           fill_in 'component_template_max_tps', with: prep_component_template.max_tps
-          fill_in 'component_template_instances', with: prep_component_template.instances
-          fill_in 'component_template_kafka_options', with: prep_component_template.kafka_options
+          fill_in 'component_template_instances', with: prep_component_template.instances.to_json
+          fill_in 'component_template_kafka_options', with: prep_component_template.kafka_options.to_json
         end
 
         click_button 'Submit'

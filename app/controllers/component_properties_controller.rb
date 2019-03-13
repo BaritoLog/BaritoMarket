@@ -19,7 +19,6 @@ class ComponentPropertiesController < ApplicationController
   def create
     authorize ComponentProperty
     component_attributes = component_property_params.clone
-    p 'component_attributes'
     component_attributes[:component_attributes] = JSON.parse(component_attributes[:component_attributes])
     @component_property = ComponentProperty.new(component_attributes)
 
