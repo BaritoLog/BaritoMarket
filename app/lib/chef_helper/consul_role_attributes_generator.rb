@@ -5,20 +5,20 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'consul'
       @ipaddress = component.ipaddress
+      consul_property = ComponentProperty.find_by(name: 'consul')
+      @consul_attrs = consul_property.component_attributes
     end
 
     def generate
-      {
-        'consul' => {
-          'hosts' => @hosts,
-          'config' => {
-            'consul.json' => {
-              'bind_addr' => @ipaddress
-            }
-          }
-        },
-        'run_list' => ["role[#{@role_name}]"]
-      }
+      return {} if @consul_attrs.nil?
+      return update_attrs
+    end
+
+    def update_attrs
+      @consul_attrs["consul"]["hosts"] = @hosts
+      @consul_attrs["consul"]["config"]["consul.json"]["bind_addr"] = @ipaddress
+      @consul_attrs["run_list"] = ["role[#{@role_name}]"]
+      @consul_attrs
     end
   end
 end

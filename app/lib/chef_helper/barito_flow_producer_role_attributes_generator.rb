@@ -9,6 +9,8 @@ module ChefHelper
       @max_tps = TPS_CONFIG[component.infrastructure.capacity]['max_tps'] || 10
       @role_name = opts[:role_name] || 'barito-flow-producer'
       @ipaddress = component.ipaddress
+      producer_property = ComponentProperty.find_by(name: 'barito-flow-producer')
+      @producer_attrs = producer_property.component_attributes
     end
 
     def generate
@@ -16,32 +18,28 @@ module ChefHelper
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }
       kafka_hosts_and_port = kafka_hosts_and_port.join(',')
 
-      {
-        'barito-flow' => {
-          'producer' => {
-            'version' => 'v0.11.8',
-            'env_vars' => {
-              'BARITO_PRODUCER_ADDRESS'     => ':8080',
-              'BARITO_CONSUL_URL'           => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
-              'BARITO_CONSUL_KAFKA_NAME'    => 'kafka',
-              'BARITO_KAFKA_BROKERS'        => kafka_hosts_and_port,
-              'BARITO_KAFKA_PRODUCER_TOPIC' => 'barito-log',
-              'BARITO_PRODUCER_MAX_TPS'     => @max_tps,
-              'BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL' => 10,
-            }
-          }
-        },
-        'consul' => {
-          'run_as_server' => false,
-          'hosts' => @consul_hosts,
-          'config' => {
-            'consul.json' => {
-              'bind_addr' => @ipaddress
-            }
-          }
-        },
-        'run_list' => ["role[#{@role_name}]"]
+      return {} if @producer_attrs.nil?
+      return update_attrs
+    end
+
+    def update_attrs
+      @producer_attrs['barito-flow']['producer']['version'] = 'v0.11.8'
+      @producer_attrs['barito-flow']['producer']['env_vars'] = {
+        'BARITO_PRODUCER_ADDRESS'     => ':8080',
+        'BARITO_CONSUL_URL'           => "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}",
+        'BARITO_CONSUL_KAFKA_NAME'    => 'kafka',
+        'BARITO_KAFKA_BROKERS'        => kafka_hosts_and_port,
+        'BARITO_KAFKA_PRODUCER_TOPIC' => 'barito-log',
+        'BARITO_PRODUCER_MAX_TPS'     => @max_tps,
+        'BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL' => 10,
       }
+
+      @producer_attrs['consul']['hosts'] = @consul_hosts
+      @producer_attrs['consul']['run_as_server'] = false
+      @producer_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
+      @producer_attrs['run_list'] = ["role[#{@role_name}]"]
+
+      @producer_attrs
     end
   end
 end

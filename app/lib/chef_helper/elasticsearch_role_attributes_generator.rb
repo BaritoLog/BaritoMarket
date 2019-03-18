@@ -15,47 +15,35 @@ module ChefHelper
       else
         @index_number_of_replicas = 1
       end
+      elastic_property = ComponentProperty.find_by(name: 'elasticsearch')
+      @elastic_attrs = elastic_property.component_attributes
     end
 
     def generate
-      attrs = {
-        'elasticsearch' => {
-          'version' => '6.3.0',
-          'allocated_memory' => 12000000,
-          'max_allocated_memory' => 16000000,
-          'cluster_name' => "#{@cluster_name}",
-          'index_number_of_replicas' => @index_number_of_replicas
-        },
-        'consul' => {
-          'run_as_server' => false,
-          'hosts' => @consul_hosts,
-          'config' => {
-            'consul.json' => {
-              'bind_addr' => @ipaddress
-            }
-          }
-        },
-        'run_list' => ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
-      }
+      return {} if @elastic_attrs.nil?
+      return update_attrs
+    end
+
+    def update_attrs
+      @elastic_attrs['elasticsearch']['version'] = '6.3.0'
+      @elastic_attrs['elasticsearch']['allocated_memory'] = 12000000
+      @elastic_attrs['elasticsearch']['max_allocated_memory'] = 16000000
+      @elastic_attrs['elasticsearch']['cluster_name'] = @cluster_name
+      @elastic_attrs['elasticsearch']['index_number_of_replicas'] = @index_number_of_replicas
+      @elastic_attrs['consul']['hosts'] = @consul_hosts
+      @elastic_attrs['consul']['run_as_server'] = false
+      @elastic_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
+      @elastic_attrs['run_list'] = ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
 
       if Figaro.env.datadog_integration == 'true'
-        attrs['datadog'] = {
-          'datadog_api_key': Figaro.env.datadog_api_key,
-          'datadog_hostname': @hostname,
-          'elastic': {
-            'instances': [
-              { 
-                'url': "http://#{@ipaddress}:#{@port}",
-                'tags': []
-              }
-            ]
-          }
-        }
-        attrs['run_list'] << 'recipe[datadog::default]'
-        attrs['run_list'] << 'recipe[datadog::elastic_datadog]'
+        @elastic_attrs['datadog']['datadog_api_key'] = Figaro.env.datadog_api_key
+        @elastic_attrs['datadog']['datadog_hostname'] = @hostname
+        @elastic_attrs['datadog']['elastic']['instances'][0]['url'] = "http://#{@ipaddress}:#{@port}"
+        @elastic_attrs['run_list'] << 'recipe[datadog::default]'
+        @elastic_attrs['run_list'] << 'recipe[datadog::elastic_datadog]'
       end
 
-      return attrs
+      @elastic_attrs
     end
   end
 end
