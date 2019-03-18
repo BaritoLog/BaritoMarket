@@ -93,7 +93,7 @@ ComponentProperty.create!(
   name: "barito-flow-producer",
   component_attributes: {
     "consul":{
-      "hosts":[""], 
+      "hosts":[], 
       "config":{"consul.json":{"bind_addr":""}}, 
       "run_as_server":false
     }, 
@@ -145,8 +145,9 @@ ComponentProperty.create!(
   component_attributes: {
     "consul":{
       "hosts":[], 
+      "config":{"consul.json":{"bind_addr":""}}, 
       "run_as_server":false
-    }, 
+    },
     "kibana":{
       "config":{
         "server.basePath":"", 
