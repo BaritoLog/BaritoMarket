@@ -95,11 +95,12 @@ Rails.application.routes.draw do
         delete :delete
       end
     end
+  resources :infrastructure_components,
+    only: %i[edit update],
+    defaults: { format: :html }
   resources :component_templates,
-    only: %i[index show new destroy create update],
     defaults: { format: :html }
   resources :component_properties,
-    only: %i[index show new destroy create update],
     defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }

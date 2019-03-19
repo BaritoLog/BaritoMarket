@@ -54,6 +54,9 @@ table.table.table-bordered.table-striped.table-md
         td.text-center = component.message
         td.text-center = component.status
         td.text-center
+          .btn.btn-success.btn-sm.edit-attributes
+            = link_to 'Edit Attributes', edit_infrastructure_component_path(component), class: 'text-light', style: 'text-decoration:none'
+
           - if show_retry_provision_button(component)
             = form_for(component, url: retry_provision_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_component_id, component.id)
