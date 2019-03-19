@@ -16,7 +16,9 @@
                 = @component_attributes
 
       .card-footer.text-right
-        .btn.btn-primary.btn-sm
-          = link_to 'Back to Component Property', component_property_path(@component_property), class: 'text-light', style: 'text-decoration:none'
+        .btn.btn-primary.btn-sm.float-right
+          = link_to 'Back to Component Properties', component_properties_path, class: 'text-light', style: 'text-decoration:none'
+        .btn.btn-success.btn-sm.mr-2
+          = link_to 'Edit', edit_component_property_path(@component_property), class: 'text-light', style: 'text-decoration:none'
 br
 br

@@ -7,18 +7,17 @@ RSpec.feature 'Component property Management', type: :feature do
   end
 
   describe 'Component property' do
-    context 'Create component property' do
-      scenario 'User can create new Component property' do
+    context 'Update component property' do
+      scenario 'User can edit component property' do
         set_check_user_groups({ 'groups': ['barito-superadmin'] })
         login_as user_a
         prep_component_property = build(:component_property)
 
-        visit component_properties_path
+        visit component_property_path(@component_property)
 
-        click_link 'New Component Property'
-        within('#new_component_property') do
+        click_link 'Edit'
+        within('#edit_component_property') do
           fill_in 'component_property[name]', with: prep_component_property.name
-          fill_in 'component_property[component_attributes]', with: prep_component_property.component_attributes.to_json
         end
 
         click_button 'Submit'
