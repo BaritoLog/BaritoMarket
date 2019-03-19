@@ -1,11 +1,12 @@
 .row.justify-content-center
   .col-md-6
+    h3 Edit Component Template
     - if flash.key?(:messages)
       .alert.alert-danger
-        b Issue creating component template
+        b Issue editing component template
         br
         - flash[:messages].each do |msg|
           = "- #{msg}"
           br
-    #new_component_template
+    #edit_component_template
       = render 'form', component_template: @component_template

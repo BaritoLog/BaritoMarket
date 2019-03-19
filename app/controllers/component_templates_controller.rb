@@ -1,5 +1,5 @@
 class ComponentTemplatesController < ApplicationController
-  before_action :set_component_template, only: %i(show destroy update)
+  before_action :set_component_template, only: %i(show destroy update edit)
 
   def index
     authorize ComponentTemplate
@@ -9,6 +9,12 @@ class ComponentTemplatesController < ApplicationController
   def new
     authorize ComponentTemplate
     @component_template = ComponentTemplate.new
+  end
+
+  def edit
+    authorize @component_template
+    @instances = JSON.pretty_generate(@component_template.instances)
+    @kafka_options = JSON.pretty_generate(@component_template.kafka_options)
   end
 
   def show
@@ -42,6 +48,15 @@ class ComponentTemplatesController < ApplicationController
 
     end
   	redirect_to component_templates_path
+  end
+
+  def update
+    authorize @component_template
+    attributes = component_template_params.clone
+    attributes[:instances] = JSON.parse(attributes[:instances])
+    attributes[:kafka_options] = JSON.parse(attributes[:kafka_options])
+    @component_template.update_attributes(attributes)
+    redirect_to component_template_path(@component_template)
   end
 
   private

@@ -1,0 +1,17 @@
+= form_with(model: component_template, local: true) do|f|
+  .form-group
+    = f.label :env
+    = f.text_field :env, class: 'form-control', placeholder: 'Name of your environment'
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control', placeholder: 'Name of your component'
+  .form-group
+    = f.label :max_tps
+    = f.text_field :max_tps, class: 'form-control', placeholder: 'Value of your TPS'
+  .form-group
+    = f.label :instances
+    = f.text_area :instances, value: @instances, cols: 15, rows: 15, class: 'form-control', placeholder: 'Instances'
+  .form-group
+    = f.label :kafka_options
+    = f.text_area :kafka_options, value: @kafka_options, cols: 4, rows: 4, class: 'form-control', placeholder: 'Kafka options'
+  .actions = f.submit 'Submit',class: 'btn btn-primary'
