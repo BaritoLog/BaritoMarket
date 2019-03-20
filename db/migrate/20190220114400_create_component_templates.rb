@@ -8,5 +8,6 @@ class CreateComponentTemplates < ActiveRecord::Migration[5.2]
       t.jsonb :kafka_options
       t.timestamps null: false
     end
+    add_index :component_templates, :name
   end
 end
