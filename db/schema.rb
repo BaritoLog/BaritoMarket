@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.jsonb "component_attributes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_component_properties_on_name", unique: true
   end
 
   create_table "component_templates", force: :cascade do |t|
@@ -76,6 +77,7 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.jsonb "kafka_options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_component_templates_on_name"
   end
 
   create_table "ext_apps", force: :cascade do |t|

@@ -17,12 +17,12 @@ RSpec.feature 'Component property Management', type: :feature do
 
         click_link 'New Component Property'
         within('#new_component_property') do
-          fill_in 'component_property[name]', with: prep_component_property.name
+          fill_in 'component_property[name]', with: "test"
           fill_in 'component_property[component_attributes]', with: prep_component_property.component_attributes.to_json
         end
 
         click_button 'Submit'
-        expect(page).to have_content(prep_component_property.name)
+        expect(page).to have_content("test")
       end
     end
   end

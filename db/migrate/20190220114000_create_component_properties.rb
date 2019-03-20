@@ -5,5 +5,6 @@ class CreateComponentProperties < ActiveRecord::Migration[5.2]
       t.jsonb :component_attributes
       t.timestamps null: false
     end
+    add_index :component_properties, :name, unique: true
   end
 end
