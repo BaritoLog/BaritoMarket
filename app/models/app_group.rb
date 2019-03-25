@@ -26,7 +26,7 @@ class AppGroup < ApplicationRecord
         env,
         name: params[:name],
         app_group_id: app_group.id,
-        component_template_id: params[:component_template_id],
+        cluster_template_id: params[:cluster_template_id],
       )
 
       [app_group, infrastructure]

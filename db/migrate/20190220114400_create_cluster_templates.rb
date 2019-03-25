@@ -1,6 +1,6 @@
-class CreateComponentTemplates < ActiveRecord::Migration[5.2]
+class CreateClusterTemplates < ActiveRecord::Migration[5.2]
   def change
-    create_table :component_templates do |t|
+    create_table :cluster_templates do |t|
       t.string :env
       t.string :name
       t.string :max_tps
@@ -8,6 +8,6 @@ class CreateComponentTemplates < ActiveRecord::Migration[5.2]
       t.jsonb :kafka_options
       t.timestamps null: false
     end
-    add_index :component_templates, :name
+    add_index :cluster_templates, :name
   end
 end

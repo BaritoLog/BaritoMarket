@@ -1,10 +1,10 @@
-= form_with(model: component_template, local: true) do|f|
+= form_with(model: cluster_template, local: true) do|f|
   .form-group
     = f.label :env
     = f.text_field :env, class: 'form-control', placeholder: 'Name of your environment'
   .form-group
     = f.label :name
-    = f.text_field :name, class: 'form-control', placeholder: 'Name of your component'
+    = f.text_field :name, class: 'form-control', placeholder: 'Name of your cluster template'
   .form-group
     = f.label :max_tps
     = f.text_field :max_tps, class: 'form-control', placeholder: 'Value of your TPS'

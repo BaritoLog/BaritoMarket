@@ -76,7 +76,7 @@ class AppGroupsController < ApplicationController
   def app_group_params
     params.require(:app_group).permit(
       :name,
-      :component_template_id,
+      :cluster_template_id,
     )
   end
 

@@ -13,5 +13,5 @@ GroupUser.create(user: user, group: global_viewer_group)
   AppGroupRole.create(name: role)
 end
 
-load "#{::Rails.root}/db/seeds/master_data/component_template.rb"
+load "#{::Rails.root}/db/seeds/master_data/cluster_template.rb"
 load "#{::Rails.root}/db/seeds/master_data/component_property.rb"

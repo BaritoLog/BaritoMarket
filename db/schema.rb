@@ -61,15 +61,7 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.index ["status"], name: "index_barito_apps_on_status"
   end
 
-  create_table "component_properties", force: :cascade do |t|
-    t.string "name"
-    t.jsonb "component_attributes"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_component_properties_on_name", unique: true
-  end
-
-  create_table "component_templates", force: :cascade do |t|
+  create_table "cluster_templates", force: :cascade do |t|
     t.string "env"
     t.string "name"
     t.string "max_tps"
@@ -77,7 +69,15 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.jsonb "kafka_options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_component_templates_on_name"
+    t.index ["name"], name: "index_cluster_templates_on_name"
+  end
+
+  create_table "component_properties", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "component_attributes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_component_properties_on_name", unique: true
   end
 
   create_table "ext_apps", force: :cascade do |t|
@@ -133,9 +133,9 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.bigint "app_group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "component_template_id"
+    t.integer "cluster_template_id"
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
-    t.index ["component_template_id"], name: "index_infrastructures_on_component_template_id"
+    t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
     t.index ["status"], name: "index_infrastructures_on_status"
   end
 
@@ -155,5 +155,5 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
   end
 
   add_foreign_key "ext_apps", "users", column: "created_by_id"
-  add_foreign_key "infrastructures", "component_templates"
+  add_foreign_key "infrastructures", "cluster_templates"
 end

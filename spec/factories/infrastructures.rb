@@ -7,6 +7,6 @@ FactoryBot.define do
     status                Infrastructure.statuses[:inactive]
     consul_host           Faker::Internet.domain_name
     association           :app_group
-    association           :component_template
+    association           :cluster_template
   end
 end

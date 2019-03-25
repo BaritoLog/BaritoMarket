@@ -1,9 +1,9 @@
 class Infrastructure < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
-  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, :component_template, presence: true
+  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, :cluster_template, presence: true
 
   belongs_to :app_group
-  belongs_to :component_template
+  belongs_to :cluster_template
   has_many :infrastructure_components
 
   enum statuses: {
@@ -36,20 +36,20 @@ class Infrastructure < ApplicationRecord
   }
 
   def self.setup(env, params)
-    component_template = ComponentTemplate.find(params[:component_template_id])
+    cluster_template = ClusterTemplate.find(params[:cluster_template_id])
     infrastructure = Infrastructure.new(
       name:                 params[:name],
       cluster_name: Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
-      capacity:             component_template.name,
+      capacity:             cluster_template.name,
       provisioning_status:  Infrastructure.provisioning_statuses[:pending],
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
-      component_template_id: component_template.id,
+      cluster_template_id:  cluster_template.id,
     )
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(env, component_template.instances)
+      components = infrastructure.generate_components(env, cluster_template.instances)
       BlueprintWorker.perform_async(
         components,
         infrastructure_id: infrastructure.id

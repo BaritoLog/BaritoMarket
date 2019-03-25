@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 
 ### Staging
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "staging",
   name: "Staging - Small",
   max_tps: 100,
@@ -23,7 +23,7 @@ ComponentTemplate.create!(
   kafka_options: {"partition": 1, "replication_factor": 1}
 )
 
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "staging",
   name: "Staging - Medium",
   max_tps: 500,
@@ -40,7 +40,7 @@ ComponentTemplate.create!(
   kafka_options: {"partition": 5, "replication_factor": 3}
 )
 
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "staging",
   name: "Staging - Large",
   max_tps: 1000,
@@ -58,7 +58,7 @@ ComponentTemplate.create!(
 )
 
 ### Production
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "production",
   name: "Production - Small",
   max_tps: 100,
@@ -75,7 +75,7 @@ ComponentTemplate.create!(
   kafka_options: {"partition": 1, "replication_factor": 1}
 )
 
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "production",
   name: "Production - Medium",
   max_tps: 500,
@@ -92,7 +92,7 @@ ComponentTemplate.create!(
   kafka_options: {"partition": 5, "replication_factor": 3}
 )
 
-ComponentTemplate.create!(
+ClusterTemplate.create!(
   env: "production",
   name: "Production - Large",
   max_tps: 1000,

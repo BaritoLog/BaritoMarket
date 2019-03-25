@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :component_template do
+  factory :cluster_template do
     env             %w(staging integration production).sample
     name            Faker::Lorem.word.underscore
     max_tps         [100, 500, 1000].sample

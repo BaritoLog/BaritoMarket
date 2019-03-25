@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Infrastructure, type: :model do
   describe 'Add Infrastructure Component' do
     let(:infrastructure) { create :infrastructure }
-    let(:component_template) { create :component_template }
+    let(:cluster_template) { create :cluster_template }
     let(:env) { Rails.env }
     before(:each) do
-      @components = infrastructure.generate_components(env, component_template.instances)
+      @components = infrastructure.generate_components(env, cluster_template.instances)
     end
 
     it 'should generate correct number of components' do
@@ -19,7 +19,7 @@ RSpec.describe Infrastructure, type: :model do
   end
 
   context 'Setup Application' do
-    let(:component_template) { create :component_template }
+    let(:cluster_template) { create :cluster_template }
     let(:infrastructure_props) { build(:infrastructure) }
 
     before do
@@ -36,7 +36,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
-        component_template_id: component_template.id,
+        cluster_template_id: cluster_template.id,
       )
       expect(infrastructure.persisted?).to eq(true)
       expect(infrastructure.provisioning_status).to eq(Infrastructure.provisioning_statuses[:pending])
@@ -49,7 +49,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: 'invalid_group',
-        component_template_id: component_template.id,
+        cluster_template_id: cluster_template.id,
       )
       expect(infrastructure.persisted?).to eq(false)
       expect(infrastructure.valid?).to eq(false)
@@ -61,7 +61,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
-        component_template_id: component_template.id,
+        cluster_template_id: cluster_template.id,
       )
       expect(infrastructure.cluster_name).to eq(
         Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
@@ -143,7 +143,7 @@ RSpec.describe Infrastructure, type: :model do
 
   describe '#allow_delete?' do
     let(:infrastructure_props) { build(:infrastructure) }
-    let(:component_template) { create(:component_template) }
+    let(:cluster_template) { create(:cluster_template) }
 
     it 'should return true if infrastructure can be deleted' do
       infrastructure = Infrastructure.setup(
@@ -151,7 +151,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
-        component_template_id: component_template.id,
+        cluster_template_id: cluster_template.id,
       )
       infrastructure.update_status('INACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
@@ -164,7 +164,7 @@ RSpec.describe Infrastructure, type: :model do
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
-        component_template_id: component_template.id,
+        cluster_template_id: cluster_template.id,
       )
       infrastructure.update_status('ACTIVE')
       infrastructure.update_provisioning_status('FINISHED')

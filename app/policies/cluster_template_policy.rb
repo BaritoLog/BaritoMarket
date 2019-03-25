@@ -1,4 +1,4 @@
-class ComponentTemplatePolicy < ApplicationPolicy
+class ClusterTemplatePolicy < ApplicationPolicy
   def index?
     return true if is_barito_superadmin?
     false

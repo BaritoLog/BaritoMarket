@@ -2,10 +2,10 @@
   .col-md-6
     - if flash.key?(:messages)
       .alert.alert-danger
-        b Issue creating component template
+        b Issue creating cluster template
         br
         - flash[:messages].each do |msg|
           = "- #{msg}"
           br
-    #new_component_template
-      = render 'form', component_template: @component_template
+    #new_cluster_template
+      = render 'form', cluster_template: @cluster_template

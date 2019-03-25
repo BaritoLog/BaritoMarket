@@ -98,7 +98,7 @@ Rails.application.routes.draw do
   resources :infrastructure_components,
     only: %i[edit update],
     defaults: { format: :html }
-  resources :component_templates,
+  resources :cluster_templates,
     defaults: { format: :html }
   resources :component_properties,
     defaults: { format: :html }

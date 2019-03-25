@@ -1,0 +1,28 @@
+.row
+  .col-sm-12
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue deleting cluster template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+.row
+  .col-sm-6
+    h3.mb-3 All Cluster Templates
+  .col-sm-6
+    .float-right
+      = link_to 'New Cluster Templates', new_cluster_template_path, class: 'btn btn-outline-primary'
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th Name
+      th.text-center Actions
+  tbody
+    - if @cluster_templates.empty?
+      tr
+        td = 'No cluster template yet'
+    - @cluster_templates.each do |cluster_template|
+      tr
+        td.text-center = link_to cluster_template.name, cluster_template_path(cluster_template)
+        td.text-center = link_to 'Delete', cluster_template_path(cluster_template), data: { method: :delete }
