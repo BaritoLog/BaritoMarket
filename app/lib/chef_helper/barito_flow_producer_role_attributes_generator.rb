@@ -9,7 +9,7 @@ module ChefHelper
       @max_tps = component.infrastructure.cluster_template.try(:max_tps) || TPS_CONFIG[component.infrastructure.capacity]['max_tps'] || 10
       @role_name = opts[:role_name] || 'barito-flow-producer'
       @ipaddress = component.ipaddress
-      producer_property = ComponentProperty.find_by(name: 'barito-flow-producer')
+      producer_property = ComponentTemplate.find_by(name: 'barito-flow-producer')
       @producer_attrs = producer_property.component_attributes
       kafka_hosts_and_port = kafka_hosts.
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }

@@ -10,7 +10,7 @@ module ChefHelper
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
-      zookeeper_property = ComponentProperty.find_by(name: 'zookeeper')
+      zookeeper_property = ComponentTemplate.find_by(name: 'zookeeper')
       @zookeeper_attrs = zookeeper_property.component_attributes
     end
 

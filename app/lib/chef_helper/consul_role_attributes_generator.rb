@@ -5,7 +5,7 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'consul'
       @ipaddress = component.ipaddress
-      consul_property = ComponentProperty.find_by(name: 'consul')
+      consul_property = ComponentTemplate.find_by(name: 'consul')
       @consul_attrs = consul_property.component_attributes
     end
 

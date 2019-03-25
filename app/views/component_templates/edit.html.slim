@@ -1,11 +1,12 @@
 .row.justify-content-center
   .col-md-6
+    h3 Edit Component Property
     - if flash.key?(:messages)
       .alert.alert-danger
-        b Issue creating component property
+        b Issue editing component property
         br
         - flash[:messages].each do |msg|
           = "- #{msg}"
           br
-    #new_component_property
-      = render 'form', component_property: @component_property
+    #edit_component_template
+      = render 'form', component_template: @component_template

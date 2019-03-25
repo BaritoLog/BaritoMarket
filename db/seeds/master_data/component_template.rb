@@ -5,7 +5,7 @@
 # Seeds
 # -----------------------------------------------------------------------------
 
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "consul",
   component_attributes: {
     "consul": 
@@ -18,7 +18,7 @@ ComponentProperty.create!(
     "run_list": ["role[consul]"]
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "zookeeper",
   component_attributes: {
     "consul":{
@@ -37,7 +37,7 @@ ComponentProperty.create!(
     "zookeeper":{"hosts":[""],"my_id":1}
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "kafka",
   component_attributes: {
     "kafka":{
@@ -59,7 +59,7 @@ ComponentProperty.create!(
     "run_list":["role[kafka]", "recipe[datadog::default]", "recipe[datadog::kafka_datadog]"]
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "elasticsearch",
   component_attributes: {
     "consul":{
@@ -89,7 +89,7 @@ ComponentProperty.create!(
     }
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "barito-flow-producer",
   component_attributes: {
     "consul":{
@@ -114,7 +114,7 @@ ComponentProperty.create!(
     }
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "barito-flow-consumer",
   component_attributes: {
     "consul":{
@@ -140,7 +140,7 @@ ComponentProperty.create!(
     }
   }
 )
-ComponentProperty.create!(
+ComponentTemplate.create!(
   name: "kibana",
   component_attributes: {
     "consul":{

@@ -1,27 +1,27 @@
 require 'rails_helper'
 
-RSpec.feature 'Component property Management', type: :feature do
+RSpec.feature 'Component template Management', type: :feature do
   let(:user_a) { create(:user) }
   before(:each) do
-    @component_property = create(:component_property)
+    @component_template = create(:component_template)
   end
 
-  describe 'Component property' do
-    context 'Update component property' do
-      scenario 'User can edit component property' do
+  describe 'Component template' do
+    context 'Update component template' do
+      scenario 'User can edit component template' do
         set_check_user_groups({ 'groups': ['barito-superadmin'] })
         login_as user_a
-        prep_component_property = build(:component_property)
+        prep_component_template = build(:component_template)
 
-        visit component_property_path(@component_property)
+        visit component_template_path(@component_template)
 
         click_link 'Edit'
-        within('#edit_component_property') do
-          fill_in 'component_property[name]', with: prep_component_property.name
+        within('#edit_component_template') do
+          fill_in 'component_template[name]', with: prep_component_template.name
         end
 
         click_button 'Submit'
-        expect(page).to have_content(prep_component_property.name)
+        expect(page).to have_content(prep_component_template.name)
       end
     end
   end

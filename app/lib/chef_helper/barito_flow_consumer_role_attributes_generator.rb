@@ -11,7 +11,7 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'barito-flow-consumer'
       @ipaddress = component.ipaddress
-      consumer_property = ComponentProperty.find_by(name: 'barito-flow-consumer')
+      consumer_property = ComponentTemplate.find_by(name: 'barito-flow-consumer')
       @consumer_attrs = consumer_property.component_attributes
 
       kafka_hosts_and_port = kafka_hosts.

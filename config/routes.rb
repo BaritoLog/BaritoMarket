@@ -100,7 +100,7 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :cluster_templates,
     defaults: { format: :html }
-  resources :component_properties,
+  resources :component_templates,
     defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }

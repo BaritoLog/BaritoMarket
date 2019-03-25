@@ -7,7 +7,7 @@
 
           dt.col-sm-3 Name:
           dd.col-sm-9
-            = @component_property.name
+            = @component_template.name
 
           dt.col-sm-3 Attributes:
           dd.col-sm-9
@@ -17,8 +17,8 @@
 
       .card-footer.text-right
         .btn.btn-primary.btn-sm.float-right
-          = link_to 'Back to Component Properties', component_properties_path, class: 'text-light', style: 'text-decoration:none'
+          = link_to 'Back to Component Templates', component_templates_path, class: 'text-light', style: 'text-decoration:none'
         .btn.btn-success.btn-sm.mr-2
-          = link_to 'Edit', edit_component_property_path(@component_property), class: 'text-light', style: 'text-decoration:none'
+          = link_to 'Edit', edit_component_template_path(@component_template), class: 'text-light', style: 'text-decoration:none'
 br
 br

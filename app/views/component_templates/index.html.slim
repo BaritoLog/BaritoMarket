@@ -1,0 +1,28 @@
+.row
+  .col-sm-12
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue deleting component template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+.row
+  .col-sm-6
+    h3.mb-3 All Component Templates
+  .col-sm-6
+    .float-right
+      = link_to 'New Component Template', new_component_template_path, class: 'btn btn-outline-primary'
+table.table.table-bordered
+  thead.thead-dark
+    tr
+      th Name
+      th.text-center Actions
+  tbody
+    - if @component_templates.empty?
+      tr
+        td = 'No component template yet'
+    - @component_templates.each do |component_template|
+      tr
+        td.text-center = link_to component_template.name, component_template_path(component_template)
+        td.text-center = link_to 'Delete', component_template_path(component_template), data: { method: :delete }
