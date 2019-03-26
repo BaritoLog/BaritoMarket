@@ -15,7 +15,7 @@ ComponentTemplate.create!(
           "consul.json": {"bind_addr": ""}
       }
     }, 
-    "run_list": ["role[consul]"]
+    "run_list": []
   }
 )
 ComponentTemplate.create!(
@@ -33,8 +33,8 @@ ComponentTemplate.create!(
       "datadog_api_key":"",
       "datadog_hostname":""
     },
-    "run_list":["role[zookeeper]", "recipe[datadog::default]", "recipe[datadog::zk_datadog]"],
-    "zookeeper":{"hosts":[""],"my_id":1}
+    "run_list":[],
+    "zookeeper":{"hosts":[""],"my_id":""}
   }
 )
 ComponentTemplate.create!(
@@ -56,7 +56,7 @@ ComponentTemplate.create!(
       "datadog_api_key":"", 
       "datadog_hostname":""
     }, 
-    "run_list":["role[kafka]", "recipe[datadog::default]", "recipe[datadog::kafka_datadog]"]
+    "run_list":[]
   }
 )
 ComponentTemplate.create!(
@@ -74,17 +74,12 @@ ComponentTemplate.create!(
       "datadog_api_key":"", 
       "datadog_hostname":""
     }, 
-    "run_list":[
-      "role[elasticsearch]", 
-      "recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]", 
-      "recipe[datadog::default]", 
-      "recipe[datadog::elastic_datadog]"
-    ], 
+    "run_list":[], 
     "elasticsearch":{
       "version":"6.3.0", 
-      "cluster_name":"guja", 
       "allocated_memory":12000000, 
       "max_allocated_memory":16000000, 
+      "cluster_name":"", 
       "index_number_of_replicas":0
     }
   }
@@ -97,17 +92,17 @@ ComponentTemplate.create!(
       "config":{"consul.json":{"bind_addr":""}}, 
       "run_as_server":false
     }, 
-    "run_list":["role[barito-flow-producer]"], 
+    "run_list":[], 
     "barito-flow":{
       "producer":{
         "version":"v0.11.8", 
         "env_vars":{
-          "BARITO_CONSUL_URL":"", 
-          "BARITO_KAFKA_BROKERS":"", 
           "BARITO_PRODUCER_ADDRESS":":8080",
-          "BARITO_PRODUCER_MAX_TPS":100, 
+          "BARITO_CONSUL_URL":"", 
           "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-          "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log", 
+          "BARITO_KAFKA_BROKERS":"", 
+          "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log",
+          "BARITO_PRODUCER_MAX_TPS":0, 
           "BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL":10
         }
       }
@@ -122,19 +117,19 @@ ComponentTemplate.create!(
       "config":{"consul.json":{"bind_addr":""}}, 
       "run_as_server":false
     }, 
-    "run_list":["role[barito-flow-consumer]"], 
+    "run_list":[], 
     "barito-flow":{
       "consumer":{
         "version":"v0.11.8", 
         "env_vars":{
-          "BARITO_CONSUL_URL":"", 
+          "BARITO_CONSUL_URL":"",
+          "BARITO_CONSUL_KAFKA_NAME":"kafka", 
+          "BARITO_CONSUL_ELASTICSEARCH_NAME":"elasticsearch",
           "BARITO_KAFKA_BROKERS":"", 
           "BARITO_KAFKA_GROUP_ID":"barito-group", 
-          "BARITO_PUSH_METRIC_URL":"https://barito.golabs.io/api/increase_log_count", 
-          "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-          "BARITO_ELASTICSEARCH_URL":"", 
           "BARITO_KAFKA_CONSUMER_TOPICS":"barito-log", 
-          "BARITO_CONSUL_ELASTICSEARCH_NAME":"elasticsearch"
+          "BARITO_ELASTICSEARCH_URL":"", 
+          "BARITO_PUSH_METRIC_URL":"https://barito.golabs.io/api/increase_log_count"
         }
       }
     }
@@ -155,6 +150,6 @@ ComponentTemplate.create!(
       }, 
       "version":"6.3.0"
     }, 
-    "run_list":["role[kibana]"]
+    "run_list":[]
   }
 )

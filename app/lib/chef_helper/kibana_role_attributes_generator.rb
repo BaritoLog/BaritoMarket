@@ -20,11 +20,9 @@ module ChefHelper
     end
 
     def update_attrs
-      @kibana_attrs['kibana']['version'] = '6.3.0'
       @kibana_attrs['kibana']['config']['elasticsearch.url'] = @elasticsearch_url
       @kibana_attrs['kibana']['config']['server.basePath'] = "/#{@base_path}"
       @kibana_attrs['consul']['hosts'] = @consul_hosts
-      @kibana_attrs['consul']['run_as_server'] = false
       @kibana_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @kibana_attrs['run_list'] = ["role[#{@role_name}]"]
 

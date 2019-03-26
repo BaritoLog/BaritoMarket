@@ -24,7 +24,6 @@ module ChefHelper
       @kafka_attrs['kafka']['zookeeper']['hosts'] = @zookeeper_hosts
       @kafka_attrs['kafka']['kafka']['hosts'] = @hosts
       @kafka_attrs['consul']['hosts'] = @consul_hosts
-      @kafka_attrs['consul']['run_as_server'] = false
       @kafka_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @kafka_attrs['run_list'] = ["role[#{@role_name}]"]
 

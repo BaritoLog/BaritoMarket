@@ -25,13 +25,9 @@ module ChefHelper
     end
 
     def update_attrs
-      @elastic_attrs['elasticsearch']['version'] = '6.3.0'
-      @elastic_attrs['elasticsearch']['allocated_memory'] = 12000000
-      @elastic_attrs['elasticsearch']['max_allocated_memory'] = 16000000
       @elastic_attrs['elasticsearch']['cluster_name'] = @cluster_name
       @elastic_attrs['elasticsearch']['index_number_of_replicas'] = @index_number_of_replicas
       @elastic_attrs['consul']['hosts'] = @consul_hosts
-      @elastic_attrs['consul']['run_as_server'] = false
       @elastic_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @elastic_attrs['run_list'] = ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
 

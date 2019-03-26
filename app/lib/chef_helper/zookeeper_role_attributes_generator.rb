@@ -23,7 +23,6 @@ module ChefHelper
       @zookeeper_attrs['zookeeper']['hosts'] = @hosts
       @zookeeper_attrs['zookeeper']['my_id'] = @my_id
       @zookeeper_attrs['consul']['hosts'] = @consul_hosts
-      @zookeeper_attrs['consul']['run_as_server'] = false
       @zookeeper_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @zookeeper_attrs['run_list'] = ["role[#{@role_name}]"]
 
