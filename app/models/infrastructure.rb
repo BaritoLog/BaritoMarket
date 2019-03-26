@@ -132,16 +132,17 @@ class Infrastructure < ApplicationRecord
 
   def generate_components(env, instances)
     components = []
-    instances.each do |type, value|
-      components += (1..value["count"]).map { |number| component_hash(type, number, env, value["seq"]) }
+    instances.each do |instance|
+
+      components += (1..instance["count"]).map { |number| component_hash(instance["name"], number, env) }
     end
     components.sort_by {|obj| obj[:seq]}
   end
 
   private
 
-  def component_hash(type, count, env, seq)
+  def component_hash(type, count, env)
     name = "#{Infrastructure.env_prefixes[env.to_sym]}-#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
-    { name: name, type: type, seq: seq }
+    { name: name, type: type}
   end
 end

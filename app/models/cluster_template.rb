@@ -3,7 +3,6 @@ class ClusterTemplate < ApplicationRecord
 
   validates :env, :name, :max_tps, :instances, :kafka_options, presence: true
 
-
   has_many :infrastructures
 end
 
