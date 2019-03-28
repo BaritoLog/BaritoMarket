@@ -46,6 +46,6 @@ class AppGroup < ApplicationRecord
   end
 
   def max_tps
-    TPS_CONFIG[self.infrastructure.capacity]['max_tps']
+    self.infrastructure.cluster_template.try(:max_tps)
   end
 end
