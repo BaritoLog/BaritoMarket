@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
   create_table "cluster_templates", force: :cascade do |t|
     t.string "env"
     t.string "name"
-    t.string "max_tps"
+    t.integer "max_tps"
     t.jsonb "instances"
     t.jsonb "kafka_options"
     t.datetime "created_at", null: false
