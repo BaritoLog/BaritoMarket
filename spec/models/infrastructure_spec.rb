@@ -4,15 +4,15 @@ RSpec.describe Infrastructure, type: :model do
   describe 'Add Infrastructure Component' do
     let(:infrastructure) { create :infrastructure }
     let(:cluster_template) { create :cluster_template }
-    let(:env) { Rails.env }
     before(:each) do
-      @components = infrastructure.generate_components(env, cluster_template.instances)
+      @components = infrastructure.generate_components(cluster_template.instances)
     end
 
     it 'should generate correct number of components' do
       @components.each_with_index do |node, seq|
         infrastructure.add_component(node, seq + 1)
       end
+      
       expect(infrastructure.infrastructure_components.count).
         to eq(@components.count)
     end
@@ -32,7 +32,6 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should create the infrastructure' do
       infrastructure = Infrastructure.setup(
-        Rails.env,
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: infrastructure_props.app_group_id,
@@ -45,7 +44,6 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'shouldn\'t create infrastructure if app_group is invalid' do
       infrastructure = Infrastructure.setup(
-        Rails.env,
         name: infrastructure_props.name,
         capacity: infrastructure_props.capacity,
         app_group_id: 'invalid_group',

@@ -17,9 +17,7 @@ RSpec.feature 'Cluster Template Management', type: :feature do
 
         click_link 'New Cluster Template'
         within('#new_cluster_template') do
-          fill_in 'cluster_template[env]', with: prep_cluster_template.env
           fill_in 'cluster_template[name]', with: prep_cluster_template.name
-          fill_in 'cluster_template[max_tps]', with: prep_cluster_template.max_tps
           fill_in 'cluster_template[instances]', with: prep_cluster_template.instances.to_json
           fill_in 'cluster_template[kafka_options]', with: prep_cluster_template.kafka_options.to_json
         end

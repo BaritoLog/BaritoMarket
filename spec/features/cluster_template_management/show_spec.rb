@@ -15,9 +15,7 @@ RSpec.feature 'Cluster Template Management', type: :feature do
         login_as user
 
         visit cluster_template_path(@cluster_template.id)
-        expect(page).to have_content(@cluster_template.env)
         expect(page).to have_content(@cluster_template.name)
-        expect(page).to have_content(@cluster_template.max_tps)
       end
     end
   end

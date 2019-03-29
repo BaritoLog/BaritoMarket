@@ -7,9 +7,7 @@
 
 ### Staging
 ClusterTemplate.create!(
-  env: "staging",
-  name: "Staging - Small",
-  max_tps: 100,
+  name: "Small",
   instances: [
     {
       "name": "yggdrasil",
@@ -48,9 +46,7 @@ ClusterTemplate.create!(
 )
 
 ClusterTemplate.create!(
-  env: "staging",
-  name: "Staging - Medium",
-  max_tps: 500,
+  name: "Medium",
   instances: [
     {
       "name": "yggdrasil",
@@ -89,9 +85,7 @@ ClusterTemplate.create!(
 )
 
 ClusterTemplate.create!(
-  env: "staging",
-  name: "Staging - Large",
-  max_tps: 1000,
+  name: "Large",
   instances: [
     {
       "name": "yggdrasil",

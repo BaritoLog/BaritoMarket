@@ -17,12 +17,10 @@ RSpec.feature 'Cluster Template Management', type: :feature do
 
         click_link 'Edit'
         within('#edit_cluster_template') do
-          fill_in 'cluster_template[env]', with: prep_cluster_template.env
           fill_in 'cluster_template[name]', with: prep_cluster_template.name
         end
 
         click_button 'Submit'
-        expect(page).to have_content(prep_cluster_template.env)
         expect(page).to have_content(prep_cluster_template.name)
       end
     end

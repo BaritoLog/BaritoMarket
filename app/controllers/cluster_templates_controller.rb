@@ -63,9 +63,7 @@ class ClusterTemplatesController < ApplicationController
 
   def cluster_template_params
     params.require(:cluster_template).permit(
-      :env,
       :name,
-      :max_tps,
       :instances,
       :kafka_options
     )

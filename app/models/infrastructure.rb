@@ -25,17 +25,8 @@ class Infrastructure < ApplicationRecord
     delete_error: 'DELETE_ERROR',
     deleted: 'DELETED',
   }
-  enum env_prefixes: {
-    production: 'p', 
-    staging: 's', 
-    development: 'd', 
-    uat: 'u', 
-    internal: 'i', 
-    integration: 'g', 
-    test: 't',
-  }
 
-  def self.setup(env, params)
+  def self.setup(params)
     cluster_template = ClusterTemplate.find(params[:cluster_template_id])
     infrastructure = Infrastructure.new(
       name:                 params[:name],
@@ -49,7 +40,7 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(env, cluster_template.instances)
+      components = infrastructure.generate_components(cluster_template.instances)
       BlueprintWorker.perform_async(
         components,
         infrastructure_id: infrastructure.id
@@ -130,19 +121,19 @@ class Infrastructure < ApplicationRecord
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 
-  def generate_components(env, instances)
+  def generate_components(instances)
     components = []
     instances.each do |instance|
 
-      components += (1..instance["count"]).map { |number| component_hash(instance["name"], number, env) }
+      components += (1..instance["count"]).map { |number| component_hash(instance["name"], number) }
     end
     components.sort_by {|obj| obj[:seq]}
   end
 
   private
 
-  def component_hash(type, count, env)
-    name = "#{Infrastructure.env_prefixes[env.to_sym]}-#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
+  def component_hash(type, count)
+    name = "#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
     { name: name, type: type}
   end
 end
