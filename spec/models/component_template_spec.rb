@@ -9,6 +9,7 @@ RSpec.describe ComponentTemplate, type: :model do
         name: component_template_props.name,
         component_attributes: component_template_props.component_attributes,
       )
+      
       expect(component_template.persisted?).to eq(true)
     end
   end
@@ -24,6 +25,7 @@ RSpec.describe ComponentTemplate, type: :model do
         name: @component_template.name,
         component_attributes: component_template_props.component_attributes,
       )
+      
       expect(component_template.persisted?).to eq(false)
     end
   end

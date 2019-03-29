@@ -13,6 +13,7 @@ RSpec.describe BaritoApp, type: :model do
         max_tps: barito_app_props.max_tps,
         status: BaritoApp.statuses[:active],
       )
+      
       expect(barito_app.persisted?).to eq(true)
       expect(barito_app.status).to eq(BaritoApp.statuses[:active])
     end
@@ -26,6 +27,7 @@ RSpec.describe BaritoApp, type: :model do
         max_tps: barito_app_props.max_tps,
         status: BaritoApp.statuses[:active],
       )
+      
       expect(barito_app.topic_name).to eq('test-topic-name')
     end
   end
@@ -35,12 +37,14 @@ RSpec.describe BaritoApp, type: :model do
 
     it 'shouldn\'t update status for invalid status type' do
       status_update = barito_app.update_status('sample')
+      
       expect(status_update).to eq(false)
     end
 
     it 'should update barito_app status' do
       status = BaritoApp.statuses.keys.sample
       status_update = barito_app.update_status(status)
+      
       expect(status_update).to eq(true)
       expect(barito_app.status.downcase).to eq(status)
     end
@@ -62,6 +66,7 @@ RSpec.describe BaritoApp, type: :model do
     it 'should generate uuid without \'-\'' do
       key = SecureRandom.uuid
       allow(SecureRandom).to receive(:uuid).and_return(key)
+      
       expect(BaritoApp.generate_key).to eq(key.gsub('-', ''))
     end
   end

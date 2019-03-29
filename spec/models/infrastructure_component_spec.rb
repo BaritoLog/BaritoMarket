@@ -6,12 +6,14 @@ RSpec.describe InfrastructureComponent, type: :model do
 
     it 'shouldn\'t update status for invalid status type' do
       status_update = infrastructure_component.update_status('sample')
+      
       expect(status_update).to eq(false)
     end
 
     it 'should update infrastructure_component status' do
       status = InfrastructureComponent.statuses.keys.sample
       status_update = infrastructure_component.update_status(status)
+      
       expect(status_update).to eq(true)
       expect(infrastructure_component.status.downcase).to eq(status)
     end
@@ -19,6 +21,7 @@ RSpec.describe InfrastructureComponent, type: :model do
     it 'should update infrastructure_component message with status if there is no message from response' do
       status = InfrastructureComponent.statuses.keys.sample
       status_update = infrastructure_component.update_status(status)
+      
       expect(status_update).to eq(true)
       expect(infrastructure_component.message.downcase).to eq(status)
     end
@@ -27,6 +30,7 @@ RSpec.describe InfrastructureComponent, type: :model do
       message = '{"success": "200"}'
       status = InfrastructureComponent.statuses.keys.sample
       status_update = infrastructure_component.update_status(status, message)
+      
       expect(status_update).to eq(true)
       expect(infrastructure_component.message).to eq(message)
     end
@@ -36,12 +40,14 @@ RSpec.describe InfrastructureComponent, type: :model do
     it 'should return true if component provisioning can be retried' do
       infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
       infrastructure_component = build(:infrastructure_component, status: 'PROVISIONING_ERROR', infrastructure: infrastructure)
+      
       expect(infrastructure_component.allow_provision?).to eq true
     end
 
     it 'should return true if infrastructure provisioning is error' do
       infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
       infrastructure_component = build(:infrastructure_component, status: 'PENDING', infrastructure: infrastructure)
+      
       expect(infrastructure_component.allow_provision?).to eq true
     end
   end
@@ -57,12 +63,14 @@ RSpec.describe InfrastructureComponent, type: :model do
 
     it 'should allow to retry_bootstrap if component status is FINISHED' do
       status_update = infrastructure_component.update_status('FINISHED')
+      
       expect(status_update).to eq(true)
       expect(infrastructure_component.allow_bootstrap?).to eq true
     end
 
     it 'should return false if component bootstrapping cannot be retried' do
       status_update = infrastructure_component.update_status('PROVISIONING_FINISHED')
+      
       expect(status_update).to eq(true)
       expect(infrastructure_component.allow_bootstrap?).to eq false
     end

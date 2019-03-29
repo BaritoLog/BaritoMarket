@@ -8,6 +8,7 @@ RSpec.describe Blueprint, type: :model do
     it 'should generate filename' do
       blueprint = Blueprint.new(infrastructure, env)
       name = "#{infrastructure.cluster_name}_#{Time.now.strftime('%Y%m%d%H%M%S')}"
+      
       expect(blueprint.filename).to eq(name)
     end
   end
@@ -21,12 +22,14 @@ RSpec.describe Blueprint, type: :model do
       blueprint = Blueprint.new(infrastructure, env)
       capacity = config[env][infrastructure.capacity]
       node_count = capacity['instances'].values.inject(:+)
+      
       expect(node_count).to eq(blueprint.generate_nodes.count)
     end
 
     it 'should validate node hash' do
       blueprint = Blueprint.new(infrastructure, env)
       nodes = blueprint.generate_nodes
+      
       nodes.each do |node|
         expect(node.key?(:name) && node.key?(:type)).to eq(true)
       end
@@ -43,6 +46,7 @@ RSpec.describe Blueprint, type: :model do
             format('%02d', number)
         end
       end
+      
       nodes.each do |node|
         expect(names.include?(node[:name])).to eq(true)
       end
@@ -71,6 +75,7 @@ RSpec.describe Blueprint, type: :model do
 
     it 'should create blueprint file' do
       @blueprint.generate_file
+      
       expect(File.exist?(@file_path)).to eq(true)
     end
 
@@ -84,6 +89,7 @@ RSpec.describe Blueprint, type: :model do
         environment: env,
         nodes: nodes,
       }
+      
       expect(content).to eq(blueprint_content.to_json)
     end
 
