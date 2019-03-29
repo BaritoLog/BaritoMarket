@@ -37,6 +37,6 @@ FactoryBot.define do
                         }
                       ]
                     }
-    kafka_options   { {"partition": 1, "replication_factor": 1} }
+    options   { {"partition": 1, "replication_factor": 1, "max_tps": 100} }
   end
 end

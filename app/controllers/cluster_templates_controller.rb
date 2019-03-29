@@ -14,20 +14,20 @@ class ClusterTemplatesController < ApplicationController
   def edit
     authorize @cluster_template
     @instances = JSON.pretty_generate(@cluster_template.instances)
-    @kafka_options = JSON.pretty_generate(@cluster_template.kafka_options)
+    @options = JSON.pretty_generate(@cluster_template.options)
   end
 
   def show
     authorize @cluster_template
     @instances = JSON.pretty_generate(@cluster_template.instances)
-    @kafka_options = JSON.pretty_generate(@cluster_template.kafka_options)
+    @options = JSON.pretty_generate(@cluster_template.options)
   end
 
   def create
     authorize ClusterTemplate
     attributes = cluster_template_params.clone
     attributes[:instances] = JSON.parse(attributes[:instances])
-    attributes[:kafka_options] = JSON.parse(attributes[:kafka_options])
+    attributes[:options] = JSON.parse(attributes[:options])
     @cluster_template = ClusterTemplate.new(attributes)
 
     if @cluster_template.save
@@ -54,7 +54,7 @@ class ClusterTemplatesController < ApplicationController
     authorize @cluster_template
     attributes = cluster_template_params.clone
     attributes[:instances] = JSON.parse(attributes[:instances])
-    attributes[:kafka_options] = JSON.parse(attributes[:kafka_options])
+    attributes[:options] = JSON.parse(attributes[:options])
     @cluster_template.update_attributes(attributes)
     redirect_to cluster_template_path(@cluster_template)
   end
@@ -65,7 +65,7 @@ class ClusterTemplatesController < ApplicationController
     params.require(:cluster_template).permit(
       :name,
       :instances,
-      :kafka_options
+      :options
     )
   end
 

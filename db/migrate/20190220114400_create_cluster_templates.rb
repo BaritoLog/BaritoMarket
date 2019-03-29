@@ -3,7 +3,7 @@ class CreateClusterTemplates < ActiveRecord::Migration[5.2]
     create_table :cluster_templates do |t|
       t.string :name
       t.jsonb :instances
-      t.jsonb :kafka_options
+      t.jsonb :options
       t.timestamps null: false
     end
     add_index :cluster_templates, :name

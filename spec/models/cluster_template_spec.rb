@@ -9,8 +9,9 @@ RSpec.describe ClusterTemplate, type: :model do
       cluster_template = ClusterTemplate.create(
         name: cluster_template_props.name,
         instances: cluster_template_props.instances,
-        kafka_options: cluster_template_props.kafka_options,
+        options: cluster_template_props.options,
       )
+      
       expect(cluster_template.persisted?).to eq(true)
     end
   end
