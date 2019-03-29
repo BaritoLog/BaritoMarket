@@ -11,8 +11,8 @@ module ChefHelper
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
-      kafka_property = ComponentTemplate.find_by(name: 'kafka')
-      @kafka_attrs = kafka_property.component_attributes
+      kafka_template = ComponentTemplate.find_by(name: 'kafka')
+      @kafka_attrs = kafka_template.component_attributes
     end
 
     def generate

@@ -9,8 +9,8 @@ module ChefHelper
       @role_name = opts[:role_name] || 'kibana'
       @base_path = component.infrastructure.cluster_name
       @ipaddress = component.ipaddress
-      kibana_property = ComponentTemplate.find_by(name: 'kibana')
-      @kibana_attrs = kibana_property.component_attributes
+      kibana_template = ComponentTemplate.find_by(name: 'kibana')
+      @kibana_attrs = kibana_template.component_attributes
       @elasticsearch_url = "http://#{@elasticsearch_hosts.first}:#{@elasticsearch_port}"
     end
 

@@ -11,8 +11,8 @@ module ChefHelper
         infrastructure_components, 'category', 'consul')
       @role_name = opts[:role_name] || 'barito-flow-consumer'
       @ipaddress = component.ipaddress
-      consumer_property = ComponentTemplate.find_by(name: 'barito-flow-consumer')
-      @consumer_attrs = consumer_property.component_attributes
+      consumer_template = ComponentTemplate.find_by(name: 'barito-flow-consumer')
+      @consumer_attrs = consumer_template.component_attributes
 
       @kafka_hosts_and_port = kafka_hosts.
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }
@@ -27,7 +27,6 @@ module ChefHelper
     end
 
     def update_attrs
-      @consumer_attrs['barito-flow']['consumer']['version'] = 'v0.11.8'
       @consumer_attrs['barito-flow']['consumer']['env_vars']['BARITO_CONSUL_URL'] = "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}"
       @consumer_attrs['barito-flow']['consumer']['env_vars']['BARITO_KAFKA_BROKERS'] = @kafka_hosts_and_port
       @consumer_attrs['barito-flow']['consumer']['env_vars']['BARITO_ELASTICSEARCH_URL'] = @elasticsearch_url

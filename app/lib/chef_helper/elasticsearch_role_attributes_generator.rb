@@ -15,8 +15,8 @@ module ChefHelper
       else
         @index_number_of_replicas = 1
       end
-      elastic_property = ComponentTemplate.find_by(name: 'elasticsearch')
-      @elastic_attrs = elastic_property.component_attributes
+      elastic_template = ComponentTemplate.find_by(name: 'elasticsearch')
+      @elastic_attrs = elastic_template.component_attributes
     end
 
     def generate
