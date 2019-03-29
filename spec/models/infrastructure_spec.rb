@@ -33,10 +33,13 @@ RSpec.describe Infrastructure, type: :model do
     it 'should create the infrastructure' do
       infrastructure = Infrastructure.setup(
         name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
+        capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
       )
+      
       expect(infrastructure.persisted?).to eq(true)
       expect(infrastructure.provisioning_status).to eq(Infrastructure.provisioning_statuses[:pending])
       expect(infrastructure.status).to eq(Infrastructure.statuses[:inactive])
@@ -45,22 +48,27 @@ RSpec.describe Infrastructure, type: :model do
     it 'shouldn\'t create infrastructure if app_group is invalid' do
       infrastructure = Infrastructure.setup(
         name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
+        capacity: cluster_template.name,
         app_group_id: 'invalid_group',
         cluster_template_id: cluster_template.id,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
       )
+      
       expect(infrastructure.persisted?).to eq(false)
       expect(infrastructure.valid?).to eq(false)
     end
 
     it 'should generate cluster name' do
       infrastructure = Infrastructure.setup(
-        Rails.env,
         name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
+        capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
       )
+      
       expect(infrastructure.cluster_name).to eq(
         Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
       )
@@ -72,12 +80,14 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'shouldn\'t update status for invalid status type' do
       status_update = infrastructure.update_status('sample')
+      
       expect(status_update).to eq(false)
     end
 
     it 'should update infrastructure status' do
       status = Infrastructure.statuses.keys.sample
       status_update = infrastructure.update_status(status)
+      
       expect(status_update).to eq(true)
       expect(infrastructure.status.downcase).to eq(status)
     end
@@ -88,12 +98,14 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'shouldn\'t update status for invalid status type' do
       status_update = infrastructure.update_provisioning_status('sample')
+      
       expect(status_update).to eq(false)
     end
 
     it 'should update provisioning status' do
       status = Infrastructure.provisioning_statuses.keys.sample
       status_update = infrastructure.update_provisioning_status(status)
+      
       expect(status_update).to eq(true)
       expect(infrastructure.provisioning_status.downcase).to eq(status)
     end
@@ -105,6 +117,7 @@ RSpec.describe Infrastructure, type: :model do
       url = "#{Figaro.env.router_protocol}://"\
             "#{Figaro.env.router_domain}"\
             '/produce_batch'
+      
       expect(infrastructure.receiver_url).to eq(url)
     end
   end
@@ -114,6 +127,7 @@ RSpec.describe Infrastructure, type: :model do
     it 'should generate proper viewer url for logs' do
       url = "#{Figaro.env.viewer_protocol}://"\
             "#{infrastructure.cluster_name}.#{Figaro.env.viewer_domain}"
+      
       expect(infrastructure.viewer_url).to eq(url)
     end
   end
@@ -135,6 +149,7 @@ RSpec.describe Infrastructure, type: :model do
   describe '#provisioning_error?' do
     it 'should return true if provisioning is error' do
       infrastructure = build(:infrastructure, provisioning_status: 'PROVISIONING_ERROR')
+      
       expect(infrastructure.provisioning_error?).to eq true
     end
   end
@@ -145,27 +160,31 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should return true if infrastructure can be deleted' do
       infrastructure = Infrastructure.setup(
-        Rails.env,
         name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
+        capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
       )
       infrastructure.update_status('INACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
+      
       expect(infrastructure.allow_delete?).to eq true
     end
 
     it 'should return false if infrastructure cannot be deleted' do
       infrastructure = Infrastructure.setup(
-        Rails.env,
         name: infrastructure_props.name,
-        capacity: infrastructure_props.capacity,
+        capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
       )
       infrastructure.update_status('ACTIVE')
       infrastructure.update_provisioning_status('FINISHED')
+      
       expect(infrastructure.allow_delete?).to eq false
     end
   end

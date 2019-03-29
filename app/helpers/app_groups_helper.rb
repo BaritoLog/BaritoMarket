@@ -1,6 +1,6 @@
 module AppGroupsHelper
   def max_tps(infrastructure)
-    infrastructure.cluster_template.try(:max_tps)
+    infrastructure.options['max_tps']
   end
 
   def set_role_buttons(app_group_user, roles = {}, opts = {})

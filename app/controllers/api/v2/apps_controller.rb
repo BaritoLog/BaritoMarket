@@ -157,8 +157,8 @@ class Api::V2::AppsController < Api::V2::BaseController
         },
         kafka: {
           topic_name: app.topic_name,
-          partition: infrastructure.cluster_template.kafka_options['partition'],
-          replication_factor: infrastructure.cluster_template.kafka_options['replication_factor'],
+          partition: infrastructure.options['partition'],
+          replication_factor: infrastructure.options['replication_factor'],
           consumer_group: 'barito',
         },
         elasticsearch: {

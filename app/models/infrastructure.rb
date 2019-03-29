@@ -36,6 +36,8 @@ class Infrastructure < ApplicationRecord
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
       cluster_template_id:  cluster_template.id,
+      instances:            cluster_template.instances,
+      options:              cluster_template.options,
     )
 
     if infrastructure.valid?

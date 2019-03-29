@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_05_153600) do
+ActiveRecord::Schema.define(version: 2019_03_28_153951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,11 +62,9 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
   end
 
   create_table "cluster_templates", force: :cascade do |t|
-    t.string "env"
     t.string "name"
-    t.integer "max_tps"
     t.jsonb "instances"
-    t.jsonb "kafka_options"
+    t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_cluster_templates_on_name"
@@ -134,6 +132,8 @@ ActiveRecord::Schema.define(version: 2019_03_05_153600) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cluster_template_id"
+    t.jsonb "instances", default: {}, null: false
+    t.jsonb "options", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
     t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
     t.index ["status"], name: "index_infrastructures_on_status"

@@ -45,6 +45,6 @@ class AppGroup < ApplicationRecord
   end
 
   def max_tps
-    self.infrastructure.cluster_template.try(:max_tps)
+    self.infrastructure.options['max_tps'].to_i
   end
 end
