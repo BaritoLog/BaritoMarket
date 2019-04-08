@@ -8,7 +8,13 @@ RSpec.feature 'Barito App Management', type: :feature do
   before(:each) do
     set_check_user_groups({ 'groups' => [] })
     @app_group = create(:app_group)
-    create(:infrastructure, app_group: @app_group)
+    cluster_template = create(:cluster_template)
+    create(:infrastructure, 
+      app_group: @app_group, 
+      cluster_template_id: cluster_template.id,
+      instances: cluster_template.instances,
+      options: cluster_template.options,
+    )
     @barito_app = create(:barito_app, app_group: @app_group)
   end
 

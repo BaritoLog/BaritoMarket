@@ -95,6 +95,13 @@ Rails.application.routes.draw do
         delete :delete
       end
     end
+  resources :infrastructure_components,
+    only: %i[edit update],
+    defaults: { format: :html }
+  resources :cluster_templates,
+    defaults: { format: :html }
+  resources :component_templates,
+    defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }
 end

@@ -63,6 +63,7 @@ RSpec.describe 'App API', type: :request do
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
         headers: headers
+      
       expect(response.body).to eq [
         {
           hostname: infrastructure_component.hostname,
@@ -83,6 +84,7 @@ RSpec.describe 'App API', type: :request do
         create(:group, name: 'barito-superadmin')
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        
         get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: infrastructure.cluster_name, username: user_a[:username]  }, headers: headers
 
         expect(response.status).to eq 200
@@ -93,6 +95,7 @@ RSpec.describe 'App API', type: :request do
       it 'should return 403' do
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group)
+        
         get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: "some-random-name", username: "some-user"  }, headers: headers
 
         expect(response.status).to eq 403
@@ -103,6 +106,7 @@ RSpec.describe 'App API', type: :request do
       it 'should return 403' do
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
+        
         get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: infrastructure.cluster_name, username: user_a.username  }, headers: headers
 
         expect(response.status).to eq 403

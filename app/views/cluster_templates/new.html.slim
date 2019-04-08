@@ -1,0 +1,11 @@
+.row.justify-content-center
+  .col-md-6
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue creating cluster template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+    #new_cluster_template
+      = render 'form', cluster_template: @cluster_template

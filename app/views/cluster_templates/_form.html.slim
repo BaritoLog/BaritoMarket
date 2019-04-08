@@ -1,0 +1,11 @@
+= form_with(model: cluster_template, local: true) do|f|
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control', placeholder: 'Name of your cluster template'
+  .form-group
+    = f.label :instances
+    = f.text_area :instances, value: @instances, cols: 15, rows: 15, class: 'form-control', placeholder: 'Instances'
+  .form-group
+    = f.label :options
+    = f.text_area :options, value: @options, cols: 4, rows: 4, class: 'form-control', placeholder: 'Options'
+  .actions = f.submit 'Submit',class: 'btn btn-primary'

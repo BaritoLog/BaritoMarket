@@ -11,7 +11,7 @@ class AppGroup < ApplicationRecord
       where.not(infrastructures: { provisioning_status:'DELETED' })
   }
 
-  def self.setup(env, params)
+  def self.setup(params)
     log_retention_days = nil
     log_retention_days = Figaro.env.default_log_retention_days.to_i unless Figaro.env.default_log_retention_days.blank?
     log_retention_days = params[:log_retention_days].to_i unless params[:log_retention_days].blank?
@@ -23,10 +23,9 @@ class AppGroup < ApplicationRecord
         log_retention_days: log_retention_days
       )
       infrastructure = Infrastructure.setup(
-        env,
         name: params[:name],
-        capacity: params[:capacity],
         app_group_id: app_group.id,
+        cluster_template_id: params[:cluster_template_id],
       )
 
       [app_group, infrastructure]
@@ -46,6 +45,6 @@ class AppGroup < ApplicationRecord
   end
 
   def max_tps
-    TPS_CONFIG[self.infrastructure.capacity]['max_tps']
+    self.infrastructure.options['max_tps'].to_i
   end
 end

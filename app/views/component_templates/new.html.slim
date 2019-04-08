@@ -1,0 +1,11 @@
+.row.justify-content-center
+  .col-md-6
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue creating component property
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+    #new_component_template
+      = render 'form', component_template: @component_template

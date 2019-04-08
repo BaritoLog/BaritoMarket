@@ -1,0 +1,24 @@
+.row
+  .col-sm-6
+    .card
+      .h5.card-header Component Property Details
+      .card-body
+        dl.row
+
+          dt.col-sm-3 Name:
+          dd.col-sm-9
+            = @component_template.name
+
+          dt.col-sm-3 Attributes:
+          dd.col-sm-9
+            pre
+              code
+                = @component_attributes
+
+      .card-footer.text-right
+        .btn.btn-primary.btn-sm.float-right
+          = link_to 'Back to Component Templates', component_templates_path, class: 'text-light', style: 'text-decoration:none'
+        .btn.btn-success.btn-sm.mr-2
+          = link_to 'Edit', edit_component_template_path(@component_template), class: 'text-light', style: 'text-decoration:none'
+br
+br

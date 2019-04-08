@@ -11,50 +11,31 @@ module ChefHelper
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
+      kafka_template = ComponentTemplate.find_by(name: 'kafka')
+      @kafka_attrs = kafka_template.component_attributes
     end
 
     def generate
-      attrs = {
-        'kafka' => {
-          'zookeeper' => {
-            'hosts' => @zookeeper_hosts
-          },
-          'kafka' => {
-            'hosts' => @hosts
-          }
-        },
-        'consul' => {
-          'run_as_server' => false,
-          'hosts' => @consul_hosts,
-          'config' => {
-            'consul.json' => {
-              'bind_addr' => @ipaddress
-            }
-          }
-        },
-        'run_list' => ["role[#{@role_name}]"]
-      }
+      return {} if @kafka_attrs.nil?
+      return update_attrs
+    end
+
+    def update_attrs
+      @kafka_attrs['kafka']['zookeeper']['hosts'] = @zookeeper_hosts
+      @kafka_attrs['kafka']['kafka']['hosts'] = @hosts
+      @kafka_attrs['consul']['hosts'] = @consul_hosts
+      @kafka_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
+      @kafka_attrs['run_list'] = ["role[#{@role_name}]"]
 
       if Figaro.env.datadog_integration == 'true'
-        attrs['datadog'] = {
-          'datadog_api_key': Figaro.env.datadog_api_key,
-          'datadog_hostname': @hostname,
-          'kafka': {
-            'instances': [
-              {
-                'host': 'localhost',
-                'port': 8090,
-                'cluster_name': "#{@cluster_name}",
-                'tags': []
-              }
-            ]
-          }
-        }
-        attrs['run_list'] << 'recipe[datadog::default]'
-        attrs['run_list'] << 'recipe[datadog::kafka_datadog]'
+        @kafka_attrs['datadog']['datadog_api_key'] = Figaro.env.datadog_api_key
+        @kafka_attrs['datadog']['datadog_hostname'] = @hostname
+        @kafka_attrs['datadog']['kafka']['instances'][0]['cluster_name'] = @cluster_name
+        @kafka_attrs['run_list'] << 'recipe[datadog::default]'
+        @kafka_attrs['run_list'] << 'recipe[datadog::kafka_datadog]'
       end
 
-      return attrs
+      @kafka_attrs
     end
   end
 end

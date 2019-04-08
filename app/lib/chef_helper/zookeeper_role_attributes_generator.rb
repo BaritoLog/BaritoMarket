@@ -10,46 +10,31 @@ module ChefHelper
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
+      zookeeper_template = ComponentTemplate.find_by(name: 'zookeeper')
+      @zookeeper_attrs = zookeeper_template.component_attributes
     end
 
     def generate
-      attrs = {
-        'zookeeper' => {
-          'hosts' => @hosts,
-          'my_id' => @my_id
-        },
-        'consul' => {
-          'run_as_server' => false,
-          'hosts' => @consul_hosts,
-          'config' => {
-            'consul.json' => {
-              'bind_addr' => @ipaddress
-            }
-          }
-        },
-        'run_list' => ["role[#{@role_name}]"]
-      }
+      return {} if @zookeeper_attrs.nil?
+      return update_attrs
+    end
+
+    def update_attrs
+      @zookeeper_attrs['zookeeper']['hosts'] = @hosts
+      @zookeeper_attrs['zookeeper']['my_id'] = @my_id
+      @zookeeper_attrs['consul']['hosts'] = @consul_hosts
+      @zookeeper_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
+      @zookeeper_attrs['run_list'] = ["role[#{@role_name}]"]
 
       if Figaro.env.datadog_integration == 'true'
-        attrs['datadog'] = {
-          'datadog_api_key': Figaro.env.datadog_api_key,
-          'datadog_hostname': @hostname,
-          'zk': {
-            'instances': [
-              {
-                'host': 'localhost',
-                'port': 2181,
-                'cluster_name': "#{@cluster_name}",
-                'tags': []
-              }
-            ]
-          }
-        }
-        attrs['run_list'] << 'recipe[datadog::default]'
-        attrs['run_list'] << 'recipe[datadog::zk_datadog]'
+        @zookeeper_attrs['datadog']['datadog_api_key'] = Figaro.env.datadog_api_key
+        @zookeeper_attrs['datadog']['datadog_hostname'] = @hostname
+        @zookeeper_attrs['datadog']['zk']['instances'][0]['cluster_name'] = @cluster_name
+        @zookeeper_attrs['run_list'] << 'recipe[datadog::default]'
+        @zookeeper_attrs['run_list'] << 'recipe[datadog::zk_datadog]'
       end
 
-      return attrs
+      @zookeeper_attrs
     end
   end
 end

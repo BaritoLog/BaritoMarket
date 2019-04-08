@@ -4,25 +4,24 @@ module BaritoBlueprint
   RSpec.describe Processor do
     before(:each) do
       @infrastructure = create(:infrastructure)
-      @blueprint_hash = {
-        'infrastructure_id' => @infrastructure.id,
-        'cluster_name' => 'trac',
-        'environment' => 'development',
-        'nodes' => [
+      @instances = [
           {
             'name' => 'd-trac-consul-01',
             'type' => 'consul',
+            'seq' => 1,
           },
           {
             'name' => 'd-trac-yggdrasil-01',
             'type' => 'yggdrasil',
+            'seq' => 0,
           },
-        ],
-      }
+        ]
       @processor = Processor.new(
-        @blueprint_hash,
+        @instances,
+        infrastructure_id: @infrastructure.id,
         chef_repo_dir: Figaro.env.chef_repo_dir,
       )
+
     end
 
     describe '#process!' do

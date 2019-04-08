@@ -4,12 +4,12 @@ module BaritoBlueprint
       private_keys_dir: "#{Rails.root}/config/private_keys"
     }
 
-    attr_accessor :blueprint_hash, :infrastructure
+    attr_accessor :instances_hash, :infrastructure
 
-    def initialize(blueprint_hash, opts = {})
-      @blueprint_hash = blueprint_hash.deep_symbolize_keys!
+    def initialize(instances_hash, opts = {})
+      @instances_hash = instances_hash
       @infrastructure = Infrastructure.find(
-        @blueprint_hash[:infrastructure_id])
+        opts[:infrastructure_id])
 
       # Provisioner and bootstrapper attributes
       @pathfinder_host = opts[:pathfinder_host]
@@ -26,10 +26,9 @@ module BaritoBlueprint
     end
 
     def process!
-      @blueprint_hash[:nodes].each_with_index do |node, seq|
-        @infrastructure.add_component(node, seq + 1)
+      @instances_hash.each_with_index do |node, seq|
+        @infrastructure.add_component(node, seq+1)
       end
-
       provisioner = Provisioner.new(
         @infrastructure,
         PathfinderProvisioner.new(

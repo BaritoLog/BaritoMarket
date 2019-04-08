@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_23_140900) do
+ActiveRecord::Schema.define(version: 2019_03_28_153951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,23 @@ ActiveRecord::Schema.define(version: 2019_01_23_140900) do
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
     t.index ["secret_key"], name: "index_barito_apps_on_secret_key"
     t.index ["status"], name: "index_barito_apps_on_status"
+  end
+
+  create_table "cluster_templates", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "instances"
+    t.jsonb "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_cluster_templates_on_name"
+  end
+
+  create_table "component_templates", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "component_attributes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_component_templates_on_name", unique: true
   end
 
   create_table "ext_apps", force: :cascade do |t|
@@ -114,7 +131,11 @@ ActiveRecord::Schema.define(version: 2019_01_23_140900) do
     t.bigint "app_group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cluster_template_id"
+    t.jsonb "instances", default: {}, null: false
+    t.jsonb "options", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
+    t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
     t.index ["status"], name: "index_infrastructures_on_status"
   end
 
@@ -134,4 +155,5 @@ ActiveRecord::Schema.define(version: 2019_01_23_140900) do
   end
 
   add_foreign_key "ext_apps", "users", column: "created_by_id"
+  add_foreign_key "infrastructures", "cluster_templates"
 end

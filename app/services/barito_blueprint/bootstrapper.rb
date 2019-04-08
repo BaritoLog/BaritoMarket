@@ -54,9 +54,15 @@ module BaritoBlueprint
         private_key = File.join(@private_keys_dir, @private_key_name)
       end
 
-      # Fetch bootstrap attributes
-      attrs = generate_bootstrap_attributes(
-        component, @infrastructure_components)
+      attrs = component.bootstrap_attributes
+      if attrs.empty?
+        # Fetch bootstrap attributes
+        attrs = generate_bootstrap_attributes(
+          component, @infrastructure_components)
+
+        # update attributes
+        component.update_attribute(:bootstrap_attributes, attrs)
+      end
 
       # Execute bootstrapping
       res = @executor.bootstrap!(
@@ -72,7 +78,6 @@ module BaritoBlueprint
         "#{res}")
 
       if res['success'] == true
-        component.update_attribute(:bootstrap_attributes, attrs)
         Processor.produce_log(
           @infrastructure,
           "InfrastructureComponent:#{component.id}",

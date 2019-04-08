@@ -32,12 +32,11 @@ class AppGroupsController < ApplicationController
   def new
     authorize AppGroup
     @app_group = AppGroup.new
-    @capacity_options = TPS_CONFIG.keys
   end
 
   def create
     authorize AppGroup
-    @app_group, @infrastructure = AppGroup.setup(Rails.env, app_group_params)
+    @app_group, @infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @infrastructure.valid?
       broadcast(:team_count_changed)
       return redirect_to root_path
@@ -76,7 +75,7 @@ class AppGroupsController < ApplicationController
   def app_group_params
     params.require(:app_group).permit(
       :name,
-      :capacity
+      :cluster_template_id,
     )
   end
 

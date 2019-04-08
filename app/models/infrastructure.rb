@@ -1,9 +1,9 @@
 class Infrastructure < ApplicationRecord
   CLUSTER_NAME_PADDING = 1000
-  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, presence: true
-  validate  :capacity_valid_key?
+  validates :app_group, :name, :capacity, :cluster_name, :provisioning_status, :status, :cluster_template, presence: true
 
   belongs_to :app_group
+  belongs_to :cluster_template
   has_many :infrastructure_components
 
   enum statuses: {
@@ -26,26 +26,27 @@ class Infrastructure < ApplicationRecord
     deleted: 'DELETED',
   }
 
-  def capacity_valid_key?
-    config_types = TPS_CONFIG.keys.map(&:downcase)
-    errors.add(:capacity, 'Invalid Config Value') unless config_types.include?(capacity)
-  end
-
-  def self.setup(env, params)
+  def self.setup(params)
+    cluster_template = ClusterTemplate.find(params[:cluster_template_id])
     infrastructure = Infrastructure.new(
       name:                 params[:name],
       cluster_name: Rufus::Mnemo.from_i(Infrastructure.generate_cluster_index),
-      capacity:             params[:capacity],
+      capacity:             cluster_template.name,
       provisioning_status:  Infrastructure.provisioning_statuses[:pending],
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
+      cluster_template_id:  cluster_template.id,
+      instances:            cluster_template.instances,
+      options:              cluster_template.options,
     )
 
     if infrastructure.valid?
       infrastructure.save
-      blueprint = Blueprint.new(infrastructure, env)
-      blueprint_path = blueprint.generate_file
-      BlueprintWorker.perform_async(blueprint_path)
+      components = infrastructure.generate_components(cluster_template.instances)
+      BlueprintWorker.perform_async(
+        components,
+        infrastructure_id: infrastructure.id
+      )
     end
     infrastructure
   end
@@ -120,5 +121,21 @@ class Infrastructure < ApplicationRecord
       'FINISHED',
       'DELETE_ERROR'
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
+  end
+
+  def generate_components(instances)
+    components = []
+    instances.each do |instance|
+
+      components += (1..instance["count"]).map { |number| component_hash(instance["type"], number) }
+    end
+    components.sort_by {|obj| obj[:seq]}
+  end
+
+  private
+
+  def component_hash(type, count)
+    name = "#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
+    { name: name, type: type}
   end
 end

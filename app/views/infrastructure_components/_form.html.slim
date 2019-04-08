@@ -1,0 +1,26 @@
+= form_with(model: infrastructure_component, local: true) do |f|
+  .form-group
+    = f.label :hostname
+    = f.text_field :hostname, class: 'form-control', disabled: true
+  .form-group
+    = f.label :category
+    = f.text_field :category, class: 'form-control', disabled: true
+  .form-group
+    = f.label :sequence
+    = f.text_field :sequence, class: 'form-control', disabled: true
+  .form-group
+    = f.label :message
+    = f.text_area :message, class: 'form-control', disabled: true
+  .form-group
+    = f.label :status
+    = f.text_field :status, class: 'form-control', disabled: true
+  .form-group
+    = f.label :ipaddress
+    = f.text_field :ipaddress, class: 'form-control', disabled: true
+  .form-group
+    = f.label :infrastructure_id
+    = f.text_field :infrastructure_id, class: 'form-control', disabled: true
+  .form-group
+    = f.label :bootstrap_attributes
+    = f.text_area :bootstrap_attributes, value: @bootstrap_attributes, cols: 10, rows: 10, class: 'form-control', placeholder: 'Bootstrap attributes'
+  .actions = f.submit 'Submit',class: 'btn btn-primary'
