@@ -86,7 +86,7 @@ module BaritoBlueprint
     end
 
     describe '#generate_bootstrap_attributes' do
-      it 'should return proper consul attributes based on the component category' do
+      it 'should return proper attributes based on the component category' do
         generator = double('generator')
         allow(generator).
           to receive(:generate).

@@ -129,7 +129,7 @@ ComponentTemplate.create!(
           "BARITO_KAFKA_GROUP_ID":"barito-group", 
           "BARITO_KAFKA_CONSUMER_TOPICS":"barito-log", 
           "BARITO_ELASTICSEARCH_URL":"", 
-          "BARITO_PUSH_METRIC_URL":"https://barito.golabs.io/api/increase_log_count"
+          "BARITO_PUSH_METRIC_URL":""
         }
       }
     }
