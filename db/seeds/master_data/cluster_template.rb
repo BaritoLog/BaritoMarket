@@ -7,7 +7,7 @@
 
 ### Staging
 ClusterTemplate.create!(
-  name: "Small",
+  name: "Log - Small",
   instances: [
     {
       "type": "yggdrasil",
@@ -46,7 +46,7 @@ ClusterTemplate.create!(
 )
 
 ClusterTemplate.create!(
-  name: "Medium",
+  name: "Log - Medium",
   instances: [
     {
       "type": "yggdrasil",
@@ -85,7 +85,7 @@ ClusterTemplate.create!(
 )
 
 ClusterTemplate.create!(
-  name: "Large",
+  name: "Log - Large",
   instances: [
     {
       "type": "yggdrasil",
