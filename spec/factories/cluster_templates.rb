@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :cluster_template do
-    name            %w(Staging Integration Production).sample
+    sequence(:name) { |n| "#{Faker::Cat.name} #{n}" }
     instances       { 
                       [
                         {
