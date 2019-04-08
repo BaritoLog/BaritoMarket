@@ -6,6 +6,6 @@ class CreateClusterTemplates < ActiveRecord::Migration[5.2]
       t.jsonb :options
       t.timestamps null: false
     end
-    add_index :cluster_templates, :name
+    add_index :cluster_templates, :name, unique: true
   end
 end
