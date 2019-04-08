@@ -2,9 +2,6 @@ require 'rails_helper'
 
 RSpec.feature 'Cluster Template Management', type: :feature do
   let(:user_a) { create(:user) }
-  before(:each) do
-    @cluster_template = create(:cluster_template)
-  end
 
   describe 'Cluster template' do
     context 'Create cluster template' do
