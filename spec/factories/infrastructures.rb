@@ -6,7 +6,7 @@ FactoryBot.define do
     provisioning_status   Infrastructure.provisioning_statuses[:pending]
     status                Infrastructure.statuses[:inactive]
     consul_host           Faker::Internet.domain_name
-    options               { {"partition": 1, "replication_factor": 1, "max_tps": 100} }
+    options               { {"kafka_partition": 1, "kafka_replication_factor": 1, "max_tps": 100} }
     instances             { 
                             [
                               {

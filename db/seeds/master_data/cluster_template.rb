@@ -42,7 +42,7 @@ ClusterTemplate.create!(
       "count": 1
     }
   ],
-  options: {"partition": 1, "replication_factor": 1, "max_tps": 100}
+  options: {"kafka_partition": 1, "kafka_replication_factor": 1, "max_tps": 100}
 )
 
 ClusterTemplate.create!(
@@ -81,7 +81,7 @@ ClusterTemplate.create!(
       "count": 1
     }
   ],
-  options: {"partition": 5, "replication_factor": 3, "max_tps": 500}
+  options: {"kafka_partition": 5, "kafka_replication_factor": 3, "max_tps": 500}
 )
 
 ClusterTemplate.create!(
@@ -120,5 +120,5 @@ ClusterTemplate.create!(
       "count": 1
     }
   ],
-  options: {"partition": 30, "replication_factor": 3, "max_tps": 1000}
+  options: {"kafka_partition": 30, "kafka_replication_factor": 3, "max_tps": 1000}
 )
