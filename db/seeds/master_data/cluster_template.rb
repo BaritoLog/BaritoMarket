@@ -10,35 +10,35 @@ ClusterTemplate.create!(
   name: "Small",
   instances: [
     {
-      "name": "yggdrasil",
+      "type": "yggdrasil",
       "count": 0
     },
     {
-      "name": "consul",
+      "type": "consul",
       "count": 1
     },
     {
-      "name": "zookeeper",
+      "type": "zookeeper",
       "count": 1
     },
     {
-      "name": "kafka",
+      "type": "kafka",
       "count": 1
     },
     {
-      "name": "elasticsearch",
+      "type": "elasticsearch",
       "count": 1
     },
     {
-      "name": "barito-flow-producer",
+      "type": "barito-flow-producer",
       "count": 1
     },
     {
-      "name": "barito-flow-consumer",
+      "type": "barito-flow-consumer",
       "count": 1
     },
     {
-      "name": "kibana",
+      "type": "kibana",
       "count": 1
     }
   ],
@@ -49,35 +49,35 @@ ClusterTemplate.create!(
   name: "Medium",
   instances: [
     {
-      "name": "yggdrasil",
+      "type": "yggdrasil",
       "count": 0
     },
     {
-      "name": "consul",
+      "type": "consul",
       "count": 1
     },
     {
-      "name": "zookeeper",
+      "type": "zookeeper",
       "count": 3
     },
     {
-      "name": "kafka",
+      "type": "kafka",
       "count": 3
     },
     {
-      "name": "elasticsearch",
+      "type": "elasticsearch",
       "count": 1
     },
     {
-      "name": "barito-flow-producer",
+      "type": "barito-flow-producer",
       "count": 1
     },
     {
-      "name": "barito-flow-consumer",
+      "type": "barito-flow-consumer",
       "count": 5
     },
     {
-      "name": "kibana",
+      "type": "kibana",
       "count": 1
     }
   ],
@@ -88,35 +88,35 @@ ClusterTemplate.create!(
   name: "Large",
   instances: [
     {
-      "name": "yggdrasil",
+      "type": "yggdrasil",
       "count": 0
     },
     {
-      "name": "consul",
+      "type": "consul",
       "count": 1
     },
     {
-      "name": "zookeeper",
+      "type": "zookeeper",
       "count": 3
     },
     {
-      "name": "kafka",
+      "type": "kafka",
       "count": 5
     },
     {
-      "name": "elasticsearch",
+      "type": "elasticsearch",
       "count": 1
     },
     {
-      "name": "barito-flow-producer",
+      "type": "barito-flow-producer",
       "count": 1
     },
     {
-      "name": "barito-flow-consumer",
+      "type": "barito-flow-consumer",
       "count": 10
     },
     {
-      "name": "kibana",
+      "type": "kibana",
       "count": 1
     }
   ],

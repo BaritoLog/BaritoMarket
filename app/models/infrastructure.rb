@@ -127,7 +127,7 @@ class Infrastructure < ApplicationRecord
     components = []
     instances.each do |instance|
 
-      components += (1..instance["count"]).map { |number| component_hash(instance["name"], number) }
+      components += (1..instance["count"]).map { |number| component_hash(instance["type"], number) }
     end
     components.sort_by {|obj| obj[:seq]}
   end

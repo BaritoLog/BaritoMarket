@@ -10,35 +10,35 @@ FactoryBot.define do
     instances             { 
                             [
                               {
-                                "name": "yggdrasil",
+                                "type": "yggdrasil",
                                 "count": 0
                               },
                               {
-                                "name": "consul",
+                                "type": "consul",
                                 "count": 1
                               },
                               {
-                                "name": "zookeeper",
+                                "type": "zookeeper",
                                 "count": 1
                               },
                               {
-                                "name": "kafka",
+                                "type": "kafka",
                                 "count": 1
                               },
                               {
-                                "name": "elasticsearch",
+                                "type": "elasticsearch",
                                 "count": 1
                               },
                               {
-                                "name": "barito-flow-producer",
+                                "type": "barito-flow-producer",
                                 "count": 1
                               },
                               {
-                                "name": "barito-flow-consumer",
+                                "type": "barito-flow-consumer",
                                 "count": 1
                               },
                               {
-                                "name": "kibana",
+                                "type": "kibana",
                                 "count": 1
                               }
                             ]
