@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 2019_03_28_153951) do
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_cluster_templates_on_name"
+    t.index ["name"], name: "index_cluster_templates_on_name", unique: true
   end
 
   create_table "component_templates", force: :cascade do |t|
