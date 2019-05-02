@@ -22,7 +22,7 @@ RSpec.feature 'Component template Management', type: :feature do
         click_button 'Submit'
         expect(page).to have_content("test")
 
-        visit component_template_path(1)
+        click_link 'test'
         expect(page).to have_content("image-test")
       end
     end
