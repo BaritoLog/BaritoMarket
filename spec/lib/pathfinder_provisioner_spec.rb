@@ -38,7 +38,7 @@ RSpec.describe PathfinderProvisioner do
 
     it 'should make necessary calls to Pathfinder and return the response' do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      provision_result = pathfinder_provisioner.provision!('test-01')
+      provision_result = pathfinder_provisioner.provision!('test-01', '18.04')
       expect(provision_result).to eq({
         'success' => true,
         'data' => {'ipaddress' => '127.0.0.1'},
