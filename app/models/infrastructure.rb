@@ -52,10 +52,14 @@ class Infrastructure < ApplicationRecord
   end
 
   def add_component(attrs, seq)
+    category = attrs[:type] || attrs['type']
+    component_template = ComponentTemplate.find_by(name: category)
+
     InfrastructureComponent.create(
       infrastructure_id:  self.id,
       hostname:           attrs[:name] || attrs['name'],
-      category:           attrs[:type] || attrs['type'],
+      category:           category,
+      image:              component_template.image,
       sequence:           seq,
       status:             InfrastructureComponent.statuses[:pending],
     )

@@ -10,7 +10,6 @@ class BlueprintWorker
         pathfinder_host: Figaro.env.pathfinder_host,
         pathfinder_token: Figaro.env.pathfinder_token,
         pathfinder_cluster: Figaro.env.pathfinder_cluster,
-        pathfinder_image: Figaro.env.pathfinder_image,
         chef_repo_dir: Figaro.env.chef_repo_dir,
         private_keys_dir: Figaro.env.container_private_keys_dir,
         private_key_name: Figaro.env.container_private_key,
