@@ -17,11 +17,13 @@ RSpec.feature 'Infrastructure Component Management - ', type: :feature do
         expect(page).to have_content(@infrastructure.cluster_name)
 
         within('#edit_infrastructure_component') do
+          fill_in 'infrastructure_component[image]', with: prep_infrastructure_component.image
           fill_in 'infrastructure_component[bootstrap_attributes]', with: prep_infrastructure_component.bootstrap_attributes.to_json
         end
 
         click_button 'Submit'
         expect(page).to have_content(prep_infrastructure_component.bootstrap_attributes)
+        expect(page).to have_content(prep_infrastructure_component.image)
       end
     end
   end

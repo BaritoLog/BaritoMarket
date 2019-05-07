@@ -2,9 +2,6 @@ require 'rails_helper'
 
 RSpec.feature 'Component template Management', type: :feature do
   let(:user_a) { create(:user) }
-  before(:each) do
-    @component_template = create(:component_template)
-  end
 
   describe 'Component template' do
     context 'Create component template' do
@@ -18,11 +15,15 @@ RSpec.feature 'Component template Management', type: :feature do
         click_link 'New Component Template'
         within('#new_component_template') do
           fill_in 'component_template[name]', with: "test"
+          fill_in 'component_template[image]', with: "image-test"
           fill_in 'component_template[component_attributes]', with: prep_component_template.component_attributes.to_json
         end
 
         click_button 'Submit'
         expect(page).to have_content("test")
+
+        click_link 'test'
+        expect(page).to have_content("image-test")
       end
     end
   end

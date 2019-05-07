@@ -1,7 +1,7 @@
 class ProvisioningListener
   def instance_provisioned(infrastructure_component_id)
     component = InfrastructureComponent.find(infrastructure_component_id)
-    if component.nil? or component.category != 'consul'
+    if component.nil? or component.component_type != 'consul'
       return
     end
     infrastructure = component.infrastructure

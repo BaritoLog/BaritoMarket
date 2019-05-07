@@ -3,6 +3,9 @@
     = f.label :name
     = f.text_field :name, class: 'form-control', placeholder: 'Name of your component'
   .form-group
+    = f.label :image
+    = f.text_field :image, class: 'form-control', placeholder: 'Image of your component'
+  .form-group
     = f.label :component_attributes
     = f.text_area :component_attributes, value: @component_attributes, cols: 10, rows: 10, class: 'form-control', placeholder: 'Component attributes'
   .actions = f.submit 'Submit',class: 'btn btn-primary'

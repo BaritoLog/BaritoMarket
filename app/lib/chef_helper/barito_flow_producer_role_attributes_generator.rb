@@ -2,10 +2,10 @@ module ChefHelper
   class BaritoFlowProducerRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
       kafka_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'kafka')
+        infrastructure_components, 'component_type', 'kafka')
       @kafka_port = opts[:kafka_port] || 9092
       @consul_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'consul')
+        infrastructure_components, 'component_type', 'consul')
       @max_tps = component.infrastructure.options['max_tps'] || 10
       @role_name = opts[:role_name] || 'barito-flow-producer'
       @ipaddress = component.ipaddress

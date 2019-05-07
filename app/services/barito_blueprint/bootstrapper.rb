@@ -104,7 +104,7 @@ module BaritoBlueprint
     end
 
     def generate_bootstrap_attributes(component, infrastructure_components)
-      generator = BOOTSTRAP_ATTRIBUTES_GENERATORS[component.category]
+      generator = BOOTSTRAP_ATTRIBUTES_GENERATORS[component.component_type]
       return {} unless generator.is_a? Class
       ChefHelper::GenericRoleAttributesGenerator.new.generate(
         generator.new(component, infrastructure_components))

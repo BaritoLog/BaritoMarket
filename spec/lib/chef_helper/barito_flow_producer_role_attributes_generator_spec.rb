@@ -6,46 +6,21 @@ module ChefHelper
       @infrastructure = create(:infrastructure, cluster_name: 'test')
       @consul_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-consul-01',
-        category: 'consul',
-        ipaddress: '127.0.0.1'
+        hostname:       'test-consul-01',
+        component_type: 'consul',
+        ipaddress:      '127.0.0.1'
       )
       @producer_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-barito-flow-producer-01',
-        category: 'barito-flow-producer',
-        ipaddress: '127.0.0.2'
+        hostname:       'test-barito-flow-producer-01',
+        component_type: 'barito-flow-producer',
+        ipaddress:      '127.0.0.2'
       )
       @kafka_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-kafka-01',
-        category: 'kafka',
-        ipaddress: '127.0.0.15'
-      )
-      create(:component_template,
-        name: "barito-flow-producer",
-        component_attributes: {
-          "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
-            "run_as_server":false
-          }, 
-          "run_list":[], 
-          "barito-flow":{
-            "producer":{
-              "version":"v0.11.8", 
-              "env_vars":{
-                "BARITO_PRODUCER_ADDRESS":":8080",
-                "BARITO_CONSUL_URL":"", 
-                "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-                "BARITO_KAFKA_BROKERS":"", 
-                "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log",
-                "BARITO_PRODUCER_MAX_TPS":0, 
-                "BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL":10
-              }
-            }
-          }
-        }
+        hostname:       'test-kafka-01',
+        component_type: 'kafka',
+        ipaddress:      '127.0.0.15'
       )
     end
 

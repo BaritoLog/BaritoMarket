@@ -4,22 +4,9 @@ module ChefHelper
   RSpec.describe ConsulRoleAttributesGenerator do
     before(:each) do
       @component = create(:infrastructure_component, 
-        hostname: 'test-consul-01',
-        category: 'consul',
-        ipaddress: '127.0.0.1'
-      )
-      create(:component_template,
-        name: 'consul', 
-        component_attributes: {
-          "consul": 
-            {
-              "hosts": [], 
-              "config": {
-                "consul.json": {"bind_addr": ""}
-            }
-          }, 
-          "run_list": []
-        }
+        hostname:       'test-consul-01',
+        component_type: 'consul',
+        ipaddress:      '127.0.0.1'
       )
     end
 

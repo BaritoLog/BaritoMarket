@@ -15,7 +15,6 @@ module BaritoBlueprint
       @pathfinder_host = opts[:pathfinder_host]
       @pathfinder_token = opts[:pathfinder_token]
       @pathfinder_cluster = opts[:pathfinder_cluster]
-      @pathfinder_image = opts[:pathfinder_image]
       @chef_repo_dir = opts[:chef_repo_dir]
 
       # Private keys
@@ -32,8 +31,9 @@ module BaritoBlueprint
       provisioner = Provisioner.new(
         @infrastructure,
         PathfinderProvisioner.new(
-          @pathfinder_host, @pathfinder_token, @pathfinder_cluster, image: @pathfinder_image),
+          @pathfinder_host, @pathfinder_token, @pathfinder_cluster),
       )
+      
       return false unless provisioner.provision_instances!
       return false unless provisioner.check_and_update_instances
 

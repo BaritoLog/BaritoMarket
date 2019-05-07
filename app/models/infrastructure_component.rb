@@ -1,5 +1,5 @@
 class InfrastructureComponent < ApplicationRecord
-  validates :infrastructure, :hostname, :category, :sequence, :status,
+  validates :infrastructure, :hostname, :component_type, :sequence, :status,
     presence: true
 
   belongs_to :infrastructure

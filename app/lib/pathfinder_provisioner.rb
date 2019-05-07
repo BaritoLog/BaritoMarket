@@ -10,10 +10,9 @@ class PathfinderProvisioner
     @pathfinder_host = pathfinder_host
     @pathfinder_token = pathfinder_token
     @pathfinder_cluster = pathfinder_cluster
-    @image = opts[:image] || '18.04'
   end
 
-  def provision!(hostname)
+  def provision!(hostname, image)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers.json",
       method: :post,
@@ -23,7 +22,7 @@ class PathfinderProvisioner
       body: {
         'container' => {
           'hostname' => hostname,
-          'image' => @image
+          'image' => image
         }
       }.to_json,
       headers: {
@@ -56,7 +55,7 @@ class PathfinderProvisioner
     return respond_success(req.response)
   end
 
-  def reprovision!(hostname)
+  def reprovision!(hostname, image)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/reschedule",
       method: :post,
@@ -73,7 +72,7 @@ class PathfinderProvisioner
     if req.response.success?
       return respond_success(req.response)
     elsif req.response.response_code == 404
-      provision!(hostname)
+      provision!(hostname, image)
     else
       return respond_error(req.response)
     end

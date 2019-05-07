@@ -54,6 +54,7 @@ class ComponentTemplatesController < ApplicationController
   def component_template_params
     params.require(:component_template).permit(
       :name,
+      :image,
       :component_attributes
     )
   end

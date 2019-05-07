@@ -146,7 +146,7 @@ module BaritoBlueprint
       end
 
       it 'should update consul_host in infrastructure' do
-        @component.update!(category: 'consul')
+        @component.update!(component_type: 'consul')
         infrastructure = @component.infrastructure
         expect(@provisioner.check_and_update_instance(@component)).to eq true
         infrastructure.reload

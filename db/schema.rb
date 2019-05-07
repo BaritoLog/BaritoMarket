@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_28_153951) do
+ActiveRecord::Schema.define(version: 2019_05_07_104900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 2019_03_28_153951) do
     t.jsonb "component_attributes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
     t.index ["name"], name: "index_component_templates_on_name", unique: true
   end
 
@@ -109,7 +110,7 @@ ActiveRecord::Schema.define(version: 2019_03_28_153951) do
 
   create_table "infrastructure_components", force: :cascade do |t|
     t.string "hostname"
-    t.string "category"
+    t.string "component_type"
     t.integer "sequence"
     t.text "message"
     t.string "status"
@@ -118,6 +119,7 @@ ActiveRecord::Schema.define(version: 2019_03_28_153951) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "bootstrap_attributes", default: {}, null: false
+    t.string "image"
     t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
   end
 

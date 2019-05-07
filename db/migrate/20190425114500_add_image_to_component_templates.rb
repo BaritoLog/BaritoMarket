@@ -1,0 +1,5 @@
+class AddImageToComponentTemplates < ActiveRecord::Migration[5.2]
+  def change
+    add_column :component_templates, :image, :string
+  end
+end

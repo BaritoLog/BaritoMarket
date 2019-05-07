@@ -22,6 +22,7 @@ RSpec.feature 'Infrastructure Management', type: :feature do
         expect(page).to have_content(@infrastructure.name)
         @infrastructure_components.each do |component|
           expect(page).to have_content(component.hostname)
+          expect(page).to have_content(component.image)
         end
       end
     end

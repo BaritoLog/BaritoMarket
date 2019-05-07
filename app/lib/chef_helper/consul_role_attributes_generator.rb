@@ -2,7 +2,7 @@ module ChefHelper
   class ConsulRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
       @hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'consul')
+        infrastructure_components, 'component_type', 'consul')
       @role_name = opts[:role_name] || 'consul'
       @ipaddress = component.ipaddress
       consul_template = ComponentTemplate.find_by(name: 'consul')
