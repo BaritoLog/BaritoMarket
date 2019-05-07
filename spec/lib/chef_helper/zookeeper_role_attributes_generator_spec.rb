@@ -6,15 +6,15 @@ module ChefHelper
       @infrastructure = create(:infrastructure, cluster_name: 'test')
       @consul_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-consul-01',
-        category: 'consul',
-        ipaddress: '127.0.0.1'
+        hostname:       'test-consul-01',
+        component_type: 'consul',
+        ipaddress:      '127.0.0.1'
       )
       @zookeeper_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-zookeeper-01',
-        category: 'zookeeper',
-        ipaddress: '127.0.0.15'
+        hostname:       'test-zookeeper-01',
+        component_type: 'zookeeper',
+        ipaddress:      '127.0.0.15'
       )
     end
 

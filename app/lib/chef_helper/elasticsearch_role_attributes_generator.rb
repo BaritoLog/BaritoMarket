@@ -2,9 +2,9 @@ module ChefHelper
   class ElasticsearchRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
       @consul_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'consul')
+        infrastructure_components, 'component_type', 'consul')
       @hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'elasticsearch')
+        infrastructure_components, 'component_type', 'elasticsearch')
       @role_name = opts[:role_name] || 'elasticsearch'
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname

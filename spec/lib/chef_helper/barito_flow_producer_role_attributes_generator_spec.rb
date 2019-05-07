@@ -6,21 +6,21 @@ module ChefHelper
       @infrastructure = create(:infrastructure, cluster_name: 'test')
       @consul_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-consul-01',
-        category: 'consul',
-        ipaddress: '127.0.0.1'
+        hostname:       'test-consul-01',
+        component_type: 'consul',
+        ipaddress:      '127.0.0.1'
       )
       @producer_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-barito-flow-producer-01',
-        category: 'barito-flow-producer',
-        ipaddress: '127.0.0.2'
+        hostname:       'test-barito-flow-producer-01',
+        component_type: 'barito-flow-producer',
+        ipaddress:      '127.0.0.2'
       )
       @kafka_component = create(:infrastructure_component, 
         infrastructure: @infrastructure,
-        hostname: 'test-kafka-01',
-        category: 'kafka',
-        ipaddress: '127.0.0.15'
+        hostname:       'test-kafka-01',
+        component_type: 'kafka',
+        ipaddress:      '127.0.0.15'
       )
     end
 

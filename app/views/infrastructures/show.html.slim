@@ -36,7 +36,7 @@ table.table.table-bordered.table-striped.table-md
   thead.thead-dark
     tr
       th.text-center Hostname
-      th.text-center Category
+      th.text-center Type
       th.text-center Image
       th.text-center Sequence
       th.text-center IP Address
@@ -48,7 +48,7 @@ table.table.table-bordered.table-striped.table-md
     - @infrastructure_components.each do |component|
       tr
         td.text-center = component.hostname
-        td.text-center = component.category
+        td.text-center = component.component_type
         td.text-center = component.image
         td.text-center = component.sequence
         td.text-center = component.ipaddress

@@ -2,13 +2,13 @@ module ChefHelper
   class BaritoFlowConsumerRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
       kafka_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'kafka')
+        infrastructure_components, 'component_type', 'kafka')
       @kafka_port = opts[:kafka_port] || 9092
       @elasticsearch_host = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'elasticsearch')
+        infrastructure_components, 'component_type', 'elasticsearch')
       @elasticsearch_port = opts[:elasticsearch_port] || 9200
       @consul_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'category', 'consul')
+        infrastructure_components, 'component_type', 'consul')
       @role_name = opts[:role_name] || 'barito-flow-consumer'
       @ipaddress = component.ipaddress
       consumer_template = ComponentTemplate.find_by(name: 'barito-flow-consumer')
