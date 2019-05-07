@@ -75,7 +75,7 @@ module BaritoBlueprint
       component.update_status('PROVISIONING_STARTED')
 
       # Execute reprovisioning
-      res = @executor.reprovision!(component.hostname)
+      res = @executor.reprovision!(component.hostname, component.image)
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",
