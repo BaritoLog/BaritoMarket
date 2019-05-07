@@ -49,7 +49,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     @apps.each do |app|
       @app_group = app.app_group
-      @infrastructure_component = @app_group.infrastructure.infrastructure_components.where(:category => 'elasticsearch', :status => InfrastructureComponent.statuses[:finished])
+      @infrastructure_component = @app_group.infrastructure.infrastructure_components.where(:component_type => 'elasticsearch', :status => InfrastructureComponent.statuses[:finished])
       if @infrastructure_component.blank?
         next
       end

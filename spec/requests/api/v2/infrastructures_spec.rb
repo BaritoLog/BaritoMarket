@@ -57,7 +57,7 @@ RSpec.describe 'App API', type: :request do
     it 'should return list of all active App with its retention policy for curator' do
       app_group = create(:app_group)
       infrastructure = create(:infrastructure, app_group: app_group)
-      infrastructure_component = create(:infrastructure_component, infrastructure: infrastructure, category: 'elasticsearch', status: InfrastructureComponent.statuses[:finished])
+      infrastructure_component = create(:infrastructure_component, infrastructure: infrastructure, component_type: 'elasticsearch', status: InfrastructureComponent.statuses[:finished])
       create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
       get api_v2_profile_curator_path,
