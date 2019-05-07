@@ -12,7 +12,7 @@ class PathfinderProvisioner
     @pathfinder_cluster = pathfinder_cluster
   end
 
-  def provision!(hostname, image = "18.04")
+  def provision!(hostname, image)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v1/ext_app/containers.json",
       method: :post,
