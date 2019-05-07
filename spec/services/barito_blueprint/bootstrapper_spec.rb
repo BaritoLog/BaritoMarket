@@ -86,7 +86,7 @@ module BaritoBlueprint
     end
 
     describe '#generate_bootstrap_attributes' do
-      it 'should return proper attributes based on the component category' do
+      it 'should return proper attributes based on the component type' do
         generator = double('generator')
         allow(generator).
           to receive(:generate).
@@ -94,7 +94,7 @@ module BaritoBlueprint
         allow(ChefHelper::ConsulRoleAttributesGenerator).
           to receive(:new).
           and_return(generator)
-        component = create(:infrastructure_component, category: 'consul')
+        component = create(:infrastructure_component, component_type: 'consul')
         expect(
           @bootstrapper.generate_bootstrap_attributes(component, [component]),
         ).to eq('hello' => 'world')
