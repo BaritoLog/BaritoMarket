@@ -22,24 +22,6 @@ module ChefHelper
         category: 'elasticsearch',
         ipaddress: '127.0.0.16'
       )
-      create(:component_template,
-        name: "kibana",
-        component_attributes: {
-          "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
-            "run_as_server":false
-          },
-          "kibana":{
-            "config":{
-              "server.basePath":"", 
-              "elasticsearch.url":""
-            }, 
-            "version":"6.3.0"
-          }, 
-          "run_list":[]
-        }
-      )
     end
 
     describe '#generate' do

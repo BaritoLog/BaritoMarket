@@ -22,28 +22,6 @@ module ChefHelper
         category: 'zookeeper',
         ipaddress: '127.0.0.15'
       )
-      create(:component_template,
-        name: 'kafka', 
-        component_attributes: {
-          "kafka":{
-            "kafka":{"hosts":[]}, 
-            "zookeeper":{"hosts":[]}
-          }, 
-          "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
-            "run_as_server":false
-          },
-          "datadog":{
-            "kafka":{
-              "instances":[{"host":"localhost", "port":8090, "tags":[], "cluster_name":""}]
-            }, 
-            "datadog_api_key":"", 
-            "datadog_hostname":""
-          }, 
-          "run_list":[]
-        }
-      )
     end
 
     describe '#generate' do

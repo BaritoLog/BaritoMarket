@@ -22,31 +22,6 @@ module ChefHelper
         category: 'kafka',
         ipaddress: '127.0.0.15'
       )
-      create(:component_template,
-        name: "barito-flow-producer",
-        component_attributes: {
-          "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
-            "run_as_server":false
-          }, 
-          "run_list":[], 
-          "barito-flow":{
-            "producer":{
-              "version":"v0.11.8", 
-              "env_vars":{
-                "BARITO_PRODUCER_ADDRESS":":8080",
-                "BARITO_CONSUL_URL":"", 
-                "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-                "BARITO_KAFKA_BROKERS":"", 
-                "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log",
-                "BARITO_PRODUCER_MAX_TPS":0, 
-                "BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL":10
-              }
-            }
-          }
-        }
-      )
     end
 
     describe '#generate' do

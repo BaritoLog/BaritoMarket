@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :component_template do
-    name                  %w(yggdrasil consul kibana kafka zookeeper elasticsearch barito-flow-consumer barito-flow-producer).sample
+    name                  Faker::Lorem.word
     image                 Faker::Lorem.word
     component_attributes  { {
                             "consul": 

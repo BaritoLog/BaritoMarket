@@ -4,9 +4,6 @@ module BaritoBlueprint
   RSpec.describe Processor do
     before(:each) do
       @infrastructure = create(:infrastructure)
-      %w(consul yggdrasil).each do |n|
-        create(:component_template, name: n)
-      end
       @instances = [
           {
             'name' => 'd-trac-consul-01',

@@ -5,9 +5,6 @@ RSpec.describe Infrastructure, type: :model do
     let(:infrastructure) { create :infrastructure }
     let(:cluster_template) { create :cluster_template }
     before(:each) do
-      %w(yggdrasil consul kibana kafka zookeeper elasticsearch barito-flow-consumer barito-flow-producer).each do |n|
-        create(:component_template, name: n)
-      end
       @components = infrastructure.generate_components(cluster_template.instances)
     end
 

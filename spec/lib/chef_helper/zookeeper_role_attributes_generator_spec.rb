@@ -16,25 +16,6 @@ module ChefHelper
         category: 'zookeeper',
         ipaddress: '127.0.0.15'
       )
-      create(:component_template,
-        name: 'zookeeper', 
-        component_attributes: {
-          "consul":{
-            "hosts":[],
-            "config":{"consul.json":{"bind_addr":""}},
-            "run_as_server":false
-          },
-          "datadog":{
-            "zk":{
-              "instances":[{"host":"localhost", "port":2181, "tags":[], "cluster_name":""}]
-            },
-            "datadog_api_key":"",
-            "datadog_hostname":""
-          },
-          "run_list":[],
-          "zookeeper":{"hosts":[""],"my_id":""}
-        }
-      )
     end
 
     describe '#generate' do

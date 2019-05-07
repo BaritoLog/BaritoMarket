@@ -8,19 +8,6 @@ module ChefHelper
         category: 'consul',
         ipaddress: '127.0.0.1'
       )
-      create(:component_template,
-        name: 'consul', 
-        component_attributes: {
-          "consul": 
-            {
-              "hosts": [], 
-              "config": {
-                "consul.json": {"bind_addr": ""}
-            }
-          }, 
-          "run_list": []
-        }
-      )
     end
 
     describe '#generate' do

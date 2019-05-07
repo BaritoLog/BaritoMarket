@@ -28,32 +28,6 @@ module ChefHelper
         category: 'elasticsearch',
         ipaddress: '127.0.0.16'
       )
-      create(:component_template,
-        name: "barito-flow-consumer",
-        component_attributes: {
-          "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
-            "run_as_server":false
-          }, 
-          "run_list":[], 
-          "barito-flow":{
-            "consumer":{
-              "version":"v0.11.8", 
-              "env_vars":{
-                "BARITO_CONSUL_URL":"",
-                "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-                "BARITO_CONSUL_ELASTICSEARCH_NAME":"elasticsearch",
-                "BARITO_KAFKA_BROKERS":"", 
-                "BARITO_KAFKA_GROUP_ID":"barito-group", 
-                "BARITO_KAFKA_CONSUMER_TOPICS":"barito-log", 
-                "BARITO_ELASTICSEARCH_URL":"", 
-                "BARITO_PUSH_METRIC_URL":""
-              }
-            }
-          }
-        }
-      )
     end
 
     describe '#generate' do
