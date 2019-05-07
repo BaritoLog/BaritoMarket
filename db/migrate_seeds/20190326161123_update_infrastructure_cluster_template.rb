@@ -1,4 +1,4 @@
-class UpdateInfrastructureCLusterTemplate < ActiveRecord::Migration[5.2]
+class UpdateInfrastructureClusterTemplate < ActiveRecord::Migration[5.2]
   def up
     all_infrastructures = Infrastructure.all
 
@@ -16,7 +16,7 @@ class UpdateInfrastructureCLusterTemplate < ActiveRecord::Migration[5.2]
 
     public
       def update_attrs(infra, env, capacity)
-        cluster_template_name = capacity.capitalize
+        cluster_template_name = "Log - " + capacity.capitalize
         ct = ClusterTemplate.find_by(name: cluster_template_name)
 
         infra.update(
