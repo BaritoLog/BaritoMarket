@@ -36,7 +36,7 @@
                     = app_group.barito_apps.length
 
                   div id="toggle_apps_content_#{app_group.id}" style="display:none"
-                    = show_apps(app_group.id)
+                    = app_group.barito_apps.any? ? app_group.barito_apps.map(&:name).join(", ").truncate(160, omission: '...') : "No app yet"
 
               - else
                 td.text-center= app_group.name
