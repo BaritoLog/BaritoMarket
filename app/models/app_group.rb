@@ -7,7 +7,7 @@ class AppGroup < ApplicationRecord
   has_one :infrastructure
 
   scope :active, -> {
-    joins(:infrastructure).
+    includes(:infrastructure).
       where.not(infrastructures: { provisioning_status:'DELETED' })
   }
 
