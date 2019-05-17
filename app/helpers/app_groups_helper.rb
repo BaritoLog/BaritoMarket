@@ -19,22 +19,4 @@ module AppGroupsHelper
       end
     end
   end
-
-  def show_apps(app_group_id)
-    app_group = AppGroup.find(app_group_id)
-    apps = []
-    app_group.barito_apps.each do |app|
-      apps << app.name
-    end
-    if apps == []
-      "No app yet"
-    else
-      apps.join(", ").truncate(160, omission: '...')
-    end
-  end
-
-  def show_apps_count(app_group_id)
-    app_group = AppGroup.find(app_group_id)
-    app_group.barito_apps.count
-  end
 end
