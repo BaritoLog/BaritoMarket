@@ -8,6 +8,7 @@ class AppGroup < ApplicationRecord
 
   scope :active, -> {
     includes(:infrastructure).
+    includes(:barito_apps).
       where.not(infrastructures: { provisioning_status:'DELETED' })
   }
 
