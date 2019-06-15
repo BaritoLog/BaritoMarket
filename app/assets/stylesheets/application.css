@@ -45,6 +45,10 @@ body {
   margin-left: 5px;
 }
 
+.pagination > span {
+  padding-right: 4px;
+}
+
 a.btn-primary { color: white!important;  }
 .app_list_name { width: 40%; }
 .app_list_config { width: 15%; }

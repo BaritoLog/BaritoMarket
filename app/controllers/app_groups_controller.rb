@@ -3,7 +3,7 @@ class AppGroupsController < ApplicationController
   before_action :set_app_group, only: %i(show update manage_access)
 
   def index
-    @app_groups = policy_scope(AppGroup).order(:name)
+    @app_groups = policy_scope(AppGroup).order(:name).page params[:page]
     @allow_create_app_group = policy(AppGroup).new?
   end
 

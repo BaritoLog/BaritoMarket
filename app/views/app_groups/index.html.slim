@@ -55,3 +55,5 @@
                   .btn.btn-primary.btn-sm
                     i.fas.fa-search.mr-1
                     = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+
+      = paginate @app_groups
