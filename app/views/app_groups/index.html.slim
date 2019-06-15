@@ -16,20 +16,20 @@
           i.fas.fa-plus.mr-1
           = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
     .card-body
-      table.table.table-bordered.table-striped.table-md
-        thead.thead-dark
-          tr
-            th.text-center.col-sm-2 Name
-            th.text-center.col-sm-2 Cluster Name
-            th.text-center.col-sm-2 Capacity
-            th.text-center.col-sm-2 Provisioning Status
-            th.text-center.col-sm-1 Status
-            th.text-center.col-sm-1 Actions
+      table.table.table-hover.table-sm
+        thead
+          tr.d-flex
+            th.col-3 Name
+            th.col-2 Cluster Name
+            th.col-2 Capacity
+            th.col-2 Provisioning Status
+            th.col-1 Status
+            th.col-2 Actions
         tbody
           - @app_groups.each do |app_group|
-            tr
+            tr.d-flex
               - if policy(app_group).see_app_groups?
-                td.text-center
+                td.col-3
                   = link_to app_group.name, app_group_path(app_group)
 
                   span class="apps-badge badge badge-barito" id="toggle_apps_list_#{app_group.id}" data={ toggle: "popover", id: app_group.id, html: "true" }
@@ -39,18 +39,18 @@
                     = app_group.barito_apps.any? ? app_group.barito_apps.map(&:name).join(", ").truncate(160, omission: '...') : "No app yet"
 
               - else
-                td.text-center= app_group.name
-              td.text-center= app_group.infrastructure.cluster_name
-              td.text-center= app_group.infrastructure.capacity.camelcase
-              td.text-center= app_group.infrastructure.provisioning_status
-              td.text-center
+                td.col-3= app_group.name
+              td.col-2= app_group.infrastructure.cluster_name
+              td.col-2= app_group.infrastructure.capacity.camelcase
+              td.col-2= app_group.infrastructure.provisioning_status
+              td.col-1
                 - if policy(app_group).set_status?
                   = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow', size: 'small' }
                   = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
                     = hidden_field_tag :toggle_status
                 - else
                   = app_group.infrastructure.status
-              td.text-center
+              td.col-2
                 - if policy(app_group).see_app_groups?
                   .btn.btn-primary.btn-sm
                     i.fas.fa-search.mr-1
