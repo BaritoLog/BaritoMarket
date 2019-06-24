@@ -59,7 +59,7 @@ class Infrastructure < ApplicationRecord
       infrastructure_id:  self.id,
       hostname:           attrs[:name] || attrs['name'],
       component_type:     component_type,
-      image:              component_template.image,
+      image_alias:        component_template.image_alias,
       sequence:           seq,
       status:             InfrastructureComponent.statuses[:pending],
     )
