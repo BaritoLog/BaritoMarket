@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2019_06_24_111100) do
     t.jsonb "component_attributes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "alias"
+    t.string "image_alias"
     t.index ["name"], name: "index_component_templates_on_name", unique: true
   end
 
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 2019_06_24_111100) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "bootstrap_attributes", default: {}, null: false
-    t.string "alias"
+    t.string "image_alias"
     t.string "source_type"
     t.string "mode"
     t.string "remote"

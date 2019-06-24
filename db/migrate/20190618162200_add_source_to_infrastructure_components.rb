@@ -6,6 +6,6 @@ class AddSourceToInfrastructureComponents < ActiveRecord::Migration[5.2]
     add_column :infrastructure_components, :fingerprint, :string
     add_column :infrastructure_components, :bootstrap_type, :string
     add_column :infrastructure_components, :bootstrap_cookbooks_url, :string
-    rename_column :infrastructure_components, :image, :alias
+    rename_column :infrastructure_components, :image, :image_alias
   end
 end
