@@ -7,7 +7,7 @@
   when "consul"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul": 
           {
@@ -22,7 +22,7 @@
   when "zookeeper"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul":{
           "hosts":[],
@@ -43,7 +43,7 @@
   when "kafka"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "kafka":{
           "kafka":{"hosts":[]}, 
@@ -67,7 +67,7 @@
   when "elasticsearch"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul":{
           "hosts":[], 
@@ -94,7 +94,7 @@
   when "barito-flow-producer"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul":{
           "hosts":[], 
@@ -121,7 +121,7 @@
   when "barito-flow-consumer"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul":{
           "hosts":[], 
@@ -149,7 +149,7 @@
   when "kibana"
     ::FactoryBot.create(:component_template,
       name: n,
-      image: Faker::Lorem.word,
+      image_alias: Faker::Lorem.word,
       component_attributes: {
         "consul":{
           "hosts":[], 

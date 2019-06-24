@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :component_template do
     name                  Faker::Lorem.word
-    image                 Faker::Lorem.word
+    image_alias           Faker::Lorem.word
     component_attributes  { {
                             "consul": 
                               {

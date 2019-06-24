@@ -18,12 +18,12 @@ RSpec.feature 'Component template Management', type: :feature do
         click_link 'Edit'
         within('#edit_component_template') do
           fill_in 'component_template[name]', with: prep_component_template.name
-          fill_in 'component_template[image]', with: prep_component_template.image
+          fill_in 'component_template[image_alias]', with: prep_component_template.image_alias
         end
 
         click_button 'Submit'
         expect(page).to have_content(prep_component_template.name)
-        expect(page).to have_content(prep_component_template.image)
+        expect(page).to have_content(prep_component_template.image_alias)
       end
     end
   end
