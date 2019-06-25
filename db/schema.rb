@@ -72,10 +72,10 @@ ActiveRecord::Schema.define(version: 2019_06_24_111100) do
 
   create_table "component_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "component_attributes"
+    t.jsonb "bootstrappers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "image_alias"
+    t.jsonb "source"
     t.index ["name"], name: "index_component_templates_on_name", unique: true
   end
 
@@ -118,14 +118,8 @@ ActiveRecord::Schema.define(version: 2019_06_24_111100) do
     t.bigint "infrastructure_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "bootstrap_attributes", default: {}, null: false
-    t.string "image_alias"
-    t.string "source_type"
-    t.string "mode"
-    t.string "remote"
-    t.string "fingerprint"
-    t.string "bootstrap_type"
-    t.string "bootstrap_cookbooks_url"
+    t.jsonb "bootstrappers", default: {}, null: false
+    t.jsonb "source"
     t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
   end
 
