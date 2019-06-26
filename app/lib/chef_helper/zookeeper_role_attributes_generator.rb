@@ -11,7 +11,7 @@ module ChefHelper
       @hostname = component.hostname
       @ipaddress = component.ipaddress
       zookeeper_template = ComponentTemplate.find_by(name: 'zookeeper')
-      @zookeeper_attrs = zookeeper_template.component_attributes
+      @zookeeper_attrs = zookeeper_template.bootstrappers[0]["bootstrap_attributes"]
     end
 
     def generate

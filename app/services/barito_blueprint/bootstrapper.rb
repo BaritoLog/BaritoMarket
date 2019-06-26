@@ -54,14 +54,15 @@ module BaritoBlueprint
         private_key = File.join(@private_keys_dir, @private_key_name)
       end
 
-      attrs = component.bootstrap_attributes
+      attrs = component.bootstrappers[0]["bootstrap_attributes"]
       if attrs.empty?
         # Fetch bootstrap attributes
         attrs = generate_bootstrap_attributes(
           component, @infrastructure_components)
 
         # update attributes
-        component.update_attribute(:bootstrap_attributes, attrs)
+        component.bootstrappers[0]['bootstrap_attributes'] = attrs
+        component.save
       end
 
       # Execute bootstrapping
