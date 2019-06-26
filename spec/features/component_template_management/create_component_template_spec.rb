@@ -15,15 +15,15 @@ RSpec.feature 'Component template Management', type: :feature do
         click_link 'New Component Template'
         within('#new_component_template') do
           fill_in 'component_template[name]', with: "test"
-          fill_in 'component_template[image_alias]', with: "image-test"
-          fill_in 'component_template[component_attributes]', with: prep_component_template.component_attributes.to_json
+          fill_in 'component_template[source]', with: prep_component_template.source.to_json
+          fill_in 'component_template[bootstrappers]', with: prep_component_template.bootstrappers.to_json
         end
 
         click_button 'Submit'
         expect(page).to have_content("test")
 
         click_link 'test'
-        expect(page).to have_content("image-test")
+        expect(page).to have_content('barito-registry')
       end
     end
   end

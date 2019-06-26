@@ -13,19 +13,22 @@ class ComponentTemplatesController < ApplicationController
 
   def edit
     authorize @component_template
-    @component_attributes = JSON.pretty_generate(@component_template.component_attributes)
+    @source = JSON.pretty_generate(@component_template.source)
+    @bootstrappers = JSON.pretty_generate(@component_template.bootstrappers)
   end
 
   def show
     authorize @component_template
-    @component_attributes = JSON.pretty_generate(@component_template.component_attributes)
+    @bootstrappers = JSON.pretty_generate(@component_template.bootstrappers)
+    @source = JSON.pretty_generate(@component_template.source)
   end
 
   def create
     authorize ComponentTemplate
-    component_attributes = component_template_params.clone
-    component_attributes[:component_attributes] = JSON.parse(component_attributes[:component_attributes])
-    @component_template = ComponentTemplate.new(component_attributes)
+    ct_params_cloned = component_template_params.clone
+    ct_params_cloned[:source] = JSON.parse(ct_params_cloned[:source])
+    ct_params_cloned[:bootstrappers] = JSON.parse(ct_params_cloned[:bootstrappers])
+    @component_template = ComponentTemplate.new(ct_params_cloned)
 
     if @component_template.save
       redirect_to component_templates_path
@@ -43,9 +46,10 @@ class ComponentTemplatesController < ApplicationController
 
   def update
     authorize @component_template
-    component_attributes = component_template_params.clone
-    component_attributes[:component_attributes] = JSON.parse(component_attributes[:component_attributes])
-    @component_template.update_attributes(component_attributes)
+    ct_params_cloned = component_template_params.clone
+    ct_params_cloned[:source] = JSON.parse(ct_params_cloned[:source])
+    ct_params_cloned[:bootstrappers] = JSON.parse(ct_params_cloned[:bootstrappers])
+    @component_template.update_attributes(ct_params_cloned)
     redirect_to component_template_path(@component_template)
   end
 
@@ -54,8 +58,8 @@ class ComponentTemplatesController < ApplicationController
   def component_template_params
     params.require(:component_template).permit(
       :name,
-      :image_alias,
-      :component_attributes
+      :source,
+      :bootstrappers
     )
   end
 

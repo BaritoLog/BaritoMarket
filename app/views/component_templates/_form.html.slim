@@ -3,10 +3,10 @@
     = f.label :name
     = f.text_field :name, class: 'form-control', placeholder: 'Name of your component'
   .form-group
-    = f.label :image_alias
-    = f.text_field :image_alias, class: 'form-control', placeholder: 'Image of your component'
+    = f.label :source
+    = f.text_area :source, value: @source, cols: 10, rows: 10, class: 'form-control', placeholder: 'Source '
   .form-group
-    = f.label :component_attributes
-    = f.text_area :component_attributes, value: @component_attributes, cols: 10, rows: 10, class: 'form-control', placeholder: 'Component attributes'
+    = f.label :bootstrappers
+    = f.text_area :bootstrappers, value: @bootstrappers, cols: 10, rows: 10, class: 'form-control', placeholder: 'Boostrappers '
   .actions = f.submit 'Submit',class: 'btn btn-primary'
   
