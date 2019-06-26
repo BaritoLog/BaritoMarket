@@ -43,7 +43,7 @@ module BaritoBlueprint
       component.update_status('PROVISIONING_STARTED')
 
       # Execute provisioning
-      res = @executor.provision!(component.hostname, component.image)
+      res = @executor.provision!(component.hostname, component.source, component.bootstrappers)
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",
@@ -75,7 +75,7 @@ module BaritoBlueprint
       component.update_status('PROVISIONING_STARTED')
 
       # Execute reprovisioning
-      res = @executor.reprovision!(component.hostname, component.image)
+      res = @executor.reprovision!(component.hostname, component.source, component.bootstrappers)
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",

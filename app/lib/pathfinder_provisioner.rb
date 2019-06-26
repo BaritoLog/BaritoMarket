@@ -12,9 +12,9 @@ class PathfinderProvisioner
     @pathfinder_cluster = pathfinder_cluster
   end
 
-  def provision!(hostname, image)
+  def provision!(hostname, source, bootstrappers)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v1/ext_app/containers.json",
+      "#{@pathfinder_host}/api/v2/ext_app/containers.json",
       method: :post,
       params: {
         'cluster_name' => @pathfinder_cluster,
@@ -22,7 +22,8 @@ class PathfinderProvisioner
       body: {
         'container' => {
           'hostname' => hostname,
-          'image' => image
+          'source' => source,
+          'bootstrappers' => bootstrappers
         }
       }.to_json,
       headers: {
@@ -41,7 +42,7 @@ class PathfinderProvisioner
 
   def show_container(hostname)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}",
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{hostname}",
       method: :get,
       params: {
         'cluster_name' => @pathfinder_cluster,
@@ -55,9 +56,9 @@ class PathfinderProvisioner
     return respond_success(req.response)
   end
 
-  def reprovision!(hostname, image)
+  def reprovision!(hostname, source, bootstrappers)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/reschedule",
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{hostname}/reschedule",
       method: :post,
       params: {
         'cluster_name' => @pathfinder_cluster,
@@ -72,7 +73,7 @@ class PathfinderProvisioner
     if req.response.success?
       return respond_success(req.response)
     elsif req.response.response_code == 404
-      provision!(hostname, image)
+      provision!(hostname, source, bootstrappers)
     else
       return respond_error(req.response)
     end
@@ -80,7 +81,7 @@ class PathfinderProvisioner
 
   def delete_container!(hostname)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v1/ext_app/containers/#{hostname}/schedule_deletion",
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{hostname}/schedule_deletion",
       method: :post,
       params: {
         'cluster_name' => @pathfinder_cluster,
