@@ -1,7 +1,6 @@
-class UpdateImageBootstrapAttributeComponentTemplate < ActiveRecord::Migration[5.2]
+class UpdateImageBootstrapAttributeInfrastructureComponent < ActiveRecord::Migration[5.2]
   def up
-    component_templates = ComponentTemplate.all
-
+    ics = InfrastructureComponent.all
     source = {
       source_type: "image",       # can be image, migration or copy
       mode: "pull",              # can be local or pull. default is pull.
@@ -18,8 +17,8 @@ class UpdateImageBootstrapAttributeComponentTemplate < ActiveRecord::Migration[5
       bootstrap_attributes: {}
     }]
 
-    component_templates.each do |ct|
-      case ct.name
+    ics.each do |ic|
+      case ic.component_type
       when "consul"
         bootstrappers[0][:bootstrap_cookbooks_url] = "https://github.com/BaritoLog/consul-cookbook/archive/master.tar.gz"
         source[:alias] = "lxd-consul-1.1.0-3"
@@ -46,15 +45,15 @@ class UpdateImageBootstrapAttributeComponentTemplate < ActiveRecord::Migration[5
         source[:alias] = "18.04"
       end
 
-      bootstrappers[0][:bootstrap_attributes] = ct.bootstrappers
-      ct.update(source: source, bootstrappers: bootstrappers)
+      bootstrappers[0][:bootstrap_attributes] = ic.bootstrappers
+      ic.update(source: source, bootstrappers: bootstrappers)
     end
   end
 
   def down
-    component_templates = ComponentTemplate.all
-    component_templates.each do |ct|
-      ct.update(
+    ics = InfrastructureComponent.all
+    ics.each do |ic|
+      ic.update(
         source: {},
         bootstrappers: [],
       )
