@@ -12,7 +12,7 @@ module ChefHelper
       @role_name = opts[:role_name] || 'barito-flow-consumer'
       @ipaddress = component.ipaddress
       consumer_template = ComponentTemplate.find_by(name: 'barito-flow-consumer')
-      @consumer_attrs = consumer_template.bootstrappers[0]["bootstrap_attributes"]
+      @consumer_attrs = get_bootstrap_attributes(consumer_template.bootstrappers)
 
       @kafka_hosts_and_port = kafka_hosts.
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }

@@ -10,7 +10,7 @@ module ChefHelper
       @role_name = opts[:role_name] || 'barito-flow-producer'
       @ipaddress = component.ipaddress
       producer_template = ComponentTemplate.find_by(name: 'barito-flow-producer')
-      @producer_attrs = producer_template.bootstrappers[0]["bootstrap_attributes"]
+      @producer_attrs = get_bootstrap_attributes(producer_template.bootstrappers)
       @kafka_hosts_and_port = kafka_hosts.
         map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }
       @kafka_hosts_and_port = @kafka_hosts_and_port.join(',')

@@ -16,7 +16,7 @@ module ChefHelper
         @index_number_of_replicas = 1
       end
       elastic_template = ComponentTemplate.find_by(name: 'elasticsearch')
-      @elastic_attrs = elastic_template.bootstrappers[0]["bootstrap_attributes"]
+      @elastic_attrs = get_bootstrap_attributes(elastic_template.bootstrappers)
     end
 
     def generate
