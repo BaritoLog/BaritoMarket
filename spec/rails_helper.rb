@@ -33,6 +33,12 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+# Patch for issue with Chrome 75
+# Ref: https://github.com/titusfortner/webdrivers/issues/126#issuecomment-499972539
+Webdrivers.cache_time = 1
+Webdrivers::Chromedriver.required_version = '74.0.3729.6'
+
+# Configure Capybara Driver
 Capybara.server = :puma, { Silent: true }
 Capybara.register_driver :custom_headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
