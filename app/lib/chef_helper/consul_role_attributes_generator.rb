@@ -6,7 +6,7 @@ module ChefHelper
       @role_name = opts[:role_name] || 'consul'
       @ipaddress = component.ipaddress
       consul_template = ComponentTemplate.find_by(name: 'consul')
-      @consul_attrs = consul_template.component_attributes
+      @consul_attrs = get_bootstrap_attributes(consul_template.bootstrappers)
     end
 
     def generate

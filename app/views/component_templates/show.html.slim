@@ -9,15 +9,17 @@
           dd.col-sm-9
             = @component_template.name
 
-          dt.col-sm-3 Image:
-          dd.col-sm-9
-            = @component_template.image
-
-          dt.col-sm-3 Attributes:
+          dt.col-sm-3 Source:
           dd.col-sm-9
             pre
               code
-                = @component_attributes
+                = @source
+
+          dt.col-sm-3 Bootstrappers:
+          dd.col-sm-9
+            pre
+              code
+                = @bootstrappers
 
       .card-footer.text-right
         .btn.btn-primary.btn-sm.float-right

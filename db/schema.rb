@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_07_104900) do
+ActiveRecord::Schema.define(version: 2019_06_27_134000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,10 +72,10 @@ ActiveRecord::Schema.define(version: 2019_05_07_104900) do
 
   create_table "component_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "component_attributes"
+    t.jsonb "bootstrappers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "image"
+    t.jsonb "source"
     t.index ["name"], name: "index_component_templates_on_name", unique: true
   end
 
@@ -118,8 +118,8 @@ ActiveRecord::Schema.define(version: 2019_05_07_104900) do
     t.bigint "infrastructure_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "bootstrap_attributes", default: {}, null: false
-    t.string "image"
+    t.jsonb "bootstrappers", default: {}, null: false
+    t.jsonb "source"
     t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
   end
 
