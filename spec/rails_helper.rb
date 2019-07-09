@@ -7,6 +7,7 @@ require 'webmock/rspec'
 require 'database_cleaner'
 require 'fakeredis/rspec'
 require 'coveralls'
+require 'webdrivers'
 require 'selenium/webdriver'
 require 'simplecov'
 require 'simplecov-console'
@@ -33,7 +34,6 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 Capybara.server = :puma, { Silent: true }
-
 Capybara.register_driver :custom_headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     chromeOptions: { args: %w(headless disable-gpu no-sandbox) }
@@ -43,7 +43,6 @@ Capybara.register_driver :custom_headless_chrome do |app|
     browser: :chrome,
     desired_capabilities: capabilities
 end
-
 Capybara.javascript_driver = :custom_headless_chrome
 
 RSpec.configure do |config|
@@ -60,7 +59,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     ENV['ENABLE_CAS_INTEGRATION'] = 'true'
 
-    WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', /selenium/])
+    WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', /selenium/, 'chromedriver.storage.googleapis.com'])
     Sidekiq::Testing.fake!
     DatabaseCleaner.clean_with(:truncation)
 
