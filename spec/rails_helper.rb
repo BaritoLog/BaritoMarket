@@ -59,7 +59,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     ENV['ENABLE_CAS_INTEGRATION'] = 'true'
 
-    WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', /selenium/])
+    WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', /selenium/, 'chromedriver.storage.googleapis.com'])
     Sidekiq::Testing.fake!
     DatabaseCleaner.clean_with(:truncation)
 
