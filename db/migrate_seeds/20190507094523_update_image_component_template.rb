@@ -5,7 +5,7 @@ class UpdateImageComponentTemplate < ActiveRecord::Migration[5.2]
     component_templates.each do |ct|
       case ct.name
       when "consul"
-        ct.update(image: 'lxd-consul-1.1.0-3 ')
+        ct.update(image: 'lxd-consul-1.1.0-3')
       when "zookeeper"
         ct.update(image: 'lxd-zookeeper-3.4.12-1')
       when "kafka"
