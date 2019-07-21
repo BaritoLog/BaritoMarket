@@ -3,7 +3,7 @@ class RemoveImageFromComponentTemplates < ActiveRecord::Migration[5.2]
     if ComponentTemplate.where.not(image: nil).empty?
       remove_column :component_templates, :image, :string
     else
-      raise $!, "There is component that has image value"
+      raise "There is component that has image value"
     end
   end
 

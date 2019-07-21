@@ -3,7 +3,7 @@ class RemoveImageFromInfrastructureComponents < ActiveRecord::Migration[5.2]
     if InfrastructureComponent.where.not(image: nil).empty?
       remove_column :infrastructure_components, :image, :string
     else
-      raise $!, "There is infrastructure component that has image value"
+      raise "There is infrastructure component that has image value"
     end
   end
 
