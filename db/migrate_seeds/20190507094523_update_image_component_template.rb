@@ -1,6 +1,6 @@
 class UpdateImageComponentTemplate < ActiveRecord::Migration[5.2]
   def up
-    component_templates = ComponentTemplates.all
+    component_templates = ComponentTemplate.all
 
     component_templates.each do |ct|
       case ct.name
