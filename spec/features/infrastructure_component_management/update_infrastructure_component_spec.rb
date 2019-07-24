@@ -4,7 +4,7 @@ RSpec.feature 'Infrastructure Component Management - ', type: :feature do
   let(:user_a) { create(:user) }
   before(:each) do
     @infrastructure = create(:infrastructure)
-    @infrastructure_component = create(:infrastructure_component, infrastructure_id:@infrastructure.id)
+    @infrastructure_component = create(:infrastructure_component, infrastructure_id: @infrastructure.id)
   end
 
   describe 'Infrastructure Component - ' do
