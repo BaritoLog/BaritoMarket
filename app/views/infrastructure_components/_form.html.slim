@@ -6,8 +6,8 @@
     = f.label :component_type
     = f.text_field :component_type, class: 'form-control', disabled: true
   .form-group
-    = f.label :image
-    = f.text_field :image, class: 'form-control'
+    = f.label :source
+    = f.text_area :source,value: @source, cols: 10, rows: 10, class: 'form-control', placeholder: 'Source'
   .form-group
     = f.label :sequence
     = f.text_field :sequence, class: 'form-control', disabled: true
@@ -24,6 +24,6 @@
     = f.label :infrastructure_id
     = f.text_field :infrastructure_id, class: 'form-control', disabled: true
   .form-group
-    = f.label :bootstrap_attributes
-    = f.text_area :bootstrap_attributes, value: @bootstrap_attributes, cols: 10, rows: 10, class: 'form-control', placeholder: 'Bootstrap attributes'
+    = f.label :bootstrappers
+    = f.text_area :bootstrappers, value: @bootstrappers, cols: 10, rows: 10, class: 'form-control', placeholder: 'Bootstrappers'
   .actions = f.submit 'Submit',class: 'btn btn-primary'
