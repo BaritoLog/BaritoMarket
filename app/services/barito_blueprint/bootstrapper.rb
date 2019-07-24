@@ -62,7 +62,7 @@ module BaritoBlueprint
 
         # update attributes
         component.bootstrappers.each do |bootstrapper|
-          if bootstrapper["bootstrap_attributes"] == "chef-solo"
+          if bootstrapper["bootstrap_type"] == "chef-solo"
             bootstrapper["bootstrap_attributes"] = attrs
           end
         end
