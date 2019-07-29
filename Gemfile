@@ -34,7 +34,6 @@ gem 'wisper', '<= 2.0.0'
 group :development, :test do
   gem 'cane', '<= 3.0'
   gem 'capybara', '<= 3.2.1'
-  gem 'chromedriver-helper'
   gem 'coveralls', '<= 0.8'
   gem 'database_cleaner', '<= 1.7'
   gem 'factory_bot_rails', '<= 4.10.0'
@@ -45,6 +44,7 @@ group :development, :test do
   gem 'simplecov', '<= 0.14'
   gem 'simplecov-console', '<= 0.4'
   gem 'timecop', '<= 0.9.1'
+  gem 'webdrivers', '~> 4.0'
   gem 'webmock', '<= 3.4.1'
 end
 

@@ -12,7 +12,7 @@ module ChefHelper
       @hostname = component.hostname
       @ipaddress = component.ipaddress
       kafka_template = ComponentTemplate.find_by(name: 'kafka')
-      @kafka_attrs = kafka_template.component_attributes
+      @kafka_attrs = get_bootstrap_attributes(kafka_template.bootstrappers)
     end
 
     def generate

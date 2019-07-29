@@ -54,14 +54,20 @@ module BaritoBlueprint
         private_key = File.join(@private_keys_dir, @private_key_name)
       end
 
-      attrs = component.bootstrap_attributes
+      attrs = get_bootstrap_attributes(component.bootstrappers)
       if attrs.empty?
         # Fetch bootstrap attributes
         attrs = generate_bootstrap_attributes(
           component, @infrastructure_components)
 
         # update attributes
-        component.update_attribute(:bootstrap_attributes, attrs)
+        component.bootstrappers.each do |bootstrapper|
+          if bootstrapper["bootstrap_type"] == "chef-solo"
+            bootstrapper["bootstrap_attributes"] = attrs
+          end
+        end
+
+        component.save
       end
 
       # Execute bootstrapping
@@ -108,6 +114,17 @@ module BaritoBlueprint
       return {} unless generator.is_a? Class
       ChefHelper::GenericRoleAttributesGenerator.new.generate(
         generator.new(component, infrastructure_components))
+    end
+
+    def get_bootstrap_attributes(bootstrappers)
+      bootstrappers.each do |bootstrapper|
+        case bootstrapper["bootstrap_type"]
+        when "chef-solo"
+          return bootstrapper["bootstrap_attributes"]
+        else 
+          return nil
+        end
+      end
     end
   end
 end

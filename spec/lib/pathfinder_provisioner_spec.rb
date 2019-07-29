@@ -6,9 +6,29 @@ RSpec.describe PathfinderProvisioner do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
+      @source = {
+        'source_type' => 'image',
+        'mode' => 'pull',
+        'remote' => {
+            'name' => 'barito-registry'
+          },
+        'fingerprint' => '',
+        'alias' => 'consul'
+      }
+      @bootstrappers = [{    
+        "bootstrap_type": "chef-solo",
+        "bootstrap_cookbooks_url": "",
+        "bootstrap_attributes": {
+          "consul": {
+            "hosts": [],
+            "config": {"consul.json": {"bind_addr": ""}}
+          },
+          "run_list": []
+        } 
+      }]
 
       # Mock Pathfinder API
-      stub_request(:post, "http://#{@pathfinder_host}/api/v1/ext_app/containers.json").
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers.json").
         with(
           query: {
             'cluster_name' => @pathfinder_cluster
@@ -16,7 +36,8 @@ RSpec.describe PathfinderProvisioner do
           body: {
             'container' => {
               'hostname' => 'test-01',
-              'image' => '18.04',
+              'source' => @source,
+              'bootstrappers' => @bootstrappers
             }
           }.to_json,
           headers: {
@@ -38,7 +59,7 @@ RSpec.describe PathfinderProvisioner do
 
     it 'should make necessary calls to Pathfinder and return the response' do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      provision_result = pathfinder_provisioner.provision!('test-01', '18.04')
+      provision_result = pathfinder_provisioner.provision!('test-01', @source, @bootstrappers)
       expect(provision_result).to eq({
         'success' => true,
         'data' => {'ipaddress' => '127.0.0.1'},
@@ -52,9 +73,29 @@ RSpec.describe PathfinderProvisioner do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
+        @source = {
+          'source_type' => 'image',
+          'mode' => 'pull',
+          'remote' => {
+              'name' => 'barito-registry'
+            },
+          'fingerprint' => '',
+          'alias' => 'consul'
+        }
+        @bootstrappers = [{    
+          "bootstrap_type": "chef-solo",
+          "bootstrap_cookbooks_url": "",
+          "bootstrap_attributes": {
+            "consul": {
+              "hosts": [],
+              "config": {"consul.json": {"bind_addr": ""}}
+            },
+            "run_list": []
+          } 
+        }]
 
         # Mock Pathfinder API
-        stub_request(:post, "http://#{@pathfinder_host}/api/v1/ext_app/containers/test-01/reschedule").
+        stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers/test-01/reschedule").
           with(
             query: {
               'cluster_name' => @pathfinder_cluster
@@ -78,7 +119,7 @@ RSpec.describe PathfinderProvisioner do
 
       it 'should make necessary calls to Pathfinder and return the response' do
         pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-        provision_result = pathfinder_provisioner.reprovision!('test-01', '18.04')
+        provision_result = pathfinder_provisioner.reprovision!('test-01', @source, @bootstrappers)
         expect(provision_result).to eq({
           'success' => true,
           'data' => {'ipaddress' => '127.0.0.1'},
@@ -91,9 +132,29 @@ RSpec.describe PathfinderProvisioner do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
+        @source = {
+          'source_type' => 'image',
+          'mode' => 'pull',
+          'remote' => {
+              'name' => 'barito-registry'
+            },
+          'fingerprint' => '',
+          'alias' => 'consul'
+        }
+        @bootstrappers = [{    
+          "bootstrap_type": "chef-solo",
+          "bootstrap_cookbooks_url": "",
+          "bootstrap_attributes": {
+            "consul": {
+              "hosts": [],
+              "config": {"consul.json": {"bind_addr": ""}}
+            },
+            "run_list": []
+          } 
+        }]
 
         # Mock Pathfinder API
-        stub_request(:post, "http://#{@pathfinder_host}/api/v1/ext_app/containers/test-01/reschedule").
+        stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers/test-01/reschedule").
           with(
             query: {
               'cluster_name' => @pathfinder_cluster
@@ -112,7 +173,7 @@ RSpec.describe PathfinderProvisioner do
             }.to_json
           })
 
-      stub_request(:post, "http://#{@pathfinder_host}/api/v1/ext_app/containers.json").
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers.json").
         with(
           query: {
             'cluster_name' => @pathfinder_cluster
@@ -120,7 +181,8 @@ RSpec.describe PathfinderProvisioner do
           body: {
             'container' => {
               'hostname' => 'test-01',
-              'image' => '18.04',
+              'source' => @source,
+              'bootstrappers' => @bootstrappers
             }
           }.to_json,
           headers: {
@@ -142,7 +204,7 @@ RSpec.describe PathfinderProvisioner do
 
       it 'should make necessary calls to Pathfinder and return the response' do
         pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-        provision_result = pathfinder_provisioner.reprovision!('test-01', '18.04')
+        provision_result = pathfinder_provisioner.reprovision!('test-01', @source, @bootstrappers)
         expect(provision_result).to eq({
           'success' => true,
           'data' => {'ipaddress' => '127.0.0.1'},
@@ -158,7 +220,7 @@ RSpec.describe PathfinderProvisioner do
       @pathfinder_cluster = 'barito'
 
       # Mock Pathfinder API
-      stub_request(:post, "http://#{@pathfinder_host}/api/v1/ext_app/containers/test-01/schedule_deletion").
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers/test-01/schedule_deletion").
         with(
           query: {
             'cluster_name' => @pathfinder_cluster
