@@ -23,6 +23,14 @@ var app_groups = {
       }
     });
 
+    $("[id^='toggle_infra_status_']").change(function() {
+      var appGroupId = $(this).data("id");
+      var isChecked = $(this).prop("checked");
+      var $form = $("#form_toggle_infra_status_" + appGroupId);
+      $form.find("#toggle_status").val(isChecked);
+      $form.submit();
+    });
+
     $("[id^='toggle_apps_list_']").hover(function() {
       var appGroupId = $(this).data("id");
       $("#toggle_apps_list_" + appGroupId).popover({
