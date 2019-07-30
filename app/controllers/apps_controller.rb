@@ -22,8 +22,11 @@ class AppsController < ApplicationController
 
   def update
     authorize @app
-    unless app_params[:max_tps].to_i <= @app.app_group.max_tps
+    if app_params[:max_tps].to_i > @app.app_group.max_tps
       flash[:alert] = "Max TPS (#{app_params[:max_tps]} TPS) should be less than AppGroup capacity (#{@app.app_group.max_tps} TPS)"
+      return redirect_to app_group_path(@app.app_group)
+    elsif @app.app_group.new_total_tps(@app.name,app_params[:max_tps].to_i) > @app.app_group.max_tps
+      flash[:alert] = "With this new max TPS (#{app_params[:max_tps]} TPS), new AppGroup total TPS (#{@app.app_group.new_total_tps(@app.name,app_params[:max_tps].to_i)} TPS)  will exceed AppGroup capacity"
       return redirect_to app_group_path(@app.app_group)
     end
     @app.update_attributes(app_params)

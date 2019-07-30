@@ -48,4 +48,8 @@ class AppGroup < ApplicationRecord
   def max_tps
     self.infrastructure.options['max_tps'].to_i
   end
+
+  def new_total_tps(app_name,new_tps)
+    self.barito_apps.where.not(name: app_name).sum(:max_tps)+new_tps
+  end
 end
