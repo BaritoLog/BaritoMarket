@@ -3,8 +3,21 @@ class AppGroupsController < ApplicationController
   before_action :set_app_group, only: %i(show update manage_access)
 
   def index
-    @app_groups = policy_scope(AppGroup).order(:name).page params[:page]
     @allow_create_app_group = policy(AppGroup).new?
+    # app_groups = policy_scope(AppGroup)
+
+    (@filterrific = initialize_filterrific(
+      policy_scope(AppGroup),
+      params[:filterrific],
+      sanitize_params: true,
+    )) || return
+
+    @app_groups = @filterrific.find.page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def search

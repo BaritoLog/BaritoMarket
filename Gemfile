@@ -30,6 +30,7 @@ gem 'slim-rails', '<= 3.1.3'
 gem 'typhoeus', '<= 1.3.0'
 gem 'uglifier'
 gem 'wisper', '<= 2.0.0'
+gem 'filterrific'
 
 group :development, :test do
   gem 'cane', '<= 3.0'

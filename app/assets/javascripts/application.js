@@ -15,6 +15,7 @@
 //= require popper
 //= require select2-full
 //= require_tree .
+//= require filterrific/filterrific-jquery
 
 $(document).ready(function(){
   $(".btn-copy").click(function(){

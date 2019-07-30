@@ -12,6 +12,52 @@ class AppGroup < ApplicationRecord
       where.not(infrastructures: { provisioning_status:'DELETED' })
   }
 
+  filterrific :default_filter_params => { :sorted_by => 'created_at_desc' },
+              :available_filters => %w[
+                sorted_by
+                search_query
+              ]
+
+  scope :search_query, ->(query) {
+    return nil  if query.blank?
+    # condition query, parse into individual keywords
+    terms = query.downcase.split(/\s+/)
+    # replace "*" with "%" for wildcard searches,
+    # append '%', remove duplicate '%'s
+    terms = terms.map { |e|
+      ('%' + e + '%').gsub(/%+/, '%')
+    }
+    # configure number of OR conditions for provision
+    # of interpolation arguments. Adjust this if you
+    # change the number of OR conditions.
+    num_or_conditions = 3
+    where(
+      terms.map {
+        or_clauses = [
+          "LOWER(app_groups.name) LIKE ?",
+          "LOWER(infrastructures.cluster_name) LIKE ?",
+          "LOWER(barito_apps.name) LIKE ?"
+        ].join(' OR ')
+        "(#{ or_clauses })"
+      }.join(' AND '),
+      *terms.map { |e| [e] * num_or_conditions }.flatten
+    )
+  }
+
+  scope :sorted_by, ->(sort_option) {
+    direction = (sort_option =~ /desc$/) ? 'desc' : 'asc'
+    app_groups = AppGroup.arel_table
+    infrastructures = Infrastructure.arel_table
+    case sort_option.to_s
+    when /^created_at_/
+      order(app_groups[:created_at].send(direction))
+    when /^name_/
+      order(app_groups[:name].lower.send(direction))
+    else
+      raise(ArgumentError, "Invalid sort option: #{sort_option.inspect}")
+    end
+  }
+
   def self.setup(params)
     log_retention_days = nil
     log_retention_days = Figaro.env.default_log_retention_days.to_i unless Figaro.env.default_log_retention_days.blank?
