@@ -123,6 +123,7 @@ sudo cat > bootstrap.json << EOF
 }
 EOF
 
+sudo gem install bundler -v 2.0.1
 sudo chef-solo -c /opt/baritolog/solo.rb -j /opt/baritolog/bootstrap.json
 
 echo "Adding private key into barito_market config"
