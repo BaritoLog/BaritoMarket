@@ -134,12 +134,12 @@ sudo chmod 600 barito
 
 echo "Running initial seed barito-market"
 cd /opt/barito_market/BaritoMarket
-RAILS_ENV=production rake db:seed
+RAILS_ENV=production bundle exec rake db:seed
 
 echo "Running initial seed pathfinder-mono"
 cd /opt/pathfinder-mono/pathfinder-mono
 sudo chmod 644 ./.env
-RAILS_ENV=production rake db:seed
+RAILS_ENV=production bundle exec rake db:seed
 
 echo "Installing PFI"
 sudo mkdir /home/vagrant/.pfi -p
