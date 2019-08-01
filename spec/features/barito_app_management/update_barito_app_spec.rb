@@ -16,7 +16,7 @@ RSpec.feature 'Barito App Management', type: :feature do
       options: cluster_template.options,
     )
     @barito_app = create(:barito_app, app_group: @app_group, max_tps: 50)
-    @barito_app2 = create(:barito_app, app_group:@app_group, max_tps: 50, topic_name: 'topic')
+    @barito_app2 = create(:barito_app, app_group:@app_group, max_tps: 50, topic_name: 'barito-app-2')
   end
 
   describe 'Edit max tps' do
@@ -82,7 +82,7 @@ RSpec.feature 'Barito App Management', type: :feature do
         wait = Selenium::WebDriver::Wait.new ignore: Selenium::WebDriver::Error::NoAlertPresentError
         alert = wait.until { page.driver.browser.switch_to.alert }
         alert.accept
-        
+
         expect(page).to have_content("With this new max TPS (#{new_value} TPS)")
       end
     end
