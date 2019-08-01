@@ -13,7 +13,7 @@ echo "install ruby"
 sudo apt-get install -y ruby-full
 
 echo "Install chef"
-wget https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
+wget --quiet https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
 sudo dpkg -i chefdk_3.9.0-1_amd64.deb
 echo 'eval "$(chef shell-init bash)"' >> ~/.profile
 source ~/.profile
@@ -156,5 +156,5 @@ current_profile = "default"
 EOF
 sudo chown vagrant:vagrant /home/vagrant/.pfi/config
 
-sudo wget -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.0/pfi-linux
+sudo wget --quiet -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.0/pfi-linux
 sudo chmod +x /usr/local/bin/pfi
