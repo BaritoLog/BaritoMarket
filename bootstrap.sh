@@ -15,8 +15,6 @@ sudo apt-get install -y ruby-full
 echo "Install chef"
 wget --quiet https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
 sudo dpkg -i chefdk_3.9.0-1_amd64.deb
-echo 'eval "$(chef shell-init bash)"' >> ~/.profile
-source ~/.profile
 
 echo "Creating private key"
 yes "" | ssh-keygen -t rsa
