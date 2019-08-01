@@ -32,8 +32,8 @@ DEFAULT_LOG_RETENTION_DAYS:  '30'
 ES_CURATOR_CLIENT_KEY:       'abcd1234'
 GLOBAL_VIEWER:               'false'
 GLOBAL_VIEWER_ROLE:          'global-viewer'
-REDIS_KEY_EXPIRY:			 '10'
-DEFAULT_PER_PAGE:			 '30'
+REDIS_KEY_EXPIRY:            '10'
+DEFAULT_PER_PAGE:            '30'
 
 development:
   RAILS_ENV:                 'development'
