@@ -4,7 +4,6 @@ class AppGroupsController < ApplicationController
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
-    # app_groups = policy_scope(AppGroup)
 
     (@filterrific = initialize_filterrific(
       policy_scope(AppGroup),
