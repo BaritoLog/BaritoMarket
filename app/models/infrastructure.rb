@@ -143,10 +143,4 @@ class Infrastructure < ApplicationRecord
     name = "#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
     { name: name, type: type}
   end
-
-  def self.options_for_select
-    infrastructures = Infrastructure.arel_table
-    # order('LOWER(name)').map { |e| [e.name, e.id] }
-    order(infrastructures[:cluster_name].lower).pluck(:name, :id)
-  end
 end
