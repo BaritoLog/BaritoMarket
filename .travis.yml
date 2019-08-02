@@ -1,7 +1,7 @@
 dist: trusty
 language: ruby
 rvm:
-  - 2.4.3
+  - 2.5.1
 addons:
   postgresql: "9.6"
   chrome: stable
