@@ -1,30 +1,30 @@
 .row
-  .col-sm-6
+  .col-sm-12
     .card
       .h5.card-header Infrastructure Details
       .card-body
         dl.row
-          dt.col-sm-3 Infrastructure Name:
-          dd.col-sm-9
+          dt.col-sm-2 Infrastructure Name:
+          dd.col-sm-10
             = @infrastructure.name
 
-          dt.col-sm-3 Cluster Name:
-          dd.col-sm-9
+          dt.col-sm-2 Cluster Name:
+          dd.col-sm-10
             = @infrastructure.cluster_name
 
-          dt.col-sm-3 Capacity:
-          dd.col-sm-9
+          dt.col-sm-2 Capacity:
+          dd.col-sm-10
             = @infrastructure.capacity.camelcase
 
-          dt.col-sm-3 Provisioning Status:
-          dd.col-sm-9
+          dt.col-sm-2 Provisioning Status:
+          dd.col-sm-10
             = @infrastructure.provisioning_status
 
-          dt.col-sm-3 Status:
-          dd.col-sm-9
+          dt.col-sm-2 Status:
+          dd.col-sm-10
             = @infrastructure.status
 
-      .card-footer.text-right
+      .card-footer
         .btn.btn-primary.btn-sm
           = link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'text-light', style: 'text-decoration:none'
 br

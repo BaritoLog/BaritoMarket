@@ -1,13 +1,18 @@
 dist: trusty
 language: ruby
 rvm:
-  - 2.4.3
+  - 2.5.1
 addons:
   postgresql: "9.6"
   chrome: stable
 services:
   - postgresql
 before_script:
+  - wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/76.0.3809.12/chromedriver_linux64.zip
+  - unzip /tmp/chromedriver.zip chromedriver -d /usr/bin/
+  - rm /tmp/chromedriver.zip
+  - chmod ugo+rx /usr/bin/chromedriver
+  - export CHROME_BIN=chromium-browser
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - cp config/tps_config.yml.example config/tps_config.yml

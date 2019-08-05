@@ -16,6 +16,7 @@
 
 body {
   padding-top: 60px;
+  font-size: 0.75rem;
 }
 
 .btn-default {
@@ -30,6 +31,10 @@ body {
   border-color: #adadad;
 }
 
+.btn-sm, .form-control {
+  font-size: 0.75rem;
+}
+
 .badge-barito{
   color: #212529;
   background-color: #f8f9fa;
@@ -38,6 +43,10 @@ body {
 
 .apps-badge{
   margin-left: 5px;
+}
+
+.pagination > span {
+  padding-right: 4px;
 }
 
 a.btn-primary { color: white!important;  }

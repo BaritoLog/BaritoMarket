@@ -6,7 +6,7 @@
       = "- #{msg}"
       br
 .row
-  .col-sm-6
+  .col-md-6
     .card
       h5.card-header Add New Application Group
       = form_tag(app_groups_path, id: 'app_group_form') do
@@ -22,4 +22,4 @@
                 small.form-text.text-muted
                   | Please choose your Cluster Template
           .card-footer.text-right
-            = submit_tag 'Submit', class: 'btn btn-primary'
+            = submit_tag 'Submit', class: 'btn btn-primary btn-sm'

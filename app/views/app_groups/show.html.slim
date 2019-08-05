@@ -1,11 +1,11 @@
 .row
-  .col-sm-6
+  .col-sm-12
     .card
       h5.card-header Application Group Details
       .card-body
         dl.row
-          dt.col-sm-3 Application Group Name:
-          dd.col-sm-9
+          dt.col-sm-2 Application Group Name:
+          dd.col-sm-10
             - if @allow_edit_metadata
               = form_for @app_group do |f|
                 .input-group.col-sm-5(style="padding-left:0px;")
@@ -16,35 +16,35 @@
             - else
               = @app_group.name
 
-          dt.col-sm-3 Log Retention Days:
-          dd.col-sm-9
+          dt.col-sm-2 Log Retention Days:
+          dd.col-sm-10
             = @app_group.log_retention_days
 
-          dt.col-sm-3 Secret:
-          dd.col-sm-9
+          dt.col-sm-2 Secret:
+          dd.col-sm-10
             = @app_group.secret_key
 
-          dt.col-sm-3 Cluster Name:
-          dd.col-sm-9
+          dt.col-sm-2 Cluster Name:
+          dd.col-sm-10
             = @app_group.infrastructure.cluster_name
 
-          dt.col-sm-3 Capacity
-          dd.col-sm-9
+          dt.col-sm-2 Capacity
+          dd.col-sm-10
             = "#{@app_group.infrastructure.capacity.camelcase} (#{max_tps(@app_group.infrastructure)} TPS)"
 
-          dt.col-sm-3 Provisioning Status:
-          dd.col-sm-9
+          dt.col-sm-2 Provisioning Status:
+          dd.col-sm-10
             = @app_group.infrastructure.provisioning_status
 
-          dt.col-sm-3 Status:
-          dd.col-sm-9
+          dt.col-sm-2 Status:
+          dd.col-sm-10
             - if @allow_set_status
               = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
               = form_tag toggle_status_infrastructure_path(@app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_status
                 = hidden_field_tag :app_group_id, @app_group.id
 
-      .card-footer.text-right
+      .card-footer
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-search.mr-1
           = link_to 'Open Kibana', @open_kibana_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
@@ -62,16 +62,6 @@
             i.far.fa-trash-alt.mr-1
             = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
-  .col-sm-6
-    .card
-      h5.card-header.bg-warning
-        i.fas.fa-info-circle.mr-1
-        | Information
-      .card-body
-        pre You can configure your application by:
-          1. Install FluentD Plugin #{link_to 'here', 'https://github.com/BaritoLog/Barito-Fluent-Plugin', target: '_blank', rel: 'noopener noreferrer'}
-          2. Setup FluentD configuration by referencing #{link_to 'this readme', 'https://github.com/BaritoLog/Barito-Fluent-Plugin/blob/master/README.md', target: '_blank', rel: 'noopener noreferrer'}
-          3. Use <b>#{@barito_router_url}</b> as produce url and get your application secret below
 
 br
 br
