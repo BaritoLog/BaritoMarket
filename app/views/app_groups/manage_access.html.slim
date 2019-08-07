@@ -9,8 +9,8 @@
       .form-group
         = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
       .form-group
-        = f.submit 'Add', class: 'btn btn-primary'
-        = link_to 'Back to Application Group', app_group_path(@app_group), class: 'btn btn-primary ml-2'
+        = f.submit 'Add', class: 'btn btn-primary btn-sm'
+        = link_to 'Back to Application Group', app_group_path(@app_group), class: 'btn btn-primary ml-2 btn-sm'
 
     br
     ul.list-group
@@ -24,7 +24,7 @@
                 | &nbsp;As&nbsp;
                 = member.role.name
 
-            .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger', data: { method: :delete }
+            .col-2.text-right= link_to 'Delete', app_group_user_path(user_id: member.user_id, app_group_id: @app_group.id), class: 'btn btn-danger btn-sm', data: { method: :delete }
           .row
             .col-8
               = set_role_buttons(member, @roles, app_group_id: @app_group.id)
