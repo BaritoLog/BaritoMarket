@@ -102,3 +102,7 @@ pre {
   font-size: 13px;
   background-color: #eff0f1;
 }
+
+.word-wrap{
+  word-break: break-all;
+}

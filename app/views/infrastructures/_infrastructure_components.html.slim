@@ -1,0 +1,41 @@
+h4.mb-3 All Infrastructure Components
+
+.table-responsive
+  table.table.table-hover.table-sm
+    thead
+      tr.d-flex
+        th.col-1 Hostname
+        th.col-1 Type
+        th.col-2 Source
+        th.col-1 Seq
+        th.col-1 IP Address
+        th.col-3 Bootstrappers
+        th.col-1 Message
+        th.col-1 Status
+        th.col-2 Actions
+    tbody
+      - infrastructure_components.each do |component|
+        tr.d-flex
+          td.col-1.word-wrap= component.hostname
+          td.col-1.word-wrap= component.component_type
+          td.col-2.word-wrap= component.source
+          td.col-1.word-wrap= component.sequence
+          td.col-1.word-wrap= component.ipaddress
+          td.col-3.word-wrap= component.bootstrappers
+          td.col-1.word-wrap= component.message
+          td.col-1.word-wrap= component.status
+          td.col-2.word-wrap
+            .btn.btn-success.btn-sm.edit-attributes
+              = link_to 'Edit Attributes', edit_infrastructure_component_path(component), class: 'text-light', style: 'text-decoration:none'
+            - if show_retry_provision_button(component)
+              = form_for(component, url: retry_provision_infrastructure_path(@infrastructure.id), method: :post) do |f|
+                = hidden_field_tag(:infrastructure_component_id, component.id)
+                = f.submit "Retry Provision", class: 'btn btn-warning btn-sm'
+            - if show_provisioning_check_button(component)
+              = form_for(component, url: provisioning_check_infrastructure_path(@infrastructure.id), method: :post) do |f|
+                = hidden_field_tag(:infrastructure_component_id, component.id)
+                = f.submit "Retry Check", class: 'btn btn-warning btn-sm' 
+            - if show_retry_bootstrap_button(component)
+              = form_for(component, url: retry_bootstrap_infrastructure_path(@infrastructure.id), method: :post) do |f|
+                = hidden_field_tag(:infrastructure_component_id, component.id)
+                = f.submit "Retry Bootstrap", class: 'btn btn-warning btn-sm'
