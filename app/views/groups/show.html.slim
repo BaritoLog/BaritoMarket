@@ -10,11 +10,11 @@
       .form-group
         = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
       .form-group
-        = f.submit 'Add', class: 'btn btn-primary'
+        = f.submit 'Add', class: 'btn btn-primary btn-sm'
     br
     ul.list-group
       - @group_users.each do |group|
         li.list-group-item
           .row.no-gutters
             .col-10= group.user.username + ' - ' + group.user.email
-            .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger', data: { method: :delete }
+            .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
