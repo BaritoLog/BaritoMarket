@@ -1,24 +1,24 @@
-.row
-  .col-sm-2
-    h3.mb-3 All Ext. Apps
-  .col-sm-10
-    .float-right
-      = link_to 'New Ext. App', new_ext_app_path, class: 'btn btn-outline-primary'
-table.table.table-bordered
-  thead.thead-dark
-    tr
-      th Name
-      th Created By
-      th.text-center Actions
+.card.m-3
+  h5.card-header
+    | All Ext. Apps
+    .btn.btn-success.btn-sm.float-right
+      = link_to 'New Ext. App', new_ext_app_path, class: 'text-light', style: 'text-decoration: none'
+
+table.table.table-hover.table-sm.m-3
+  thead
+    tr.d-flex
+      th.col-6 Name
+      th.col-3 Created By
+      th.col-3 Actions
   tbody
     - if @ext_apps.empty?
-      tr
-        td = 'No ext. app registered'
+      tr.d-flex
+        td = 'No ext. app registered yet'
     - @ext_apps.each do |ext_app|
-      tr
-        td.text-center = link_to ext_app.name, ext_app_path(ext_app)
-        td.text-center = ext_app.created_by.username
-        td.text-center
+      tr.d-flex
+        td.col-9 = link_to ext_app.name, ext_app_path(ext_app)
+        td.col-3 = ext_app.created_by.username
+        td.col-3
           = link_to 'Edit', edit_ext_app_path(ext_app)
           = ' - '
           = link_to 'Delete', ext_app_path(ext_app), data: { method: :delete }
