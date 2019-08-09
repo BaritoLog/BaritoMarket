@@ -1,0 +1,43 @@
+.card.card-body.bg-light.d-block.p-3.my-3
+  .row
+    .col-md-10
+      = page_entries_info app_groups
+    .col-md-2
+      = link_to "Reset filters", reset_filterrific_url, :class => 'btn btn-secondary align-middle'
+  = render_filterrific_spinner
+
+table.table.table-hover.table-sm
+  thead
+    tr.d-flex
+      th.col-3 =filterrific_sorting_link(@filterrific, :name)
+      th.col-2 Cluster Name
+      th.col-2 Capacity
+      th.col-2 Provisioning Status
+      th.col-1 Status
+      th.col-2 Actions
+  tbody
+    - app_groups.each do |app_group|
+      tr.d-flex
+        - if policy(app_group).see_app_groups?
+          td.col-3
+            = link_to app_group.name, app_group_path(app_group)
+
+            span class="apps-badge badge badge-barito" id="toggle_apps_list_#{app_group.id}" data={ toggle: "popover", id: app_group.id, html: "true" }
+              = app_group.barito_apps.length
+
+            div id="toggle_apps_content_#{app_group.id}" style="display:none"
+              = app_group.barito_apps.any? ? app_group.barito_apps.map(&:name).join(", ").truncate(160, omission: '...') : "No app yet"
+
+        - else
+          td.col-3= app_group.name
+        td.col-2= app_group.infrastructure.cluster_name
+        td.col-2= app_group.infrastructure.capacity.camelcase
+        td.col-2= app_group.infrastructure.provisioning_status
+        td.col-1= app_group.infrastructure.status
+        td.col-2
+          - if policy(app_group).see_app_groups?
+            .btn.btn-primary.btn-sm
+              i.fas.fa-search.mr-1
+              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+
+  = paginate app_groups

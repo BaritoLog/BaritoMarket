@@ -1,57 +1,19 @@
-- if @app_groups.empty?
-  img.mb-4[src="/barito_river.jpeg" style="width:350px;height:249px;"]
-  h1 Welcome to Barito
-  p
-    | Looks like you have no access to any application groups right now
-    br
-    | Click the button below to get started
-  - if @allow_create_app_group
-    = link_to 'New Application Group', new_app_group_path, class: 'btn btn-primary'
-- else
-  .card
-    h5.card-header
-      | All Application Groups
-      - if @allow_create_app_group
-        .btn.btn-success.btn-sm.float-right
-          i.fas.fa-plus.mr-1
-          = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
-    .card-body
-      table.table.table-bordered.table-striped.table-md
-        thead.thead-dark
-          tr
-            th.text-center.col-sm-2 Name
-            th.text-center.col-sm-2 Cluster Name
-            th.text-center.col-sm-2 Capacity
-            th.text-center.col-sm-2 Provisioning Status
-            th.text-center.col-sm-1 Status
-            th.text-center.col-sm-1 Actions
-        tbody
-          - @app_groups.each do |app_group|
-            tr
-              - if policy(app_group).see_app_groups?
-                td.text-center
-                  = link_to app_group.name, app_group_path(app_group)
+.card
+  h5.card-header
+    | All Application Groups
+    - if @allow_create_app_group
+      .btn.btn-success.btn-sm.float-right
+        i.fas.fa-plus.mr-1
+        = link_to 'New Application Group', new_app_group_path, class: 'text-light', style: 'text-decoration: none'
+  .card-body.bg-light
+    = form_for_filterrific @filterrific, html: { id: 'filterrific-no-ajax-auto-submit' } do |f|
+      .row
+        .col-md-3
+          .form-group
+            .font-weight-bold Search by app group / cluster / app
+            = f.text_field :search_query,
+                           :class => 'filterrific-periodically-observed form-control',
+                           :placeholder => 'Name or cluster or app name'
 
-                  span class="apps-badge badge badge-barito" id="toggle_apps_list_#{app_group.id}" data={ toggle: "popover", id: app_group.id, html: "true" }
-                    = app_group.barito_apps.length
-
-                  div id="toggle_apps_content_#{app_group.id}" style="display:none"
-                    = app_group.barito_apps.any? ? app_group.barito_apps.map(&:name).join(", ").truncate(160, omission: '...') : "No app yet"
-
-              - else
-                td.text-center= app_group.name
-              td.text-center= app_group.infrastructure.cluster_name
-              td.text-center= app_group.infrastructure.capacity.camelcase
-              td.text-center= app_group.infrastructure.provisioning_status
-              td.text-center
-                - if policy(app_group).set_status?
-                  = check_box_tag "toggle_infra_status_#{app_group.id}", true, app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app_group.id, style: 'slow', size: 'small' }
-                  = form_tag toggle_status_infrastructure_path(app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{app_group.id}" do
-                    = hidden_field_tag :toggle_status
-                - else
-                  = app_group.infrastructure.status
-              td.text-center
-                - if policy(app_group).see_app_groups?
-                  .btn.btn-primary.btn-sm
-                    i.fas.fa-search.mr-1
-                    = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+#results
+  = render :partial => 'app_groups/list', :locals => { :app_groups => @app_groups }

@@ -60,8 +60,7 @@ Rails.application.routes.draw do
     only: %i[create update],
     defaults: { format: :html }
   resources :app_groups,
-    only: %i[index show new create update],
-    defaults: { format: :html } do
+    only: %i[index show new create update] do
       member do
         get :manage_access
       end
