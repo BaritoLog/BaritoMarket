@@ -54,12 +54,8 @@ module BaritoBlueprint
         private_key = File.join(@private_keys_dir, @private_key_name)
       end
 
-      attrs = get_bootstrap_attributes(component.bootstrappers)
+      attrs = get_bootstrap_attributes(component)
       if attrs.empty?
-        # Fetch bootstrap attributes
-        attrs = generate_bootstrap_attributes(
-          component, @infrastructure_components)
-
         # update attributes
         component.bootstrappers.each do |bootstrapper|
           if bootstrapper["bootstrap_type"] == "chef-solo"
@@ -116,11 +112,18 @@ module BaritoBlueprint
         generator.new(component, infrastructure_components))
     end
 
-    def get_bootstrap_attributes(bootstrappers)
-      bootstrappers.each do |bootstrapper|
+    def get_bootstrap_attributes(component)
+      component.bootstrappers.each do |bootstrapper|
         case bootstrapper["bootstrap_type"]
         when "chef-solo"
-          return bootstrapper["bootstrap_attributes"]
+          if bootstrapper["bootstrap_attributes"]["run_list"].empty?
+            # Fetch bootstrap attributes
+            attrs = generate_bootstrap_attributes(
+              component, @infrastructure_components)
+            return attrs
+          else
+            return bootstrapper["bootstrap_attributes"]
+          end
         else 
           return nil
         end
