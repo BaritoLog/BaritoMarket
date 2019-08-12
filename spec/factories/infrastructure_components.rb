@@ -2,7 +2,8 @@ FactoryBot.define do
   factory :infrastructure_component do
     association     :infrastructure
     hostname        Faker::Lorem.word
-    component_type  Faker::Lorem.word.underscore
+    ipaddress       "127.0.0.1"
+    component_type  %w(consul kafka elasticsearch barito-flow-producer barito-flow-consumer kibana).sample
     message         Faker::Lorem.sentence
     status          InfrastructureComponent.statuses[:pending]
     source         { {
