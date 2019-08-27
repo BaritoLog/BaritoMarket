@@ -1,8 +1,22 @@
 require 'rails_helper'
+require 'stringio'
+require 'socket'
 
 RSpec.describe 'Apps API', type: :request do
   let(:headers) do
     { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+  end
+
+  class Datadog::Statsd
+    # we need to stub this
+    attr_accessor :socket
+  end
+
+  let(:socket) { FakeUDPSocket.new }
+
+  before do
+    @statsd = Datadog::Statsd.new('localhost', 1234)
+    @statsd.connection.instance_variable_set(:@socket, socket)
   end
 
   describe 'Profile API' do
@@ -203,21 +217,10 @@ RSpec.describe 'Apps API', type: :request do
     end
   end
 
-  describe 'Dogapi API' do
-    let(:api_key) { 'API_KEY' }
-    let(:dog) { Dogapi::Client.new(api_key) }
-    let(:api_url) { 'api.datadoghq.com/api/v1' }
-
-    describe '#emit_point' do
-      it 'post metric to the datadog api' do
-        METRIC = 'test.metric'.freeze
-        POINT = 10
-         url = api_url + '/series'
-        
-        stub_request(:post, /#{url}/).to_return(body: '{}').then.to_raise(StandardError)
-        
-        expect(dog.send(:emit_point, METRIC, POINT)).to eq ['200', {}]
-      end
+  describe "DogStatsD API" do
+    it "should send a message with a 'g' type" do
+      @statsd.gauge('begrutten-suffusion', 536)
+      expect(socket.recv).to include('begrutten-suffusion:536|g')
     end
   end
 end

@@ -13,6 +13,7 @@ require 'simplecov'
 require 'simplecov-console'
 require 'sidekiq/testing'
 require 'pry'
+require 'datadog/statsd'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -91,4 +92,26 @@ RSpec.configure do |config|
   Coveralls.wear!
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::Console])
   SimpleCov.start
+end
+
+class FakeUDPSocket
+  def initialize
+    @buffer = []
+  end
+
+  def send(message, *)
+    @buffer.push [message]
+  end
+
+  def recv
+    @buffer.shift
+  end
+
+  def to_s
+    inspect
+  end
+
+  def inspect
+    "<FakeUDPSocket: #{@buffer.inspect}>"
+  end
 end
