@@ -31,6 +31,7 @@ gem 'typhoeus', '<= 1.3.0'
 gem 'uglifier'
 gem 'wisper', '<= 2.0.0'
 gem 'filterrific'
+gem 'dogstatsd-ruby'
 
 group :development, :test do
   gem 'cane', '<= 3.0'
