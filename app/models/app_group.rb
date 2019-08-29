@@ -90,6 +90,6 @@ class AppGroup < ApplicationRecord
   end
 
   def new_total_tps(diff_tps)
-    self.barito_apps.sum(:max_tps)+diff_tps
+    self.barito_apps.sum(:max_tps) + diff_tps
   end
 end
