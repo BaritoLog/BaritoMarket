@@ -13,10 +13,8 @@ echo "install ruby"
 sudo apt-get install -y ruby-full
 
 echo "Install chef"
-wget https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
+wget --quiet https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
 sudo dpkg -i chefdk_3.9.0-1_amd64.deb
-echo 'eval "$(chef shell-init bash)"' >> ~/.profile
-source ~/.profile
 
 echo "Creating private key"
 yes "" | ssh-keygen -t rsa
@@ -123,6 +121,7 @@ sudo cat > bootstrap.json << EOF
 }
 EOF
 
+sudo gem install bundler -v 2.0.1
 sudo chef-solo -c /opt/baritolog/solo.rb -j /opt/baritolog/bootstrap.json
 
 echo "Adding private key into barito_market config"
@@ -133,12 +132,12 @@ sudo chmod 600 barito
 
 echo "Running initial seed barito-market"
 cd /opt/barito_market/BaritoMarket
-RAILS_ENV=production rake db:seed
+RAILS_ENV=production bundle exec rake db:seed
 
 echo "Running initial seed pathfinder-mono"
 cd /opt/pathfinder-mono/pathfinder-mono
 sudo chmod 644 ./.env
-RAILS_ENV=production rake db:seed
+RAILS_ENV=production bundle exec rake db:seed
 
 echo "Installing PFI"
 sudo mkdir /home/vagrant/.pfi -p
@@ -156,5 +155,5 @@ current_profile = "default"
 EOF
 sudo chown vagrant:vagrant /home/vagrant/.pfi/config
 
-sudo wget -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.0/pfi-linux
+sudo wget --quiet -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.0/pfi-linux
 sudo chmod +x /usr/local/bin/pfi
