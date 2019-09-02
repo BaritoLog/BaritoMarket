@@ -3,7 +3,8 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       kafka_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'kafka')
-      @kafka_port = opts[:kafka_port] || 9092
+      kafka_port = opts[:kafka_port] || 9092
+      
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'consul')
       @max_tps = component.infrastructure.options['max_tps'] || 10
@@ -11,9 +12,7 @@ module ChefHelper
       @ipaddress = component.ipaddress
       producer_template = ComponentTemplate.find_by(name: 'barito-flow-producer')
       @producer_attrs = get_bootstrap_attributes(producer_template.bootstrappers)
-      @kafka_hosts_and_port = kafka_hosts.
-        map{ |kafka_host| "#{kafka_host}:#{@kafka_port}" }
-      @kafka_hosts_and_port = @kafka_hosts_and_port.join(',')
+      @kafka_hosts = bind_hosts_and_port(kafka_hosts, kafka_port)
     end
 
     def generate
@@ -23,7 +22,7 @@ module ChefHelper
 
     def update_attrs
       @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_CONSUL_URL'] = "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}"
-      @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_KAFKA_BROKERS'] = @kafka_hosts_and_port
+      @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_KAFKA_BROKERS'] = @kafka_hosts
       @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_PRODUCER_MAX_TPS'] = @max_tps
 
       @producer_attrs['consul']['hosts'] = @consul_hosts
