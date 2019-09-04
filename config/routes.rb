@@ -95,8 +95,12 @@ Rails.application.routes.draw do
       end
     end
   resources :infrastructure_components,
-    only: %i[edit update],
-    defaults: { format: :html }
+    only: %i[edit update index],
+    defaults: { format: :html } do
+      member do
+        post :retry_bootstrap
+      end
+    end
   resources :cluster_templates,
     defaults: { format: :html }
   resources :component_templates,
