@@ -20,6 +20,44 @@ class InfrastructureComponent < ApplicationRecord
     deleted: 'DELETED',
   }
 
+  filterrific :default_filter_params => { :sorted_by => 'created_at_desc' },
+  :available_filters => %w[
+    sorted_by
+    search_query
+  ]
+
+  scope :search_query, ->(query) {
+    return nil  if query.blank?
+    terms = query.downcase.split(/\s+/)
+    terms = terms.map { |e|
+      ('%' + e + '%').gsub(/%+/, '%')
+    }
+    num_or_conditions = 2
+    where(
+      terms.map {
+        or_clauses = [
+          "LOWER(hostname) LIKE ?",
+          "LOWER(component_type) LIKE ?"
+        ].join(' OR ')
+        "(#{ or_clauses })"
+      }.join(' AND '),
+      *terms.map { |e| [e] * num_or_conditions }.flatten
+    )
+  }
+
+  scope :sorted_by, ->(sort_option) {
+    direction = (sort_option =~ /desc$/) ? 'desc' : 'asc'
+    infrastructure_components = InfrastructureComponent.arel_table
+    case sort_option.to_s
+    when /^created_at_/
+      order(infrastructure_components[:created_at].send(direction))
+    when /^hostname_/
+      order(infrastructure_components[:hostname].lower.send(direction))
+    else
+      raise(ArgumentError, "Invalid sort option: #{sort_option.inspect}")
+    end
+  }
+
   def update_status(status, message = nil)
     status = status.downcase.to_sym
     if InfrastructureComponent.statuses.key?(status)
