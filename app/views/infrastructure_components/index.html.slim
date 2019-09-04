@@ -1,0 +1,25 @@
+.row
+  .col-sm-12
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue deleting cluster template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+.card
+  h5.card-header
+    | All Infrastructure Components
+    
+  .card-body.bg-light
+    = form_for_filterrific @filterrific, html: { id: 'filterrific-no-ajax-auto-submit' } do |f|
+      .row
+        .col-md-3
+          .form-group
+            .font-weight-bold Search by name or type
+            = f.text_field :search_query,
+                           :class => 'filterrific-periodically-observed form-control',
+                           :placeholder => 'Cluster name or component type'
+br
+#results
+  = render :partial => 'infrastructure_components/list', :locals => { :infrastructure_components => @infrastructure_components }
