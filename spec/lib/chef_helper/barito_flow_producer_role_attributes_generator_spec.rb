@@ -16,11 +16,17 @@ module ChefHelper
         component_type: 'barito-flow-producer',
         ipaddress:      '127.0.0.2'
       )
-      @kafka_component = create(:infrastructure_component, 
+      @kafka_component_1 = create(:infrastructure_component, 
         infrastructure: @infrastructure,
         hostname:       'test-kafka-01',
         component_type: 'kafka',
         ipaddress:      '127.0.0.15'
+      )
+      @kafka_component_2 = create(:infrastructure_component, 
+        infrastructure: @infrastructure,
+        hostname:       'test-kafka-02',
+        component_type: 'kafka',
+        ipaddress:      '127.0.0.16'
       )
     end
 
@@ -47,7 +53,7 @@ module ChefHelper
                 "version"=>"v0.11.8",
                 "env_vars"=>{
                   "BARITO_CONSUL_URL"=>"http://#{@consul_component.ipaddress}:8500",
-                  "BARITO_KAFKA_BROKERS"=>"#{@kafka_component.ipaddress}:9092",
+                  "BARITO_KAFKA_BROKERS"=>"#{@kafka_component_2.ipaddress}:9092,#{@kafka_component_1.ipaddress}:9092",
                   "BARITO_PRODUCER_ADDRESS"=>":8080",
                   "BARITO_PRODUCER_MAX_TPS"=>@infrastructure.options['max_tps'],
                   "BARITO_CONSUL_KAFKA_NAME"=>"kafka",

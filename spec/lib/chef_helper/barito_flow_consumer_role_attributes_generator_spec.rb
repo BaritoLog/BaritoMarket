@@ -16,17 +16,29 @@ module ChefHelper
         component_type: 'barito-flow-consumer',
         ipaddress:      '127.0.0.2'
       )
-      @kafka_component = create(:infrastructure_component, 
+      @kafka_component_1 = create(:infrastructure_component, 
         infrastructure: @infrastructure,
         hostname:       'test-kafka-01',
         component_type: 'kafka',
         ipaddress:      '127.0.0.15'
       )
-      @elastic_component = create(:infrastructure_component, 
+      @kafka_component_2 = create(:infrastructure_component, 
+        infrastructure: @infrastructure,
+        hostname:       'test-kafka-02',
+        component_type: 'kafka',
+        ipaddress:      '127.0.0.16'
+      )
+      @elastic_component_1 = create(:infrastructure_component, 
         infrastructure: @infrastructure,
         hostname:       'test-elasticsearch-01',
         component_type: 'elasticsearch',
-        ipaddress:      '127.0.0.16'
+        ipaddress:      '127.0.0.17'
+      )
+      @elastic_component_2 = create(:infrastructure_component, 
+        infrastructure: @infrastructure,
+        hostname:       'test-elasticsearch-02',
+        component_type: 'elasticsearch',
+        ipaddress:      '127.0.0.18'
       )
     end
 
@@ -55,10 +67,10 @@ module ChefHelper
                   "BARITO_CONSUL_URL"=>"http://#{@consul_component.ipaddress}:8500",
                   "BARITO_CONSUL_KAFKA_NAME"=>"kafka", 
                   "BARITO_CONSUL_ELASTICSEARCH_NAME"=>"elasticsearch",
-                  "BARITO_KAFKA_BROKERS"=>"#{@kafka_component.ipaddress}:9092", 
+                  "BARITO_KAFKA_BROKERS"=>"#{@kafka_component_2.ipaddress}:9092,#{@kafka_component_1.ipaddress}:9092", 
                   "BARITO_KAFKA_GROUP_ID"=>"barito-group", 
                   "BARITO_KAFKA_CONSUMER_TOPICS"=>"barito-log", 
-                  "BARITO_ELASTICSEARCH_URL"=>"http://#{@elastic_component.ipaddress}:9200", 
+                  "BARITO_ELASTICSEARCH_URLS"=>"http://#{@elastic_component_2.ipaddress}:9200,http://#{@elastic_component_1.ipaddress}:9200", 
                   "BARITO_PUSH_METRIC_URL"=>"#{Figaro.env.market_end_point}/api/increase_log_count"
                 }
               }

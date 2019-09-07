@@ -11,6 +11,17 @@ module ChefHelper
           collect{ |c| c.ipaddress || c.hostname }
       end
 
+      def bind_hosts_and_port(hosts, port, protocol=nil)
+        if port
+          hosts = hosts.map{ |host| "#{host}:#{port}" }
+        end
+        if protocol
+          hosts = hosts.map{ |host| "#{protocol}://#{host}" }
+        end
+
+        hosts.join(',')
+      end
+
       def get_bootstrap_attributes(bootstrappers)
         bootstrappers.each do |bootstrapper|
           case bootstrapper["bootstrap_type"]
