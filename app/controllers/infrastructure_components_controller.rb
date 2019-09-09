@@ -1,9 +1,6 @@
 class InfrastructureComponentsController < ApplicationController
   before_action :set_infrastructure_component, only: %i(edit update)
-  #before_action do
-  #  authorize @infrastructure_component
-  #end
-
+ 
   def index
     authorize InfrastructureComponent
     
