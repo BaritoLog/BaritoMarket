@@ -1,19 +1,19 @@
-.row
-  .col-sm-2
-    h3.mb-3 All Groups
-  .col-sm-10
-    .float-right
-      = link_to 'New Group', new_group_path, class: 'btn btn-outline-primary'
-table.table.table-bordered
-  thead.thead-dark
-    tr
-      th Name
-      th.text-center Actions
+.card.m-3
+  h5.card-header
+    | All Groups
+    .btn.btn-success.btn-sm.float-right
+      = link_to 'New Group', new_group_path, class: 'text-light', style: 'text-decoration: none'
+
+table.table.table-hover.table-sm.m-3
+  thead
+    tr.d-flex
+      th.col-9 Name
+      th.col-3 Actions
   tbody
     - if @groups.empty?
-      tr
-        td = 'No group registered'
+      tr.d-flex
+        td = 'No group registered yet'
     - @groups.each do |group|
-      tr
-        td.text-center = link_to group.name, group_path(group)
-        td.text-center = link_to 'Delete', group_path(group), data: { method: :delete }
+      tr.d-flex
+        td.col-9 = link_to group.name, group_path(group)
+        td.col-3 = link_to 'Delete', group_path(group), data: { method: :delete }

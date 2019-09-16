@@ -7,22 +7,23 @@
         - flash[:messages].each do |msg|
           = "- #{msg}"
           br
-.row
-  .col-sm-6
-    h3.mb-3 All Cluster Templates
-  .col-sm-6
-    .float-right
-      = link_to 'New Cluster Templates', new_cluster_template_path, class: 'btn btn-outline-primary'
-table.table.table-bordered
-  thead.thead-dark
-    tr
-      th Name
-      th.text-center Actions
+
+.card.m-3
+  h5.card-header
+    | All Cluster Templates
+    .btn.btn-success.btn-sm.float-right
+      = link_to 'New Cluster Templates', new_cluster_template_path, class: 'text-light', style: 'text-decoration: none'
+          
+table.table.table-hover.table-sm.m-3
+  thead
+    tr.d-flex
+      th.col-9 Name
+      th.col-3 Actions
   tbody
     - if @cluster_templates.empty?
-      tr
+      tr.d-flex
         td = 'No cluster template yet'
     - @cluster_templates.each do |cluster_template|
-      tr
-        td.text-center = link_to cluster_template.name, cluster_template_path(cluster_template)
-        td.text-center = link_to 'Delete', cluster_template_path(cluster_template), data: { method: :delete }
+      tr.d-flex
+        td.col-9 = link_to cluster_template.name, cluster_template_path(cluster_template)
+        td.col-3 = link_to 'Delete', component_template_path(cluster_template), data: { method: :delete }

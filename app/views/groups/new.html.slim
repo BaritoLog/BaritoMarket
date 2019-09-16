@@ -1,5 +1,6 @@
 .row.justify-content-center
   .col-md-6
+    h3 New Group
     - if flash.key?(:messages)
       .alert.alert-danger
         b Issue creating group
@@ -11,4 +12,4 @@
       .form-group
         = f.label :name
         = f.text_field :name, class: 'form-control', placeholder: 'Name your new group'
-      .actions = f.submit 'Submit',class: 'btn btn-primary'
+      .actions = f.submit 'Submit',class: 'btn btn-primary btn-sm'
