@@ -21,7 +21,7 @@ class BaritoApp < ApplicationRecord
       name: app_params[:name],
       topic_name: app_params[:topic_name].gsub(/ /, '-'),
       secret_key: BaritoApp.generate_key,
-      max_tps: app_params[:max_tps],
+      max_tps: app_params[:max_tps].to_i,
       status: BaritoApp.statuses[:active],
     )
     app
