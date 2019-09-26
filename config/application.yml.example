@@ -34,6 +34,8 @@ GLOBAL_VIEWER:               'false'
 GLOBAL_VIEWER_ROLE:          'global-viewer'
 REDIS_KEY_EXPIRY:            '10'
 DEFAULT_PER_PAGE:            '30'
+DATADOG_HOST:                'localhost'
+DATADOG_PORT:                '8125'
 
 development:
   RAILS_ENV:                 'development'
