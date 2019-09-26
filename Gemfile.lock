@@ -148,8 +148,6 @@ GEM
       rubycas-client (>= 2.2.1)
     diff-lcs (1.3)
     docile (1.1.5)
-    dogapi (1.36.0)
-      multi_json
     dogstatsd-ruby (4.5.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -231,7 +229,7 @@ GEM
       chef (>= 10.20)
       erubis (~> 2.7.0)
       net-ssh (>= 2.7)
-    libv8 (7.3.492.27.1)
+    libv8 (7.3.492.27.1-x86_64-darwin-17)
     libyajl2 (1.2.0)
     license-acceptance (1.0.13)
       pastel (~> 0.7)
@@ -288,7 +286,7 @@ GEM
       net-ssh-gateway (>= 1.2.0)
     netrc (0.11.0)
     newrelic_rpm (6.5.0.357)
-    nio4r (2.4.0)
+    nio4r (2.5.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
@@ -458,7 +456,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    strings (0.1.5)
+    strings (0.1.6)
       strings-ansi (~> 0.1)
       unicode-display_width (~> 1.5)
       unicode_utils (~> 1.4)
@@ -481,9 +479,9 @@ GEM
       net-ssh (>= 2.9, < 6.0)
       winrm (~> 2.0)
       winrm-fs (~> 1.0)
-    tty-box (0.4.0)
+    tty-box (0.4.1)
       pastel (~> 0.7.2)
-      strings (~> 0.1.5)
+      strings (~> 0.1.6)
       tty-cursor (~> 0.7)
     tty-color (0.5.0)
     tty-cursor (0.7.0)
@@ -557,7 +555,6 @@ DEPENDENCIES
   database_cleaner (<= 1.7)
   devise
   devise_cas_authenticatable
-  dogapi
   dogstatsd-ruby
   elasticsearch
   execjs (<= 2.7.0)
