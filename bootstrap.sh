@@ -50,7 +50,7 @@ mv pathfinder-node-cookbook pathfinder-node
 cd /opt/baritolog/
 
 echo "Creating solo.rb file"
-cat > solo.rb << EOF
+cat >solo.rb <<EOF
 root = File.absolute_path(File.dirname(__FILE__))
 
 cookbook_path root + "/cookbooks"
@@ -58,7 +58,7 @@ cookbook_path root + "/cookbooks"
 EOF
 
 echo "Creating bootstrap.json file"
-sudo cat > bootstrap.json << EOF
+sudo cat >bootstrap.json <<EOF
 {
   "barito_market": {
     "puma_port": 8090,
@@ -121,7 +121,9 @@ sudo cat > bootstrap.json << EOF
 }
 EOF
 
-sudo gem install bundler -v 2.0.1
+sudo gem update --system
+sudo gem install bundler v2.0.2
+
 sudo chef-solo -c /opt/baritolog/solo.rb -j /opt/baritolog/bootstrap.json
 
 echo "Adding private key into barito_market config"
@@ -143,7 +145,7 @@ echo "Installing PFI"
 sudo mkdir /home/vagrant/.pfi -p
 sudo chown vagrant:vagrant /home/vagrant/.pfi
 
-sudo cat > /home/vagrant/.pfi/config << EOF
+sudo cat >/home/vagrant/.pfi/config <<EOF
 current_profile = "default"
 
 [profiles]

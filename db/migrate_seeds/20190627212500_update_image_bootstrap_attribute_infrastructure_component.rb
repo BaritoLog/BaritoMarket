@@ -41,7 +41,7 @@ class UpdateImageBootstrapAttributeInfrastructureComponent < ActiveRecord::Migra
         bootstrappers[0][:bootstrap_cookbooks_url] = "https://github.com/BaritoLog/kibana_wrapper_cookbook/archive/master.tar.gz"
         source[:alias] = "lxd-kibana-6.3.0-1"
       else
-        bootstrappers[0][:bootstrap_cookbooks_url] = "https://cloud-images.ubuntu.com/release"
+        bootstrappers[0][:bootstrap_cookbooks_url] = "https://cloud-images.ubuntu.com/releases"
         source[:alias] = "18.04"
       end
 
