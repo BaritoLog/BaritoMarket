@@ -38,7 +38,9 @@ Capybara.server = :puma, { Silent: true }
 Capybara.register_driver :custom_headless_chrome do |app|
   Capybara::Selenium::Driver.new app,
     browser: :chrome,
-    args: %w(headless disable-gpu no-sandbox)
+    options: Selenium::WebDriver::Chrome::Options.new(
+      args: %w(headless disable-gpu no-sandbox)
+    )
 end
 Capybara.javascript_driver = :custom_headless_chrome
 
