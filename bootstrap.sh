@@ -13,7 +13,7 @@ echo "install ruby"
 sudo apt-get install -y ruby-full
 
 echo "Install chef"
-wget --quiet https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb
+wget -q --show-progress --progress=bar:force https://packages.chef.io/files/stable/chefdk/3.9.0/ubuntu/18.04/chefdk_3.9.0-1_amd64.deb --show-progress
 sudo dpkg -i chefdk_3.9.0-1_amd64.deb
 
 echo "Creating private key"
@@ -102,7 +102,7 @@ sudo cat >bootstrap.json <<EOF
     "overlay_subnet": "172.20.0.0/16"
   },
   "pathfinder-agent": {
-    "version": "0.3.1",
+    "version": "0.5.2",
     "env_vars": {
       "PF_SERVER_ADDR": "http://127.0.0.1:8080",
       "PF_CLUSTER": "default",
@@ -122,7 +122,7 @@ sudo cat >bootstrap.json <<EOF
 EOF
 
 sudo gem update --system
-sudo gem install bundler v2.0.2
+sudo gem install bundler -v 2.0.2
 
 sudo chef-solo -c /opt/baritolog/solo.rb -j /opt/baritolog/bootstrap.json
 
@@ -134,11 +134,13 @@ sudo chmod 600 barito
 
 echo "Running initial seed barito-market"
 cd /opt/barito_market/BaritoMarket
+bundle update --source
 RAILS_ENV=production bundle exec rake db:seed
 
 echo "Running initial seed pathfinder-mono"
 cd /opt/pathfinder-mono/pathfinder-mono
 sudo chmod 644 ./.env
+bundle update --source
 RAILS_ENV=production bundle exec rake db:seed
 
 echo "Installing PFI"
@@ -157,5 +159,7 @@ current_profile = "default"
 EOF
 sudo chown vagrant:vagrant /home/vagrant/.pfi/config
 
-sudo wget --quiet -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.0/pfi-linux
+sudo wget -q --show-progress --progress=bar:force -O /usr/local/bin/pfi https://github.com/pathfinder-cm/pfi/releases/download/0.1.1/pfi-linux
 sudo chmod +x /usr/local/bin/pfi
+
+echo "Done"
