@@ -24,6 +24,24 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     end
   end
 
+  def check_app_group
+    valid, error_response = validate_required_keys(
+      [:app_group_secret])
+    render json: error_response, status: error_response[:code] and return unless valid
+
+    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+
+    if app_group.blank? 
+      render json: {
+        success: false,
+        errors: ["AppGroup is not found"],
+        code: 404
+      }, status: :not_found and return
+    end
+
+    render json: app_group.infrastructure
+  end
+
   private
 
   def app_group_params

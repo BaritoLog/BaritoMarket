@@ -50,6 +50,9 @@ Rails.application.routes.draw do
       post :create_app_group,
         to: 'app_groups#create_app_group',
         defaults: {format: :json}
+      get :check_app_group,
+        to: 'app_groups#check_app_group',
+        defaults: {format: :json}
     end
   end
 
