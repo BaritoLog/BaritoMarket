@@ -31,3 +31,24 @@ NEWRELIC_LICENSE_KEY                - Your Newrelic license key
 NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
 NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to runs
 ```
+
+## Development
+
+### Requirements
+
+These tools are required for developing in local machine:
+
+- [Ruby](https://www.ruby-lang.org/en/downloads) version 2.5.1, or you can use RVM, or equivalent tools.
+- [PostgreSQL](https://postgresql.org/download).
+
+## Testing
+
+To run unit tests:
+
+1. Ensure you have development requirement installed on your local machine.
+2. Copy `config/application.yml.example` to `config/application.yml` and configure according to your system. Example: database host, username, etc.
+3. Copy `config/tps_config.yml.example` to `config/tps_config.yml`.
+4. Copy `config/database.yml.example` to `config/database.yml`.
+5. Install Gem dependencies by running `bundle install`.
+6. Migrate the database by running `RAILS_ENV=test bundle exec rake db:migrate`.
+7. Run the test by running `bundle exec rspec`.
