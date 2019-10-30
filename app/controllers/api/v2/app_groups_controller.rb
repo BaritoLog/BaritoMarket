@@ -42,10 +42,29 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     render json: app_group.infrastructure
   end
 
+  def cluster_templates
+   
+    cluster_templates = ClusterTemplate.all.map do |cluster|
+      cluster.slice(:id, :name)
+    end
+    
+    if cluster_templates.blank?
+      render json: {
+        success: false,
+        errors: ["Cluster templates are not found"],
+        code: 404
+      }, status: :not_found and return
+    end
+
+    render json: cluster_templates
+  end
+
   private
 
   def app_group_params
     params.permit(:name, :cluster_template_id,)
   end
+
+  
 
 end

@@ -53,6 +53,9 @@ Rails.application.routes.draw do
       get :check_app_group,
         to: 'app_groups#check_app_group',
         defaults: {format: :json}
+      get :cluster_templates,
+        to: 'app_groups#cluster_templates',
+        defaults: {format: :json}
     end
   end
 

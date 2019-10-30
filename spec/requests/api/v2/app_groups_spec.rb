@@ -53,5 +53,14 @@ RSpec.describe 'App Groups API', type: :request do
       expect(json_response.key?('provisioning_status')).to eq(true)
       expect(json_response['status']).to eq "ACTIVE"
     end
+
+    it 'should return cluster template' do
+      cluster_template = create(:cluster_template)
+      get api_v2_cluster_templates_path, params: { access_token: @access_token}, headers: headers
+
+      json_response = JSON.parse(response.body)
+      expected_result = [{"id"=>cluster_template.id, "name"=>"#{cluster_template.name}"}]
+      expect(json_response).to eq expected_result
+    end
   end
 end
