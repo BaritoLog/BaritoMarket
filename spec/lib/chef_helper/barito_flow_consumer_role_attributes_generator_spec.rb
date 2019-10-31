@@ -55,10 +55,10 @@ module ChefHelper
                   "BARITO_CONSUL_URL"=>"http://#{@consul_component.ipaddress}:8500",
                   "BARITO_CONSUL_KAFKA_NAME"=>"kafka",
                   "BARITO_CONSUL_ELASTICSEARCH_NAME"=>"elasticsearch",
-                  "BARITO_KAFKA_BROKERS"=>"#{@kafka_component_1.ipaddress}:9092",
+                  "BARITO_KAFKA_BROKERS"=>"kafka.service.consul:9092",
                   "BARITO_KAFKA_GROUP_ID"=>"barito-group",
                   "BARITO_KAFKA_CONSUMER_TOPICS"=>"barito-log",
-                  "BARITO_ELASTICSEARCH_URLS"=>"http://#{@elastic_component_1.ipaddress}:9200",
+                  "BARITO_ELASTICSEARCH_URLS"=>"http://elasticsearch.service.consul:9200",
                   "BARITO_PUSH_METRIC_URL"=>"#{Figaro.env.market_end_point}/api/increase_log_count"
                 }
               }
