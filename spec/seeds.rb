@@ -137,7 +137,8 @@
             "allocated_memory":12000000, 
             "max_allocated_memory":16000000, 
             "cluster_name":"", 
-            "index_number_of_replicas":0
+            "index_number_of_replicas":0,
+            "minimum_master_nodes":1
           }
         }
       }]
@@ -171,7 +172,7 @@
                   "BARITO_PRODUCER_ADDRESS":":8080",
                   "BARITO_CONSUL_URL":"", 
                   "BARITO_CONSUL_KAFKA_NAME":"kafka", 
-                  "BARITO_KAFKA_BROKERS":"", 
+                  "BARITO_KAFKA_BROKERS":"kafka.service.consul:9092", 
                   "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log",
                   "BARITO_PRODUCER_MAX_TPS":0, 
                   "BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL":10
@@ -210,10 +211,10 @@
                   "BARITO_CONSUL_URL":"",
                   "BARITO_CONSUL_KAFKA_NAME":"kafka", 
                   "BARITO_CONSUL_ELASTICSEARCH_NAME":"elasticsearch",
-                  "BARITO_KAFKA_BROKERS":"", 
+                  "BARITO_KAFKA_BROKERS":"kafka.service.consul:9092", 
                   "BARITO_KAFKA_GROUP_ID":"barito-group", 
                   "BARITO_KAFKA_CONSUMER_TOPICS":"barito-log", 
-                  "BARITO_ELASTICSEARCH_URLS":"", 
+                  "BARITO_ELASTICSEARCH_URLS":"http://elasticsearch.service.consul:9200", 
                   "BARITO_PUSH_METRIC_URL":""
                 }
               }
@@ -245,7 +246,7 @@
             "kibana":{
               "config":{
                 "server.basePath":"", 
-                "elasticsearch.url":""
+                "elasticsearch.url":"http://elasticsearch.service.consul:9200"
               }, 
               "version":"6.3.0"
             }, 
