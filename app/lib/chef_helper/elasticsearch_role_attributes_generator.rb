@@ -12,8 +12,10 @@ module ChefHelper
       @port = opts[:port] || 9200
       if @hosts.size <= 1
         @index_number_of_replicas = 0
+        @minimum_master_nodes = 1
       else
         @index_number_of_replicas = 1
+        @minimum_master_nodes = (@hosts.size/2 + 1).floor
       end
       elastic_template = ComponentTemplate.find_by(name: 'elasticsearch')
       @elastic_attrs = get_bootstrap_attributes(elastic_template.bootstrappers)
@@ -27,6 +29,8 @@ module ChefHelper
     def update_attrs
       @elastic_attrs['elasticsearch']['cluster_name'] = @cluster_name
       @elastic_attrs['elasticsearch']['index_number_of_replicas'] = @index_number_of_replicas
+      @elastic_attrs['elasticsearch']['member_hosts'] = @hosts
+      @elastic_attrs['elasticsearch']['minimum_master_nodes'] = @minimum_master_nodes
       @elastic_attrs['consul']['hosts'] = @consul_hosts
       @elastic_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @elastic_attrs['run_list'] = ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
