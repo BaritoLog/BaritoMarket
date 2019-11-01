@@ -44,7 +44,7 @@ module ChefHelper
             "kibana"=>{
               "config"=>{
                 "server.basePath"=>"/#{@infrastructure.cluster_name}", 
-                "elasticsearch.url"=>"http://#{@elastic_component.ipaddress}:9200"
+                "elasticsearch.url"=>"http://elasticsearch.service.consul:9200"
               }, 
               "version"=>"6.3.0"
             },
