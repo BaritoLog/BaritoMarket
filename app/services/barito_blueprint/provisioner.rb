@@ -126,7 +126,8 @@ module BaritoBlueprint
 
       if success
         @infrastructure.
-          update_provisioning_status('PROVISIONING_CHECK_SUCCEED')
+          update_provisioning_status('FINISHED')
+        @infrastructure.update_status('ACTIVE')
         return true
       else
         @infrastructure.update_provisioning_status('PROVISIONING_CHECK_FAILED')
@@ -140,9 +141,14 @@ module BaritoBlueprint
       ipaddress = res.dig('data', 'ipaddress')
       if ipaddress
         component.update(ipaddress: ipaddress)
-        component.update_status('PROVISIONING_CHECK_SUCCEED') if update_status
+        component.update_status('FINISHED') if update_status
         broadcast(:instance_provisioned, component.id)
 
+        @infrastructure.reload
+        if @infrastructure.components_ready?
+          @infrastructure.update_status('ACTIVE')
+          @infrastructure.update_provisioning_status('FINISHED')
+        end
         return true
       else
         component.update_status('PROVISIONING_CHECK_FAILED', res['error'].to_s) if update_status

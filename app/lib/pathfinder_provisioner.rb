@@ -13,6 +13,7 @@ class PathfinderProvisioner
   end
 
   def provision!(hostname, source, bootstrappers)
+    bootstrappers = bootstrappers.to_json
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v2/ext_app/containers.json",
       method: :post,

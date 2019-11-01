@@ -13,12 +13,9 @@ module BaritoBlueprint
       'zookeeper' => ChefHelper::ZookeeperRoleAttributesGenerator,
     }
 
-    def initialize(infrastructure, executor, opts = {})
+    def initialize(infrastructure, opts = {})
       @infrastructure = infrastructure
       @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
-      @executor = executor
-      @private_keys_dir = opts[:private_keys_dir]
-      @private_key_name = opts[:private_key_name]
       @username = opts[:username]
     end
 
@@ -36,8 +33,7 @@ module BaritoBlueprint
       end
 
       Processor.produce_log(@infrastructure, 'Bootstrap finished')
-      @infrastructure.update_provisioning_status('FINISHED')
-      @infrastructure.update_status('ACTIVE')
+      @infrastructure.update_provisioning_status('BOOTSTRAP_FINISHED')
       return true
     end
 
@@ -48,51 +44,23 @@ module BaritoBlueprint
         "Bootstrapping #{component.hostname} started")
       component.update_status('BOOTSTRAP_STARTED')
 
-      # Get private key file path
-      private_key = nil
-      if @private_keys_dir && @private_key_name
-        private_key = File.join(@private_keys_dir, @private_key_name)
-      end
-
       attrs = setup_bootstrap_attributes(component)
 
-      # Execute bootstrapping
-      res = @executor.bootstrap!(
-        component.hostname,
-        component.ipaddress,
-        @username,
-        private_key: private_key,
-        attrs: attrs
-      )
+      if attrs.nil? || attrs.empty?
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Bootstrapping #{component.hostname} error")
+        component.update_status('BOOTSTRAP_ERROR')
+        return false
+      end
+
       Processor.produce_log(
         @infrastructure,
         "InfrastructureComponent:#{component.id}",
-        "#{res}")
-
-      if res['success'] == true
-        Processor.produce_log(
-          @infrastructure,
-          "InfrastructureComponent:#{component.id}",
-          "Bootstrapping #{component.hostname} finished")
-        component.update_status('FINISHED')
-
-        # Check if bootstrap successful for all components
-        @infrastructure.reload
-        if @infrastructure.components_ready?
-          @infrastructure.update_status('ACTIVE')
-          @infrastructure.update_provisioning_status('FINISHED')
-        end
-        return true
-      else
-        Processor.produce_log(
-          @infrastructure,
-          "InfrastructureComponent:#{component.id}",
-          "Bootstrapping #{component.hostname} error",
-          "#{res['error']}")
-        component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
-        @infrastructure.update_provisioning_status('BOOTSTRAP_ERROR')
-        return false
-      end
+        "Bootstrapping #{component.hostname} finished")
+      component.update_status('BOOTSTRAP_FINISHED')
+      return true
     end
 
     def generate_bootstrap_attributes(component, infrastructure_components)
