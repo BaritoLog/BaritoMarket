@@ -47,6 +47,15 @@ Rails.application.routes.draw do
       get :profile_curator,
         to: 'infrastructures#profile_curator',
         defaults: { format: :json }
+      post :create_app_group,
+        to: 'app_groups#create_app_group',
+        defaults: {format: :json}
+      get :check_app_group,
+        to: 'app_groups#check_app_group',
+        defaults: {format: :json}
+      get :cluster_templates,
+        to: 'app_groups#cluster_templates',
+        defaults: {format: :json}
     end
   end
 
