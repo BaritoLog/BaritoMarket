@@ -11,8 +11,6 @@ class BlueprintWorker
         pathfinder_token: Figaro.env.pathfinder_token,
         pathfinder_cluster: Figaro.env.pathfinder_cluster,
         chef_repo_dir: Figaro.env.chef_repo_dir,
-        private_keys_dir: Figaro.env.container_private_keys_dir,
-        private_key_name: Figaro.env.container_private_key,
         username: Figaro.env.container_username
       ).process!
     rescue JSON::ParserError, StandardError => ex

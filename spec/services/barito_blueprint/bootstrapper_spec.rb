@@ -4,12 +4,8 @@ module BaritoBlueprint
   RSpec.describe Bootstrapper do
     before(:each) do
       @infrastructure = create(:infrastructure)
-      @executor = ChefSoloBootstrapper.new('/opt/chef-repo')
       @bootstrapper = Bootstrapper.new(
         @infrastructure,
-        @executor,
-        private_keys_dir: Figaro.env.private_keys_dir,
-        private_key_name: Figaro.env.private_key_name,
         username: Figaro.env.username,
       )
     end
@@ -54,34 +50,25 @@ module BaritoBlueprint
       end
 
       it 'should return true if executor returns success' do
-        allow(@executor).
-          to receive(:bootstrap!).
-          and_return('success' => true)
         expect(@bootstrapper.bootstrap_instance!(@component)).to eq true
       end
 
       it 'should update component status if executor returns success' do
-        allow(@executor).
-          to receive(:bootstrap!).
-          and_return('success' => true)
         @bootstrapper.bootstrap_instance!(@component)
-        expect(@component.status).to eq 'FINISHED'
-        expect(@infrastructure.status).to eq 'ACTIVE'
+        expect(@component.status).to eq 'BOOTSTRAP_FINISHED'
+        expect(@infrastructure.status).to eq 'INACTIVE'
       end
 
-      it 'should return false if executor returns errors' do
-        allow(@executor).
-          to receive(:bootstrap!).
-          and_return('success' => false)
-        expect(@bootstrapper.bootstrap_instance!(@component)).to eq false
-      end
-
-      it 'should update component status if executor returns errors' do
-        allow(@executor).
-          to receive(:bootstrap!).
-          and_return('success' => false)
+      it 'should return nil or empty hash if generate component attributes failed' do
+        @component.component_type = "none"
+        generator = double('generator')
+        empty_hash = {}
+        allow(generator).
+          to receive(:generate).
+          and_return(empty_hash)
         @bootstrapper.bootstrap_instance!(@component)
         expect(@component.status).to eq 'BOOTSTRAP_ERROR'
+        expect(@infrastructure.status).to eq 'INACTIVE'
       end
     end
 
