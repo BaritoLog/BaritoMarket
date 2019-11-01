@@ -20,6 +20,7 @@ class Infrastructure < ApplicationRecord
     provisioning_check_succeed: 'PROVISIONING_CHECK_SUCCEED',
     bootstrap_started: 'BOOTSTRAP_STARTED',
     bootstrap_error: 'BOOTSTRAP_ERROR',
+    bootstrap_finished: 'BOOTSTRAP_FINISHED',
     finished: 'FINISHED',
     delete_started: 'DELETE_STARTED',
     delete_error: 'DELETE_ERROR',

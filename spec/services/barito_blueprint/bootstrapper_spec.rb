@@ -43,8 +43,8 @@ module BaritoBlueprint
       it 'should update infrastructure statuses if all bootstrapping succeed' do
         allow(@bootstrapper).to receive(:bootstrap_instance!).and_return(true)
         @bootstrapper.bootstrap_instances!
-        expect(@infrastructure.provisioning_status).to eq 'FINISHED'
-        expect(@infrastructure.status).to eq 'ACTIVE'
+        expect(@infrastructure.provisioning_status).to eq 'BOOTSTRAP_FINISHED'
+        expect(@infrastructure.status).to eq 'INACTIVE'
       end
     end
 

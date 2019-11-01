@@ -108,7 +108,7 @@ module BaritoBlueprint
 
         it 'should update infrastructure provisioning_status if all components are valid' do
           @provisioner.check_and_update_instances
-          expect(@infrastructure.provisioning_status).to eq 'PROVISIONING_CHECK_SUCCEED'
+          expect(@infrastructure.provisioning_status).to eq 'FINISHED'
         end
       end
 
