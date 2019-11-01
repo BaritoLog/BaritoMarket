@@ -16,14 +16,14 @@ RSpec.describe PathfinderProvisioner do
         'alias' => 'consul'
       }
       @bootstrappers = [{    
-        "bootstrap_type": "chef-solo",
-        "bootstrap_cookbooks_url": "",
-        "bootstrap_attributes": {
-          "consul": {
-            "hosts": [],
-            "config": {"consul.json": {"bind_addr": ""}}
+        "bootstrap_type" => "chef-solo",
+        "bootstrap_cookbooks_url" => "",
+        "bootstrap_attributes" => {
+          "consul" => {
+            "hosts" => [],
+            "config" => {"consul.json" => {"bind_addr" => ""}}
           },
-          "run_list": []
+          "run_list" => []
         } 
       }]
 
@@ -37,7 +37,7 @@ RSpec.describe PathfinderProvisioner do
             'container' => {
               'hostname' => 'test-01',
               'source' => @source,
-              'bootstrappers' => @bootstrappers
+              'bootstrappers' => @bootstrappers.to_json
             }
           }.to_json,
           headers: {
@@ -83,14 +83,14 @@ RSpec.describe PathfinderProvisioner do
           'alias' => 'consul'
         }
         @bootstrappers = [{    
-          "bootstrap_type": "chef-solo",
-          "bootstrap_cookbooks_url": "",
-          "bootstrap_attributes": {
-            "consul": {
-              "hosts": [],
-              "config": {"consul.json": {"bind_addr": ""}}
+          "bootstrap_type" => "chef-solo",
+          "bootstrap_cookbooks_url" => "",
+          "bootstrap_attributes" => {
+            "consul" => {
+              "hosts" => [],
+              "config" => {"consul.json" => {"bind_addr" => ""}}
             },
-            "run_list": []
+            "run_list" => []
           } 
         }]
 
@@ -142,17 +142,17 @@ RSpec.describe PathfinderProvisioner do
           'alias' => 'consul'
         }
         @bootstrappers = [{    
-          "bootstrap_type": "chef-solo",
-          "bootstrap_cookbooks_url": "",
-          "bootstrap_attributes": {
-            "consul": {
-              "hosts": [],
-              "config": {"consul.json": {"bind_addr": ""}}
+          "bootstrap_type" => "chef-solo",
+          "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/kibana_wrapper_cookbook",
+          "bootstrap_attributes" => {
+            "consul" => {
+              "hosts" => [],
+              "config" => {"consul.json" => {"bind_addr" => ""}}
             },
-            "run_list": []
+            "run_list" => []
           } 
         }]
-
+        
         # Mock Pathfinder API
         stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers/test-01/reschedule").
           with(
@@ -182,7 +182,7 @@ RSpec.describe PathfinderProvisioner do
             'container' => {
               'hostname' => 'test-01',
               'source' => @source,
-              'bootstrappers' => @bootstrappers
+              'bootstrappers' => @bootstrappers.to_json
             }
           }.to_json,
           headers: {
