@@ -37,7 +37,7 @@ RSpec.describe PathfinderProvisioner do
             'container' => {
               'hostname' => 'test-01',
               'source' => @source,
-              'bootstrappers' => @bootstrappers.to_json
+              'bootstrappers' => @bootstrappers
             }
           }.to_json,
           headers: {
@@ -182,7 +182,7 @@ RSpec.describe PathfinderProvisioner do
             'container' => {
               'hostname' => 'test-01',
               'source' => @source,
-              'bootstrappers' => @bootstrappers.to_json
+              'bootstrappers' => @bootstrappers
             }
           }.to_json,
           headers: {
