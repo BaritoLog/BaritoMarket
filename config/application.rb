@@ -3,6 +3,9 @@ require File.expand_path('boot', __dir__)
 require 'rails/all'
 require 'resolv-replace'
 
+require 'prometheus/middleware/collector'
+require 'prometheus/middleware/exporter'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -22,5 +25,8 @@ module BaritoMarket
     # config.i18n.default_locale = :de
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
+
+    config.middleware.use Prometheus::Middleware::Collector
+    config.middleware.use Prometheus::Middleware::Exporter
   end
 end
