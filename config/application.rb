@@ -26,7 +26,7 @@ module BaritoMarket
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
 
-    config.middleware.use Prometheus::Middleware::Collector
+    config.middleware.insert_before ActionDispatch::Static, Prometheus::Middleware::Collector
     config.middleware.use Prometheus::Middleware::Exporter
   end
 end
