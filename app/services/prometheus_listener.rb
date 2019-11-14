@@ -1,5 +1,7 @@
+require 'prometheus/client'
+
 class PrometheusListener
-  def initialize(registry)
+  def initialize(registry = Prometheus::Client.registry)
     @log_count_metric = registry.gauge(
       :barito_market_log_count, docstring: 'Count of consumed logs', labels: %i[app_group app_name]
     )
