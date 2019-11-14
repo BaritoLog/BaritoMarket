@@ -20,4 +20,8 @@ RSpec.describe PrometheusListener do
       app_group: app.app_group.name, app_name: app.name
     })).to eq(app.log_count)
   end
+
+  it 'should have log_throughput metrics' do
+    expect(registry.get(:barito_market_log_throughput)).to be_a(Prometheus::Client::Gauge)
+  end
 end
