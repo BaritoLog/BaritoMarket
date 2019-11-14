@@ -18,5 +18,6 @@ class PrometheusListener
     app_name = app.name
 
     @log_count_metric.set(app.log_count, labels: { app_group: app_group.name, app_name: app_name })
+    @log_throughput_metric.set(app_log_throughput, labels: { app_group: app_group.name, app_name: app_name })
   end
 end
