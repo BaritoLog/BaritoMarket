@@ -27,7 +27,7 @@ class PrometheusListener
   end
 
   def app_count_changed
-    app_count = AppGroup.joins(:barito_apps, :infrastructure).count
+    app_count = AppGroup.joins(:barito_apps, :infrastructure).where.not(infrastructures: { provisioning_status: "DELETED" }).count
     @app_count_metric.set(app_count)
   end
 end

@@ -13,7 +13,8 @@ RSpec.describe PrometheusListener do
 
   let(:app_group) { create(:app_group) }
   let!(:app) { create(:barito_app, app_group: app_group, log_count: 10) }
-  let!(:infrastructure) { create(:infrastructure, app_group: app_group) }
+  let!(:infrastructure1) { create(:infrastructure, app_group: app_group) }
+  let!(:infrastructure2) { create(:infrastructure, app_group: app_group, provisioning_status: "DELETED") }
 
   it 'should change whenever log count is changed' do
     listener.log_count_changed(app.id, 0)
