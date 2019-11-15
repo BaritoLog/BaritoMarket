@@ -11,7 +11,7 @@ RSpec.describe PrometheusListener do
     expect(registry.get(:barito_market_log_count)).to be_a(Prometheus::Client::Gauge)
   end
 
-  let(:app) { create(:barito_app) }
+  let(:app) { create(:barito_app, log_count: 10) }
 
   it 'should change whenever log count is changed' do
     listener.log_count_changed(app.id, 0)
