@@ -11,6 +11,9 @@ class PrometheusListener
     @app_count_metric = registry.gauge(
       :barito_market_app_count, docstring: 'Count of registered applications'
     )
+    @team_count_metric = registry.gauge(
+      :barito_market_team_count, docstring: 'Count of teams'
+    )
   end
 
   def log_count_changed(app_id, app_log_throughput)

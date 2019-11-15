@@ -44,4 +44,8 @@ RSpec.describe PrometheusListener do
     listener.app_count_changed
     expect(registry.get(:barito_market_app_count).get).to eq(1.0)
   end
+
+  it 'should have team_count metrics' do
+    expect(registry.get(:barito_market_team_count)).to be_a(Prometheus::Client::Gauge)
+  end
 end
