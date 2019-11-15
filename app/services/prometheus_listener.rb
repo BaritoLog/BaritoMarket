@@ -25,4 +25,9 @@ class PrometheusListener
     @log_count_metric.set(app.log_count, labels: { app_group: app_group.name, app_name: app_name })
     @log_throughput_metric.set(app_log_throughput, labels: { app_group: app_group.name, app_name: app_name })
   end
+
+  def app_count_changed
+    app_count = AppGroup.joins(:barito_apps, :infrastructure).count
+    @app_count_metric.set(app_count)
+  end
 end
