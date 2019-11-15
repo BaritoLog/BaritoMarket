@@ -32,4 +32,8 @@ RSpec.describe PrometheusListener do
       app_group: app.app_group.name, app_name: app.name
     })).to eq(2000.0)
   end
+
+  it 'should have app_count metrics' do
+    expect(registry.get(:barito_market_app_count)).to be_a(Prometheus::Client::Gauge)
+  end
 end

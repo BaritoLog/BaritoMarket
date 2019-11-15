@@ -8,6 +8,9 @@ class PrometheusListener
     @log_throughput_metric = registry.gauge(
       :barito_market_log_throughput, docstring: 'Log throughput', labels: %i[app_group app_name]
     )
+    @app_count_metric = registry.gauge(
+      :barito_market_app_count, docstring: 'Count of registered applications'
+    )
   end
 
   def log_count_changed(app_id, app_log_throughput)
