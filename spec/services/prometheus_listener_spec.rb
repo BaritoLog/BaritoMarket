@@ -7,8 +7,36 @@ RSpec.describe PrometheusListener do
 
   let!(:listener) { described_class.new(registry) }
 
-  it 'should have log_count metrics' do
-    expect(registry.get(:barito_market_log_count)).to be_a(Prometheus::Client::Gauge)
+  describe 'log_count metrics' do
+    subject { registry.get(:barito_market_log_count) }
+
+    it 'should be in registry' do
+      expect(subject).to be_a(Prometheus::Client::Gauge)
+    end
+  end
+
+  describe 'log_throughput metrics' do
+    subject { registry.get(:barito_market_log_throughput) }
+
+    it 'should be in registry' do
+      expect(subject).to be_a(Prometheus::Client::Gauge)
+    end
+  end
+
+  describe 'app_count metrics' do
+    subject { registry.get(:barito_market_app_count) }
+
+    it 'should be in registry' do
+      expect(subject).to be_a(Prometheus::Client::Gauge)
+    end
+  end
+
+  describe 'team_count metrics' do
+    subject { registry.get(:barito_market_team_count) }
+
+    it 'should be in registry' do
+      expect(subject).to be_a(Prometheus::Client::Gauge)
+    end
   end
 
   let(:app_group) { create(:app_group) }
@@ -24,10 +52,6 @@ RSpec.describe PrometheusListener do
     })).to eq(app.log_count)
   end
 
-  it 'should have log_throughput metrics' do
-    expect(registry.get(:barito_market_log_throughput)).to be_a(Prometheus::Client::Gauge)
-  end
-
   it 'should change whenever log throughput is changed' do
     listener.log_count_changed(app.id, 2000.0)
 
@@ -36,17 +60,9 @@ RSpec.describe PrometheusListener do
     })).to eq(2000.0)
   end
 
-  it 'should have app_count metrics' do
-    expect(registry.get(:barito_market_app_count)).to be_a(Prometheus::Client::Gauge)
-  end
-
   it 'should report current app count' do
     listener.app_count_changed
     expect(registry.get(:barito_market_app_count).get).to eq(1.0)
-  end
-
-  it 'should have team_count metrics' do
-    expect(registry.get(:barito_market_team_count)).to be_a(Prometheus::Client::Gauge)
   end
 
   it 'should report current team count' do
