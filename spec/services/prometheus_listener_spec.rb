@@ -9,8 +9,6 @@ RSpec.describe PrometheusListener do
 
   let(:app_group) { create(:app_group) }
   let!(:app) { create(:barito_app, app_group: app_group, log_count: 10) }
-  let!(:infrastructure1) { create(:infrastructure, app_group: app_group) }
-  let!(:infrastructure2) { create(:infrastructure, app_group: app_group, provisioning_status: "DELETED") }
 
   describe 'per-app metrics' do
     let(:labels) { { app_group: app.app_group.name, app_name: app.name } }
@@ -42,29 +40,36 @@ RSpec.describe PrometheusListener do
     end
   end
 
-  describe 'app_count metrics' do
-    subject { registry.get(:barito_market_app_count) }
-
-    it 'should be in registry' do
-      expect(subject).to be_a(Prometheus::Client::Gauge)
+  describe 'team-related metrics' do
+    before do
+      create(:infrastructure, app_group: app_group)
+      create(:infrastructure, app_group: app_group, provisioning_status: 'DELETED')
     end
-  end
 
-  describe 'team_count metrics' do
-    subject { registry.get(:barito_market_team_count) }
+    describe 'app_count metrics' do
+      subject { registry.get(:barito_market_app_count) }
 
-    it 'should be in registry' do
-      expect(subject).to be_a(Prometheus::Client::Gauge)
+      it 'should be in registry' do
+        expect(subject).to be_a(Prometheus::Client::Gauge)
+      end
+
+      it 'should report current app count' do
+        listener.app_count_changed
+        expect(subject.get).to eq(1.0)
+      end
     end
-  end
 
-  it 'should report current app count' do
-    listener.app_count_changed
-    expect(registry.get(:barito_market_app_count).get).to eq(1.0)
-  end
+    describe 'team_count metrics' do
+      subject { registry.get(:barito_market_team_count) }
 
-  it 'should report current team count' do
-    listener.team_count_changed
-    expect(registry.get(:barito_market_team_count).get).to eq(1.0)
+      it 'should be in registry' do
+        expect(subject).to be_a(Prometheus::Client::Gauge)
+      end
+
+      it 'should report current team count' do
+        listener.team_count_changed
+        expect(subject.get).to eq(1.0)
+      end
+    end
   end
 end
