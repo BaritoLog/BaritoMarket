@@ -6,6 +6,11 @@ class AppGroup < ApplicationRecord
   has_many :users, through: :app_group_users
   has_one :infrastructure
 
+  enum environment: {
+    staging: 'STAGING',
+    production: 'PRODUCTION'
+  }
+
   scope :active, -> {
     includes(:infrastructure).
     includes(:barito_apps).

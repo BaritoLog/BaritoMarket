@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_27_134000) do
+ActiveRecord::Schema.define(version: 2019_11_18_072632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2019_06_27_134000) do
     t.bigint "log_count", default: 0
     t.string "secret_key"
     t.integer "log_retention_days", default: 30
+    t.string "environment", default: "PRODUCTION"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end
 
