@@ -68,6 +68,7 @@ class AppGroup < ApplicationRecord
         name: params[:name],
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
+        environment: params[:environment],
       )
       infrastructure = Infrastructure.setup(
         name: params[:name],
