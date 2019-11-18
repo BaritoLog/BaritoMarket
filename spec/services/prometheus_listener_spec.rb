@@ -11,7 +11,13 @@ RSpec.describe PrometheusListener do
   let!(:app) { create(:barito_app, app_group: app_group, log_count: 10) }
 
   describe 'per-app metrics' do
-    let(:labels) { { app_group: app.app_group.name, app_name: app.name } }
+    let(:labels) do
+      {
+        app_group: app_group.name,
+        app_name: app.name,
+        environment: app_group.environment,
+      }
+    end
 
     describe 'log_count metrics' do
       subject { registry.get(:barito_market_log_count) }
