@@ -100,9 +100,10 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
+          app_group: app_group_a.name,
+          environment: app_group_a.environment,
           hostname: infrastructure_component_a.hostname,
           ipaddress: infrastructure_component_a.ipaddress,
-          environment: app_group_a.environment,
         }
       ].to_json
     end
