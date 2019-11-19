@@ -1,15 +1,15 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
-
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
-      cluster_name: params[:cluster_name])
+      cluster_name: params[:cluster_name],
+    )
 
     if @infrastructure.blank? || !@infrastructure.active?
-      render json: {
-        success: false,
-        errors: ["Infrastructure not found"],
-        code: 404
-      }, status: :not_found and return
+      render(json: {
+               success: false,
+               errors: ['Infrastructure not found'],
+               code: 404,
+             }, status: :not_found) && return
     end
 
     render json: {
@@ -37,11 +37,11 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def profile_curator
     if Figaro.env.es_curator_client_key != params[:client_key]
-    render json: {
-        success: false,
-        errors: ["Unauthorized"],
-        code: 401
-    }, status: :not_found and return
+      render(json: {
+               success: false,
+               errors: ['Unauthorized'],
+               code: 401,
+             }, status: :not_found) && return
     end
 
     @profiles = []
@@ -49,20 +49,21 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     @apps.each do |app|
       @app_group = app.app_group
-      @infrastructure_component = @app_group.infrastructure.infrastructure_components.where(:component_type => 'elasticsearch', :status => InfrastructureComponent.statuses[:finished])
+      @infrastructure_component = @app_group.infrastructure.infrastructure_components.where(
+        component_type: 'elasticsearch',
+        status: InfrastructureComponent.statuses[:finished],
+      )
       if @infrastructure_component.blank?
         next
       end
 
       @infrastructure_component.each do |component|
         @profiles << {
-            hostname: component.hostname,
-            ipaddress: component.ipaddress,
-            log_retention_days: @app_group.log_retention_days
+          hostname: component.hostname,
+          ipaddress: component.ipaddress,
+          log_retention_days: @app_group.log_retention_days,
         }
       end
-
-
     end
 
     render json: @profiles
@@ -73,14 +74,15 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     @infrastructure = Infrastructure.
       find_by_cluster_name(params[:cluster_name])
 
-    if @current_user.blank? || @infrastructure.blank? || !@infrastructure.active? || !InfrastructurePolicy.new(@current_user, @infrastructure).exists?
-      render json: {
-        success: false,
-        errors: ["Forbidden"],
-        code: 403
-      }, status: :forbidden and return
+    if @current_user.blank? || @infrastructure.blank? || !@infrastructure.active? ||
+        !InfrastructurePolicy.new(@current_user, @infrastructure).exists?
+      render(json: {
+               success: false,
+               errors: ['Forbidden'],
+               code: 403,
+             }, status: :forbidden) && return
     end
 
-    render json: "", status: :ok
+    render json: '', status: :ok
   end
 end
