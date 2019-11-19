@@ -69,6 +69,20 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     render json: @profiles
   end
 
+  def profile_prometheus_exporter
+    infrastructure_components = InfrastructureComponent.joins(infrastructure: :app_group).where(
+      status: InfrastructureComponent.statuses[:finished],
+    )
+
+    render json: infrastructure_components.map { |infrastructure_component|
+      {
+        hostname: infrastructure_component.hostname,
+        ipaddress: infrastructure_component.ipaddress,
+        environment: infrastructure_component.infrastructure.app_group.environment,
+      }
+    }
+  end
+
   def authorize_by_username
     @current_user = User.find_by_username_or_email(params[:username])
     @infrastructure = Infrastructure.

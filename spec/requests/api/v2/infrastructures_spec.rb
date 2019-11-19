@@ -82,6 +82,32 @@ RSpec.describe 'App API', type: :request do
     end
   end
 
+  describe 'Profile for Prometheus Exporters' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return list of all infrastructure components with environment label' do
+      app_group_a = create(:app_group, environment: AppGroup.environments[:staging])
+      infrastructure_a = create(:infrastructure, app_group: app_group_a)
+      infrastructure_component_a = create(
+        :infrastructure_component, infrastructure: infrastructure_a,
+                                   status: InfrastructureComponent.statuses[:finished]
+      )
+
+      get api_v2_profile_prometheus_exporter_path,
+        params: { access_token: @access_token }, headers: headers
+
+      expect(response.body).to eq [
+        {
+          hostname: infrastructure_component_a.hostname,
+          ipaddress: infrastructure_component_a.ipaddress,
+          environment: app_group_a.environment,
+        }
+      ].to_json
+    end
+  end
+
   describe 'Authorize API' do
     let(:user_a) { create(:user) }
 
