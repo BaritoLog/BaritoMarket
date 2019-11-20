@@ -79,8 +79,8 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       app_group = infrastructure.app_group
       {
         cluster_name: infrastructure.cluster_name,
+        component_type: infrastructure_component.component_type,
         environment: app_group.environment,
-        hostname: infrastructure_component.hostname,
         ipaddress: infrastructure_component.ipaddress,
       }
     }

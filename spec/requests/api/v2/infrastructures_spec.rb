@@ -101,8 +101,8 @@ RSpec.describe 'App API', type: :request do
       expect(response.body).to eq [
         {
           cluster_name: infrastructure_a.cluster_name,
+          component_type: infrastructure_component_a.component_type,
           environment: app_group_a.environment,
-          hostname: infrastructure_component_a.hostname,
           ipaddress: infrastructure_component_a.ipaddress,
         }
       ].to_json
