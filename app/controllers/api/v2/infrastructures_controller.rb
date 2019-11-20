@@ -75,9 +75,10 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     )
 
     render json: infrastructure_components.map { |infrastructure_component|
-      app_group = infrastructure_component.infrastructure.app_group
+      infrastructure = infrastructure_component.infrastructure
+      app_group = infrastructure.app_group
       {
-        app_group: app_group.name,
+        cluster_name: infrastructure.cluster_name,
         environment: app_group.environment,
         hostname: infrastructure_component.hostname,
         ipaddress: infrastructure_component.ipaddress,
