@@ -1,0 +1,2 @@
+class AppGroupTeam < ApplicationRecord
+end

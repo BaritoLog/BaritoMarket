@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_22_051047) do
+ActiveRecord::Schema.define(version: 2019_11_22_051940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,17 @@ ActiveRecord::Schema.define(version: 2019_11_22_051047) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "app_group_teams", force: :cascade do |t|
+    t.bigint "app_group_id"
+    t.bigint "group_id"
+    t.bigint "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id"], name: "index_app_group_teams_on_app_group_id"
+    t.index ["group_id"], name: "index_app_group_teams_on_group_id"
+    t.index ["role_id"], name: "index_app_group_teams_on_role_id"
   end
 
   create_table "app_group_users", force: :cascade do |t|
@@ -157,6 +168,9 @@ ActiveRecord::Schema.define(version: 2019_11_22_051047) do
     t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
+  add_foreign_key "app_group_teams", "app_group_roles", column: "role_id"
+  add_foreign_key "app_group_teams", "app_groups"
+  add_foreign_key "app_group_teams", "groups"
   add_foreign_key "ext_apps", "users", column: "created_by_id"
   add_foreign_key "group_users", "app_group_roles", column: "role_id"
   add_foreign_key "infrastructures", "cluster_templates"
