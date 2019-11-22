@@ -4,5 +4,5 @@ class AppGroupTeam < ApplicationRecord
   belongs_to :group
 
   validates :app_group_id, uniqueness: { scope: :group_id }
-  validates :app_group_id, presence: true
+  validates :app_group_id, :role_id, presence: true
 end
