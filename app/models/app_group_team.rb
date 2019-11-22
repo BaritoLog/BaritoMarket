@@ -1,3 +1,4 @@
 class AppGroupTeam < ApplicationRecord
   belongs_to :app_group
+  belongs_to :role, class_name: 'AppGroupRole'
 end
