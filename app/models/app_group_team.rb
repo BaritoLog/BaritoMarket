@@ -3,6 +3,6 @@ class AppGroupTeam < ApplicationRecord
   belongs_to :role, class_name: 'AppGroupRole'
   belongs_to :group
 
-  validates :app_group_id, uniqueness: { scope: :group_id }
-  validates :app_group_id, :role_id, presence: true
+  validates :app_group, uniqueness: { scope: :group }
+  validates :app_group, :role, presence: true
 end
