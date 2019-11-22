@@ -12,4 +12,10 @@ RSpec.describe AppGroupTeam, type: :model do
     app_group_team = create(:app_group_team, role: app_group_role)
     expect(app_group_team.role).to eq(app_group_role)
   end
+
+  it 'has relation with group' do
+    group = create(:group)
+    app_group_team = create(:app_group_team, group: group)
+    expect(app_group_team.group).to eq(group)
+  end
 end
