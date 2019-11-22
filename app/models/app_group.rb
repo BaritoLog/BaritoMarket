@@ -6,42 +6,46 @@ class AppGroup < ApplicationRecord
   has_many :users, through: :app_group_users
   has_one :infrastructure
 
-  scope :active, -> {
-    includes(:infrastructure).
-    includes(:barito_apps).
-      where.not(infrastructures: { provisioning_status:'DELETED' })
+  enum environment: {
+    staging: 'STAGING',
+    production: 'PRODUCTION',
   }
 
-  filterrific :default_filter_params => { :sorted_by => 'created_at_desc' },
-              :available_filters => %w[
+  scope :active, -> {
+    includes(:infrastructure).
+      includes(:barito_apps).
+      where.not(infrastructures: { provisioning_status: 'DELETED' })
+  }
+
+  filterrific default_filter_params: { sorted_by: 'created_at_desc' },
+              available_filters: %w[
                 sorted_by
                 search_query
               ]
 
   scope :search_query, ->(query) {
-    return nil  if query.blank?
+    return nil if query.blank?
     terms = query.downcase.split(/\s+/)
-    terms = terms.map { |e|
+    terms = terms.map do |e|
       ('%' + e + '%').gsub(/%+/, '%')
-    }
+    end
     num_or_conditions = 3
     where(
-      terms.map {
+      terms.map do
         or_clauses = [
-          "LOWER(app_groups.name) LIKE ?",
-          "LOWER(infrastructures.cluster_name) LIKE ?",
-          "LOWER(barito_apps.name) LIKE ?"
+          'LOWER(app_groups.name) LIKE ?',
+          'LOWER(infrastructures.cluster_name) LIKE ?',
+          'LOWER(barito_apps.name) LIKE ?'
         ].join(' OR ')
-        "(#{ or_clauses })"
-      }.join(' AND '),
-      *terms.map { |e| [e] * num_or_conditions }.flatten
+        "(#{or_clauses})"
+      end.join(' AND '),
+      *terms.map { |e| [e] * num_or_conditions }.flatten,
     )
   }
 
   scope :sorted_by, ->(sort_option) {
-    direction = (sort_option =~ /desc$/) ? 'desc' : 'asc'
+    direction = /desc$/.match?(sort_option) ? 'desc' : 'asc'
     app_groups = AppGroup.arel_table
-    infrastructures = Infrastructure.arel_table
     case sort_option.to_s
     when /^created_at_/
       order(app_groups[:created_at].send(direction))
@@ -54,14 +58,17 @@ class AppGroup < ApplicationRecord
 
   def self.setup(params)
     log_retention_days = nil
-    log_retention_days = Figaro.env.default_log_retention_days.to_i unless Figaro.env.default_log_retention_days.blank?
+    unless Figaro.env.default_log_retention_days.blank?
+      log_retention_days = Figaro.env.default_log_retention_days.to_i
+    end
     log_retention_days = params[:log_retention_days].to_i unless params[:log_retention_days].blank?
 
     ActiveRecord::Base.transaction do
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
-        log_retention_days: log_retention_days
+        log_retention_days: log_retention_days,
+        environment: params[:environment],
       )
       infrastructure = Infrastructure.setup(
         name: params[:name],
@@ -82,14 +89,14 @@ class AppGroup < ApplicationRecord
   end
 
   def available?
-    self.infrastructure.active?
+    infrastructure.active?
   end
 
   def max_tps
-    self.infrastructure.options['max_tps'].to_i
+    infrastructure.options['max_tps'].to_i
   end
 
   def new_total_tps(diff_tps)
-    self.barito_apps.sum(:max_tps) + diff_tps
+    barito_apps.sum(:max_tps) + diff_tps
   end
 end
