@@ -35,5 +35,9 @@ RSpec.describe AppGroupTeam, type: :model do
     it 'should check presence of role' do
       expect(build(:app_group_team, role: nil)).not_to be_valid
     end
+
+    it 'should check presence of group' do
+      expect(build(:app_group_team, group: nil)).not_to be_valid
+    end
   end
 end
