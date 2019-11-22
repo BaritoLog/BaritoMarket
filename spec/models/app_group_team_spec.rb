@@ -27,5 +27,9 @@ RSpec.describe AppGroupTeam, type: :model do
       create(:app_group_team, app_group: app_group, group: group)
       expect(build(:app_group_team, app_group: app_group, group: group)).not_to be_valid
     end
+
+    it 'should check presence of app group' do
+      expect(build(:app_group_team, app_group: nil)).not_to be_valid
+    end
   end
 end
