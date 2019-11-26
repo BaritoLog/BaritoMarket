@@ -35,4 +35,8 @@ class User < ApplicationRecord
   def is_global_viewer?
     return true if Figaro.env.global_viewer == "true"
   end
+
+  def can_access_app_group?(app_group, role_names: nil)
+    true
+  end
 end

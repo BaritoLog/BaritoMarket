@@ -25,4 +25,14 @@ RSpec.describe User, type: :model do
       end.to_s).to eq(config['GLOBAL_VIEWER'])
     end
   end
+
+  describe '#can_access_app_group?' do
+    let(:app_group) { create(:app_group) }
+    let(:user) { create(:user) }
+
+    it 'should allow access to associated app group' do
+      create(:app_group_user, app_group: app_group, user: user)
+      expect(user.can_access_app_group?(app_group)).to be true
+    end
+  end
 end
