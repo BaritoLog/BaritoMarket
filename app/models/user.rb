@@ -36,7 +36,7 @@ class User < ApplicationRecord
     return true if Figaro.env.global_viewer == "true"
   end
 
-  def can_access_app_group?(app_group, role_names: nil)
+  def can_access_app_group?(app_group, roles: nil)
     app_group_users.where(app_group: app_group).exists?
   end
 end
