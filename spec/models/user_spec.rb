@@ -34,5 +34,9 @@ RSpec.describe User, type: :model do
       create(:app_group_user, app_group: app_group, user: user)
       expect(user.can_access_app_group?(app_group)).to be true
     end
+
+    it 'should deny access to app group with no association' do
+      expect(user.can_access_app_group?(app_group)).to be false
+    end
   end
 end
