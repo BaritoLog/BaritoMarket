@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 2019_11_22_051940) do
     t.bigint "log_count", default: 0
     t.string "secret_key"
     t.integer "log_retention_days", default: 30
+    t.string "environment", default: "PRODUCTION"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end
 

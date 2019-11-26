@@ -31,3 +31,14 @@
 
       - if @app_group_users.blank?
         li.list-group-item.text-center There is no members registered yet
+  .col-md-5.col-12
+    h3.mb-3= "#"
+    hr
+
+    h4.mb-3 Teams
+    = form_for(@app_group_user) do |f|
+      = f.hidden_field :app_group_id
+      .form-group
+        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_group_id'
+      .form-group
+        = f.submit 'Add', class: 'btn btn-primary btn-sm'
