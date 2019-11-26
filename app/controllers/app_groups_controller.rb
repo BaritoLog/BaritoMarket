@@ -75,6 +75,10 @@ class AppGroupsController < ApplicationController
       where(app_group_id: @app_group.id).
       order(:created_at)
 
+    @app_group_team = AppGroupTeam.new(app_group: @app_group)
+
+    @app_group_teams = []
+
     @roles = {
       member: AppGroupRole.find_by_name('member'),
       admin: AppGroupRole.find_by_name('admin'),
