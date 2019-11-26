@@ -72,7 +72,7 @@ class ApplicationPolicy
 
   def is_barito_superadmin?
     return false unless get_user_groups
-    get_user_groups.include?("barito-superadmin") 
+    get_user_groups.include?('barito-superadmin')
   end
 
   def is_global_viewer?
