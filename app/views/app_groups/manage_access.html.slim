@@ -1,6 +1,6 @@
 .row.justify-content-center
   .col-md-5.col-12
-    h3.mb-3= "Application Group - #{@app_group.name}"
+    h3.mb-3= "Application Group:"
     hr
 
     h4.mb-3 Members
@@ -32,7 +32,7 @@
       - if @app_group_users.blank?
         li.list-group-item.text-center There is no members registered yet
   .col-md-5.col-12
-    h3.mb-3= "#"
+    h3.mb-3= "#{@app_group.name}"
     hr
 
     h4.mb-3 Teams
@@ -42,3 +42,20 @@
         = f.select :group_id, [], {}, class: 'form-control', id: 'assign_group_id'
       .form-group
         = f.submit 'Add', class: 'btn btn-primary btn-sm'
+    
+    br
+    ul.list-group
+      - @app_group_teams.each do |team|
+        li.list-group-item
+          .row
+            .col-10
+              = team.group.name
+              | &nbsp;
+              span.badge.badge-secondary.badge-info
+                | &nbsp;As&nbsp;
+                = team.role.name
+
+            .col-2.text-right= link_to 'Delete', app_group_team_path(group_id: team.group_id, app_group_id: @app_group.id), class: 'btn btn-danger btn-sm', data: { method: :delete }
+
+      - if @app_group_teams.blank?
+        li.list-group-item.text-center There is no team registered yet
