@@ -1,6 +1,6 @@
 class InfrastructureComponentPolicy < ApplicationPolicy
   def index?
-    return true if is_barito_superadmin?
+    return true if barito_superadmin?
     false
   end
 

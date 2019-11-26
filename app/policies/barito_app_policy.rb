@@ -1,6 +1,6 @@
 class BaritoAppPolicy < ApplicationPolicy
   def create?
-    return true if is_barito_superadmin?
+    return true if barito_superadmin?
     return false if record.app_group.nil?
     record.app_group.app_group_users.
       joins(:role).
