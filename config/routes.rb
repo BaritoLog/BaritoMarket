@@ -114,6 +114,10 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :component_templates,
     defaults: { format: :html }
-
+  
+  resources :app_group_teams,
+    only: %i[create update],
+    defaults: { format: :html }
+    
   root to: 'app_groups#index', defaults: { format: :html }
 end
