@@ -43,6 +43,7 @@ class User < ApplicationRecord
 
     memberships = group_users.joins(
       group: :app_group_teams).where(groups: { app_group_teams: { app_group: app_group }})
+    return false if roles
     memberships.exists?
   end
 end
