@@ -37,6 +37,8 @@ class User < ApplicationRecord
   end
 
   def can_access_app_group?(app_group, roles: nil)
-    app_group_users.where(app_group: app_group).exists?
+    memberships = app_group_users.where(app_group: app_group)
+    return false if roles
+    memberships.exists?
   end
 end
