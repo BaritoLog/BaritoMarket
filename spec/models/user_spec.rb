@@ -34,10 +34,10 @@ RSpec.describe User, type: :model do
       expect(user.can_access_app_group?(app_group)).to be false
     end
 
-    context 'user has member association with app group' do
-      let(:role) { create(:app_group_role) }
-      let(:role_admin) { create(:app_group_role, :admin) }
+    let(:role) { create(:app_group_role) }
+    let(:role_admin) { create(:app_group_role, :admin) }
 
+    context 'user has member association with app group' do
       before :each do
         create(:app_group_user, app_group: app_group, user: user, role: role)
       end
@@ -54,6 +54,19 @@ RSpec.describe User, type: :model do
       it 'should allow access if in specified role' do
         allowed_roles = [role_admin.name.to_s, role.name.to_s]
         expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
+      end
+    end
+
+    context 'user has member association with group associated to app group' do
+      let(:group) { create(:group) }
+
+      before :each do
+        create(:app_group_team, app_group: app_group, group: group)
+        create(:group_user, group: group, user: user, role: role)
+      end
+
+      it 'should allow access' do
+        expect(user.can_access_app_group?(app_group)).to be true
       end
     end
   end
