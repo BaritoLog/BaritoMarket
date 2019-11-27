@@ -28,29 +28,33 @@ RSpec.describe User, type: :model do
 
   describe '#can_access_app_group?' do
     let(:app_group) { create(:app_group) }
-    let(:role) { create(:app_group_role) }
-    let(:role_admin) { create(:app_group_role, :admin) }
     let(:user) { create(:user) }
-
-    it 'should allow access to associated app group' do
-      create(:app_group_user, app_group: app_group, user: user)
-      expect(user.can_access_app_group?(app_group)).to be true
-    end
 
     it 'should deny access to app group with no association' do
       expect(user.can_access_app_group?(app_group)).to be false
     end
 
-    it 'should deny access to associated app group with different role' do
-      create(:app_group_user, app_group: app_group, user: user, role: role)
-      expect(user.can_access_app_group?(app_group, roles: [role_admin.name.to_s])).to be false
-    end
+    context 'user has member association with app group' do
+      let(:role) { create(:app_group_role) }
+      let(:role_admin) { create(:app_group_role, :admin) }
 
-    it 'should allow access to associated app group with any matched specified role' do
-      create(:app_group_user, app_group: app_group, user: user, role: role)
+      before :each do
+        create(:app_group_user, app_group: app_group, user: user, role: role)
+      end
 
-      allowed_roles = [role_admin.name.to_s, role.name.to_s]
-      expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
+      it 'should allow access' do
+        expect(user.can_access_app_group?(app_group)).to be true
+      end
+
+      it 'should deny access if not in specified role' do
+        allowed_roles = [role_admin.name.to_s]
+        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be false
+      end
+
+      it 'should allow access if in specified role' do
+        allowed_roles = [role_admin.name.to_s, role.name.to_s]
+        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
+      end
     end
   end
 end
