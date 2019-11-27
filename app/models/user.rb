@@ -39,6 +39,10 @@ class User < ApplicationRecord
   def can_access_app_group?(app_group, roles: nil)
     memberships = app_group_users.where(app_group: app_group)
     memberships = memberships.joins(:role).where(app_group_roles: { name: roles }) if roles
+    return true if memberships.exists?
+
+    memberships = group_users.joins(
+      group: :app_group_teams).where(groups: { app_group_teams: { app_group: app_group }})
     memberships.exists?
   end
 end
