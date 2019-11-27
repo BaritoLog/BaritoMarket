@@ -1,8 +1,7 @@
 class AppGroupPolicy < ApplicationPolicy
   def show?
     return true if barito_superadmin?
-    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-    app_group_ids.include?(record.id)
+    user.can_access_app_group? record
   end
 
   def new?
@@ -16,30 +15,22 @@ class AppGroupPolicy < ApplicationPolicy
 
   def update?
     return true if barito_superadmin?
-    record.app_group_users.
-      joins(:role).
-      where(user: user, app_group_roles: { name: %i(owner admin) }).
-      count.positive?
+    user.can_access_app_group? record, roles: %i(owner admin)
   end
 
   def manage_access?
     return true if barito_superadmin?
-    record.app_group_users.
-      joins(:role).
-      where(user: user, app_group_roles: { name: [:owner] }).
-      count.positive?
+    user.can_access_app_group? record, roles: %i(owner)
   end
 
   def see_app_groups?
     return true if barito_superadmin?
-    app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-    app_group_ids.include?(record.id)
+    user.can_access_app_group? record
   end
 
   def set_status?
     return true if barito_superadmin?
-    role_id = AppGroupRole.find_by(name: 'owner')
-    AppGroupUser.find_by(user_id: user.id, app_group_id: record.id, role_id: role_id)
+    user.can_access_app_group? record, roles: %i(owner)
   end
 
   class Scope < Scope
