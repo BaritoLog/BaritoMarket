@@ -1,12 +1,10 @@
 class AppGroupPolicy < ApplicationPolicy
   def show?
-    return true if barito_superadmin?
-    user.can_access_app_group? record
+    barito_superadmin? || user.can_access_app_group?(record)
   end
 
   def new?
-    return true if barito_superadmin?
-    false
+    barito_superadmin?
   end
 
   def create?
@@ -14,23 +12,19 @@ class AppGroupPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if barito_superadmin?
-    user.can_access_app_group? record, roles: %i(owner admin)
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner admin))
   end
 
   def manage_access?
-    return true if barito_superadmin?
-    user.can_access_app_group? record, roles: %i(owner)
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner))
   end
 
   def see_app_groups?
-    return true if barito_superadmin?
-    user.can_access_app_group? record
+    barito_superadmin? || user.can_access_app_group?(record)
   end
 
   def set_status?
-    return true if barito_superadmin?
-    user.can_access_app_group? record, roles: %i(owner)
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner))
   end
 
   class Scope < Scope

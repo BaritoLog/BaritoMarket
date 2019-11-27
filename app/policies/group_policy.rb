@@ -1,7 +1,6 @@
 class GroupPolicy < ApplicationPolicy
   def index?
-    return true if barito_superadmin?
-    false
+    barito_superadmin?
   end
 
   def show?

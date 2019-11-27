@@ -1,6 +1,6 @@
 class InfrastructurePolicy < ApplicationPolicy
   def show?
-    return true if barito_superadmin?
+    barito_superadmin?
   end
 
   def retry_provision?
@@ -16,17 +16,14 @@ class InfrastructurePolicy < ApplicationPolicy
   end
 
   def toggle_status?
-    return true if barito_superadmin?
-    false
+    barito_superadmin?
   end
 
   def delete?
-    return true if barito_superadmin?
-    user.can_access_app_group? record.app_group, roles: %i(owner)
+    barito_superadmin? || user.can_access_app_group?(record.app_group, roles: %i(owner))
   end
 
   def exists?
-    return true if barito_superadmin?
-    user.can_access_app_group? record.app_group
+    barito_superadmin? || user.can_access_app_group?(record.app_group)
   end
 end
