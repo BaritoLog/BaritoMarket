@@ -45,5 +45,12 @@ RSpec.describe User, type: :model do
       create(:app_group_user, app_group: app_group, user: user, role: role)
       expect(user.can_access_app_group?(app_group, roles: [role_admin.name.to_s])).to be false
     end
+
+    it 'should allow access to associated app group with any matched specified role' do
+      create(:app_group_user, app_group: app_group, user: user, role: role)
+
+      allowed_roles = [role_admin.name.to_s, role.name.to_s]
+      expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
+    end
   end
 end
