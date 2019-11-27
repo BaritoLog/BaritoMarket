@@ -68,6 +68,11 @@ RSpec.describe User, type: :model do
       it 'should allow access' do
         expect(user.can_access_app_group?(app_group)).to be true
       end
+
+      it 'should deny access if not in specified role' do
+        allowed_roles = [role_admin.name.to_s]
+        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be false
+      end
     end
   end
 end
