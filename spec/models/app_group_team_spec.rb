@@ -8,13 +8,6 @@ RSpec.describe AppGroupTeam, type: :model do
     expect(app_group_team.app_group).to eq(app_group)
   end
 
-  let(:role) { create(:app_group_role) }
-
-  it 'has relation with app group role' do
-    app_group_team = create(:app_group_team, role: role)
-    expect(app_group_team.role).to eq(role)
-  end
-
   let(:group) { create(:group) }
 
   it 'has relation with group' do
@@ -30,10 +23,6 @@ RSpec.describe AppGroupTeam, type: :model do
 
     it 'should check presence of app group' do
       expect(build(:app_group_team, app_group: nil)).not_to be_valid
-    end
-
-    it 'should check presence of role' do
-      expect(build(:app_group_team, role: nil)).not_to be_valid
     end
 
     it 'should check presence of group' do
