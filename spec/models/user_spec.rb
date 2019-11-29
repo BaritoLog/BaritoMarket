@@ -80,4 +80,17 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#filter_accessible_app_groups' do
+    let(:user) { create(:user) }
+
+    before :each do
+      create(:app_group)
+    end
+
+    it 'should filter out unassociated app group' do
+      app_groups = user.filter_accessible_app_groups(AppGroup.all)
+      expect(app_groups.exists?).to be false
+    end
+  end
 end
