@@ -45,6 +45,10 @@ class User < ApplicationRecord
     memberships.exists?
   end
 
+  def filter_accessible_app_groups(app_groups, roles: nil)
+    app_groups.where("false")
+  end
+
   private
 
   def augment_with_role_checking(query, roles)
