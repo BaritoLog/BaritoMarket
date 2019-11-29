@@ -78,7 +78,7 @@ class AppGroupsController < ApplicationController
     @app_group_team = AppGroupTeam.new(app_group: @app_group)
 
     @app_group_teams = AppGroupTeam.
-      includes(:group, :role).
+      includes(:group).
       where(app_group_id: @app_group.id).
       order(:created_at)
 

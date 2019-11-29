@@ -1,7 +1,6 @@
 class AppGroupTeamsController < ApplicationController
   def create
     app_group_team = AppGroupTeam.new(app_group_team_params)
-    app_group_team.role = AppGroupRole.find_by_name('member')
     app_group_team.save
     redirect_to manage_access_app_group_path(app_group_team.app_group_id)
   end
@@ -17,6 +16,6 @@ class AppGroupTeamsController < ApplicationController
   private
 
   def app_group_team_params
-    params.require(:app_group_team).permit(:app_group_id, :role_id, :group_id)
+    params.require(:app_group_team).permit(:app_group_id, :group_id)
   end
 end
