@@ -37,12 +37,7 @@ class User < ApplicationRecord
   end
 
   def can_access_app_group?(app_group, roles: nil)
-    memberships = augment_with_role_checking(app_group_users.where(app_group: app_group), roles)
-    return true if memberships.exists?
-
-    memberships = augment_with_role_checking(group_users.joins(
-      group: :app_group_teams).where(groups: { app_group_teams: { app_group: app_group }}), roles)
-    memberships.exists?
+    filter_accessible_app_groups(AppGroup.where(id: app_group.id), roles: roles).exists?
   end
 
   def filter_accessible_app_groups(app_groups, roles: nil)
@@ -54,12 +49,5 @@ class User < ApplicationRecord
     augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
     augmented_app_groups.where(app_group_users: where_clause).
         or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause }}))
-  end
-
-  private
-
-  def augment_with_role_checking(query, roles)
-    return query.joins(:role).where(app_group_roles: { name: roles }) if roles
-    query
   end
 end
