@@ -119,5 +119,16 @@ RSpec.describe User, type: :model do
 
       it_should_behave_like 'correct filter'
     end
+
+    context 'user has member association with group associated to app group' do
+      let(:group) { create(:group) }
+
+      before :each do
+        create(:app_group_team, app_group: app_group, group: group)
+        create(:group_user, group: group, user: user, role: role)
+      end
+
+      it_should_behave_like 'correct filter'
+    end
   end
 end
