@@ -90,6 +90,8 @@ RSpec.describe User, type: :model do
       expect(app_groups.exists?).to be false
     end
 
+    let(:role_admin) { create(:app_group_role, :admin) }
+
     context 'user has member association with app group' do
       before :each do
         create(:app_group_user, app_group: app_group, user: user)
@@ -98,6 +100,12 @@ RSpec.describe User, type: :model do
       it 'should pass' do
         app_groups = user.filter_accessible_app_groups(AppGroup.all)
         expect(app_groups).to include(app_group)
+      end
+
+      it 'should filter out if user is not in specified roles' do
+        allowed_roles = [role_admin.name.to_s]
+        app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: allowed_roles)
+        expect(app_groups.exists?).to be false
       end
     end
   end
