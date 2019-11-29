@@ -16,5 +16,14 @@
       - @group_users.each do |group|
         li.list-group-item
           .row.no-gutters
-            .col-10= group.user.username + ' - ' + group.user.email
+            .col-10
+              = group.user.username + ' - ' + group.user.email
+              | &nbsp;
+              - if !group.role.nil?
+                  span.badge.badge-secondary.badge-info
+                    | &nbsp;As&nbsp;
+                    = group.role.name
             .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
+          .row
+            .col-8
+              = set_group_role_buttons(group, @roles, group_user_id: @group_user.group_id)
