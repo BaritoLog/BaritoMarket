@@ -46,10 +46,14 @@ class User < ApplicationRecord
   end
 
   def filter_accessible_app_groups(app_groups, roles: nil)
-    app_groups.joins(app_group_users: :role).where(app_group_users: {
+    where_clause = {
       user: self,
-      app_group_roles: ({ name: roles } if roles)
-    }.compact)
+      role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+    }.compact
+
+    augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
+    augmented_app_groups.where(app_group_users: where_clause).
+        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause }}))
   end
 
   private
