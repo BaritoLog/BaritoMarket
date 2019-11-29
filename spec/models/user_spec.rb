@@ -37,24 +37,28 @@ RSpec.describe User, type: :model do
     let(:role) { create(:app_group_role) }
     let(:role_admin) { create(:app_group_role, :admin) }
 
+    shared_examples 'correct answerer' do
+      it 'should allow access' do
+        expect(user.can_access_app_group?(app_group)).to be true
+      end
+
+      it 'should deny access if not in specified roles' do
+        allowed_roles = [role_admin.name.to_s]
+        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be false
+      end
+
+      it 'should allow access if in specified roles' do
+        allowed_roles = [role_admin.name.to_s, role.name.to_s]
+        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
+      end
+    end
+
     context 'user has member association with app group' do
       before :each do
         create(:app_group_user, app_group: app_group, user: user, role: role)
       end
 
-      it 'should allow access' do
-        expect(user.can_access_app_group?(app_group)).to be true
-      end
-
-      it 'should deny access if not in specified role' do
-        allowed_roles = [role_admin.name.to_s]
-        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be false
-      end
-
-      it 'should allow access if in specified role' do
-        allowed_roles = [role_admin.name.to_s, role.name.to_s]
-        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
-      end
+      include_examples 'correct answerer'
     end
 
     context 'user has member association with group associated to app group' do
@@ -65,19 +69,7 @@ RSpec.describe User, type: :model do
         create(:group_user, group: group, user: user, role: role)
       end
 
-      it 'should allow access' do
-        expect(user.can_access_app_group?(app_group)).to be true
-      end
-
-      it 'should deny access if not in specified role' do
-        allowed_roles = [role_admin.name.to_s]
-        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be false
-      end
-
-      it 'should allow access if in specified role' do
-        allowed_roles = [role_admin.name.to_s, role.name.to_s]
-        expect(user.can_access_app_group?(app_group, roles: allowed_roles)).to be true
-      end
+      include_examples 'correct answerer'
     end
   end
 
@@ -99,13 +91,13 @@ RSpec.describe User, type: :model do
         expect(app_groups).to include(app_group)
       end
 
-      it 'should filter out if user is not in specified roles' do
+      it 'should filter out if not in specified roles' do
         allowed_roles = [role_admin.name.to_s]
         app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: allowed_roles)
         expect(app_groups.exists?).to be false
       end
 
-      it 'should pass if user is in specified roles' do
+      it 'should pass if in specified roles' do
         allowed_roles = [role_admin.name.to_s, role.name.to_s]
         app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: allowed_roles)
         expect(app_groups).to include(app_group)
@@ -117,7 +109,7 @@ RSpec.describe User, type: :model do
         create(:app_group_user, app_group: app_group, user: user, role: role)
       end
 
-      it_should_behave_like 'correct filter'
+      include_examples 'correct filter'
     end
 
     context 'user has member association with group associated to app group' do
@@ -128,7 +120,7 @@ RSpec.describe User, type: :model do
         create(:group_user, group: group, user: user, role: role)
       end
 
-      it_should_behave_like 'correct filter'
+      include_examples 'correct filter'
     end
   end
 end
