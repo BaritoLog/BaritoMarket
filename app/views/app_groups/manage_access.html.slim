@@ -50,11 +50,7 @@
           .row
             .col-10
               = team.group.name
-              | &nbsp;
-              span.badge.badge-secondary.badge-info
-                | &nbsp;As&nbsp;
-                = team.role.name
-
+              
             .col-2.text-right= link_to 'Delete', app_group_team_path(group_id: team.group_id, app_group_id: @app_group.id), class: 'btn btn-danger btn-sm', data: { method: :delete }
 
       - if @app_group_teams.blank?
