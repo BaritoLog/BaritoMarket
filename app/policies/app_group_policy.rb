@@ -29,14 +29,15 @@ class AppGroupPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if Figaro.env.global_viewer == 'true'
-        return scope.active if get_merge_groups(user).include?('barito-superadmin') || get_merge_groups(user).include?(Figaro.env.global_viewer_role)
-      else
-        return scope.active if get_gate_groups(user).include?('barito-superadmin') || get_user_groups(user).include?('barito-superadmin')
+      if Figaro.env.global_viewer == 'true' &&
+          (get_merge_groups(user).include?('barito-superadmin') ||
+            get_merge_groups(user).include?(Figaro.env.global_viewer_role))
+        return scope.active
       end
 
-      app_group_ids = AppGroupUser.where(user: user).pluck(:app_group_id)
-      scope.active.where(id: app_group_ids)
+      return scope.active if get_gate_groups(user).include?('barito-superadmin') ||
+          get_user_groups(user).include?('barito-superadmin')
+      user.filter_accessible_app_groups(scope.active)
     end
 
     def get_gate_groups(user)
