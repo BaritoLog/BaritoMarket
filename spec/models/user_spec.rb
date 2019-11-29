@@ -26,6 +26,27 @@ RSpec.describe User, type: :model do
     end
   end
 
+  shared_examples 'app group user-group associations' do |example_name|
+    context 'user has member association with app group' do
+      before :each do
+        create(:app_group_user, app_group: app_group, user: user, role: role)
+      end
+
+      include_examples example_name
+    end
+
+    context 'user has member association with group associated to app group' do
+      let(:group) { create(:group) }
+
+      before :each do
+        create(:app_group_team, app_group: app_group, group: group)
+        create(:group_user, group: group, user: user, role: role)
+      end
+
+      include_examples example_name
+    end
+  end
+
   describe '#can_access_app_group?' do
     let(:app_group) { create(:app_group) }
     let(:user) { create(:user) }
@@ -53,24 +74,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context 'user has member association with app group' do
-      before :each do
-        create(:app_group_user, app_group: app_group, user: user, role: role)
-      end
-
-      include_examples 'correct answerer'
-    end
-
-    context 'user has member association with group associated to app group' do
-      let(:group) { create(:group) }
-
-      before :each do
-        create(:app_group_team, app_group: app_group, group: group)
-        create(:group_user, group: group, user: user, role: role)
-      end
-
-      include_examples 'correct answerer'
-    end
+    include_examples 'app group user-group associations', 'correct answerer'
   end
 
   describe '#filter_accessible_app_groups' do
@@ -104,23 +108,6 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context 'user has member association with app group' do
-      before :each do
-        create(:app_group_user, app_group: app_group, user: user, role: role)
-      end
-
-      include_examples 'correct filter'
-    end
-
-    context 'user has member association with group associated to app group' do
-      let(:group) { create(:group) }
-
-      before :each do
-        create(:app_group_team, app_group: app_group, group: group)
-        create(:group_user, group: group, user: user, role: role)
-      end
-
-      include_examples 'correct filter'
-    end
+    include_examples 'app group user-group associations', 'correct filter'
   end
 end
