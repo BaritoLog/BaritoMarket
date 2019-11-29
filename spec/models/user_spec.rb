@@ -83,14 +83,22 @@ RSpec.describe User, type: :model do
 
   describe '#filter_accessible_app_groups' do
     let(:user) { create(:user) }
-
-    before :each do
-      create(:app_group)
-    end
+    let!(:app_group) { create(:app_group) }
 
     it 'should filter out unassociated app group' do
       app_groups = user.filter_accessible_app_groups(AppGroup.all)
       expect(app_groups.exists?).to be false
+    end
+
+    context 'user has member association with app group' do
+      before :each do
+        create(:app_group_user, app_group: app_group, user: user)
+      end
+
+      it 'should pass' do
+        app_groups = user.filter_accessible_app_groups(AppGroup.all)
+        expect(app_groups).to include(app_group)
+      end
     end
   end
 end

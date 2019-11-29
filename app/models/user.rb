@@ -46,7 +46,7 @@ class User < ApplicationRecord
   end
 
   def filter_accessible_app_groups(app_groups, roles: nil)
-    app_groups.where("false")
+    app_groups.joins(:app_group_users).where(app_group_users: { user: self })
   end
 
   private
