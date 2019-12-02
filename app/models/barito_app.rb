@@ -8,6 +8,8 @@ class BaritoApp < ApplicationRecord
   validates :name, format: { with: NAME_FORMAT }
   validates :topic_name, format: { with: TOPIC_NAME_FORMAT }
 
+  before_save { topic_name.downcase! }
+
   belongs_to :app_group
 
   enum statuses: {

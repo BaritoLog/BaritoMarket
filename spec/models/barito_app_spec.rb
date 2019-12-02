@@ -30,6 +30,11 @@ RSpec.describe BaritoApp, type: :model do
 
       expect(barito_app.topic_name).to eq('test-topic-name')
     end
+
+    it 'should convert topic name to lowercase' do
+      barito_app = create(:barito_app, topic_name: 'Test-Topic-Name')
+      expect(barito_app.topic_name).to eq('test-topic-name')
+    end
   end
 
   context 'Status Update' do
