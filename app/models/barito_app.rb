@@ -28,11 +28,11 @@ class BaritoApp < ApplicationRecord
   end
 
   def active?
-    self.status == BaritoApp.statuses[:active]
+    status == BaritoApp.statuses[:active]
   end
 
   def available?
-    active? && self.app_group.infrastructure.active?
+    active? && app_group.infrastructure.active?
   end
 
   def update_status(status)
