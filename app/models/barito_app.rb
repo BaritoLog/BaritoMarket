@@ -8,6 +8,8 @@ class BaritoApp < ApplicationRecord
   validates :name, format: { with: NAME_FORMAT }
   validates :topic_name, format: { with: TOPIC_NAME_FORMAT }
 
+  before_save { topic_name.downcase! }
+
   belongs_to :app_group
 
   enum statuses: {
@@ -28,11 +30,11 @@ class BaritoApp < ApplicationRecord
   end
 
   def active?
-    self.status == BaritoApp.statuses[:active]
+    status == BaritoApp.statuses[:active]
   end
 
   def available?
-    active? && self.app_group.infrastructure.active?
+    active? && app_group.infrastructure.active?
   end
 
   def update_status(status)
