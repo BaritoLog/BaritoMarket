@@ -7,6 +7,7 @@ module BaritoBlueprint
       @executor = PathfinderProvisioner.new('127.0.0.1:3000', 'abc', 'barito')
       @provisioner = Provisioner.new(
         @infrastructure,
+        @infrastructure.infrastructure_components,
         @executor,
         timeout: 0.second,
         check_interval: 0.second,

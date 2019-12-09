@@ -7,9 +7,9 @@ module BaritoBlueprint
       check_interval: 5.seconds
     }
 
-    def initialize(infrastructure, executor, opts = {})
+    def initialize(infrastructure, components, executor, opts = {})
       @infrastructure = infrastructure
-      @infrastructure_components = @infrastructure.infrastructure_components
+      @infrastructure_components = components
       @executor = executor
       @defaults = {
         timeout: opts[:timeout] || DEFAULTS[:timeout],
