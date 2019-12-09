@@ -15,12 +15,30 @@ module BaritoBlueprint
       @username           = opts[:username]
     end
 
-    def process!
-      @instances_hash.each_with_index do |node, seq|
+    def process_check!
+      provision = false
+      @instances_hash.each_with_index do |node,seq|
         @infrastructure.add_component(node, seq+1)
       end
+      @infrastructure.reload
+
+      seq_components = @infrastructure.infrastructure_components.where(component_type: 'consul')
+      if !seq_components.empty?
+        provision = process!(seq_components)
+      end
+
+      components = @infrastructure.infrastructure_components.where.not(component_type: 'consul')
+      if !components.empty?
+        provision = process!(components)
+      end
+
+      return provision
+    end
+
+    def process!(components)
       bootstrapper = Bootstrapper.new(
         @infrastructure,
+        components,
         username: @username,
       )
       return false unless bootstrapper.bootstrap_instances!
@@ -30,6 +48,7 @@ module BaritoBlueprint
 
       provisioner = Provisioner.new(
         @infrastructure,
+        components,
         PathfinderProvisioner.new(
           @pathfinder_host, @pathfinder_token, @pathfinder_cluster),
       )
