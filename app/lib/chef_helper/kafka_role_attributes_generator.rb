@@ -21,7 +21,7 @@ module ChefHelper
     end
 
     def update_attrs
-      @kafka_attrs['kafka']['zookeeper']['hosts'] = @zookeeper_hosts
+      @kafka_attrs['kafka']['zookeeper']['hosts'] = ["zookeeper.service.consul"]
       @kafka_attrs['kafka']['kafka']['hosts'] = @hosts
       @kafka_attrs['consul']['hosts'] = @consul_hosts
       @kafka_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress

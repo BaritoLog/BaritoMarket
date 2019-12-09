@@ -52,7 +52,7 @@ module ChefHelper
               "consumer"=>{
                 "version"=>"v0.11.8",
                 "env_vars"=>{
-                  "BARITO_CONSUL_URL"=>"http://#{@consul_component.ipaddress}:8500",
+                  "BARITO_CONSUL_URL"=>"http://consul.service.consul:8500",
                   "BARITO_CONSUL_KAFKA_NAME"=>"kafka",
                   "BARITO_CONSUL_ELASTICSEARCH_NAME"=>"elasticsearch",
                   "BARITO_KAFKA_BROKERS"=>"kafka.service.consul:9092",
