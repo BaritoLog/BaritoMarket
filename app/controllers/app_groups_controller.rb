@@ -95,6 +95,7 @@ class AppGroupsController < ApplicationController
     params.require(:app_group).permit(
       :name,
       :cluster_template_id,
+      :environment,
     )
   end
 

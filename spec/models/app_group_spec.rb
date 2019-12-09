@@ -12,7 +12,19 @@ RSpec.describe AppGroup, type: :model do
         capacity: 'small',
         cluster_template_id: cluster_template.id,
       )
+
       expect(app_group.persisted?).to eq(true)
+    end
+
+    it 'should able to change environment to staging' do
+      app_group, = AppGroup.setup(
+        name: app_group_props.name,
+        capacity: 'small',
+        cluster_template_id: cluster_template.id,
+        environment: 'staging',
+      )
+
+      expect(app_group.staging?).to be true
     end
   end
 end

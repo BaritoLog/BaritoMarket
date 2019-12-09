@@ -110,7 +110,7 @@ class Api::AppsController < Api::BaseController
 
         broadcast(:log_count_changed,
           app.id,
-          app_metric[:new_log_count]
+          app_metric[:new_log_count].to_i
         )
       end
     end

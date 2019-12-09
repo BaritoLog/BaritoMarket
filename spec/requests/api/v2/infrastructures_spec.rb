@@ -9,7 +9,7 @@ RSpec.describe 'App API', type: :request do
   after(:all) do
     @ext_app.destroy
   end
-  
+
   describe 'Profile by Cluster Name API' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
@@ -17,17 +17,20 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return profile information of registered app when supplied cluster name' do
       app_group = create(:app_group)
-      infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+      infrastructure = create(
+        :infrastructure, app_group: app_group, status: Infrastructure.statuses[:active]
+      )
 
       get api_v2_profile_by_cluster_name_path,
         params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
         headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[name app_group_name capacity cluster_name consul_host status provisioning_status].each do |key|
-        expect(json_response.key?(key)).to eq(true)
-        expect(json_response[key]).to eq(infrastructure.send(key.to_sym))
-      end
+      %w[name app_group_name capacity cluster_name consul_host status provisioning_status].
+        each do |key|
+          expect(json_response.key?(key)).to eq(true)
+          expect(json_response[key]).to eq(infrastructure.send(key.to_sym))
+        end
       expect(json_response.key?('updated_at')).to eq(true)
     end
 
@@ -57,18 +60,50 @@ RSpec.describe 'App API', type: :request do
     it 'should return list of all active App with its retention policy for curator' do
       app_group = create(:app_group)
       infrastructure = create(:infrastructure, app_group: app_group)
-      infrastructure_component = create(:infrastructure_component, infrastructure: infrastructure, component_type: 'elasticsearch', status: InfrastructureComponent.statuses[:finished])
+      infrastructure_component = create(
+        :infrastructure_component,
+        infrastructure: infrastructure,
+        component_type: 'elasticsearch',
+        status: InfrastructureComponent.statuses[:finished],
+      )
       create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
         headers: headers
-      
+
       expect(response.body).to eq [
         {
           hostname: infrastructure_component.hostname,
           ipaddress: infrastructure_component.ipaddress,
-          log_retention_days: app_group.log_retention_days
+          log_retention_days: app_group.log_retention_days,
+        }
+      ].to_json
+    end
+  end
+
+  describe 'Profile for Prometheus Exporters' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return list of all infrastructure components with environment label' do
+      app_group_a = create(:app_group, environment: AppGroup.environments[:staging])
+      infrastructure_a = create(:infrastructure, app_group: app_group_a)
+      infrastructure_component_a = create(
+        :infrastructure_component, infrastructure: infrastructure_a,
+                                   status: InfrastructureComponent.statuses[:finished]
+      )
+
+      get api_v2_profile_prometheus_exporter_path,
+        params: { access_token: @access_token }, headers: headers
+
+      expect(response.body).to eq [
+        {
+          cluster_name: infrastructure_a.cluster_name,
+          component_type: infrastructure_component_a.component_type,
+          environment: app_group_a.environment,
+          ipaddress: infrastructure_component_a.ipaddress,
         }
       ].to_json
     end
@@ -79,13 +114,19 @@ RSpec.describe 'App API', type: :request do
 
     context 'when valid username and valid cluster_name' do
       it 'should return 200' do
-        set_check_user_groups({ 'groups': ['barito-superadmin'] })
+        set_check_user_groups('groups': ['barito-superadmin'])
         login_as user_a
         create(:group, name: 'barito-superadmin')
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
-        
-        get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: infrastructure.cluster_name, username: user_a[:username]  }, headers: headers
+        infrastructure = create(
+          :infrastructure, app_group: app_group, status: Infrastructure.statuses[:active]
+        )
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: infrastructure.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
 
         expect(response.status).to eq 200
       end
@@ -95,8 +136,12 @@ RSpec.describe 'App API', type: :request do
       it 'should return 403' do
         app_group = create(:app_group)
         create(:infrastructure, app_group: app_group)
-        
-        get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: "some-random-name", username: "some-user"  }, headers: headers
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: 'some-random-name',
+          username: 'some-user',
+        }, headers: headers
 
         expect(response.status).to eq 403
       end
@@ -106,8 +151,12 @@ RSpec.describe 'App API', type: :request do
       it 'should return 403' do
         app_group = create(:app_group)
         infrastructure = create(:infrastructure, app_group: app_group)
-        
-        get api_v2_authorize_path, params: { access_token: @access_token, cluster_name: infrastructure.cluster_name, username: user_a.username  }, headers: headers
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: infrastructure.cluster_name,
+          username: user_a.username,
+        }, headers: headers
 
         expect(response.status).to eq 403
       end

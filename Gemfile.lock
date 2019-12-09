@@ -229,7 +229,7 @@ GEM
       chef (>= 10.20)
       erubis (~> 2.7.0)
       net-ssh (>= 2.7)
-    libv8 (7.3.492.27.1-x86_64-darwin-17)
+    libv8 (7.3.492.27.1)
     libyajl2 (1.2.0)
     license-acceptance (1.0.13)
       pastel (~> 0.7)
@@ -315,6 +315,7 @@ GEM
     plist (3.5.0)
     popper_js (1.14.5)
     powerpack (0.1.2)
+    prometheus-client (1.0.0)
     proxifier (1.0.3)
     pry (0.11.3)
       coderay (~> 1.1.0)
@@ -572,6 +573,7 @@ DEPENDENCIES
   mini_racer (~> 0.2.4)
   newrelic_rpm
   pg (<= 1.0.0)
+  prometheus-client
   pry (<= 0.11.3)
   puma (<= 3.11.4)
   pundit
