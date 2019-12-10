@@ -77,7 +77,7 @@ module BaritoBlueprint
           if bootstrapper["bootstrap_attributes"]["run_list"].empty?
             # Fetch bootstrap attributes
             attrs = generate_bootstrap_attributes(
-              component, @infrastructure_components)      
+              component, @infrastructure.infrastructure_components)      
             component.bootstrappers[idx]["bootstrap_attributes"] = attrs
             component.save
             return attrs

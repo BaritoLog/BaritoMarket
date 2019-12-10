@@ -20,13 +20,13 @@ module BaritoBlueprint
       @instances_hash.each_with_index do |node,seq|
         @infrastructure.add_component(node, seq+1)
       end
-      @infrastructure.reload
 
       seq_components = @infrastructure.infrastructure_components.where(component_type: 'consul')
       if !seq_components.empty?
         provision = process!(seq_components)
       end
 
+      @infrastructure.reload
       components = @infrastructure.infrastructure_components.where.not(component_type: 'consul')
       if !components.empty?
         provision = process!(components)

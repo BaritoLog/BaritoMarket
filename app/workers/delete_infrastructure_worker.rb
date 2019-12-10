@@ -7,6 +7,7 @@ class DeleteInfrastructureWorker
     begin
       provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure,
+        infrastructure.infrastructure_components,
         PathfinderProvisioner.new(
           Figaro.env.pathfinder_host,
           Figaro.env.pathfinder_token,

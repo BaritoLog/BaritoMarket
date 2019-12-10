@@ -7,6 +7,7 @@ class RetryBootstrapWorker
     begin
       bootstrapper = BaritoBlueprint::Bootstrapper.new(
         infrastructure_component.infrastructure,
+        infrastructure_component,
         ChefSoloBootstrapper.new(Figaro.env.chef_repo_dir),
         private_keys_dir: Figaro.env.container_private_keys_dir,
         private_key_name: Figaro.env.container_private_key,
