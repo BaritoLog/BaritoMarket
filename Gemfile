@@ -56,6 +56,7 @@ group :development do
   gem 'spring', '<= 2.0.2'
   gem 'spring-watcher-listen', '<= 2.0.1'
   gem 'web-console', '<= 3.6.2'
+  gem 'git-hookshot', github: 'brandonweiss/git-hookshot'
 end
 
 group :test do
