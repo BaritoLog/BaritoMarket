@@ -46,7 +46,7 @@ module ChefHelper
               "producer"=>{
                 "version"=>"v0.11.8",
                 "env_vars"=>{
-                  "BARITO_CONSUL_URL"=>"http://#{@consul_component.ipaddress}:8500",
+                  "BARITO_CONSUL_URL"=>"http://consul.service.consul:8500",
                   "BARITO_KAFKA_BROKERS"=>"kafka.service.consul:9092",
                   "BARITO_PRODUCER_ADDRESS"=>":8080",
                   "BARITO_PRODUCER_MAX_TPS"=>@infrastructure.options['max_tps'],

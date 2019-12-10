@@ -16,7 +16,6 @@ module ChefHelper
     end
 
     def update_attrs
-      @consumer_attrs['barito-flow']['consumer']['env_vars']['BARITO_CONSUL_URL'] = "http://consul.service.consul:#{Figaro.env.default_consul_port}"
       @consumer_attrs['barito-flow']['consumer']['env_vars']['BARITO_PUSH_METRIC_URL'] = @push_metric_url
 
       @consumer_attrs['consul']['hosts'] = @consul_hosts

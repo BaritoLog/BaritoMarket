@@ -16,7 +16,6 @@ module ChefHelper
     end
 
     def update_attrs
-      @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_CONSUL_URL'] = "http://#{@consul_hosts.sample}:#{Figaro.env.default_consul_port}"
       @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_PRODUCER_MAX_TPS'] = @max_tps
 
       @producer_attrs['consul']['hosts'] = @consul_hosts
