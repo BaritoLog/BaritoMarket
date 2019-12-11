@@ -6,7 +6,8 @@ class AppGroupsController < ApplicationController
     @allow_create_app_group = policy(AppGroup).new?
 
     (@filterrific = initialize_filterrific(
-      policy_scope(AppGroup),
+      policy_scope(AppGroup.left_outer_joins(:app_group_bookmarks).order(
+        Arel::Nodes::Case.new.when(AppGroupBookmark.arel_table['user_id'].eq(current_user.id)).then(0).else(1))),
       params[:filterrific],
       sanitize_params: true,
     )) || return
