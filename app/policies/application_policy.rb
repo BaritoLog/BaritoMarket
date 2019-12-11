@@ -70,11 +70,6 @@ class ApplicationPolicy
     end
   end
 
-  def is_global_viewer?
-    return false unless get_user_groups
-    get_user_groups.include?(Figaro.env.global_viewer_role)
-  end
-
   def barito_superadmin?
     return false unless get_user_groups
     get_user_groups.include?('barito-superadmin')
