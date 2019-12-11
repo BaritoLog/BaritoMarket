@@ -83,6 +83,16 @@ class AppGroupsController < ApplicationController
     }
   end
 
+  def bookmark
+     bookmarked = AppGroupBookmark.where(app_group_id: params[:app_group_id], user_id: current_user.id).first
+      if(bookmarked)
+        bookmarked.delete
+      else
+        AppGroupBookmark.create(user_id: current_user.id, app_group_id: params[:app_group_id])
+      end
+      redirect_to request.referer     
+  end
+
   private
 
   def app_group_params
