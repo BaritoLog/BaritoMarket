@@ -253,4 +253,57 @@ RSpec.describe PathfinderProvisioner do
       })
     end
   end
+
+  describe '#rebootstrap!' do
+    before(:all) do
+      @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
+      @pathfinder_cluster = 'barito'
+      @bootstrappers = [{    
+        "bootstrap_type" => "chef-solo",
+        "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/kibana_wrapper_cookbook",
+        "bootstrap_attributes" => {
+          "consul" => {
+            "hosts" => [],
+            "config" => {"consul.json" => {"bind_addr" => ""}}
+          },
+          "run_list" => []
+        } 
+      }]
+
+      # Mock Pathfinder API
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/containers/test-01/rebootstrap").
+        with(
+          query: {
+            'cluster_name' => @pathfinder_cluster,
+          },
+          body: {
+            'bootstrappers' => @bootstrappers,
+          }.to_json,
+          headers: {
+            'Content-Type' => 'application/json',
+            'X-Auth-Token' => @pathfinder_token,
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+          },
+          body: {
+            'data' => {
+              'status' => 'PROVISIONED'
+            }
+          }.to_json
+        })
+    end
+
+    it 'should make necessary calls to Pathfinder and return the response' do
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
+      bootstrap_result = pathfinder_provisioner.rebootstrap!('test-01', @bootstrappers)
+      expect(bootstrap_result).to eq({
+        'success' => true,
+        'data' => {'status' => 'PROVISIONED'}
+      })
+    end
+  end
 end

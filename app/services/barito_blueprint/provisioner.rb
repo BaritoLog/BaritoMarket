@@ -208,6 +208,38 @@ module BaritoBlueprint
       end
     end
 
+    def rebootstrap_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Provisioning #{component.hostname} started")
+      component.update_status('BOOTSTRAP_STARTED')
+
+      # Execute reprovisioning
+      res = @executor.rebootstrap!(component.hostname, component.bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} finished")
+        component.update_status('FINISHED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+
     def valid_instances?(components)
       components.all?{ |component| valid_instance?(component)}
     end
