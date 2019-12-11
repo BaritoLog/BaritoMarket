@@ -34,11 +34,16 @@ table.table.table-hover.table-sm
         td.col-2= app_group.infrastructure.capacity.camelcase
         td.col-2= app_group.infrastructure.provisioning_status
         td.col-1= app_group.infrastructure.status
-        td.col-2
+        td.col-2 class="d-flex"
           - if policy(app_group).see_app_groups?
             .btn.btn-primary.btn-sm
               i.fas.fa-search.mr-1
               = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
-            .btn.btn-primary.btn-sm
-              i.far.fa-bookmark.mr-1
+            = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|
+              = hidden_field_tag(:app_group_id, app_group.id)
+              = f.button class: 'btn btn-success btn-sm'
+                - if app_group.bookmarked?(current_user.id) 
+                  i.fas.fa-bookmark.mr-1
+                -else
+                  i.far.fa-bookmark.mr-1
   = paginate app_groups
