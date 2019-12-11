@@ -75,6 +75,7 @@ Rails.application.routes.draw do
     only: %i[index show new create update] do
       member do
         get :manage_access
+        post :bookmark
       end
       collection do
         get :search
