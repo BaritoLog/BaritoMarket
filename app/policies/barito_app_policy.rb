@@ -1,11 +1,10 @@
 class BaritoAppPolicy < ApplicationPolicy
   def create?
-    return true if is_barito_superadmin?
-    return false if record.app_group.nil?
-    record.app_group.app_group_users.
-      joins(:role).
-      where(user: user, app_group_roles: { name: %i(admin owner) }).
-      count.positive?
+    return true if barito_superadmin?
+
+    app_group = record.app_group
+    return false if app_group.nil?
+    user.can_access_app_group? app_group, roles: %i(admin owner)
   end
 
   def delete?

@@ -15,6 +15,12 @@ class GroupsController < ApplicationController
     authorize @group
     @group_user = GroupUser.new(group: @group)
     @group_users = GroupUser.includes(:user).where(group: @group)
+
+    @roles = {
+      member: AppGroupRole.find_by_name('member'),
+      admin: AppGroupRole.find_by_name('admin'),
+      owner: AppGroupRole.find_by_name('owner'),
+    }
   end
 
   def new

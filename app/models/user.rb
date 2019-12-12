@@ -35,4 +35,19 @@ class User < ApplicationRecord
   def is_global_viewer?
     return true if Figaro.env.global_viewer == "true"
   end
+
+  def can_access_app_group?(app_group, roles: nil)
+    filter_accessible_app_groups(AppGroup.where(id: app_group.id), roles: roles).exists?
+  end
+
+  def filter_accessible_app_groups(app_groups, roles: nil)
+    where_clause = {
+      user: self,
+      role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+    }.compact
+
+    augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
+    augmented_app_groups.where(app_group_users: where_clause).
+        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause }}))
+  end
 end

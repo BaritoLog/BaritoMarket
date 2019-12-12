@@ -36,6 +36,18 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_content(@app_group_a.name)
         expect(page).not_to have_content(@app_group_b.name)
       end
+
+      scenario 'User can see app group where the app group is indirectly registered on team they are in' do
+        group = create(:group)
+        create(:group_user, group: group, user: user_b)
+        create(:app_group_team, group: group, app_group: @app_group_a)
+
+        login_as user_b
+
+        visit root_path
+        expect(page).to have_content(@app_group_a.name)
+        expect(page).not_to have_content(@app_group_b.name)
+      end
     end
   end
 end
