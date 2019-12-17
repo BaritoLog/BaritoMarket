@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2019_12_11_042046) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "app_group_teams", force: :cascade do |t|
+    t.bigint "app_group_id"
+    t.bigint "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id"], name: "index_app_group_teams_on_app_group_id"
+    t.index ["group_id"], name: "index_app_group_teams_on_group_id"
+  end
+
   create_table "app_group_users", force: :cascade do |t|
     t.bigint "app_group_id"
     t.bigint "user_id"
@@ -107,6 +116,7 @@ ActiveRecord::Schema.define(version: 2019_12_11_042046) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "role_id"
     t.index ["group_id"], name: "index_group_users_on_group_id"
     t.index ["user_id"], name: "index_group_users_on_user_id"
   end
@@ -168,6 +178,9 @@ ActiveRecord::Schema.define(version: 2019_12_11_042046) do
 
   add_foreign_key "app_group_bookmarks", "app_groups"
   add_foreign_key "app_group_bookmarks", "users"
+  add_foreign_key "app_group_teams", "app_groups"
+  add_foreign_key "app_group_teams", "groups"
   add_foreign_key "ext_apps", "users", column: "created_by_id"
+  add_foreign_key "group_users", "app_group_roles", column: "role_id"
   add_foreign_key "infrastructures", "cluster_templates"
 end

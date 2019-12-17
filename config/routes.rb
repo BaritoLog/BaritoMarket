@@ -66,7 +66,9 @@ Rails.application.routes.draw do
   get '/groups/search', to: 'groups#search', defaults: { format: :json }
   match '/app_group_users/:user_id/set_role/:role_id', to: 'app_group_users#set_role', via: [:put, :patch], as: 'set_role_app_group_user'
   delete '/app_group_users/:user_id/delete/:app_group_id', to: 'app_group_users#destroy', as: 'app_group_user'
+  delete '/app_group_teams/:group_id/delete/:app_group_id', to: 'app_group_teams#destroy', as: 'app_group_team'
   match '/apps/:app_group_id/toggle_status/:id', to: 'apps#toggle_status', via: [:put, :patch], as: 'toggle_status_app'
+  match '/group_users/:id/set_role/:role_id', to: 'group_users#set_role', via: [:put, :patch], as: 'set_role_group_user'
 
   resources :app_group_users,
     only: %i[create update],
@@ -94,7 +96,7 @@ Rails.application.routes.draw do
     except: %i[edit update],
     defaults: { format: :html }
   resources :group_users,
-    only: %i[create destroy],
+    only: %i[create update destroy],
     defaults: { format: :html }
   resources :infrastructures,
     only: %i[show],
@@ -117,6 +119,10 @@ Rails.application.routes.draw do
   resources :cluster_templates,
     defaults: { format: :html }
   resources :component_templates,
+    defaults: { format: :html }
+  
+  resources :app_group_teams,
+    only: %i[create update],
     defaults: { format: :html }
 
   root to: 'app_groups#index', defaults: { format: :html }

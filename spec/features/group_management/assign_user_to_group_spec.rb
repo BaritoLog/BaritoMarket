@@ -12,6 +12,10 @@ RSpec.feature 'Group Management', type: :feature do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         group = create(:group, name: 'barito-superadmin')
 
+        create(:app_group_role)
+        create(:app_group_role, :admin)
+        create(:app_group_role, :owner)
+
         login_as admin
         visit group_path(group)
 
