@@ -42,7 +42,7 @@ table.table.table-hover.table-sm
             = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|
               = hidden_field_tag(:app_group_id, app_group.id)
               = f.button class: 'btn btn-sm bg-transparent text-warning'
-                - if app_group.app_group_bookmarks.any? { |bookmark| bookmark.user == current_user }
+                - if app_group.app_group_bookmarks.any? { |bookmark| bookmark.user_id == current_user.id }
                   i.fas.fa-star.mr-1
                 -else
                   i.far.fa-star.mr-1
