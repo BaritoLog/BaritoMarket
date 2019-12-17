@@ -35,7 +35,7 @@ module ChefHelper
 
         expect(attrs).to eq({
             "kafka"=>{
-              "kafka"=>{"hosts"=>["#{@kafka_component.ipaddress}"]}, 
+              "kafka"=>{"hosts"=>["kafka.service.consul"]}, 
               "zookeeper"=>{"hosts"=>["zookeeper.service.consul"]}
             },
             "consul"=>{

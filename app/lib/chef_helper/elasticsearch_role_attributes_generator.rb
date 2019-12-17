@@ -3,17 +3,19 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'consul')
+      hosts = fetch_hosts_address_by(
+        infrastructure_components, 'component_type', 'elasticsearch')
       @role_name = opts[:role_name] || 'elasticsearch'
       @cluster_name = component.infrastructure.cluster_name
       @hostname = component.hostname
       @ipaddress = component.ipaddress
       @port = opts[:port] || 9200
-      if @hosts.size <= 1
+      if hosts.size <= 1
         @index_number_of_replicas = 0
         @minimum_master_nodes = 1
       else
         @index_number_of_replicas = 1
-        @minimum_master_nodes = (@hosts.size/2 + 1).floor
+        @minimum_master_nodes = (hosts.size/2 + 1).floor
       end
       elastic_template = ComponentTemplate.find_by(name: 'elasticsearch')
       @elastic_attrs = get_bootstrap_attributes(elastic_template.bootstrappers)

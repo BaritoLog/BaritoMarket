@@ -51,7 +51,7 @@ module ChefHelper
             },
             "run_list"=>["role[zookeeper]"], 
             "zookeeper"=>{
-              "hosts"=>["#{@zookeeper_component.ipaddress}"], 
+              "hosts"=>["zookeeper.service.consul"], 
               "my_id"=>1
             }
           }
