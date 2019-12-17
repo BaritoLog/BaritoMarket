@@ -100,8 +100,4 @@ class AppGroup < ApplicationRecord
   def new_total_tps(diff_tps)
     barito_apps.sum(:max_tps) + diff_tps
   end
-
-  def bookmarked?(user_id)
-      app_group_bookmarks.where(user_id: user_id).exists?
-  end
 end
