@@ -3,11 +3,15 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'zookeeper')
+      @my_id = (hosts.index(component.ipaddress) || hosts.index(component.hostname)) + 1
       @domains = []
       hosts.each_with_index do |host, idx|
-        @domains << "#{idx+1}.zookeeper.service.consul"
+        if idx+1 == @my_id
+          @domains << "0.0.0.0"
+        else
+          @domains << "#{idx+1}.zookeeper.service.consul"
+        end
       end
-      @my_id = (hosts.index(component.ipaddress) || hosts.index(component.hostname)) + 1
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'consul')
       @role_name = opts[:role_name] || 'zookeeper'

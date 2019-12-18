@@ -52,7 +52,7 @@ module ChefHelper
             },
             "run_list"=>["role[zookeeper]"], 
             "zookeeper"=>{
-              "hosts"=>["#{@my_id}.zookeeper.service.consul"], 
+              "hosts"=>["0.0.0.0"], 
               "my_id"=>@my_id
             }
           }
