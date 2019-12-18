@@ -44,7 +44,7 @@
           name: "barito-registry"
         },
         fingerprint: "",
-        alias: "lxd-zookeeper-3.4.12-1"
+        alias: "lxd-zookeeper-3.4.12-5"
       },
       bootstrappers: [{    
           bootstrap_type: "chef-solo",

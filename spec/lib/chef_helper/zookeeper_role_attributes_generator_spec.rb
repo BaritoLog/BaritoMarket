@@ -16,6 +16,7 @@ module ChefHelper
         component_type: 'zookeeper',
         ipaddress:      '127.0.0.15'
       )
+      @my_id = 1
     end
 
     describe '#generate' do
@@ -51,8 +52,8 @@ module ChefHelper
             },
             "run_list"=>["role[zookeeper]"], 
             "zookeeper"=>{
-              "hosts"=>["zookeeper.service.consul"], 
-              "my_id"=>1
+              "hosts"=>["#{@my_id}.zookeeper.service.consul"], 
+              "my_id"=>@my_id
             }
           }
         )

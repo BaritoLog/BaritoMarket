@@ -3,6 +3,10 @@ module ChefHelper
     def initialize(component, infrastructure_components, opts = {})
       hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'zookeeper')
+      @domains = []
+      hosts.each_with_index do |host, idx|
+        @domains << "#{idx+1}.zookeeper.service.consul"
+      end
       @my_id = (hosts.index(component.ipaddress) || hosts.index(component.hostname)) + 1
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'consul')
@@ -20,7 +24,7 @@ module ChefHelper
     end
 
     def update_attrs
-      @zookeeper_attrs['zookeeper']['hosts'] = ['zookeeper.service.consul']
+      @zookeeper_attrs['zookeeper']['hosts'] = @domains
       @zookeeper_attrs['zookeeper']['my_id'] = @my_id
       @zookeeper_attrs['consul']['hosts'] = @consul_hosts
       @zookeeper_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
