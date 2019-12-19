@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_28_061540) do
+ActiveRecord::Schema.define(version: 2019_12_11_042046) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "app_group_bookmarks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "app_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_group_id"], name: "index_app_group_bookmarks_on_app_group_id"
+    t.index ["user_id"], name: "index_app_group_bookmarks_on_user_id"
+  end
 
   create_table "app_group_roles", force: :cascade do |t|
     t.string "name", null: false
@@ -167,6 +176,8 @@ ActiveRecord::Schema.define(version: 2019_11_28_061540) do
     t.index ["username"], name: "index_users_on_username", unique: true, where: "((username IS NOT NULL) AND ((username)::text <> ''::text))"
   end
 
+  add_foreign_key "app_group_bookmarks", "app_groups"
+  add_foreign_key "app_group_bookmarks", "users"
   add_foreign_key "app_group_teams", "app_groups"
   add_foreign_key "app_group_teams", "groups"
   add_foreign_key "ext_apps", "users", column: "created_by_id"

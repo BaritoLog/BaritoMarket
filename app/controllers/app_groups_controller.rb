@@ -6,7 +6,8 @@ class AppGroupsController < ApplicationController
     @allow_create_app_group = policy(AppGroup).new?
 
     (@filterrific = initialize_filterrific(
-      policy_scope(AppGroup),
+      policy_scope(AppGroup.eager_load(:app_group_bookmarks).order(
+        Arel::Nodes::Case.new.when(AppGroupBookmark.arel_table['user_id'].eq(current_user.id)).then(0).else(1))),
       params[:filterrific],
       sanitize_params: true,
     )) || return
@@ -87,6 +88,16 @@ class AppGroupsController < ApplicationController
       admin: AppGroupRole.find_by_name('admin'),
       owner: AppGroupRole.find_by_name('owner'),
     }
+  end
+
+  def bookmark
+     bookmarked = AppGroupBookmark.where(app_group_id: params[:app_group_id], user_id: current_user.id).first
+      if(bookmarked)
+        bookmarked.delete
+      else
+        AppGroupBookmark.create(user_id: current_user.id, app_group_id: params[:app_group_id])
+      end
+      redirect_to request.referer     
   end
 
   private

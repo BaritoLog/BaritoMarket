@@ -49,5 +49,18 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).not_to have_content(@app_group_b.name)
       end
     end
+
+    context 'One of app group is bookmarked' do
+      before :each do
+        [@app_group_a, @app_group_b].each { |app_group| create(:app_group_user, app_group: app_group, user: user_a) }
+        create(:app_group_bookmark, app_group: @app_group_a, user: user_a)
+      end
+
+      scenario 'List app groups' do
+        login_as user_a
+        visit root_path
+        expect(@app_group_a.name).to appear_before(@app_group_b.name)
+      end
+    end
   end
 end

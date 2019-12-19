@@ -4,6 +4,7 @@ class AppGroup < ApplicationRecord
   has_many :barito_apps
   has_many :app_group_users
   has_many :users, through: :app_group_users
+  has_many :app_group_bookmarks
   has_many :app_group_teams
   has_many :groups, through: :app_group_teams
   has_one :infrastructure
