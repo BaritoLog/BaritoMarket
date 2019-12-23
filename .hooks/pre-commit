@@ -60,7 +60,9 @@ lint_file() {
       ;;
   esac
 
-  git add "$1"
+  exit_status=$?
+  [ $exit_status -eq 0 ] && git add "$1"
+  return $exit_status
 }
 
 ensure_base_directory_exists() {
@@ -116,10 +118,13 @@ lint_staged_files_or_report_error() {
   log_dir="$(mktemp -d)"
   trap "rm -rf $log_dir" RETURN
 
-  if ! lint_staged_files "$log_dir"; then
+  lint_staged_files "$log_dir"
+  exit_status=$?
+  if [ $exit_status -ne 0 ]; then
     echo "Lint is failed. Log:" 1>&2
     report_logs "$log_dir"
   fi
+  return $exit_status
 }
 
 unstage_changes() {
@@ -142,4 +147,6 @@ exit_status=$?
 [ $exit_status -ne 0 ] && exit $exit_status
 
 lint_staged_files_or_report_error
+exit_status=$?
 log_and_quit_if_error prepare_index_for_commit "$unstaged_tree"
+exit $exit_status
