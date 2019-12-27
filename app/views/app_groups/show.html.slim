@@ -42,14 +42,17 @@
 
           dt.col-sm-2 TPS:
           dd.col-sm-10
-            = form_for @app_group do |f|
-              = f.fields :infrastructure do |infrastructure_field|
-                = infrastructure_field.fields :options, model: OpenStruct.new(f.object.infrastructure.options) do |field|
-                  .input-group.col-sm-5(style="padding-left:0px;")
-                    = field.number_field :max_tps, id: 'app_group_infrastructure_options_max_tps', class: 'form-control'
-                    .input-group-append
-                      = f.button(:class => 'btn btn-outline-secondary btn-sm')
-                        i.fas.fa-check
+            - if @allow_edit_metadata
+              = form_for @app_group do |f|
+                = f.fields :infrastructure do |infrastructure_field|
+                  = infrastructure_field.fields :options, model: OpenStruct.new(f.object.infrastructure.options) do |field|
+                    .input-group.col-sm-5(style="padding-left:0px;")
+                      = field.number_field :max_tps, id: 'app_group_infrastructure_options_max_tps', class: 'form-control'
+                      .input-group-append
+                        = f.button(:class => 'btn btn-outline-secondary btn-sm')
+                          i.fas.fa-check
+            - else
+              = max_tps(@app_group.infrastructure)
 
           dt.col-sm-2 Provisioning Status:
           dd.col-sm-10

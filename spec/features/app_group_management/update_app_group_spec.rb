@@ -44,7 +44,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_css("input#app_group_log_retention_days[value='100']")
       end
 
-      scenario 'User can edit TPS', js: true do
+      scenario 'User can edit max TPS', js: true do
         visit root_path
         click_link @app_group_a.name
 
@@ -54,7 +54,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         expect(page).to have_css("input#app_group_infrastructure_options_max_tps[value='32850']")
       end
 
-      scenario 'TPS editing preserves other options', js: true do
+      scenario 'Max TPS editing preserves other options', js: true do
         visit root_path
         click_link @app_group_a.name
 
@@ -113,6 +113,19 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link @app_group_a.name
 
         expect(page).not_to have_css('input#app_group_log_retention_days')
+      end
+
+      scenario 'Max TPS cannot be edited by member' do
+        create(
+          :app_group_user, app_group: @app_group_a, role: create(:app_group_role), user: user_b
+        )
+
+        login_as user_b
+
+        visit root_path
+        click_link @app_group_a.name
+
+        expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
       end
     end
   end
