@@ -6,8 +6,13 @@ class AppGroupsController < ApplicationController
     @allow_create_app_group = policy(AppGroup).new?
 
     (@filterrific = initialize_filterrific(
-      policy_scope(AppGroup.eager_load(:app_group_bookmarks).order(
-        Arel::Nodes::Case.new.when(AppGroupBookmark.arel_table['user_id'].eq(current_user.id)).then(0).else(1))),
+      policy_scope(
+        AppGroup.eager_load(:app_group_bookmarks).order(
+          Arel::Nodes::Case.new.when(AppGroupBookmark.arel_table['user_id'].eq(current_user.id)).
+            then(0).
+            else(1),
+        ),
+      ),
       params[:filterrific],
       sanitize_params: true,
     )) || return
@@ -31,7 +36,8 @@ class AppGroupsController < ApplicationController
     @apps = @app_group.barito_apps.order(:name)
     @new_app = BaritoApp.new(app_group_id: @app_group.id)
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
-    @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{@app_group.infrastructure.cluster_name}"
+    @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
+      @app_group.infrastructure.cluster_name.to_s
 
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
@@ -91,13 +97,17 @@ class AppGroupsController < ApplicationController
   end
 
   def bookmark
-     bookmarked = AppGroupBookmark.where(app_group_id: params[:app_group_id], user_id: current_user.id).first
-      if(bookmarked)
-        bookmarked.delete
-      else
-        AppGroupBookmark.create(user_id: current_user.id, app_group_id: params[:app_group_id])
-      end
-      redirect_to request.referer     
+    bookmarked = AppGroupBookmark.where(
+      app_group_id: params[:app_group_id], user_id: current_user.id,
+    ).first
+
+    if bookmarked
+      bookmarked.delete
+    else
+      AppGroupBookmark.create(user_id: current_user.id, app_group_id: params[:app_group_id])
+    end
+
+    redirect_to request.referer
   end
 
   private
@@ -105,6 +115,7 @@ class AppGroupsController < ApplicationController
   def app_group_params
     params.require(:app_group).permit(
       :name,
+      :log_retention_days,
       :cluster_template_id,
       :environment,
     )
@@ -112,7 +123,7 @@ class AppGroupsController < ApplicationController
 
   def infrastructure_params
     params.require(:app_group).permit(
-        :name
+      :name,
     )
   end
 

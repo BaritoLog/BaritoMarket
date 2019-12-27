@@ -18,7 +18,12 @@
 
           dt.col-sm-2 Log Retention Days:
           dd.col-sm-10
-            = @app_group.log_retention_days
+            = form_for @app_group do |f|
+              .input-group.col-sm-5(style="padding-left:0px;")
+                = f.number_field :log_retention_days, class: 'form-control'
+                .input-group-append
+                  = f.button(:class => 'btn btn-outline-secondary btn-sm')
+                    i.fas.fa-check
 
           dt.col-sm-2 Secret:
           dd.col-sm-10
