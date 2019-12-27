@@ -53,6 +53,20 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).to have_css("input#app_group_infrastructure_options_max_tps[value='32850']")
       end
+
+      scenario 'TPS editing preserves other options', js: true do
+        visit root_path
+        click_link @app_group_a.name
+
+        infrastructure = @app_group_a.infrastructure
+        infrastructure.update(options: { max_tps: 100, preserve_me: 1 })
+
+        fill_in 'app_group_infrastructure_options_max_tps', with: '200'
+        find('input#app_group_infrastructure_options_max_tps').native.send_keys :enter
+
+        infrastructure.reload
+        expect(infrastructure.options).to include('preserve_me')
+      end
     end
 
     context 'As Authorized User based on Role' do

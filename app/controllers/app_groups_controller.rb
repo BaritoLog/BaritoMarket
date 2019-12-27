@@ -72,6 +72,7 @@ class AppGroupsController < ApplicationController
     app_group_params = permitted_params
     infrastructure_params = app_group_params.delete(:infrastructure) || {}
     infrastructure_params['name'] = app_group_params['name'] if app_group_params.include?('name')
+    infrastructure_params['options'] = @app_group.infrastructure.options.merge(infrastructure_params['options']) if infrastructure_params.include?('options')
 
     @app_group.update_attributes(app_group_params)
     @app_group.infrastructure.update_attributes(infrastructure_params)
