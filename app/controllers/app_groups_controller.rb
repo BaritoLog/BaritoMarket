@@ -55,7 +55,7 @@ class AppGroupsController < ApplicationController
 
   def create
     authorize AppGroup
-    @app_group, @infrastructure = AppGroup.setup(app_group_params)
+    @app_group, @infrastructure = AppGroup.setup(permitted_params)
     if @app_group.valid? && @infrastructure.valid?
       broadcast(:team_count_changed)
       return redirect_to root_path
@@ -68,8 +68,14 @@ class AppGroupsController < ApplicationController
 
   def update
     authorize @app_group
+
+    app_group_params = permitted_params
+    infrastructure_params = app_group_params.delete(:infrastructure) || {}
+    infrastructure_params['name'] = app_group_params['name'] if app_group_params.include?('name')
+
     @app_group.update_attributes(app_group_params)
     @app_group.infrastructure.update_attributes(infrastructure_params)
+
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
   end
@@ -112,18 +118,17 @@ class AppGroupsController < ApplicationController
 
   private
 
-  def app_group_params
+  def permitted_params
     params.require(:app_group).permit(
       :name,
       :log_retention_days,
       :cluster_template_id,
       :environment,
-    )
-  end
-
-  def infrastructure_params
-    params.require(:app_group).permit(
-      :name,
+      infrastructure: [
+        options: [
+          :max_tps,
+        ],
+      ],
     )
   end
 

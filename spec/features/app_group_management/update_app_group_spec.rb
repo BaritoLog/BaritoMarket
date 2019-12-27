@@ -43,6 +43,16 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).to have_css("input#app_group_log_retention_days[value='100']")
       end
+
+      scenario 'User can edit TPS', js: true do
+        visit root_path
+        click_link @app_group_a.name
+
+        fill_in 'app_group_infrastructure_options_max_tps', with: '32850'
+        find('input#app_group_infrastructure_options_max_tps').native.send_keys :enter
+
+        expect(page).to have_css("input#app_group_infrastructure_options_max_tps[value='32850']")
+      end
     end
 
     context 'As Authorized User based on Role' do
