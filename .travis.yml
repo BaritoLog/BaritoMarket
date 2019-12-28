@@ -7,6 +7,11 @@ addons:
   chrome: stable
 services:
   - postgresql
+
+before_install:
+  - yes | gem update --system --force
+  - gem install bundler
+
 before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
@@ -19,7 +24,7 @@ script:
   - bundle exec rake db:migrate
   - bundle exec rake spec
   - bundle exec rake assets:precompile
-after_success:
+
 before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "iman"
