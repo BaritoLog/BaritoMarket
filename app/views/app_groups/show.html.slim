@@ -6,8 +6,8 @@
         dl.row
           dt.col-sm-2 Application Group Name:
           dd.col-sm-10
-            - if @allow_edit_metadata
-              = form_for @app_group do |f|
+            - if @allow_edit_app_group_name
+              = form_for @app_group, url: { action: "update_app_group_name" } do |f|
                 .input-group.col-sm-5(style="padding-left:0px;")
                   = f.text_field :name, class: 'form-control'
                   .input-group-append

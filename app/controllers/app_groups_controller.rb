@@ -1,6 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update manage_access)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -45,6 +45,7 @@ class AppGroupsController < ApplicationController
     @allow_delete_barito_app = policy(@new_app).delete?
     @allow_add_barito_app = policy(@new_app).create?
     @allow_edit_metadata = policy(@app_group).update?
+    @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_infrastructure = policy(@app_group.infrastructure).delete?
   end
 
@@ -71,11 +72,22 @@ class AppGroupsController < ApplicationController
 
     app_group_params = permitted_params
     infrastructure_params = app_group_params.delete(:infrastructure) || {}
-    infrastructure_params['name'] = app_group_params['name'] if app_group_params.include?('name')
     infrastructure_params['options'] = @app_group.infrastructure.options.merge(infrastructure_params['options']) if infrastructure_params.include?('options')
 
     @app_group.update_attributes(app_group_params)
     @app_group.infrastructure.update_attributes(infrastructure_params)
+
+    broadcast(:app_group_updated, @app_group.id)
+    redirect_to app_group_path(@app_group)
+  end
+
+  def update_app_group_name
+    authorize @app_group
+
+    name = params.permit(app_group: :name)['app_group']['name']
+
+    @app_group.update_attributes(name: name)
+    @app_group.infrastructure.update_attributes(name: name)
 
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)

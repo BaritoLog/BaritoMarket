@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       member do
         get :manage_access
         post :bookmark
+        patch :update_app_group_name
       end
       collection do
         get :search
@@ -120,7 +121,7 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :component_templates,
     defaults: { format: :html }
-  
+
   resources :app_group_teams,
     only: %i[create update],
     defaults: { format: :html }

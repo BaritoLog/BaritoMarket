@@ -127,6 +127,32 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
       end
+
+      scenario 'Log retention days cannot be edited by owner' do
+        create(
+          :app_group_user, app_group: @app_group_a, role: create(:app_group_role, :owner), user: user_b
+        )
+
+        login_as user_b
+
+        visit root_path
+        click_link @app_group_a.name
+
+        expect(page).not_to have_css('input#app_group_log_retention_days')
+      end
+
+      scenario 'Max TPS cannot be edited by owner' do
+        create(
+          :app_group_user, app_group: @app_group_a, role: create(:app_group_role, :owner), user: user_b
+        )
+
+        login_as user_b
+
+        visit root_path
+        click_link @app_group_a.name
+
+        expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
+      end
     end
   end
 end
