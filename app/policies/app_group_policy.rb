@@ -12,7 +12,7 @@ class AppGroupPolicy < ApplicationPolicy
   end
 
   def update?
-    barito_superadmin? || user.can_access_app_group?(record, roles: %i(admin))
+    barito_superadmin?
   end
 
   def update_app_group_name?
