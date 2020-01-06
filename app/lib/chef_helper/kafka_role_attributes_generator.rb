@@ -1,8 +1,6 @@
 module ChefHelper
   class KafkaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
-      @zookeeper_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'component_type', 'zookeeper')
       @hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'kafka')
       @consul_hosts = fetch_hosts_address_by(
@@ -21,8 +19,9 @@ module ChefHelper
     end
 
     def update_attrs
-      @kafka_attrs['kafka']['zookeeper']['hosts'] = @zookeeper_hosts
-      @kafka_attrs['kafka']['kafka']['hosts'] = @hosts
+      @kafka_attrs['kafka']['zookeeper']['hosts'] = ["zookeeper.service.consul"]
+      @kafka_attrs['kafka']['kafka']['hosts'] = ["kafka.service.consul"]
+      @kafka_attrs['kafka']['kafka']['hosts_count'] = @hosts.count
       @kafka_attrs['consul']['hosts'] = @consul_hosts
       @kafka_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @kafka_attrs['run_list'] = ["role[#{@role_name}]"]

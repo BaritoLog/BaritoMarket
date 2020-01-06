@@ -1,9 +1,17 @@
 module ChefHelper
   class ZookeeperRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
-      @hosts = fetch_hosts_address_by(
+      hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'zookeeper')
-      @my_id = (@hosts.index(component.ipaddress) || @hosts.index(component.hostname)) + 1
+      @my_id = (hosts.index(component.ipaddress) || hosts.index(component.hostname)) + 1
+      @domains = []
+      hosts.each_with_index do |host, idx|
+        if idx+1 == @my_id
+          @domains << "0.0.0.0"
+        else
+          @domains << "#{idx+1}.zookeeper.service.consul"
+        end
+      end
       @consul_hosts = fetch_hosts_address_by(
         infrastructure_components, 'component_type', 'consul')
       @role_name = opts[:role_name] || 'zookeeper'
@@ -20,7 +28,7 @@ module ChefHelper
     end
 
     def update_attrs
-      @zookeeper_attrs['zookeeper']['hosts'] = @hosts
+      @zookeeper_attrs['zookeeper']['hosts'] = @domains
       @zookeeper_attrs['zookeeper']['my_id'] = @my_id
       @zookeeper_attrs['consul']['hosts'] = @consul_hosts
       @zookeeper_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress

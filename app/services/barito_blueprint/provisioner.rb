@@ -7,9 +7,9 @@ module BaritoBlueprint
       check_interval: 5.seconds
     }
 
-    def initialize(infrastructure, executor, opts = {})
+    def initialize(infrastructure, components, executor, opts = {})
       @infrastructure = infrastructure
-      @infrastructure_components = @infrastructure.infrastructure_components
+      @infrastructure_components = components
       @executor = executor
       @defaults = {
         timeout: opts[:timeout] || DEFAULTS[:timeout],
@@ -204,6 +204,38 @@ module BaritoBlueprint
           "Delete #{component.hostname} error",
           "#{res['error']}")
         component.update_status('DELETE_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+
+    def rebootstrap_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Provisioning #{component.hostname} started")
+      component.update_status('BOOTSTRAP_STARTED')
+
+      # Execute reprovisioning
+      res = @executor.rebootstrap!(component.hostname, component.bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} finished")
+        component.update_status('FINISHED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
         return false
       end
     end

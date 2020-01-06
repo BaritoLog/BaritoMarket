@@ -6,6 +6,7 @@ module BaritoBlueprint
       @infrastructure = create(:infrastructure)
       @bootstrapper = Bootstrapper.new(
         @infrastructure,
+        @infrastructure.infrastructure_components,
         username: Figaro.env.username,
       )
     end

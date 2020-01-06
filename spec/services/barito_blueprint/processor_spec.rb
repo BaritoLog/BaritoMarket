@@ -38,7 +38,7 @@ module BaritoBlueprint
       end
 
       it 'should save consul_host when the process is finished' do
-        @processor.process!
+        @processor.process_check!
         @infrastructure.reload
         expect(@infrastructure.consul_host).not_to eq nil
       end

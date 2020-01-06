@@ -13,9 +13,9 @@ module BaritoBlueprint
       'zookeeper' => ChefHelper::ZookeeperRoleAttributesGenerator,
     }
 
-    def initialize(infrastructure, opts = {})
+    def initialize(infrastructure, components, opts = {})
       @infrastructure = infrastructure
-      @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
+      @infrastructure_components = components
       @username = opts[:username]
     end
 
@@ -77,7 +77,7 @@ module BaritoBlueprint
           if bootstrapper["bootstrap_attributes"]["run_list"].empty?
             # Fetch bootstrap attributes
             attrs = generate_bootstrap_attributes(
-              component, @infrastructure_components)      
+              component, @infrastructure.infrastructure_components)      
             component.bootstrappers[idx]["bootstrap_attributes"] = attrs
             component.save
             return attrs

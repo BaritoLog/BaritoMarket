@@ -44,7 +44,7 @@
           name: "barito-registry"
         },
         fingerprint: "",
-        alias: "lxd-zookeeper-3.4.12-1"
+        alias: "lxd-zookeeper-3.4.12-5"
       },
       bootstrappers: [{    
           bootstrap_type: "chef-solo",
@@ -170,7 +170,7 @@
                 "version":"v0.11.8", 
                 "env_vars":{
                   "BARITO_PRODUCER_ADDRESS":":8080",
-                  "BARITO_CONSUL_URL":"", 
+                  "BARITO_CONSUL_URL":"http://consul.service.consul:8500", 
                   "BARITO_CONSUL_KAFKA_NAME":"kafka", 
                   "BARITO_KAFKA_BROKERS":"kafka.service.consul:9092", 
                   "BARITO_KAFKA_PRODUCER_TOPIC":"barito-log",
@@ -208,7 +208,7 @@
               "consumer":{
                 "version":"v0.11.8", 
                 "env_vars":{
-                  "BARITO_CONSUL_URL":"",
+                  "BARITO_CONSUL_URL":"http://consul.service.consul:8500",
                   "BARITO_CONSUL_KAFKA_NAME":"kafka", 
                   "BARITO_CONSUL_ELASTICSEARCH_NAME":"elasticsearch",
                   "BARITO_KAFKA_BROKERS":"kafka.service.consul:9092", 

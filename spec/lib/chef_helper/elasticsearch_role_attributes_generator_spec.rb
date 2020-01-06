@@ -55,7 +55,7 @@ module ChefHelper
               "max_allocated_memory"=>16000000, 
               "minimum_master_nodes"=>1,
               "index_number_of_replicas"=>0,
-              "member_hosts"=>[],
+              "member_hosts"=>['elasticsearch.service.consul'],
             }
           }
         )

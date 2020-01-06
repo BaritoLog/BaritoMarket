@@ -1,8 +1,6 @@
 module ChefHelper
   class ConsulRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(component, infrastructure_components, opts = {})
-      @hosts = fetch_hosts_address_by(
-        infrastructure_components, 'component_type', 'consul')
       @role_name = opts[:role_name] || 'consul'
       @ipaddress = component.ipaddress
       consul_template = ComponentTemplate.find_by(name: 'consul')
@@ -15,7 +13,7 @@ module ChefHelper
     end
 
     def update_attrs
-      @consul_attrs["consul"]["hosts"] = @hosts
+      @consul_attrs["consul"]["hosts"] = ['consul.service.consul']
       @consul_attrs["consul"]["config"]["consul.json"]["bind_addr"] = @ipaddress
       @consul_attrs["run_list"] = ["role[#{@role_name}]"]
       @consul_attrs

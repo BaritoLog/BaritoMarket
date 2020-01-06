@@ -5,14 +5,16 @@ class RetryBootstrapWorker
     infrastructure_component = InfrastructureComponent.
       find(infrastructure_component_id)
     begin
-      bootstrapper = BaritoBlueprint::Bootstrapper.new(
+      provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure_component.infrastructure,
-        ChefSoloBootstrapper.new(Figaro.env.chef_repo_dir),
-        private_keys_dir: Figaro.env.container_private_keys_dir,
-        private_key_name: Figaro.env.container_private_key,
-        username: Figaro.env.container_username,
+        infrastructure_component,
+        PathfinderProvisioner.new(
+          Figaro.env.pathfinder_host,
+          Figaro.env.pathfinder_token,
+          Figaro.env.pathfinder_cluster,
+          image: Figaro.env.pathfinder_image),
       )
-      bootstrapper.bootstrap_instance!(infrastructure_component)
+      provisioner.rebootstrap_instance!(infrastructure_component)
     rescue JSON::ParserError, StandardError, NoMethodError => ex
       logger.warn "Exception: #{ex}"
       infrastructure_component.update_status('BOOTSTRAP_ERROR', ex.to_s)

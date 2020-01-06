@@ -104,6 +104,34 @@ class PathfinderProvisioner
     end
   end
 
+  def rebootstrap!(hostname, bootstrappers)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{hostname}/rebootstrap",
+      method: :post,
+      params: {
+        'cluster_name' => @pathfinder_cluster
+      },
+      body: {
+        'bootstrappers' => bootstrappers
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true,
+        'data' => body['data']
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)

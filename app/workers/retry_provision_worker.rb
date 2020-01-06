@@ -7,6 +7,7 @@ class RetryProvisionWorker
     begin
       provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure_component.infrastructure,
+        infrastructure_component,
         PathfinderProvisioner.new(
           Figaro.env.pathfinder_host,
           Figaro.env.pathfinder_token,

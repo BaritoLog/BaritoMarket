@@ -12,7 +12,7 @@ class BlueprintWorker
         pathfinder_cluster: Figaro.env.pathfinder_cluster,
         chef_repo_dir: Figaro.env.chef_repo_dir,
         username: Figaro.env.container_username
-      ).process!
+      ).process_check!
     rescue JSON::ParserError, StandardError => ex
       logger.warn "Exception: #{ex}"
     end
