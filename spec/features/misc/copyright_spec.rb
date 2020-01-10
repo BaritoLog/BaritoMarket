@@ -8,5 +8,12 @@ RSpec.feature 'Miscellaneous', type: :feature do
         expect(page).to have_content('2018 Barito')
       end
     end
+
+    scenario 'After copyright year' do
+      Timecop.freeze(2019, 1, 1) do
+        visit root_path
+        expect(page).to have_content('2018-2019 Barito')
+      end
+    end
   end
 end
