@@ -22,7 +22,7 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=> 
               {
-                "hosts"=> ["consul.service.consul"], 
+                "hosts"=> ["#{@component.ipaddress}"],
                 "config"=> {
                   "consul.json"=> {"bind_addr"=> "#{@component.ipaddress}"}
               }
