@@ -21,14 +21,7 @@
           bootstrap_cookbooks_url: "https://github.com/BaritoLog/consul-cookbook/archive/master.tar.gz",
           bootstrap_attributes: {
             "consul": {
-                "hosts": [
-
-                ],
-                "config": {
-                "consul.json": {
-                    "bind_addr": ""
-                }
-                }
+                "hosts": []
             },
             "run_list": []
           }
@@ -52,7 +45,6 @@
           bootstrap_attributes: {
             "consul":{
               "hosts":[],
-              "config":{"consul.json":{"bind_addr":""}},
               "run_as_server":false
             },
             "datadog":{
@@ -88,8 +80,7 @@
               "zookeeper":{"hosts":[]}
             }, 
             "consul":{
-              "hosts":[], 
-              "config":{"consul.json":{"bind_addr":""}}, 
+              "hosts":[],
               "run_as_server":false
             },
             "datadog":{
@@ -120,8 +111,7 @@
         bootstrap_cookbooks_url: "https://github.com/BaritoLog/elasticsearchwrapper_cookbook/archive/master.tar.gz",
         bootstrap_attributes: {
           "consul":{
-            "hosts":[], 
-            "config":{"consul.json":{"bind_addr":""}}, 
+            "hosts":[],
             "run_as_server":false
           }, 
           "datadog":{
@@ -160,8 +150,7 @@
           bootstrap_cookbooks_url: "https://github.com/BaritoLog/barito-flow-cookbook/archive/master.tar.gz",
           bootstrap_attributes: {
             "consul":{
-              "hosts":[], 
-              "config":{"consul.json":{"bind_addr":""}}, 
+              "hosts":[],
               "run_as_server":false
             }, 
             "run_list":[], 
@@ -199,8 +188,7 @@
           bootstrap_cookbooks_url: "https://github.com/BaritoLog/barito-flow-cookbook/archive/master.tar.gz",
           bootstrap_attributes: {
             "consul":{
-              "hosts":[], 
-              "config":{"consul.json":{"bind_addr":""}}, 
+              "hosts":[],
               "run_as_server":false
             }, 
             "run_list":[], 
@@ -239,8 +227,7 @@
           bootstrap_cookbooks_url: "https://github.com/BaritoLog/kibana_wrapper_cookbook",
           bootstrap_attributes: {
             "consul":{
-              "hosts":[], 
-              "config":{"consul.json":{"bind_addr":""}}, 
+              "hosts":[],
               "run_as_server":false
             },
             "kibana":{

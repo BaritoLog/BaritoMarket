@@ -16,7 +16,6 @@ module ChefHelper
 
     def update_attrs
       @consul_attrs["consul"]["hosts"] = @hosts
-      @consul_attrs["consul"]["config"]["consul.json"]["bind_addr"] = @ipaddress
       @consul_attrs["run_list"] = ["role[#{@role_name}]"]
       @consul_attrs
     end

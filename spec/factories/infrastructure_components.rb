@@ -20,8 +20,7 @@ FactoryBot.define do
                         "bootstrap_type": "chef-solo",
                         "bootstrap_attributes": {
                           "consul": {
-                            "hosts": [],
-                            "config": {"consul.json": {"bind_addr": ""}}
+                            "hosts": []
                           },
                           "run_list": []
                         },

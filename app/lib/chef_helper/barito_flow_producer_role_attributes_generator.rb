@@ -19,7 +19,6 @@ module ChefHelper
       @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_PRODUCER_MAX_TPS'] = @max_tps
 
       @producer_attrs['consul']['hosts'] = @consul_hosts
-      @producer_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @producer_attrs['run_list'] = ["role[#{@role_name}]"]
 
       @producer_attrs
