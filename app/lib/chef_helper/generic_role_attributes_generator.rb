@@ -8,7 +8,7 @@ module ChefHelper
       def fetch_hosts_address_by(components, filter_type, filter)
         components.
           select{ |c| c.send(filter_type.to_sym) == filter }.
-          collect{ |c| c.ipaddress || "#{c.hostname}.node.consul" }
+          collect{ |c| c.ipaddress || c.hostname }
       end
 
       def bind_hosts_and_port(hosts, port, protocol=nil)
