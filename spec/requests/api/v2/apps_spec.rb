@@ -54,6 +54,37 @@ RSpec.describe 'Apps API', type: :request do
       expect(json_response['meta']['kafka']['partition']).to eq(1)
     end
 
+    it 'should returns multiple Consul instances' do
+      app_group = create(:app_group)
+      cluster_template = create(:cluster_template)
+      create(:infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        capacity: "small",
+        cluster_template: cluster_template,
+        instances: cluster_template.instances,
+        options: cluster_template.options,
+      ).tap do |infrastructure|
+        create(:infrastructure_component,
+          infrastructure: infrastructure,
+          ipaddress: '192.168.0.1',
+          component_type: 'consul',
+        )
+        create(:infrastructure_component,
+          infrastructure: infrastructure,
+          ipaddress: '192.168.0.2',
+          component_type: 'consul',
+        )
+      end
+      app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
+      app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
+
+      get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(json_response['consul_hosts']).to match_array ['192.168.0.1', '192.168.0.2']
+    end
+
     context 'when invalid token' do
       it 'should return 404' do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
