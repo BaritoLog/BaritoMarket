@@ -19,7 +19,13 @@ h4.mb-3 All Applications
           td.col-2= app.name
           td.col-1= app.topic_name
           td.col-3= app.secret_key
-          td.col-1= app.log_retention_days
+          td.col-1
+            = form_for(app, url: app_path(app)) do |f|
+              .input-group(style="padding-left:0px;")
+                = f.text_field :log_retention_days, class: 'form-control', id: "barito_app_#{app.id}_log_retention_days"
+                .input-group-append
+                  = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update the log retention days?' })
+                    i.fas.fa-check
           td.col-1
             - if allow_add
               = form_for(app, url: app_path(app)) do |f|

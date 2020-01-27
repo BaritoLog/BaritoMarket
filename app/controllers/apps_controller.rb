@@ -58,6 +58,7 @@ class AppsController < ApplicationController
         :name,
         :topic_name,
         :max_tps,
+        :log_retention_days
       )
     end
 
