@@ -5,8 +5,9 @@ h4.mb-3 All Applications
     thead
       tr.d-flex
         th.col-2 Name
-        th.col-2 Topic Name
+        th.col-1 Topic Name
         th.col-3 App Secret
+        th.col-1 Retention Days
         th.col-1 Max TPS
         th.col-1 Status
         th.col-1 Log Count
@@ -16,8 +17,9 @@ h4.mb-3 All Applications
       - apps.each do |app|
         tr.d-flex
           td.col-2= app.name
-          td.col-2= app.topic_name
+          td.col-1= app.topic_name
           td.col-3= app.secret_key
+          td.col-1= app.log_retention_days
           td.col-1
             - if allow_add
               = form_for(app, url: app_path(app)) do |f|
@@ -48,8 +50,9 @@ h4.mb-3 All Applications
           = f.hidden_field :app_group_id, value: app_group.id
           tr.d-flex
             td.col-2= f.text_field :name, class: 'form-control'
-            td.col-2= f.text_field :topic_name, class: 'form-control'
+            td.col-1= f.text_field :topic_name, class: 'form-control'
             td.col-3
+            td.col-1
             td.col-1= f.number_field :max_tps, class: 'form-control'
             td.col-1
             td.col-1

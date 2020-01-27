@@ -9,8 +9,8 @@ RSpec.feature 'Barito App Management', type: :feature do
     set_check_user_groups({ 'groups' => [] })
     @app_group = create(:app_group)
     cluster_template = create(:cluster_template)
-    create(:infrastructure, 
-      app_group: @app_group, 
+    create(:infrastructure,
+      app_group: @app_group,
       cluster_template_id: cluster_template.id,
       instances: cluster_template.instances,
       options: cluster_template.options,
@@ -40,6 +40,19 @@ RSpec.feature 'Barito App Management', type: :feature do
         alert.accept
 
         expect(page).to have_css("input#barito_app_#{@barito_app.id}_max_tps[value='20']")
+      end
+
+      scenario 'User can show log retention days customization per app' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+        create(:app_group_role)
+        @barito_app.update(log_retention_days: 12345)
+        login_as admin
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).to have_content(12345)
       end
 
       scenario 'User cannot edit barito app max tps if more than app_group capacity', js: true do
