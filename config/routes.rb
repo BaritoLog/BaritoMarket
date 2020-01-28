@@ -86,7 +86,11 @@ Rails.application.routes.draw do
     end
   resources :apps,
     only: %i[create destroy update],
-    defaults: { format: :html }
+    defaults: { format: :html } do
+      member do
+        post :update_log_retention_days
+      end
+    end
   resources :ext_apps,
     defaults: { format: :html } do
       member do
