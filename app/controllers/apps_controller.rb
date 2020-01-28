@@ -36,6 +36,7 @@ class AppsController < ApplicationController
 
   def update_log_retention_days
     @app.update(params.require(:barito_app).permit(:log_retention_days))
+    redirect_to app_group_path(@app.app_group)
   end
 
   def destroy
@@ -62,7 +63,6 @@ class AppsController < ApplicationController
         :name,
         :topic_name,
         :max_tps,
-        :log_retention_days
       )
     end
 
