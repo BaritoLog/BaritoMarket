@@ -140,6 +140,18 @@ RSpec.feature 'Barito App Management', type: :feature do
 
         expect(page).not_to have_css("input#barito_app_#{@barito_app.id}_max_tps")
       end
+
+      scenario 'User with "owner" or "admin" role can show custom log retention days in bold', js: true do
+        create(:app_group_user, app_group: @app_group, role: create(:app_group_role, :owner), user: user_b)
+        @barito_app.update(log_retention_days: 12345)
+        login_as user_b
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).not_to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[value='#{@barito_app.log_retention_days}']")
+        expect(page).to have_xpath("//b[text()='#{@barito_app.log_retention_days}']")
+      end
     end
   end
 end

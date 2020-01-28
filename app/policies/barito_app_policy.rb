@@ -19,6 +19,10 @@ class BaritoAppPolicy < ApplicationPolicy
     create?
   end
 
+  def update_log_retention_days?
+    barito_superadmin?
+  end
+
   def toggle_status?
     create?
   end
