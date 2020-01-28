@@ -64,6 +64,19 @@ RSpec.feature 'Barito App Management', type: :feature do
         expect(page).to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[value='20']")
       end
 
+      scenario 'User can see placeholder for log retention days per app' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+        create(:app_group_role)
+        @app_group.update(log_retention_days: 12345)
+        login_as admin
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[placeholder='#{@app_group.log_retention_days}']")
+      end
+
       scenario 'User cannot edit barito app max tps if more than app_group capacity', js: true do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
