@@ -82,7 +82,7 @@ RSpec.describe 'Apps API', type: :request do
       get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response['consul_hosts']).to match_array ['192.168.0.1', '192.168.0.2']
+      expect(json_response['consul_hosts']).to match_array ['192.168.0.1:8500', '192.168.0.2:8500']
     end
 
     context 'when invalid token' do
