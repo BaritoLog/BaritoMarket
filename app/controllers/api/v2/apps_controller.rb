@@ -143,7 +143,7 @@ class Api::V2::AppsController < Api::V2::BaseController
       max_tps: app.max_tps,
       cluster_name: app.cluster_name,
       consul_host: app.consul_host,
-      consul_hosts: infrastructure.infrastructure_components.where(component_type: 'consul').pluck(:ipaddress).map { |ip| "#{ip}:8500" },
+      consul_hosts: infrastructure.infrastructure_components.where(component_type: 'consul').pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" },
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
