@@ -20,7 +20,6 @@ module ChefHelper
 
       @consumer_attrs['consul']['hosts'] = @consul_hosts
       @consumer_attrs['consul']['run_as_server'] = false
-      @consumer_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @consumer_attrs['run_list'] = ["role[#{@role_name}]"]
 
       @consumer_attrs

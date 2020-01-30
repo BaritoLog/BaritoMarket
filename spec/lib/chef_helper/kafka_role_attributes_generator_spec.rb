@@ -40,9 +40,6 @@ module ChefHelper
             },
             "consul"=>{
               "hosts"=>["#{@consul_component.ipaddress}"],
-              "config"=>{
-                "consul.json"=>{"bind_addr"=>"#{@kafka_component.ipaddress}"}
-              },
               "run_as_server"=>false
             },
             "datadog"=>{

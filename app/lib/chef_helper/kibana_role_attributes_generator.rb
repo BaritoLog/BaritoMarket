@@ -18,7 +18,6 @@ module ChefHelper
     def update_attrs
       @kibana_attrs['kibana']['config']['server.basePath'] = "/#{@base_path}"
       @kibana_attrs['consul']['hosts'] = @consul_hosts
-      @kibana_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @kibana_attrs['run_list'] = ["role[#{@role_name}]"]
 
       @kibana_attrs
