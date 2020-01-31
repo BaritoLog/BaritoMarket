@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    environment:
+      - DB_USER=barito
+      - DB_HOST=db
+      - DB_NAME=barito
+      - DB_PASSWORD=barito
+      - REDIS_CACHE_HOST=redis:6379
+      - RAILS_ENV=development
+    ports:
+      - 9292:9292
+
+  db:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=barito
+      - POSTGRES_DB=barito
+      - POSTGRES_PASSWORD=barito
+
+  redis:
+    image: redis:5-alpine
