@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/BaritoLog/BaritoMarket.svg?branch=master)](https://travis-ci.org/BaritoLog/BaritoMarket)
-[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/BaritoLog/BaritoMarket)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4d6f74ccfd69065d5fa6/maintainability)](https://codeclimate.com/github/BaritoLog/BaritoMarket/maintainability)
 
 # Barito Market
 ### Transports logs to where it should be
