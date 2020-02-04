@@ -31,9 +31,6 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=>{
               "hosts"=>["#{@consul_component.ipaddress}"], 
-              "config"=>{
-                "consul.json"=>{"bind_addr"=>"#{@zookeeper_component.ipaddress}"}
-              }, 
               "run_as_server"=>false
             }, 
             "datadog"=>{

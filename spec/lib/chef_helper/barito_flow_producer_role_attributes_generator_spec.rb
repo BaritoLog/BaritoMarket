@@ -36,9 +36,6 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=>{
               "hosts"=>["#{@consul_component.ipaddress}"],
-              "config"=>{
-                "consul.json"=>{"bind_addr"=>"#{@producer_component.ipaddress}"}
-              },
               "run_as_server"=>false
             },
             "run_list"=>["role[barito-flow-producer]"],

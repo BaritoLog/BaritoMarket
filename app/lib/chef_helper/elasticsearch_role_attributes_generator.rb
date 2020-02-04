@@ -32,7 +32,6 @@ module ChefHelper
       @elastic_attrs['elasticsearch']['member_hosts'] = ['elasticsearch.service.consul']
       @elastic_attrs['elasticsearch']['minimum_master_nodes'] = @minimum_master_nodes
       @elastic_attrs['consul']['hosts'] = @consul_hosts
-      @elastic_attrs['consul']['config']['consul.json']['bind_addr'] = @ipaddress
       @elastic_attrs['run_list'] = ["role[#{@role_name}]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]']
 
       if Figaro.env.datadog_integration == 'true'

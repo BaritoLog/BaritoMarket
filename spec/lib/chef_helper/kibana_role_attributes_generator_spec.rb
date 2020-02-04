@@ -36,9 +36,6 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=>{
               "hosts"=>["#{@consul_component.ipaddress}"],
-              "config"=>{
-                "consul.json"=>{"bind_addr"=>"#{@consumer_component.ipaddress}"}
-              },
               "run_as_server"=>false
             },
             "kibana"=>{

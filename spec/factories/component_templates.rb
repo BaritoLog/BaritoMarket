@@ -16,8 +16,7 @@ FactoryBot.define do
                             "bootstrap_cookbooks_url": "",
                             "bootstrap_attributes": {
                               "consul": {
-                                "hosts": [],
-                                "config": {"consul.json": {"bind_addr": ""}}
+                                "hosts": []
                               },
                               "run_list": []
                             } 

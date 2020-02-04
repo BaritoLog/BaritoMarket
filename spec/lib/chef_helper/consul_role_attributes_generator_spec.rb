@@ -6,7 +6,7 @@ module ChefHelper
       @component = create(:infrastructure_component, 
         hostname:       'test-consul-01',
         component_type: 'consul',
-        ipaddress:      '127.0.0.1'
+        ipaddress:      nil
       )
     end
 
@@ -22,10 +22,7 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=> 
               {
-                "hosts"=> ["consul.service.consul"], 
-                "config"=> {
-                  "consul.json"=> {"bind_addr"=> "#{@component.ipaddress}"}
-              }
+                "hosts"=> ["#{@component.hostname}.node.consul"]
             }, 
             "run_list"=> ["role[consul]"]
           }
