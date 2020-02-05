@@ -10,7 +10,7 @@ RSpec.describe 'App API', type: :request do
       app_group = create(:app_group)
       app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(:infrastructure, app_group: app_group)
+      infrastructure = create(:infrastructure, app_group: app_group, provisioning_status: Infrastructure.provisioning_statuses[:finished])
       infrastructure_component = create(
         :infrastructure_component,
         infrastructure: infrastructure,
@@ -32,6 +32,24 @@ RSpec.describe 'App API', type: :request do
           },
         }
       ].to_json
+    end
+
+    it 'should not return list of all deleted app group' do
+      app_group = create(:app_group)
+      create(:barito_app, topic_name: 'deleted_topic1', app_group: app_group)
+      infrastructure = create(:infrastructure, app_group: app_group, provisioning_status: Infrastructure.provisioning_statuses[:deleted] )
+      create(
+          :infrastructure_component,
+          infrastructure: infrastructure,
+          component_type: 'elasticsearch',
+          status: InfrastructureComponent.statuses[:finished],
+      )
+
+      get api_profile_curator_path,
+          params: { access_token: @access_token, client_key: 'abcd1234' },
+          headers: headers
+
+      expect(response.body).to eq [].to_json
     end
   end
 
