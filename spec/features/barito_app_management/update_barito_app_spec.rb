@@ -9,8 +9,8 @@ RSpec.feature 'Barito App Management', type: :feature do
     set_check_user_groups({ 'groups' => [] })
     @app_group = create(:app_group)
     cluster_template = create(:cluster_template)
-    create(:infrastructure, 
-      app_group: @app_group, 
+    create(:infrastructure,
+      app_group: @app_group,
       cluster_template_id: cluster_template.id,
       instances: cluster_template.instances,
       options: cluster_template.options,
@@ -40,6 +40,41 @@ RSpec.feature 'Barito App Management', type: :feature do
         alert.accept
 
         expect(page).to have_css("input#barito_app_#{@barito_app.id}_max_tps[value='20']")
+      end
+
+      scenario 'User can edit log retention days customization per app', js: true do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+        create(:app_group_role)
+        @barito_app.update(log_retention_days: 12345)
+        login_as admin
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[value='#{@barito_app.log_retention_days}']")
+
+        fill_in "barito_app_#{@barito_app.id}_log_retention_days", with: "20"
+        find("input#barito_app_#{@barito_app.id}_log_retention_days").native.send_keys :enter
+
+        wait = Selenium::WebDriver::Wait.new ignore: Selenium::WebDriver::Error::NoAlertPresentError
+        alert = wait.until { page.driver.browser.switch_to.alert }
+        alert.accept
+
+        expect(page).to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[value='20']")
+      end
+
+      scenario 'User can see placeholder for log retention days per app' do
+        set_check_user_groups({ 'groups' => ['barito-superadmin'] })
+        create(:group, name: 'barito-superadmin')
+        create(:app_group_role)
+        @app_group.update(log_retention_days: 12345)
+        login_as admin
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[placeholder='#{@app_group.log_retention_days}']")
       end
 
       scenario 'User cannot edit barito app max tps if more than app_group capacity', js: true do
@@ -117,6 +152,29 @@ RSpec.feature 'Barito App Management', type: :feature do
         click_link @app_group.name
 
         expect(page).not_to have_css("input#barito_app_#{@barito_app.id}_max_tps")
+      end
+
+      scenario 'User with "owner" or "admin" role can show custom log retention days in bold', js: true do
+        create(:app_group_user, app_group: @app_group, role: create(:app_group_role, :owner), user: user_b)
+        @barito_app.update(log_retention_days: 12345)
+        login_as user_b
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).not_to have_css("input#barito_app_#{@barito_app.id}_log_retention_days[value='#{@barito_app.log_retention_days}']")
+        expect(page).to have_xpath("//b[text()='#{@barito_app.log_retention_days}']")
+      end
+
+      scenario 'User with "owner" or "admin" role can show non-custom log retention days per app', js: true do
+        create(:app_group_user, app_group: @app_group, role: create(:app_group_role, :owner), user: user_b)
+        @app_group.update(log_retention_days: 23456)
+        login_as user_b
+
+        visit root_path
+        click_link @app_group.name
+
+        expect(page).to have_xpath("//td[text()='#{@app_group.log_retention_days}']")
       end
     end
   end

@@ -59,6 +59,8 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return list of all active App with its retention policy for curator' do
       app_group = create(:app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
+      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
       infrastructure = create(:infrastructure, app_group: app_group)
       infrastructure_component = create(
         :infrastructure_component,
@@ -66,7 +68,6 @@ RSpec.describe 'App API', type: :request do
         component_type: 'elasticsearch',
         status: InfrastructureComponent.statuses[:finished],
       )
-      create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
@@ -74,9 +75,11 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
-          hostname: infrastructure_component.hostname,
           ipaddress: infrastructure_component.ipaddress,
           log_retention_days: app_group.log_retention_days,
+          log_retention_days_per_topic: {
+            app2.topic_name => app2.log_retention_days
+          },
         }
       ].to_json
     end

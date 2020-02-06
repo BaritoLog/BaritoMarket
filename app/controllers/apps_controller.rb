@@ -34,6 +34,11 @@ class AppsController < ApplicationController
     redirect_to app_group_path(@app.app_group)
   end
 
+  def update_log_retention_days
+    @app.update(params.require(:barito_app).permit(:log_retention_days))
+    redirect_to app_group_path(@app.app_group)
+  end
+
   def destroy
     secret_key = @app.secret_key
     app_group_secret_key = @app.app_group.secret_key
