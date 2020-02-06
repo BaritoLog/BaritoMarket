@@ -7,19 +7,23 @@ ENV RAILS_LOG_TO_STDOUT true
 
 RUN apt-get -y update && \
   apt-get -y install libcurl3 libpq5 && \
+  rm -vrf /var/lib/apt/lists/* && \
   gem install bundler -v "$BUNDLER_VERSION" && \
+  rm -vf /usr/local/bundle/cache/*.gem && \
   useradd -mU -d /app app
 WORKDIR /app
 
 FROM base AS build
 
-RUN apt-get install -y build-essential libpq-dev nodejs
+RUN apt-get -y update && \
+  apt-get install -y build-essential libpq-dev nodejs
 USER app
 
 COPY --chown=app:app Gemfile* ./
 RUN bundle config --local deployment 'true' && \
   bundle config --local without 'development test' && \
-  bundle install
+  bundle install && \
+  rm -vf /usr/local/bundle/ruby/*/cache/*.gem
 
 ENV DB_NAME barito_production
 
