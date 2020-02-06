@@ -78,7 +78,6 @@ RSpec.describe 'App API', type: :request do
           ipaddress: infrastructure_component.ipaddress,
           log_retention_days: app_group.log_retention_days,
           log_retention_days_per_topic: {
-            app1.topic_name => app_group.log_retention_days,
             app2.topic_name => app2.log_retention_days
           },
         }

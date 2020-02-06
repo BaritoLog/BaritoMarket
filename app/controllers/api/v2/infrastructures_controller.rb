@@ -57,7 +57,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
         ipaddress: es_component.ipaddress,
         log_retention_days: app_group.log_retention_days,
         log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
-          app_map[app.topic_name] = app.log_retention_days ? app.log_retention_days : app_group.log_retention_days
+          app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
           app_map
         end
       }
