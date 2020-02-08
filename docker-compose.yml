@@ -10,6 +10,7 @@ services:
       - DB_PASSWORD=barito
       - REDIS_CACHE_HOST=redis:6379
       - RAILS_ENV=development
+      - REDIS_URL=redis://redis:6379/0
     ports:
       - 9292:9292
 
