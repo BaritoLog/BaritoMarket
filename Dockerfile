@@ -38,4 +38,5 @@ USER app
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=build /app .
-CMD bundle exec puma
+ENTRYPOINT ["bundle", "exec"]
+CMD ["puma", "--port", "8080"]
