@@ -133,6 +133,8 @@ GEM
       simplecov (>= 0.7)
       term-ansicolor
       thor
+    coverband (4.2.4)
+      redis
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.5)
@@ -560,6 +562,7 @@ DEPENDENCIES
   cane (<= 3.0)
   capybara (<= 3.2.1)
   coveralls (<= 0.8)
+  coverband
   database_cleaner (<= 1.7)
   devise
   devise_cas_authenticatable

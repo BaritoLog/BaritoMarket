@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   get 'ping', to: 'health_checks#ping'
 
+  mount Coverband::Reporters::Web.new, at: '/coverage'
+
   namespace :api do
     # DEPRECATED
     # These v1 APIs are in the process of being removed

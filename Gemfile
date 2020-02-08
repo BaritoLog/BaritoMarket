@@ -33,6 +33,7 @@ gem 'wisper', '<= 2.0.0'
 gem 'filterrific'
 gem 'dogstatsd-ruby'
 gem 'prometheus-client'
+gem 'coverband'
 
 group :development, :test do
   gem 'cane', '<= 3.0'
