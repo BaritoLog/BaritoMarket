@@ -5,8 +5,9 @@ h4.mb-3 All Applications
     thead
       tr.d-flex
         th.col-2 Name
-        th.col-2 Topic Name
+        th.col-1 Topic Name
         th.col-3 App Secret
+        th.col-1 Retention Days
         th.col-1 Max TPS
         th.col-1 Status
         th.col-1 Log Count
@@ -16,8 +17,21 @@ h4.mb-3 All Applications
       - apps.each do |app|
         tr.d-flex
           td.col-2= app.name
-          td.col-2= app.topic_name
+          td.col-1= app.topic_name
           td.col-3= app.secret_key
+          td.col-1
+            - if @allow_edit_barito_app_log_retention_days
+              = form_for(app, url: update_log_retention_days_app_path(app), method: 'post') do |f|
+                .input-group(style="padding-left:0px;")
+                  = f.text_field :log_retention_days, class: 'form-control', id: "barito_app_#{app.id}_log_retention_days", placeholder: @app_group.log_retention_days
+                  .input-group-append
+                    = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update the log retention days?' })
+                      i.fas.fa-check
+            - else
+              - if app.log_retention_days
+                b= app.log_retention_days
+              - else
+                = @app_group.log_retention_days
           td.col-1
             - if allow_add
               = form_for(app, url: app_path(app)) do |f|
@@ -48,8 +62,9 @@ h4.mb-3 All Applications
           = f.hidden_field :app_group_id, value: app_group.id
           tr.d-flex
             td.col-2= f.text_field :name, class: 'form-control'
-            td.col-2= f.text_field :topic_name, class: 'form-control'
+            td.col-1= f.text_field :topic_name, class: 'form-control'
             td.col-3
+            td.col-1
             td.col-1= f.number_field :max_tps, class: 'form-control'
             td.col-1
             td.col-1

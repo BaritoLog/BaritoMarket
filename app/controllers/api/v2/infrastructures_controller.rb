@@ -44,29 +44,26 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
-    @profiles = []
-    @apps = BaritoApp.where(status: BaritoApp.statuses[:active])
-
-    @apps.each do |app|
-      @app_group = app.app_group
-      @infrastructure_component = @app_group.infrastructure.infrastructure_components.where(
+    profiles = []
+    AppGroup.all.each do |app_group|
+      es_component = app_group.infrastructure.infrastructure_components.where(
         component_type: 'elasticsearch',
         status: InfrastructureComponent.statuses[:finished],
-      )
-      if @infrastructure_component.blank?
-        next
-      end
+      ).first
 
-      @infrastructure_component.each do |component|
-        @profiles << {
-          hostname: component.hostname,
-          ipaddress: component.ipaddress,
-          log_retention_days: @app_group.log_retention_days,
-        }
-      end
+      next if es_component == nil
+
+      profiles << {
+        ipaddress: es_component.ipaddress,
+        log_retention_days: app_group.log_retention_days,
+        log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
+          app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
+          app_map
+        end
+      }
     end
 
-    render json: @profiles
+    render json: profiles
   end
 
   def profile_prometheus_exporter

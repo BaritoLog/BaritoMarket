@@ -47,6 +47,7 @@ Capybara.javascript_driver = :custom_headless_chrome
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include Warden::Test::Helpers
+  config.include Devise::Test::ControllerHelpers, type: :controller
   config.include GateClientHelper
   config.include AppViewHelper
 

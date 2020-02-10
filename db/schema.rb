@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_042046) do
+ActiveRecord::Schema.define(version: 2020_01_27_094355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 2019_12_11_042046) do
     t.bigint "app_group_id"
     t.string "topic_name"
     t.integer "max_tps"
+    t.integer "log_retention_days"
     t.index ["app_group_id", "name"], name: "index_barito_apps_on_app_group_id_and_name", unique: true
     t.index ["app_group_id", "topic_name"], name: "index_barito_apps_on_app_group_id_and_topic_name", unique: true
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
