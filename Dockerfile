@@ -1,9 +1,11 @@
 FROM ruby:2.5.1-slim AS base
 
-ENV BUNDLER_VERSION 2.1.4
-ENV RACK_ENV production
-ENV RAILS_ENV production
-ENV RAILS_LOG_TO_STDOUT true
+ENV BUNDLER_VERSION=2.1.4
+ENV RAILS_LOG_TO_STDOUT=true
+
+ARG RAILS_ENV=production
+ENV RAILS_ENV=${RAILS_ENV}
+ENV RACK_ENV=${RAILS_ENV}
 
 RUN apt-get -y update && \
   apt-get -y install libcurl3 libpq5 && \
@@ -21,7 +23,7 @@ USER app
 
 COPY --chown=app:app Gemfile* ./
 RUN bundle config --local deployment 'true' && \
-  bundle config --local without 'development test' && \
+  bundle config --local without $(echo 'development test' | sed "s/\\s*$RAILS_ENV\\s*//g") && \
   bundle install && \
   rm -vf /usr/local/bundle/ruby/*/cache/*.gem
 
