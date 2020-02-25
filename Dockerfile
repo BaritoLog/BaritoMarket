@@ -1,16 +1,13 @@
-FROM ruby:2.5.1-slim AS base
-
-ENV BUNDLER_VERSION=2.1.4
-ENV RAILS_LOG_TO_STDOUT=true
+FROM ruby:2.5.5-slim AS base
 
 ARG RAILS_ENV=production
 ENV RAILS_ENV=${RAILS_ENV}
 ENV RACK_ENV=${RAILS_ENV}
 
 RUN apt-get -y update && \
-  apt-get -y install libcurl3 libpq5 && \
+  apt-get -y install libcurl4 libpq5 && \
   rm -vrf /var/lib/apt/lists/* && \
-  gem install bundler -v "$BUNDLER_VERSION" && \
+  gem install bundler -v "~>2.0" && \
   rm -vf /usr/local/bundle/cache/*.gem && \
   useradd -mU -d /app app
 WORKDIR /app
@@ -37,6 +34,8 @@ RUN mv config/application.yml.example config/application.yml && \
 
 FROM base
 USER app
+
+ENV RAILS_LOG_TO_STDOUT=true
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=build /app .
