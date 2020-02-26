@@ -15,7 +15,7 @@ RSpec.feature 'Cluster Template Management', type: :feature do
         click_link 'New Cluster Template'
         within('#new_cluster_template') do
           fill_in 'cluster_template[name]', with: prep_cluster_template.name
-          fill_in 'cluster_template[instances]', with: prep_cluster_template.instances.to_json
+          fill_in 'cluster_template[manifest]', with: prep_cluster_template.manifest.to_json
           fill_in 'cluster_template[options]', with: prep_cluster_template.options.to_json
         end
 

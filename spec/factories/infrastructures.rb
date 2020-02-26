@@ -7,7 +7,7 @@ FactoryBot.define do
     status                Infrastructure.statuses[:inactive]
     consul_host           Faker::Internet.domain_name
     options               { {"kafka_partition": 1, "kafka_replication_factor": 1, "max_tps": 100} }
-    instances             { 
+    manifest              { 
                             [
                               {
                                 "type": "yggdrasil",

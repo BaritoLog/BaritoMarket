@@ -12,7 +12,7 @@ RSpec.feature 'Barito App Management', type: :feature do
     create(:infrastructure,
       app_group: @app_group,
       cluster_template_id: cluster_template.id,
-      instances: cluster_template.instances,
+      manifest: cluster_template.manifest,
       options: cluster_template.options,
     )
     @barito_app = create(:barito_app, app_group: @app_group, max_tps: 50)
