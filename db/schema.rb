@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_27_094355) do
+ActiveRecord::Schema.define(version: 2020_02_25_110600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_094355) do
 
   create_table "cluster_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "instances"
+    t.jsonb "manifest"
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -155,7 +155,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_094355) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cluster_template_id"
-    t.jsonb "instances", default: {}, null: false
+    t.jsonb "manifest", default: {}, null: false
     t.jsonb "options", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
     t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
