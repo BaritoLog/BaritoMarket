@@ -7,7 +7,7 @@ RSpec.describe ClusterTemplate, type: :model do
     it 'should create the cluster_template' do
       cluster_template = ClusterTemplate.create(
         name: cluster_template_props.name,
-        instances: cluster_template_props.instances,
+        manifest: cluster_template_props.manifest,
         options: cluster_template_props.options,
       )
       
