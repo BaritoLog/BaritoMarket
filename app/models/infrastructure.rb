@@ -37,13 +37,13 @@ class Infrastructure < ApplicationRecord
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
       cluster_template_id:  cluster_template.id,
-      manifest:             cluster_template.manifest,
+      manifests:             cluster_template.manifests,
       options:              cluster_template.options,
     )
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(cluster_template.manifest)
+      components = infrastructure.generate_components(cluster_template.manifests)
       BlueprintWorker.perform_async(
         components,
         infrastructure_id: infrastructure.id
@@ -129,9 +129,9 @@ class Infrastructure < ApplicationRecord
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 
-  def generate_components(manifest)
+  def generate_components(manifests)
     components = []
-    manifest.each do |m|
+    manifests.each do |m|
 
       components += (1..m["count"]).map { |number| component_hash(m["type"], number) }
     end

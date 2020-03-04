@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :cluster_template do
     sequence(:name) { |n| "#{Faker::Cat.name} #{n}" }
-    manifest  { [
+    manifests  { [
                 {
                   "type": "consul",
                   "count": 1,

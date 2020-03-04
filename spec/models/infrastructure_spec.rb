@@ -5,7 +5,7 @@ RSpec.describe Infrastructure, type: :model do
     let(:infrastructure) { create :infrastructure }
     let(:cluster_template) { create :cluster_template }
     before(:each) do
-      @components = infrastructure.generate_components(cluster_template.manifest)
+      @components = infrastructure.generate_components(cluster_template.manifests)
     end
 
     it 'should generate correct number of components' do
@@ -36,7 +36,7 @@ RSpec.describe Infrastructure, type: :model do
         capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       
@@ -51,7 +51,7 @@ RSpec.describe Infrastructure, type: :model do
         capacity: cluster_template.name,
         app_group_id: 'invalid_group',
         cluster_template_id: cluster_template.id,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       
@@ -65,7 +65,7 @@ RSpec.describe Infrastructure, type: :model do
         capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       
@@ -164,7 +164,7 @@ RSpec.describe Infrastructure, type: :model do
         capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       infrastructure.update_status('INACTIVE')
@@ -179,7 +179,7 @@ RSpec.describe Infrastructure, type: :model do
         capacity: cluster_template.name,
         app_group_id: infrastructure_props.app_group_id,
         cluster_template_id: cluster_template.id,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       infrastructure.update_status('ACTIVE')
