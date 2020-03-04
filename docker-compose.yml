@@ -2,7 +2,11 @@ version: '3'
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        - RAILS_ENV=development
+        - RACK_ENV=development
     environment:
       - DB_USER=barito
       - DB_HOST=db
@@ -10,7 +14,13 @@ services:
       - DB_PASSWORD=barito
       - REDIS_CACHE_HOST=redis:6379
       - RAILS_ENV=development
+      - RACK_ENV=development
       - REDIS_URL=redis://redis:6379/0
+      - DB_POOL=5
+      - DB_TIMEOUT=60
+      - CAS_BASE_URL=""
+    volumes:
+      - .:/app
     ports:
       - 9292:9292
 

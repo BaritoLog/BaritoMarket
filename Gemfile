@@ -49,6 +49,7 @@ group :development, :test do
   gem 'timecop', '<= 0.9.1'
   gem 'webdrivers', '~> 4.0'
   gem 'webmock', '<= 3.4.1'
+  gem 'fakeredis'
 end
 
 group :development do
@@ -57,8 +58,4 @@ group :development do
   gem 'spring', '<= 2.0.2'
   gem 'spring-watcher-listen', '<= 2.0.1'
   gem 'web-console', '<= 3.6.2'
-end
-
-group :test do
-  gem 'fakeredis'
 end
