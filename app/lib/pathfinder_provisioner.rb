@@ -132,6 +132,53 @@ class PathfinderProvisioner
     end
   end
 
+  def bulk_apply(deployments)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/bulk_apply",
+      method: :post,
+      body: {
+        'deployments' => deployments
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
+  def list_containers(deployment_name)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/list_containers",
+      method: :get,
+      params: {
+        'name' => deployment_name,
+      },
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true,
+        'data' => body['data']
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)
