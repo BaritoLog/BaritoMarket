@@ -1,7 +1,7 @@
 module ChefHelper
   class ZookeeperRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      hosts = fetch_hosts_adress_manifest_by(manifest,'zookeeper')
+      hosts = fetch_hosts_address_manifest_by(manifest,'zookeeper')
       @my_id = (hosts.index("#{manifest[:name]}-01.node.zookeeper")) + 1
 
       @domains = []
@@ -13,7 +13,7 @@ module ChefHelper
         end
       end
       
-      @consul_hosts = fetch_hosts_adress_manifests_by(infrastructure_manifests,'consul')
+      @consul_hosts = fetch_hosts_address_manifests_by(infrastructure_manifests,'consul')
       @role_name = opts[:role_name] || :zookeeper
       @cluster_name = manifest[:cluster_name]
       @hostname = manifest[:name]

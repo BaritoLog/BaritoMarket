@@ -11,17 +11,17 @@ module ChefHelper
           collect{ |c| c.ipaddress || c.hostname }
       end
 
-      def fetch_hosts_adress_manifests_by(manifests, filter)
+      def fetch_hosts_address_manifests_by(manifests, filter)
         hosts = []
         manifests.each do |manifest|
           if manifest[:type] == filter
-            hosts = fetch_hosts_adress_manifest_by(manifest, filter)
+            hosts = fetch_hosts_address_manifest_by(manifest, filter)
           end
         end
         hosts
       end
 
-      def fetch_hosts_adress_manifest_by(manifest, filter)
+      def fetch_hosts_address_manifest_by(manifest, filter)
         hosts = []
         (1..manifest[:count]).each do |i|
           hosts << "#{manifest[:name]}-%02d.node.#{filter}" % i

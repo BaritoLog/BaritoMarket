@@ -1,7 +1,7 @@
 module ChefHelper
   class KibanaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      @consul_hosts = fetch_hosts_adress_manifests_by(infrastructure_manifests,'consul')
+      @consul_hosts = fetch_hosts_address_manifests_by(infrastructure_manifests,'consul')
       @role_name = opts[:role_name] || 'kibana'
       @base_path = manifest[:cluster_name]
       @kibana_attrs = get_bootstrap_attributes(manifest[:definition][:bootstrappers])
