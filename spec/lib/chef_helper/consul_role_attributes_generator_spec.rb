@@ -59,11 +59,11 @@ module ChefHelper
         attrs = consul_attributes.generate
 
         expect(attrs).to eq({
-            "consul"=> 
+            :consul=> 
               {
-                "hosts"=> ["haza-consul-01.node.consul"]
+                :hosts=> ["haza-consul-01.node.consul"]
             }, 
-            "run_list"=> ["role[consul]"]
+            :run_list=> ["role[consul]"]
           }
         )
       end
