@@ -1,10 +1,7 @@
 module ChefHelper
   class ConsulRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      @hosts = []
-      (1..manifest[:count]).each do |i|
-        @hosts << "#{manifest[:name]}-%02d.node.consul" % i
-      end
+      @hosts = fetch_hosts_adress_manifest_by(manifest,'consul')
       @role_name = opts[:role_name] || 'consul'
       consul_template = ComponentTemplate.find_by(name: 'consul')
       @consul_attrs = get_bootstrap_attributes(consul_template.bootstrappers)

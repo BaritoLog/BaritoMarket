@@ -11,6 +11,24 @@ module ChefHelper
           collect{ |c| c.ipaddress || c.hostname }
       end
 
+      def fetch_hosts_adress_manifests_by(manifests, filter)
+        hosts = []
+        manifests.each do |manifest|
+          if manifest[:type] == filter
+            hosts = fetch_hosts_adress_manifest_by(manifest, filter)
+          end
+        end
+        hosts
+      end
+
+      def fetch_hosts_adress_manifest_by(manifest, filter)
+        hosts = []
+        (1..manifest[:count]).each do |i|
+          hosts << "#{manifest[:name]}-%02d.node.#{filter}" % i
+        end
+        hosts
+      end
+
       def bind_hosts_and_port(hosts, port, protocol=nil)
         if port
           hosts = hosts.map{ |host| "#{host}:#{port}" }
@@ -24,9 +42,9 @@ module ChefHelper
 
       def get_bootstrap_attributes(bootstrappers)
         bootstrappers.each do |bootstrapper|
-          case bootstrapper["bootstrap_type"]
+          case bootstrapper[:bootstrap_type]
           when "chef-solo"
-            return bootstrapper["bootstrap_attributes"]
+            return bootstrapper[:bootstrap_attributes]
           else 
             return nil
           end
