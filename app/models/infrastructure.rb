@@ -43,9 +43,7 @@ class Infrastructure < ApplicationRecord
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(cluster_template.manifests)
       BlueprintWorker.perform_async(
-        components,
         infrastructure_id: infrastructure.id
       )
     end
