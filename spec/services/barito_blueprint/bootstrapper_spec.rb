@@ -108,7 +108,12 @@ module BaritoBlueprint
                                 [
                                   {
                                     :bootstrap_type=>"chef-solo",
-                                    :bootstrap_attributes=>{"consul"=>{"hosts"=>["guja-consul-01.node.consul"]}, "run_list"=>["role[consul]"]},
+                                    :bootstrap_attributes=>{
+                                      :consul=>{
+                                        :hosts=>["guja-consul-01.node.consul"]
+                                      }, 
+                                      :run_list=>["role[consul]"]
+                                    },
                                     :bootstrap_cookbooks_url=>"https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                                   }
                                 ],
