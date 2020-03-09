@@ -1,12 +1,13 @@
 module ChefHelper
   class ZookeeperRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      hosts = generate_pf_meta("deployment_ip_address", {deployment_name: "#{manifest[:name]}"})
-      @my_id = generate_pf_meta("zookeeper_myid", {key: "value"})
+      hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest[:name]}"})
+      @my_id = generate_pf_meta("container_id")
 
-      @domains = generate_pf_meta("zookeeper_domains", {key: "value"})
+      @domains = generate_pf_meta("deployment_host_sequences", 
+        {host: "zookeeper.service.consul", self: "0.0.0.0"})
 
-      @consul_hosts = generate_pf_meta("deployment_ip_address", {deployment_name: "#{manifest[:cluster_name]}-consul"})
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest[:cluster_name]}-consul"})
       @role_name = opts[:role_name] || :zookeeper
       @cluster_name = manifest[:cluster_name]
       @hostname = manifest[:name]

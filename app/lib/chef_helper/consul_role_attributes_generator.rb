@@ -1,7 +1,7 @@
 module ChefHelper
   class ConsulRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      @hosts = generate_pf_meta("deployment_ip_address", {deployment_name: "#{manifest[:name]}"})
+      @hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest[:name]}"})
       @role_name = opts[:role_name] || 'consul'
       consul_template = ComponentTemplate.find_by(name: 'consul')
       @consul_attrs = get_bootstrap_attributes(consul_template.bootstrappers)

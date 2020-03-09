@@ -12,8 +12,10 @@ module ChefHelper
       end
 
       def generate_pf_meta(function_name, opts = {})
-        params = opts.map{|key, value| "#{key}=#{value}"}.join("&")
-        URI.escape("$pf-meta:#{function_name}?#{params}")
+        uri = URI(function_name)
+        uri.query = URI.encode_www_form(opts)
+        
+        "$pf-meta:#{uri.to_s}"
       end
 
       def bind_hosts_and_port(hosts, port, protocol=nil)

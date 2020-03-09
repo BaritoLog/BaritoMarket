@@ -111,7 +111,7 @@ module ChefHelper
 
         expect(attrs).to eq({
             "consul"=>{
-              "hosts"=>"$pf-meta:deployment_ip_address?deployment_name=barito-consul", 
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=barito-consul", 
               "run_as_server"=>false
             },
             "datadog" => {
@@ -123,8 +123,8 @@ module ChefHelper
             },
             "run_list"=>["role[zookeeper]"], 
             "zookeeper"=>{
-              "hosts"=>"$pf-meta:zookeeper_domains?key=value", 
-              "my_id"=>"$pf-meta:zookeeper_myid?key=value"
+              "hosts"=>"$pf-meta:deployment_host_sequences?host=zookeeper.service.consul&self=0.0.0.0", 
+              "my_id"=>"$pf-meta:container_id?"
             }
           }
         )

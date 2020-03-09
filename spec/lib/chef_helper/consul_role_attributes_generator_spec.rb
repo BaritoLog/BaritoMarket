@@ -58,7 +58,7 @@ module ChefHelper
         expect(attrs).to eq({
             "consul"=> 
               {
-                "hosts"=> "$pf-meta:deployment_ip_address?deployment_name=haza-consul"
+                "hosts"=> "$pf-meta:deployment_ip_addresses?deployment_name=haza-consul"
             }, 
             "run_list"=> ["role[consul]"]
           }
