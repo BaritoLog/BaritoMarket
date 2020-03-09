@@ -44,26 +44,23 @@ module ChefHelper
                       }
                     }
                   }
-      @infrastructure = create(:infrastructure)
-      @infrastructure[:manifests] = [@manifest]
-      @infrastructure.save
     end
 
     describe '#generate' do
       it 'should generate consul attributes' do
         consul_attributes = ConsulRoleAttributesGenerator.new(
           @manifest,
-          @infrastructure.manifests
+          [@manifest]
         )
         
         attrs = consul_attributes.generate
 
         expect(attrs).to eq({
-            :consul=> 
+            "consul"=> 
               {
-                :hosts=> ["haza-consul-01.node.consul"]
+                "hosts"=> "$pf-meta:deployment_ip_address?deployment_name=haza-consul"
             }, 
-            :run_list=> ["role[consul]"]
+            "run_list"=> ["role[consul]"]
           }
         )
       end
