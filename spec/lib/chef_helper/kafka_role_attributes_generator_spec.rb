@@ -108,17 +108,25 @@ module ChefHelper
         attrs = kafka_attributes.generate
 
         expect(attrs).to eq({
-            :kafka=>{
-              :kafka=>{:hosts=>[:"kafka.service.consul"],:hosts_count=>1}, 
-              :zookeeper=>{:hosts=>["zookeeper.service.consul"]},
-              :scala_version=> "2.11",
-              :confluent_version=> "5.3.0"
+            "kafka"=>{
+              "kafka"=>{
+                "hosts"=>["kafka.service.consul"],
+                "hosts_count"=>1
+              }, 
+              "zookeeper"=>{"hosts"=>["zookeeper.service.consul"]}
             },
-            :consul=>{
-              :hosts=>["#{@consul_manifest[:name]}-01.node.consul"],
-              :run_as_server=>false
+            "datadog" => {
+              "kafka"=>{
+                "instances"=>[{"host"=>"localhost", "port"=>8090, "tags"=>[], "cluster_name"=>""}]
+              }, 
+              "datadog_api_key"=>"", 
+              "datadog_hostname"=>""
             },
-            :run_list=>["role[kafka]"]
+            "consul"=>{
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=-consul",
+              "run_as_server"=>false
+            },
+            "run_list"=>["role[kafka]"]
           }
         )
       end
