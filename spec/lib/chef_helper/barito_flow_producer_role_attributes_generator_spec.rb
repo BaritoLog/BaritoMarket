@@ -115,26 +115,23 @@ module ChefHelper
         attrs = producer_attributes.generate
 
         expect(attrs).to eq({
-            :consul=>{
-              :hosts=>["#{@consul_manifest[:name]}-01.node.consul"],
-              :run_as_server=>false
+            "consul"=>{
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=-consul",
+              "run_as_server"=>false
             },
-            :run_list=>["role[barito-flow-producer]"],
-            :"barito-flow"=>{
-              :producer=>{
-                :version=>"v0.13.2", 
-                :env_vars=>{
-                  :BARITO_CONSUL_URL=>"", 
-                  :BARITO_KAFKA_BROKERS=>"kafka.service.consul:9092", 
-                  :BARITO_PRODUCER_GRPC=>":8080", 
-                  :BARITO_PRODUCER_REST=>":8085", 
-                  :BARITO_PRODUCER_ADDRESS=>":8081", 
-                  :BARITO_PRODUCER_MAX_TPS=>@producer_manifest[:definition][:bootstrappers][0][:bootstrap_attributes][:'barito-flow'][:producer][:env_vars][:BARITO_PRODUCER_MAX_TPS], 
-                  :BARITO_CONSUL_KAFKA_NAME=>"kafka", 
-                  :BARITO_PRODUCER_REST_API=>"false", 
-                  :BARITO_KAFKA_TOPIC_SUFFIX=>"_pb", 
-                  :BARITO_KAFKA_PRODUCER_TOPIC=>"barito-log", 
-                  :BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL=>10
+            "run_list"=>["role[barito-flow-producer]"],
+
+            "barito-flow"=>{
+              "producer"=>{
+                "version"=>"v0.11.8", 
+                "env_vars"=>{
+                  "BARITO_CONSUL_URL"=>"http://consul.service.consul:8500", 
+                  "BARITO_KAFKA_BROKERS"=>"kafka.service.consul:9092", 
+                  "BARITO_PRODUCER_ADDRESS"=>":8080", 
+                  "BARITO_PRODUCER_MAX_TPS"=>@producer_manifest[:definition][:bootstrappers][0][:bootstrap_attributes][:'barito-flow'][:producer][:env_vars][:BARITO_PRODUCER_MAX_TPS], 
+                  "BARITO_CONSUL_KAFKA_NAME"=>"kafka", 
+                  "BARITO_KAFKA_PRODUCER_TOPIC"=>"barito-log", 
+                  "BARITO_PRODUCER_RATE_LIMIT_RESET_INTERVAL"=>10
                 }
               }
             }
