@@ -109,21 +109,29 @@ module ChefHelper
         attrs = elastic_attributes.generate
 
         expect(attrs).to eq({
-            :consul=>{
-              :hosts=>["#{@consul_manifest[:name]}-01.node.consul"],
-              :run_as_server=>false
+            "consul"=>{
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=barito-consul",
+              "run_as_server"=>false
             },
-            :run_list=>["role[elasticsearch]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]'],
-            :elasticsearch=>{
-              :version=> "6.8.5",
-              :memory_lock=> false,
-              :node_master=> true,
-              :cluster_name=> @elastic_manifest[:cluster_name],
-              :allocated_memory=> 12000000,
-              :max_allocated_memory=> 16000000,
-              :minimum_master_nodes=> 1,
-              :index_number_of_replicas=> 1,
-              :member_hosts=>['elasticsearch.service.consul'],
+            "datadog" => {
+              "elastic"=>{
+                "instances"=>[{
+                  "url"=>"",
+                  "tags"=>[]
+                }]
+              }, 
+              "datadog_api_key"=>"", 
+              "datadog_hostname"=>""
+            },
+            "run_list"=>["role[elasticsearch]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]'],
+            "elasticsearch"=>{
+              "version"=>"6.3.0", 
+              "cluster_name"=>"barito", 
+              "allocated_memory"=>12000000, 
+              "max_allocated_memory"=>16000000, 
+              "minimum_master_nodes"=>1, 
+              "index_number_of_replicas"=>0, 
+              "member_hosts"=>["elasticsearch.service.consul"]
             }
           }
         )
