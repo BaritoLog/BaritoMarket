@@ -122,29 +122,23 @@ module ChefHelper
         attrs = consumer_attributes.generate
 
         expect(attrs).to eq({
-            :consul=>{
-              :hosts=>["#{@consul_manifest[:name]}-01.node.consul"],
-              :config=>{
-                :"consul.json"=>{
-                  :bind_addr=>""
-                }
-              },
-              :run_as_server=>false
+            "consul"=>{
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=-consul",
+              "run_as_server"=>false
             },
-            :run_list=>["role[barito-flow-consumer]"],
-            :"barito-flow" => {
-              :consumer=>{
-                :version=>"v0.13.2", 
-                :env_vars=>{
-                  :BARITO_CONSUL_URL=>"http://consul.service.consul:8500", 
-                  :BARITO_KAFKA_BROKERS=>"kafka.service.consul:9092", 
-                  :BARITO_KAFKA_GROUP_ID=>"barito-group", 
-                  :BARITO_PUSH_METRIC_URL=>"#{Figaro.env.market_end_point}/api/increase_log_count", 
-                  :BARITO_CONSUL_KAFKA_NAME=>"kafka", 
-                  :BARITO_ELASTICSEARCH_URL=>"http://elasticsearch.service.consul:9200", 
-                  :BARITO_KAFKA_TOPIC_SUFFIX=>"_pb", 
-                  :BARITO_KAFKA_CONSUMER_TOPICS=>"barito-log", 
-                  :BARITO_CONSUL_ELASTICSEARCH_NAME=>"elasticsearch"
+            "run_list"=>["role[barito-flow-consumer]"],
+            "barito-flow" => {
+              "consumer"=>{
+                "version"=>"v0.11.8", 
+                "env_vars"=>{
+                  "BARITO_CONSUL_URL"=>"http://consul.service.consul:8500", 
+                  "BARITO_KAFKA_BROKERS"=>"kafka.service.consul:9092", 
+                  "BARITO_KAFKA_GROUP_ID"=>"barito-group", 
+                  "BARITO_PUSH_METRIC_URL"=>"http://market.barito.local//api/increase_log_count", 
+                  "BARITO_CONSUL_KAFKA_NAME"=>"kafka", 
+                  "BARITO_ELASTICSEARCH_URLS"=>"http://elasticsearch.service.consul:9200", 
+                  "BARITO_KAFKA_CONSUMER_TOPICS"=>"barito-log", 
+                  "BARITO_CONSUL_ELASTICSEARCH_NAME"=>"elasticsearch"
                 }
               }
             }
