@@ -13,20 +13,20 @@ class ClusterTemplatesController < ApplicationController
 
   def edit
     authorize @cluster_template
-    @manifest = JSON.pretty_generate(@cluster_template.manifest)
+    @manifests = JSON.pretty_generate(@cluster_template.manifests)
     @options = JSON.pretty_generate(@cluster_template.options)
   end
 
   def show
     authorize @cluster_template
-    @manifest = JSON.pretty_generate(@cluster_template.manifest)
+    @manifests = JSON.pretty_generate(@cluster_template.manifests)
     @options = JSON.pretty_generate(@cluster_template.options)
   end
 
   def create
     authorize ClusterTemplate
     attributes = cluster_template_params.clone
-    attributes[:manifest] = JSON.parse(attributes[:manifest])
+    attributes[:manifests] = JSON.parse(attributes[:manifests])
     attributes[:options] = JSON.parse(attributes[:options])
     @cluster_template = ClusterTemplate.new(attributes)
 
@@ -53,7 +53,7 @@ class ClusterTemplatesController < ApplicationController
   def update
     authorize @cluster_template
     attributes = cluster_template_params.clone
-    attributes[:manifest] = JSON.parse(attributes[:manifest])
+    attributes[:manifests] = JSON.parse(attributes[:manifests])
     attributes[:options] = JSON.parse(attributes[:options])
     @cluster_template.update_attributes(attributes)
     redirect_to cluster_template_path(@cluster_template)

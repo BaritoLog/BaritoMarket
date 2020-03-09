@@ -35,7 +35,7 @@ RSpec.describe 'Apps API', type: :request do
         status: Infrastructure.statuses[:active],
         capacity: "small",
         cluster_template: cluster_template,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
@@ -62,7 +62,7 @@ RSpec.describe 'Apps API', type: :request do
         status: Infrastructure.statuses[:active],
         capacity: "small",
         cluster_template: cluster_template,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       ).tap do |infrastructure|
         create(:infrastructure_component,

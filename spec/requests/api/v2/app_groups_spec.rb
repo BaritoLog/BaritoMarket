@@ -24,7 +24,7 @@ RSpec.describe 'App Groups API', type: :request do
         status: Infrastructure.statuses[:active],
         capacity: "small",
         cluster_template: cluster_template,
-        manifest: cluster_template.manifest,
+        manifests: cluster_template.manifests,
         options: cluster_template.options,
       )
       post api_v2_create_app_group_path, params: { access_token: @access_token, name: app_group.name, cluster_template_id: cluster_template.id }, headers: headers

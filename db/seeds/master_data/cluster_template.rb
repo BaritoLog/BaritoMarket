@@ -8,7 +8,7 @@
 ### Staging
 ClusterTemplate.create!(
   name: "Log - Small",
-  instances: [
+  manifests: [
     {
       "type": "yggdrasil",
       "count": 0
@@ -47,7 +47,7 @@ ClusterTemplate.create!(
 
 ClusterTemplate.create!(
   name: "Log - Medium",
-  instances: [
+  manifests: [
     {
       "type": "yggdrasil",
       "count": 0
@@ -86,7 +86,7 @@ ClusterTemplate.create!(
 
 ClusterTemplate.create!(
   name: "Log - Large",
-  instances: [
+  manifests: [
     {
       "type": "yggdrasil",
       "count": 0

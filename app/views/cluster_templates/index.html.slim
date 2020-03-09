@@ -26,4 +26,4 @@ table.table.table-hover.table-sm.m-3
     - @cluster_templates.each do |cluster_template|
       tr.d-flex
         td.col-9 = link_to cluster_template.name, cluster_template_path(cluster_template)
-        td.col-3 = link_to 'Delete', component_template_path(cluster_template), data: { method: :delete }
+        td.col-3 = link_to 'Edit', edit_cluster_template_path(cluster_template)
