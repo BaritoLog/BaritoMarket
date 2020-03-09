@@ -110,14 +110,21 @@ module ChefHelper
         attrs = zookeeper_attributes.generate
 
         expect(attrs).to eq({
-            :consul=>{
-              :hosts=>["#{@consul_manifest[:name]}-01.node.consul"], 
-              :run_as_server=>false
+            "consul"=>{
+              "hosts"=>"$pf-meta:deployment_ip_address?deployment_name=barito-consul", 
+              "run_as_server"=>false
             },
-            :run_list=>["role[zookeeper]"], 
-            :zookeeper=>{
-              :hosts=>["0.0.0.0"], 
-              :my_id=>@my_id
+            "datadog" => {
+              "zk"=>{
+                "instances"=>[{"host"=>"localhost", "port"=>2181, "tags"=>[], "cluster_name"=>""}]
+              }, 
+              "datadog_api_key"=>"", 
+              "datadog_hostname"=>""
+            },
+            "run_list"=>["role[zookeeper]"], 
+            "zookeeper"=>{
+              "hosts"=>"$pf-meta:zookeeper_domains?key=value", 
+              "my_id"=>"$pf-meta:zookeeper_myid?key=value"
             }
           }
         )
