@@ -8,9 +8,6 @@ module ChefHelper
       @role_name = opts[:role_name] || 'elasticsearch'
       @cluster_name = manifest[:cluster_name]
       @hostname = manifest[:name]
-      #!!
-      #@ipaddress = manifest.ipaddress
-      #!!
       @port = opts[:port] || 9200
       elastic_bootstrap = manifest[:definition][:bootstrappers][0][:bootstrap_attributes][:elasticsearch]
       @index_number_of_replicas = elastic_bootstrap[:index_number_of_replicas]
@@ -34,7 +31,7 @@ module ChefHelper
       if Figaro.env.datadog_integration == 'true'
         @elastic_attrs[:datadog][:datadog_api_key] = Figaro.env.datadog_api_key
         @elastic_attrs[:datadog][:datadog_hostname] = @hostname
-        @elastic_attrs[:datadog][:elastic][:instances][0][:url] = "http://#{@ipaddress}:#{@port}"
+        @elastic_attrs[:datadog][:elastic][:instances][0][:url] = "http://127.0.0.1:#{@port}"
         @elastic_attrs[:run_list] << 'recipe[datadog::default]'
         @elastic_attrs[:run_list] << 'recipe[datadog::elastic_datadog]'
       end
