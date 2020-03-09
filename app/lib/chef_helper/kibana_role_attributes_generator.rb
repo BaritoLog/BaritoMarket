@@ -1,10 +1,12 @@
 module ChefHelper
   class KibanaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
-      @consul_hosts = fetch_hosts_address_manifests_by(infrastructure_manifests,'consul')
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
+        {deployment_name: "#{manifest[:cluster_name]}-consul"})
       @role_name = opts[:role_name] || 'kibana'
       @base_path = manifest[:cluster_name]
-      @kibana_attrs = get_bootstrap_attributes(manifest[:definition][:bootstrappers])
+      kibana_template = ComponentTemplate.find_by(name: 'kibana')
+      @kibana_attrs = get_bootstrap_attributes(kibana_template.bootstrappers)
     end
 
     def generate
@@ -13,9 +15,9 @@ module ChefHelper
     end
 
     def update_attrs
-      @kibana_attrs[:kibana][:config][:"server.basePath"] = "/#{@base_path}"
-      @kibana_attrs[:consul][:hosts] = @consul_hosts
-      @kibana_attrs[:run_list] = ["role[#{@role_name}]"]
+      @kibana_attrs["kibana"]["config"]["server.basePath"] = "/#{@base_path}"
+      @kibana_attrs["consul"]["hosts"] = @consul_hosts
+      @kibana_attrs["run_list"] = ["role[#{@role_name}]"]
 
       @kibana_attrs
     end
