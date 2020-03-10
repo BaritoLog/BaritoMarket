@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - 9292:9292
+      - 8080:8080
 
   db:
     image: postgres:12-alpine
