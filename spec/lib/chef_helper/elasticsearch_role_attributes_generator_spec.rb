@@ -4,95 +4,95 @@ module ChefHelper
   RSpec.describe ElasticsearchRoleAttributesGenerator do
     before(:each) do
       @elastic_manifest = {
-                  "name": "haza-consul",
-                  "cluster_name": "barito",
-                  "type": "elasticsearch",
-                  "count": 1,
-                  "definition": {
-                    "container_type": "stateful",
-                    "strategy": "RollingUpdate",
-                    "allow_failure": "false",
-                    "source": {
-                      "mode": "pull",              # can be local or pull. default is pull.
-                      "alias": "lxd-ubuntu-minimal-elasticsearch-6.8.5-1",
-                      "remote": {
-                        "name": "barito-registry"
+                  "name" => "haza-consul",
+                  "cluster_name" => "barito",
+                  "type" => "elasticsearch",
+                  "count" => 1,
+                  "definition" => {
+                    "container_type" => "stateful",
+                    "strategy" => "RollingUpdate",
+                    "allow_failure" => "false",
+                    "source" => {
+                      "mode" => "pull",              # can be local or pull. default is pull.
+                      "alias" => "lxd-ubuntu-minimal-elasticsearch-6.8.5-1",
+                      "remote" => {
+                        "name" => "barito-registry"
                       },
-                      "fingerprint": "",
-                      "source_type": "image"                      
+                      "fingerprint" => "",
+                      "source_type" => "image"                      
                     },
-                    "resource": {
-                      "cpu_limit": "1-4",
-                      "mem_limit": "20GB"
+                    "resource" => {
+                      "cpu_limit" => "1-4",
+                      "mem_limit" => "20GB"
                     },
-                    "bootstrappers": [{
-                      "bootstrap_type": "chef-solo",
-                      "bootstrap_attributes": {
-                        "consul": {
-                          "hosts": [],
-                          "run_as_server": false
+                    "bootstrappers" => [{
+                      "bootstrap_type" => "chef-solo",
+                      "bootstrap_attributes" => {
+                        "consul" => {
+                          "hosts" => [],
+                          "run_as_server" => false
                         },
-                        "run_list": [],
-                        "elasticsearch": {
-                          "version": "6.8.5",
-                          "memory_lock": false,
-                          "node_master": true,
-                          "cluster_name": "",
-                          "allocated_memory": 12000000,
-                          "max_allocated_memory": 16000000,
-                          "minimum_master_nodes": 1,
-                          "index_number_of_replicas": 1
+                        "run_list" => [],
+                        "elasticsearch" => {
+                          "version" => "6.8.5",
+                          "memory_lock" => false,
+                          "node_master" => true,
+                          "cluster_name" => "",
+                          "allocated_memory" => 12000000,
+                          "max_allocated_memory" => 16000000,
+                          "minimum_master_nodes" => 1,
+                          "index_number_of_replicas" => 1
                         }
                       },
-                      "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                      "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                     }],
-                    "healthcheck": {
-                      "type": "tcp",
-                      "port": 9500,
-                      "endpoint": "",
-                      "payload": "",
-                      "timeout": ""
+                    "healthcheck" => {
+                      "type" => "tcp",
+                      "port" => 9500,
+                      "endpoint" => "",
+                      "payload" => "",
+                      "timeout" => ""
                     }
                   }
                 }
       @consul_manifest = {
-                    "name": "haza-consul",
-                    "cluster_name": "barito",
-                    "type": "consul",
-                    "count": 1,
-                    "definition": {
-                      "container_type": "stateless",
-                      "strategy": "RollingUpdate",
-                      "allow_failure": "false",
-                      "source": {
-                        "mode": "pull",
-                        "alias": "lxd-ubuntu-minimal-consul-1.1.0-8",
-                        "remote": {
-                          "name": "barito-registry"
+                    "name" => "haza-consul",
+                    "cluster_name" => "barito",
+                    "type" => "consul",
+                    "count" => 1,
+                    "definition" => {
+                      "container_type" => "stateless",
+                      "strategy" => "RollingUpdate",
+                      "allow_failure" => "false",
+                      "source" => {
+                        "mode" => "pull",
+                        "alias" => "lxd-ubuntu-minimal-consul-1.1.0-8",
+                        "remote" => {
+                          "name" => "barito-registry"
                         },
-                        "fingerprint": "",
-                        "source_type": "image"                      
+                        "fingerprint" => "",
+                        "source_type" => "image"                      
                       },
-                      "resource": {
-                        "cpu_limit": "0-2",
-                        "mem_limit": "500MB"
+                      "resource" => {
+                        "cpu_limit" => "0-2",
+                        "mem_limit" => "500MB"
                       },
-                      "bootstrappers": [{
-                        "bootstrap_type": "chef-solo",
-                        "bootstrap_attributes": {
-                          "consul": {
-                            "hosts": []
+                      "bootstrappers" => [{
+                        "bootstrap_type" => "chef-solo",
+                        "bootstrap_attributes" => {
+                          "consul" => {
+                            "hosts" => []
                           },
-                          "run_list": []
+                          "run_list" => []
                         },
-                        "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                        "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                       }],
-                      "healthcheck": {
-                        "type": "tcp",
-                        "port": 9500,
-                        "endpoint": "",
-                        "payload": "",
-                        "timeout": ""
+                      "healthcheck" => {
+                        "type" => "tcp",
+                        "port" => 9500,
+                        "endpoint" => "",
+                        "payload" => "",
+                        "timeout" => ""
                       }
                     }
                   }

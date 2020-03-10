@@ -6,6 +6,7 @@ class InfrastructuresController < ApplicationController
 
   def show
     @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
+    @manifests = JSON.pretty_generate(@infrastructure.manifests)
   end
 
   def retry_provision

@@ -123,7 +123,7 @@ Rails.application.routes.draw do
     end
   resources :cluster_templates,
     defaults: { format: :html }
-  resources :component_templates,
+  resources :deployment_templates,
     defaults: { format: :html }
 
   resources :app_group_teams,

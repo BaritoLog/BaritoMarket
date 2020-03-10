@@ -1,4 +1,4 @@
-class ComponentTemplatePolicy < ApplicationPolicy
+class DeploymentTemplatePolicy < ApplicationPolicy
   def index?
     barito_superadmin?
   end

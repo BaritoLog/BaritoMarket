@@ -4,108 +4,108 @@ module ChefHelper
   RSpec.describe BaritoFlowConsumerRoleAttributesGenerator do
     before(:each) do
       @consumer_manifest = {
-                  "type": "barito-flow-consumer",
-                  "count": 1,
-                  "definition": {
-                    "container_type": "stateless",
-                    "strategy": "RollingUpdate",
-                    "allow_failure": "false",
-                    "source": {
-                      "mode": "pull",              # can be local or pull. default is pull.
-                      "alias": "lxd-ubuntu-minimal-barito-flow-consumer-0.13.2-2",
-                      "remote": {
-                        "name": "barito-registry"
+                  "type" => "barito-flow-consumer",
+                  "count" => 1,
+                  "definition" => {
+                    "container_type" => "stateless",
+                    "strategy" => "RollingUpdate",
+                    "allow_failure" => "false",
+                    "source" => {
+                      "mode" => "pull",              # can be local or pull. default is pull.
+                      "alias" => "lxd-ubuntu-minimal-barito-flow-consumer-0.13.2-2",
+                      "remote" => {
+                        "name" => "barito-registry"
                       },
-                      "fingerprint": "",
-                      "source_type": "image"                      
+                      "fingerprint" => "",
+                      "source_type" => "image"                      
                     },
-                    "resource": {
-                      "cpu_limit": "0-2",
-                      "mem_limit": "500MB"
+                    "resource" => {
+                      "cpu_limit" => "0-2",
+                      "mem_limit" => "500MB"
                     },
-                    "bootstrappers": [{
-                      "bootstrap_type": "chef-solo",
-                      "bootstrap_attributes": {
-                        "consul": {
-                          "hosts": [
+                    "bootstrappers" => [{
+                      "bootstrap_type" => "chef-solo",
+                      "bootstrap_attributes" => {
+                        "consul" => {
+                          "hosts" => [
 
                           ],
-                          "config": {
-                            "consul.json": {
-                              "bind_addr": ""
+                          "config" => {
+                            "consul.json" => {
+                              "bind_addr" => ""
                             }
                           },
-                          "run_as_server": false
+                          "run_as_server" => false
                         },
-                        "run_list": [
+                        "run_list" => [
 
                         ],
-                        "barito-flow": {
-                          "consumer": {
-                            "version": "v0.13.2",
-                            "env_vars": {
-                              "BARITO_CONSUL_URL": "http://consul.service.consul:8500",
-                              "BARITO_KAFKA_BROKERS": "kafka.service.consul:9092",
-                              "BARITO_KAFKA_GROUP_ID": "barito-group",
-                              "BARITO_PUSH_METRIC_URL": "",
-                              "BARITO_CONSUL_KAFKA_NAME": "kafka",
-                              "BARITO_ELASTICSEARCH_URL": "http://elasticsearch.service.consul:9200",
-                              "BARITO_KAFKA_TOPIC_SUFFIX": "_pb",
-                              "BARITO_KAFKA_CONSUMER_TOPICS": "barito-log",
-                              "BARITO_CONSUL_ELASTICSEARCH_NAME": "elasticsearch"
+                        "barito-flow" => {
+                          "consumer" => {
+                            "version" => "v0.13.2",
+                            "env_vars" => {
+                              "BARITO_CONSUL_URL" => "http://consul.service.consul:8500",
+                              "BARITO_KAFKA_BROKERS" => "kafka.service.consul:9092",
+                              "BARITO_KAFKA_GROUP_ID" => "barito-group",
+                              "BARITO_PUSH_METRIC_URL" => "",
+                              "BARITO_CONSUL_KAFKA_NAME" => "kafka",
+                              "BARITO_ELASTICSEARCH_URL" => "http://elasticsearch.service.consul:9200",
+                              "BARITO_KAFKA_TOPIC_SUFFIX" => "_pb",
+                              "BARITO_KAFKA_CONSUMER_TOPICS" => "barito-log",
+                              "BARITO_CONSUL_ELASTICSEARCH_NAME" => "elasticsearch"
                             }
                           }
                         }
                       },
-                      "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                      "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                     }],
-                    "healthcheck": {
-                      "type": "tcp",
-                      "port": 9500,
-                      "endpoint": "",
-                      "payload": "",
-                      "timeout": ""
+                    "healthcheck" => {
+                      "type" => "tcp",
+                      "port" => 9500,
+                      "endpoint" => "",
+                      "payload" => "",
+                      "timeout" => ""
                     }
                   }
                 }
       @consul_manifest = {
-                    "name": "haza-consul",
-                    "cluster_name": "barito",
-                    "type": "consul",
-                    "count": 1,
-                    "definition": {
-                      "container_type": "stateless",
-                      "strategy": "RollingUpdate",
-                      "allow_failure": "false",
-                      "source": {
-                        "mode": "pull",
-                        "alias": "lxd-ubuntu-minimal-consul-1.1.0-8",
-                        "remote": {
-                          "name": "barito-registry"
+                    "name" => "haza-consul",
+                    "cluster_name" => "barito",
+                    "type" => "consul",
+                    "count" => 1,
+                    "definition" => {
+                      "container_type" => "stateless",
+                      "strategy" => "RollingUpdate",
+                      "allow_failure" => "false",
+                      "source" => {
+                        "mode" => "pull",
+                        "alias" => "lxd-ubuntu-minimal-consul-1.1.0-8",
+                        "remote" => {
+                          "name" => "barito-registry"
                         },
-                        "fingerprint": "",
-                        "source_type": "image"                      
+                        "fingerprint" => "",
+                        "source_type" => "image"                      
                       },
-                      "resource": {
-                        "cpu_limit": "0-2",
-                        "mem_limit": "500MB"
+                      "resource" => {
+                        "cpu_limit" => "0-2",
+                        "mem_limit" => "500MB"
                       },
-                      "bootstrappers": [{
-                        "bootstrap_type": "chef-solo",
-                        "bootstrap_attributes": {
-                          "consul": {
-                            "hosts": []
+                      "bootstrappers" => [{
+                        "bootstrap_type" => "chef-solo",
+                        "bootstrap_attributes" => {
+                          "consul" => {
+                            "hosts" => []
                           },
-                          "run_list": []
+                          "run_list" => []
                         },
-                        "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                        "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                       }],
-                      "healthcheck": {
-                        "type": "tcp",
-                        "port": 9500,
-                        "endpoint": "",
-                        "payload": "",
-                        "timeout": ""
+                      "healthcheck" => {
+                        "type" => "tcp",
+                        "port" => 9500,
+                        "endpoint" => "",
+                        "payload" => "",
+                        "timeout" => ""
                       }
                     }
                   }

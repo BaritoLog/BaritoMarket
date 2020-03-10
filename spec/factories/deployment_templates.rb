@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :component_template do
+  factory :deployment_template do
     name                  Faker::Lorem.word
     source                { {
                             "source_type": "image",       # can be image, migration or copy

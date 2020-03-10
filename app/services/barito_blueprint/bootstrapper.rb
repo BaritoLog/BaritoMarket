@@ -42,44 +42,44 @@ module BaritoBlueprint
     def generate_manifest!(plain_manifest)
       Processor.produce_log(
         @infrastructure,
-        "InfrastructureManifest:#{plain_manifest[:type]}",
-        "Bootstrapping #{plain_manifest[:type]} started")
+        "InfrastructureManifest:#{plain_manifest['type']}",
+        "Bootstrapping #{plain_manifest['type']} started")
 
       primed_manifest, success = setup_manifest(plain_manifest)
       if !success
         Processor.produce_log(
           @infrastructure,
           "Infrastructure:#{@infrastructure.name}",
-          "Manifest #{plain_manifest[:type]} error")
+          "Manifest #{plain_manifest['type']} error")
         return nil, false
       end
-
       Processor.produce_log(
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
-        "Manifest #{primed_manifest[:name]} finished")
+        "Manifest #{primed_manifest['name']} finished")
       return primed_manifest, true
     end
 
     def generate_bootstrap_attributes(manifest, infrastructure_manifests)
-      generator = BOOTSTRAP_ATTRIBUTES_GENERATORS[manifest[:type]]
+      generator = BOOTSTRAP_ATTRIBUTES_GENERATORS[manifest['type']]
       return {} unless generator.is_a? Class
       ChefHelper::GenericRoleAttributesGenerator.new.generate(
         generator.new(manifest, infrastructure_manifests))
+
     end
 
     def setup_manifest(manifest)
-      manifest[:name] = "#{@infrastructure.cluster_name}-#{manifest[:type]}"
-      manifest[:cluster_name] = "#{@pathfinder_cluster}"
-      bootstrappers = manifest[:definition][:bootstrappers]
+      manifest['name'] = "#{@infrastructure.cluster_name}-#{manifest['type']}"
+      manifest['cluster_name'] = "#{@pathfinder_cluster}"
+      bootstrappers = manifest['definition']['bootstrappers']
       bootstrappers.each_with_index do |bootstrapper, idx|
-        case bootstrapper[:bootstrap_type]
+        case bootstrapper['bootstrap_type']
         when "chef-solo"
-          if bootstrapper[:bootstrap_attributes][:run_list].empty?
+          if bootstrapper['bootstrap_attributes']['run_list'].empty?
             # Fetch bootstrap attributes
             attrs = generate_bootstrap_attributes(
               manifest, @infrastructure.manifests)      
-            bootstrappers[idx][:bootstrap_attributes] = attrs
+            bootstrappers[idx]['bootstrap_attributes'] = attrs
           end
           return manifest, true
         else

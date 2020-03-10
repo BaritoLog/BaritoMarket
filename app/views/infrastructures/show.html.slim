@@ -24,6 +24,12 @@
           dd.col-sm-10
             = @infrastructure.status
 
+          dt.col-sm-2 Manifests:
+          dd.col-sm-10
+            pre
+              code
+                = @manifests
+
       .card-footer
         .btn.btn-primary.btn-sm
           = link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'text-light', style: 'text-decoration:none'
