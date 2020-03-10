@@ -307,7 +307,7 @@ RSpec.describe PathfinderProvisioner do
     end
   end
 
-  describe "#bulk_apply" do
+  describe "#bulk_apply!" do
     before(:all) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
@@ -375,14 +375,14 @@ RSpec.describe PathfinderProvisioner do
     end
     it "should make necessary calls to Pathfinder and create new containers" do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      bootstrap_result = pathfinder_provisioner.bulk_apply(@deployments)
+      bootstrap_result = pathfinder_provisioner.bulk_apply!(@deployments)
       expect(bootstrap_result).to eq({
         'success' => true
       })
     end
   end
 
-  context "#GET list_containers" do
+  context "#GET list_containers!" do
     before(:all) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
@@ -479,7 +479,7 @@ RSpec.describe PathfinderProvisioner do
     end
     it "should make necessary calls to Pathfinder and get list containers" do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      bootstrap_result = pathfinder_provisioner.list_containers("haza-consul")
+      bootstrap_result = pathfinder_provisioner.list_containers!("haza-consul")
       expect(bootstrap_result).to eq({
         'success' => true,
         'data' => {

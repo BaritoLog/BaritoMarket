@@ -12,6 +12,9 @@ class Infrastructure < ApplicationRecord
   }
   enum provisioning_statuses: {
     pending: 'PENDING',
+    deployment_started: 'DEPLOYMENT_STARTED',
+    deployment_finished: 'DEPLOYMENT_FINISHED',
+    deployment_error: 'DEPLOYMENT_ERROR',
     provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
     provisioning_finished: 'PROVISIONING_FINISHED',
@@ -52,7 +55,7 @@ class Infrastructure < ApplicationRecord
 
   def add_component(attrs, seq)
     component_type = attrs[:type] || attrs['type']
-    component_template = ComponentTemplate.find_by(name: component_type)
+    component_template = DeploymentTemplate.find_by(name: component_type)
 
     InfrastructureComponent.create(
       infrastructure_id:  self.id,
