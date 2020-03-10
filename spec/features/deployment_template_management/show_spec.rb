@@ -5,7 +5,7 @@ RSpec.feature 'Component Template Management', type: :feature do
 
   before(:each) do
     set_check_user_groups({ 'groups' => [] })
-    @component_template = create(:component_template)
+    @deployment_template = create(:deployment_template)
   end
 
   describe 'View component template details' do
@@ -14,8 +14,8 @@ RSpec.feature 'Component Template Management', type: :feature do
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         login_as user
 
-        visit component_template_path(@component_template.id)
-        expect(page).to have_content(@component_template.name)
+        visit deployment_template_path(@deployment_template.id)
+        expect(page).to have_content(@deployment_template.name)
       end
     end
   end

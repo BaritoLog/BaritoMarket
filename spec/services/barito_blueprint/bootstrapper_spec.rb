@@ -42,86 +42,42 @@ module BaritoBlueprint
     end
 
     describe '#generate_manifest!' do
-      before(:each) do
-        @manifest = {
-              "name": "haza-consul",
-              "cluster_name": "barito",
-              "type": "consul",
-              "count": 1,
-              "definition": {
-                "container_type": "stateless",
-                "strategy": "RollingUpdate",
-                "allow_failure": "false",
-                "source": {
-                  "mode": "pull",              # can be local or pull. default is pull.
-                  "alias": "lxd-ubuntu-minimal-consul-1.1.0-8",
-                  "remote": {
-                    "name": "barito-registry"
-                  },
-                  "fingerprint": "",
-                  "source_type": "image"                      
-                },
-                "resource": {
-                  "cpu_limit": "0-2",
-                  "mem_limit": "500MB"
-                },
-                "bootstrappers": [{
-                  "bootstrap_type": "chef-solo",
-                  "bootstrap_attributes": {
-                    "consul": {
-                      "hosts": []
-                    },
-                    "run_list": []
-                  },
-                  "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
-                }],
-                "healthcheck": {
-                  "type": "tcp",
-                  "port": 9500,
-                  "endpoint": "",
-                  "payload": "",
-                  "timeout": ""
-                }
-              }
-            }
-      end
-
       it 'should return true if executor returns success' do
         expected_manifest = {
-                              :type=>"consul",
-                              :count=>1,
-                              :definition=>
+                              "type"=>"consul",
+                              "count"=>1,
+                              "definition"=>
                               {
-                                :container_type=>"stateless",
-                                :strategy=>"RollingUpdate",
-                                :allow_failure=>"false",
-                                :source=>
+                                "container_type"=>"stateless",
+                                "strategy"=>"RollingUpdate",
+                                "allow_failure"=>"false",
+                                "source"=>
                                 {
-                                  :mode=>"pull",
-                                  :alias=>"lxd-ubuntu-minimal-consul-1.1.0-8",
-                                  :remote=>{:name=>"barito-registry"},
-                                  :fingerprint=>"",
-                                  :source_type=>"image"
+                                  "mode"=>"pull",
+                                  "alias"=>"lxd-ubuntu-minimal-consul-1.1.0-8",
+                                  "remote"=>{"name"=>"barito-registry"},
+                                  "fingerprint"=>"",
+                                  "source_type"=>"image"
                                 },
-                                :resource=>{:cpu_limit=>"0-2", :mem_limit=>"500MB"},
-                                :bootstrappers=>
+                                "resource"=>{"cpu_limit"=>"0-2", "mem_limit"=>"500MB"},
+                                "bootstrappers"=>
                                 [
                                   {
-                                    :bootstrap_type=>"chef-solo",
-                                    :bootstrap_attributes=>{
-                                      :consul=>{
-                                        :hosts=>["guja-consul-01.node.consul"]
+                                    "bootstrap_type"=>"chef-solo",
+                                    "bootstrap_attributes"=>{
+                                      "consul"=>{
+                                        "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul"
                                       }, 
-                                      :run_list=>["role[consul]"]
+                                      "run_list"=>["role[consul]"]
                                     },
-                                    :bootstrap_cookbooks_url=>"https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                                    "bootstrap_cookbooks_url"=>"https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
                                   }
                                 ],
-                                :healthcheck=>{:type=>"tcp", :port=>9500, :endpoint=>"", :payload=>"", :timeout=>""}},
-                              :name=>"guja-consul",
-                              :cluster_name=>"barito"
+                                "healthcheck"=>{"type"=>"tcp", "port"=>9500, "endpoint"=>"", "payload"=>"", "timeout"=>""}},
+                              "name"=>"guja-consul",
+                              "cluster_name"=>"barito"
                             }
-        expect(@bootstrapper.generate_manifest!(@infrastructure.manifests[0].deep_symbolize_keys)).to eq [expected_manifest,true]
+        expect(@bootstrapper.generate_manifest!(@infrastructure.manifests[0])).to eq [expected_manifest,true]
       end
 
       it 'should return nil and false if generate manifest failed' do
@@ -129,8 +85,8 @@ module BaritoBlueprint
         allow(generator).
           to receive(:generate).
           and_return(nil, false)
-        invalid_manifest = @manifest
-        invalid_manifest[:definition][:bootstrappers][0][:bootstrap_type] = 'none'
+        invalid_manifest = @infrastructure.manifests[0]
+        invalid_manifest['definition']['bootstrappers'][0]['bootstrap_type'] = 'none'
         @bootstrapper.generate_manifest!(invalid_manifest)
         expect(@infrastructure.status).to eq 'INACTIVE'
       end
@@ -145,7 +101,7 @@ module BaritoBlueprint
         allow(ChefHelper::ConsulRoleAttributesGenerator).
           to receive(:new).
           and_return(generator)
-        manifest = {"type": "consul"}
+        manifest = {"type" => "consul"}
         expect(
           @bootstrapper.generate_bootstrap_attributes(manifest, [manifest]),
         ).to eq('hello' => 'world')

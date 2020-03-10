@@ -2,12 +2,12 @@ module ChefHelper
   class KafkaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
       @manifest = manifest
-      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest[:cluster_name]}-consul"})
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['cluster_name']}-consul"})
       
       @role_name = opts[:role_name] || 'kafka'
-      @cluster_name = manifest[:cluster_name]
-      @hostname = manifest[:name]
-      kafka_template = ComponentTemplate.find_by(name: 'kafka')
+      @cluster_name = manifest['cluster_name']
+      @hostname = manifest['name']
+      kafka_template = DeploymentTemplate.find_by(name: 'kafka')
       @kafka_attrs = get_bootstrap_attributes(kafka_template.bootstrappers)
     end
 
@@ -19,7 +19,7 @@ module ChefHelper
     def update_attrs
       @kafka_attrs["kafka"]["zookeeper"]["hosts"] = ["zookeeper.service.consul"]
       @kafka_attrs["kafka"]["kafka"]["hosts"] = ["kafka.service.consul"]
-      @kafka_attrs["kafka"]["kafka"]["hosts_count"] = @manifest[:count]
+      @kafka_attrs["kafka"]["kafka"]["hosts_count"] = @manifest['count']
       @kafka_attrs["consul"]["hosts"] = @consul_hosts
       @kafka_attrs["run_list"] = ["role[#{@role_name}]"]
 

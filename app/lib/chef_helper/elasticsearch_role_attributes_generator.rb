@@ -2,21 +2,21 @@ module ChefHelper
   class ElasticsearchRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
-        {deployment_name: "#{manifest[:cluster_name]}-consul"})
+        {deployment_name: "#{manifest['cluster_name']}-consul"})
 
       @role_name = opts[:role_name] || 'elasticsearch'
-      @cluster_name = manifest[:cluster_name]
+      @cluster_name = manifest['cluster_name']
       @hostname = generate_pf_meta("container_hostname")
       @port = opts[:port] || 9200      
-      if manifest[:count].to_i <= 1
+      if manifest['count'].to_i <= 1
         @index_number_of_replicas = 0
         @minimum_master_nodes = 1
       else
         @index_number_of_replicas = 1
-        @minimum_master_nodes = (manifest[:count].to_i/2 + 1).floor
+        @minimum_master_nodes = (manifest['count'].to_i/2 + 1).floor
       end
 
-      elastic_template = ComponentTemplate.find_by(name: 'elasticsearch')
+      elastic_template = DeploymentTemplate.find_by(name: 'elasticsearch')
       @elastic_attrs = get_bootstrap_attributes(elastic_template.bootstrappers)
     end
 
