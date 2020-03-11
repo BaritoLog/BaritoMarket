@@ -12,6 +12,7 @@ ClusterTemplate.create!(
               {
                 "type": "consul",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateless",
                   "strategy": "RollingUpdate",
@@ -51,6 +52,7 @@ ClusterTemplate.create!(
               {
                 "type": "zookeeper",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateless",
                   "strategy": "RollingUpdate",
@@ -101,6 +103,7 @@ ClusterTemplate.create!(
               {
                 "type": "kafka",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateful",
                   "strategy": "RollingUpdate",
@@ -152,6 +155,7 @@ ClusterTemplate.create!(
               {
                 "type": "elasticsearch",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateful",
                   "strategy": "RollingUpdate",
@@ -202,6 +206,7 @@ ClusterTemplate.create!(
               {
                 "type": "barito-flow-producer",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateless",
                   "strategy": "RollingUpdate",
@@ -260,6 +265,7 @@ ClusterTemplate.create!(
               {
                 "type": "barito-flow-consumer",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateless",
                   "strategy": "RollingUpdate",
@@ -325,6 +331,7 @@ ClusterTemplate.create!(
               {
                 "type": "kibana",
                 "count": 1,
+                "min_available_count": 0,
                 "definition": {
                   "container_type": "stateless",
                   "strategy": "RollingUpdate",
@@ -384,6 +391,7 @@ ClusterTemplate.create!(
                 {
                   "type": "consul",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -423,6 +431,7 @@ ClusterTemplate.create!(
                 {
                   "type": "zookeeper",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -473,6 +482,7 @@ ClusterTemplate.create!(
                 {
                   "type": "kafka",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateful",
                     "strategy": "RollingUpdate",
@@ -524,6 +534,7 @@ ClusterTemplate.create!(
                 {
                   "type": "elasticsearch",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateful",
                     "strategy": "RollingUpdate",
@@ -574,6 +585,7 @@ ClusterTemplate.create!(
                 {
                   "type": "barito-flow-producer",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -632,6 +644,7 @@ ClusterTemplate.create!(
                 {
                   "type": "barito-flow-consumer",
                   "count": 5,
+                  "min_available_count": 4,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -697,6 +710,7 @@ ClusterTemplate.create!(
                 {
                   "type": "kibana",
                   "count": 1,
+                  "min_available_count": 0,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -756,6 +770,7 @@ ClusterTemplate.create!(
                 {
                   "type": "consul",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -845,6 +860,7 @@ ClusterTemplate.create!(
                 {
                   "type": "kafka",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateful",
                     "strategy": "RollingUpdate",
@@ -896,6 +912,7 @@ ClusterTemplate.create!(
                 {
                   "type": "elasticsearch",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateful",
                     "strategy": "RollingUpdate",
@@ -946,6 +963,7 @@ ClusterTemplate.create!(
                 {
                   "type": "barito-flow-producer",
                   "count": 3,
+                  "min_available_count": 2,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -1004,6 +1022,7 @@ ClusterTemplate.create!(
                 {
                   "type": "barito-flow-consumer",
                   "count": 10,
+                  "min_available_count": 9,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",
@@ -1069,6 +1088,7 @@ ClusterTemplate.create!(
                 {
                   "type": "kibana",
                   "count": 1,
+                  "min_available_count": 0,
                   "definition": {
                     "container_type": "stateless",
                     "strategy": "RollingUpdate",

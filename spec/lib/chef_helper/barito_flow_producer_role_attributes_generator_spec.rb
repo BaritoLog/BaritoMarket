@@ -6,6 +6,7 @@ module ChefHelper
       @producer_manifest = {
                   "type" => "barito-flow-producer",
                   "count" => 1,
+                  "min_available_count" => 0,
                   "deployment_cluster_name"=>"guja",
                   "definition" => {
                     "container_type" => "stateless",
@@ -68,6 +69,7 @@ module ChefHelper
                     "deployment_cluster_name"=>"guja",
                     "type" => "consul",
                     "count" => 1,
+                    "min_available_count" => 0,
                     "definition" => {
                       "container_type" => "stateless",
                       "strategy" => "RollingUpdate",

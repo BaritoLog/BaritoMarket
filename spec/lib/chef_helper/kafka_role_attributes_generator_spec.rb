@@ -6,6 +6,7 @@ module ChefHelper
       @kafka_manifest = {
                   "type" => "kafka",
                   "count" =>1,
+                  "min_available_count" => 0,
                   "deployment_cluster_name"=>"guja",
                   "definition" =>{
                     "container_type" => "stateful",
@@ -61,6 +62,7 @@ module ChefHelper
               "deployment_cluster_name"=>"guja",
               "type" => "consul",
               "count" =>1,
+              "min_available_count" => 0,
               "definition" =>{
                 "container_type" => "stateless",
                 "strategy" => "RollingUpdate",

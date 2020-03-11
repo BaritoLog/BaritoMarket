@@ -9,6 +9,7 @@ module ChefHelper
                     "deployment_cluster_name"=>"guja",
                     "type" => "zookeeper",
                     "count" => 1,
+                    "min_available_count" => 0,
                     "definition" => {
                       "container_type" => "stateless",
                       "strategy" => "RollingUpdate",
@@ -62,6 +63,7 @@ module ChefHelper
                     "deployment_cluster_name"=>"guja",
                     "type" => "consul",
                     "count" => 1,
+                    "min_available_count" => 0,
                     "definition" => {
                       "container_type" => "stateless",
                       "strategy" => "RollingUpdate",
