@@ -64,7 +64,7 @@ class ClusterTemplatesController < ApplicationController
   def cluster_template_params
     params.require(:cluster_template).permit(
       :name,
-      :manifest,
+      :manifests,
       :options
     )
   end
