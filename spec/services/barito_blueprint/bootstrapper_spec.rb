@@ -46,6 +46,7 @@ module BaritoBlueprint
         expected_manifest = {
                               "type"=>"consul",
                               "count"=>1,
+                              "deployment_cluster_name"=>"guja",
                               "definition"=>
                               {
                                 "container_type"=>"stateless",

@@ -6,6 +6,7 @@ module ChefHelper
       @manifest = {
                     "name" => "haza-consul",
                     "cluster_name" => "barito",
+                    "deployment_cluster_name"=>"guja",
                     "type" => "consul",
                     "count" => 1,
                     "definition" => {

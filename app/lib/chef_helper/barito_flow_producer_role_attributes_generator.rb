@@ -2,7 +2,7 @@ module ChefHelper
   class BaritoFlowProducerRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
-        {deployment_name: "#{manifest['cluster_name']}-consul"})
+        {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || 'barito-flow-producer'
       producer_template = DeploymentTemplate.find_by(name: 'barito-flow-producer')
       @producer_attrs = get_bootstrap_attributes(producer_template.bootstrappers)

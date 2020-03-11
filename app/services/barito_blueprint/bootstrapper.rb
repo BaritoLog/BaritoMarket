@@ -69,7 +69,8 @@ module BaritoBlueprint
     end
 
     def setup_manifest(manifest)
-      manifest['name'] = "#{@infrastructure.cluster_name}-#{manifest['type']}"
+      manifest['deployment_cluster_name'] = "#{@infrastructure.cluster_name}"
+      manifest['name'] = "#{manifest['deployment_cluster_name']}-#{manifest['type']}"
       manifest['cluster_name'] = "#{@pathfinder_cluster}"
       bootstrappers = manifest['definition']['bootstrappers']
       bootstrappers.each_with_index do |bootstrapper, idx|

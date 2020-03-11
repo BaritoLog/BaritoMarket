@@ -6,6 +6,7 @@ module ChefHelper
       @producer_manifest = {
                   "type" => "barito-flow-producer",
                   "count" => 1,
+                  "deployment_cluster_name"=>"guja",
                   "definition" => {
                     "container_type" => "stateless",
                     "strategy" => "RollingUpdate",
@@ -62,8 +63,9 @@ module ChefHelper
                   }
                 }
       @consul_manifest = {
-                    "name" => "haza-consul",
+                    "name" => "guja-consul",
                     "cluster_name" => "barito",
+                    "deployment_cluster_name"=>"guja",
                     "type" => "consul",
                     "count" => 1,
                     "definition" => {
@@ -116,7 +118,7 @@ module ChefHelper
 
         expect(attrs).to eq({
             "consul"=>{
-              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=-consul",
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul",
               "run_as_server"=>false
             },
             "run_list"=>["role[barito-flow-producer]"],

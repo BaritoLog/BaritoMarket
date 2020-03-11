@@ -6,6 +6,7 @@ module ChefHelper
       @zookeeper_manifest = {
                     "name" => "haza-zookeeper",
                     "cluster_name" => "barito",
+                    "deployment_cluster_name"=>"guja",
                     "type" => "zookeeper",
                     "count" => 1,
                     "definition" => {
@@ -56,8 +57,9 @@ module ChefHelper
                     }
                   }
       @consul_manifest = {
-                    "name" => "haza-consul",
+                    "name" => "guja-consul",
                     "cluster_name" => "barito",
+                    "deployment_cluster_name"=>"guja",
                     "type" => "consul",
                     "count" => 1,
                     "definition" => {
@@ -111,7 +113,7 @@ module ChefHelper
 
         expect(attrs).to eq({
             "consul"=>{
-              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=barito-consul", 
+              "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul", 
               "run_as_server"=>false
             },
             "datadog" => {

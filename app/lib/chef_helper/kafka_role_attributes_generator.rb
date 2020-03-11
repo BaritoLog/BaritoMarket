@@ -2,7 +2,7 @@ module ChefHelper
   class KafkaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
       @manifest = manifest
-      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['cluster_name']}-consul"})
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       
       @role_name = opts[:role_name] || 'kafka'
       @cluster_name = manifest['cluster_name']

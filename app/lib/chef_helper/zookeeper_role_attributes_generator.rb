@@ -7,7 +7,7 @@ module ChefHelper
       @domains = generate_pf_meta("deployment_host_sequences", 
         {host: "zookeeper.service.consul"})
 
-      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['cluster_name']}-consul"})
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || :zookeeper
       @cluster_name = manifest['cluster_name']
       @hostname = manifest['name']

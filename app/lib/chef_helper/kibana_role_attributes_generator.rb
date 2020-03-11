@@ -2,7 +2,7 @@ module ChefHelper
   class KibanaRoleAttributesGenerator < GenericRoleAttributesGenerator
     def initialize(manifest, infrastructure_manifests, opts = {})
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
-        {deployment_name: "#{manifest['cluster_name']}-consul"})
+        {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || 'kibana'
       @base_path = manifest['cluster_name']
       kibana_template = DeploymentTemplate.find_by(name: 'kibana')
