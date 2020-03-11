@@ -22,10 +22,10 @@ module BaritoBlueprint
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
         "Deployment Bulk Apply started")
-      @infrastructure.update_status('DEPLOYMENT_STARTED')
+      @infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
       # Execute reprovisioning
-      res = @executor.bulk_apply!(@infrastructure)
+      res = @executor.bulk_apply!(@infrastructure_manifests)
       Processor.produce_log(
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
@@ -36,7 +36,7 @@ module BaritoBlueprint
           @infrastructure,
           "Infrastructure:#{@infrastructure.name}",
           "Deployment Bulk Apply finished")
-        @infrastructure.update_status('DEPLOYMENT_FINISHED')
+        @infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
         return true
       else
         Processor.produce_log(
@@ -44,7 +44,7 @@ module BaritoBlueprint
           "Infrastructure:#{@infrastructure.name}",
           "Deployment Bulk Apply error",
           "#{res['error']}")
-        @infrastructure.update_status('DEPLOYMENT_ERROR')
+        @infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
         return false
       end 
     end

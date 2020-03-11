@@ -21,15 +21,34 @@ module BaritoBlueprint
         allow(@executor).
           to receive(:bulk_apply!).
           and_return('success' => true)
+        @provisioner.bulk_apply!
         expect(@provisioner.bulk_apply!).to eq true
+      end
+
+      it 'should update provisioning status when success' do
+        allow(@executor).
+          to receive(:bulk_apply!).
+          and_return('success' => true)
+        @provisioner.bulk_apply!
+        expect(@infrastructure.provisioning_status).to eq 'DEPLOYMENT_FINISHED'
       end
 
       it 'should return false if executor returns errors' do
         allow(@executor).
           to receive(:bulk_apply!).
           and_return('success' => false)
+        @provisioner.bulk_apply!
         expect(@provisioner.bulk_apply!).to eq false
       end
+
+      it 'should update provisioning status when failed' do
+        allow(@executor).
+          to receive(:bulk_apply!).
+          and_return('success' => false)
+        @provisioner.bulk_apply!
+        expect(@infrastructure.provisioning_status).to eq 'DEPLOYMENT_ERROR'
+      end
+
     end
   end
 end
