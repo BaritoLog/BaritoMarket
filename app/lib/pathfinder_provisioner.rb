@@ -179,6 +179,35 @@ class PathfinderProvisioner
     end
   end
 
+  def update_container!(component)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{component.hostname}/update",
+      method: :post,
+      params: {
+        'cluster_name' => @pathfinder_cluster
+      },
+      body: {
+        'hostname' => component.hostname,
+        'bootstrappers' => component.bootstrappers,
+        'source' => component.source
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true,
+        'data' => body['data']
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)

@@ -556,4 +556,70 @@ RSpec.describe PathfinderProvisioner do
       })
     end
   end
+
+  describe '#update_container!' do
+    before(:all) do
+      @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
+      @pathfinder_cluster = 'barito'
+
+      @component = create(:infrastructure_component)
+
+      # Mock Pathfinder API
+      stub_request(:post, "#{@pathfinder_host}/api/v2/ext_app/containers/#{@component.hostname}/update").
+        with(
+          query: {
+            'cluster_name' => @pathfinder_cluster
+          },
+          body: {
+            'hostname' => @component.hostname,
+            'bootstrappers' => @component.bootstrappers,
+            'source' => @component.source
+          }.to_json,
+          headers: {
+            'Content-Type' => 'application/json',
+            'X-Auth-Token' => @pathfinder_token,
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+          },
+          body: {
+            'data' => {
+              'containers' => {
+                'id' => 1045,
+                'hostname' => @component.hostname,
+                'ipaddress' => '10.0.0.1',
+                'source' => @component.source,
+                'bootstrappers' => @component.bootstrappers,
+                'node_hostname' => '',
+                'status' => 'PENDING',
+                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+              }
+            }
+          }.to_json
+        })
+    end
+
+    it 'should make necessary calls to Pathfinder and return the response' do
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
+      provision_result = pathfinder_provisioner.update_container!(@component)
+      expect(provision_result).to eq({
+        'success' => true,
+        'data' => {
+              'containers' => {
+                'id' => 1045,
+                'hostname' => @component.hostname,
+                'ipaddress' => '10.0.0.1',
+                'source' => @component.source,
+                'bootstrappers' => @component.bootstrappers,
+                'node_hostname' => '',
+                'status' => 'PENDING',
+                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+              }
+            }
+      })
+    end
+  end
 end
