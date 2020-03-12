@@ -90,6 +90,14 @@ class Infrastructure < ApplicationRecord
     end
   end
 
+  def update_manifests(manifests)
+    if manifests.nil? || manifests.empty?
+      false
+    else
+      update_column(:manifests, manifests)
+    end
+  end
+
   def receiver_url
     "#{Figaro.env.router_protocol}://"\
     "#{Figaro.env.router_domain}/produce_batch"

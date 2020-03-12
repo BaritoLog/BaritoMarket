@@ -3,6 +3,14 @@ class InfrastructurePolicy < ApplicationPolicy
     barito_superadmin?
   end
 
+  def edit?
+    barito_superadmin?
+  end
+
+  def update_manifests?
+    barito_superadmin?
+  end
+
   def retry_provision?
     show?
   end

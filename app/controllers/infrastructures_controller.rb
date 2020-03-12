@@ -9,6 +9,28 @@ class InfrastructuresController < ApplicationController
     @manifests = JSON.pretty_generate(@infrastructure.manifests)
   end
 
+  def edit
+    @manifests = JSON.pretty_generate(@infrastructure.manifests)
+  end
+
+  def update_manifests
+    infrastructure_params = params['infrastructure']
+    begin
+      manifests = JSON.parse(infrastructure_params['manifests'])
+    rescue JSON::ParserError
+      @infrastructure.errors.add(:manifests, "Should be valid JSON")
+      @manifests = JSON.pretty_generate(@infrastructure.manifests)
+      render :edit
+      return
+    end
+
+    success = @infrastructure.update_manifests(manifests)
+    if success
+      UpdateManifestsWorker.perform_async(@infrastructure)
+    end
+    redirect_to infrastructure_path
+  end
+
   def retry_provision
     @infrastructure_component = InfrastructureComponent.find(
       params[:infrastructure_component_id])

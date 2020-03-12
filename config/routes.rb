@@ -104,9 +104,10 @@ Rails.application.routes.draw do
     only: %i[create update destroy],
     defaults: { format: :html }
   resources :infrastructures,
-    only: %i[show],
+    only: %i[show edit],
     defaults: { format: :html } do
       member do
+        patch :update_manifests
         post :retry_provision
         post :provisioning_check
         post :retry_bootstrap

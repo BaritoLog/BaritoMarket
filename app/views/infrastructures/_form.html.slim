@@ -1,0 +1,65 @@
+= form_with(model: infrastructure, local: true, url: update_manifests_infrastructure_path) do |form|
+  - if infrastructure.errors.any?
+    #error_explanation
+      strong
+        = pluralize(infrastructure.errors.count, "error")
+        |  prohibited this infrastructure from being saved:
+      ul
+        - infrastructure.errors.full_messages.each do |message|
+          li
+            = message
+  .card-body
+    .dl.row
+      dt.col-sm-2
+        = form.label :name
+      dd.col-sm-10
+        = form.text_field :name, id: :infrastructure_name, class: 'form-control', disabled: true
+      
+      dt.col-sm-2
+        = form.label :cluster_name
+      dd.col-sm-10
+        = form.text_field :cluster_name, id: :infrastructure_cluster_name, class: 'form-control', disabled: true
+      
+      dt.col-sm-2
+        = form.label :capacity
+      dd.col-sm-10
+        = form.text_field :capacity, id: :infrastructure_capacity, class: 'form-control', disabled: true
+      
+      dt.col-sm-2
+        = form.label :provisioning_status
+      dd.col-sm-10
+        = form.text_field :provisioning_status, id: :infrastructure_provisioning_status, class: 'form-control', disabled: true
+        
+      dt.col-sm-2
+        = form.label :consul_host
+      dd.col-sm-10
+        = form.text_field :consul_host, id: :infrastructure_consul_host, class: 'form-control', disabled: true
+        
+      dt.col-sm-2
+        = form.label :app_group_id
+      dd.col-sm-10
+        = form.text_field :app_group_id, id: :infrastructure_app_group_id, class: 'form-control', disabled: true
+        
+      dt.col-sm-2
+        = form.label :cluster_template_id
+      dd.col-sm-10
+        = form.text_field :cluster_template_id, id: :infrastructure_cluster_template_id, class: 'form-control', disabled: true
+        
+      dt.col-sm-2
+        = form.label :manifests
+      dd.col-sm-10
+        = form.text_area :manifests, id: :infrastructure_manifests, class: 'form-control', cols: 15, rows: 15, value: @manifests
+        
+      dt.col-sm-2
+        = form.label :options
+      dd.col-sm-10
+        = form.text_field :options, id: :infrastructure_options, class: 'form-control', disabled: true
+        
+        
+        
+  .card-footer.text-right
+    .btn.btn-primary.btn-sm.float-right
+      = link_to 'Back to Infrastructure', infrastructure_path(infrastructure), class: 'text-light', style: 'text-decoration:none'
+
+    = form.submit 'Save', class: 'btn btn-success btn-sm mr-2'
+  
