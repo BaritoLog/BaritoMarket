@@ -5,8 +5,9 @@ class InfrastructuresController < ApplicationController
   end
 
   def show
-    @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
     @manifests = JSON.pretty_generate(@infrastructure.manifests)
+
+    @containers = get_containers
   end
 
   def edit
@@ -90,5 +91,27 @@ class InfrastructuresController < ApplicationController
 
   def set_infrastructure
     @infrastructure = Infrastructure.find(params[:id])
+  end
+
+  def set_provisioner
+    @provisioner = PathfinderProvisioner.new(
+                  Figaro.env.pathfinder_host,
+                  Figaro.env.pathfinder_token,
+                  Figaro.env.pathfinder_cluster,
+                 )
+  end
+
+  def get_containers
+    set_provisioner
+    
+    containers = []
+    @infrastructure.manifests.each do |manifest|
+      deployment = @provisioner.list_containers!(manifest['name'])
+      if deployment.empty?
+        next
+      end
+      containers += deployment['containers']
+    end
+    containers
   end
 end

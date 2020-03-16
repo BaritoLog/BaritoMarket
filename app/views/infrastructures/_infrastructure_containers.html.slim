@@ -1,0 +1,19 @@
+h4.mb-3 All Infrastructure Containers
+
+.table-responsive
+  table.table.table-hover.table-sm
+    thead
+      tr.d-flex
+        th.col-2 Hostname
+        th.col-2 IP Address
+        th.col-3 Source
+        th.col-3 Bootstrappers
+        th.col-2 Status
+    tbody
+      - containers.each do |container|
+        tr.d-flex
+          td.col-2.word-wrap= container.hostname
+          td.col-2.word-wrap= container.ipaddress
+          td.col-3.word-wrap= container.source
+          td.col-3.word-wrap= container.bootstrappers
+          td.col-2.word-wrap= container.status

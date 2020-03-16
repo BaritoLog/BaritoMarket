@@ -175,7 +175,7 @@ class PathfinderProvisioner
         'data' => body['data']
       }
     else
-      return respond_error(req.response)
+      return []
     end
   end
 
