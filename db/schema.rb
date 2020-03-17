@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_064025) do
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "manifests"
+    t.jsonb "manifests", default: {}, null: false
     t.index ["name"], name: "index_cluster_templates_on_name", unique: true
   end
 
@@ -164,7 +164,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_064025) do
     t.integer "cluster_template_id"
     t.jsonb "instances", default: {}, null: false
     t.jsonb "options", default: {}, null: false
-    t.jsonb "manifests"
+    t.jsonb "manifests", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
     t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
     t.index ["status"], name: "index_infrastructures_on_status"
