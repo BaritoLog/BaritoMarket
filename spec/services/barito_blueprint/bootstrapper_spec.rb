@@ -46,6 +46,7 @@ module BaritoBlueprint
         expected_manifest = {
                               "type"=>"consul",
                               "count"=>1,
+                              "min_available_count"=>0,
                               "deployment_cluster_name"=>"guja",
                               "definition"=>
                               {
