@@ -198,14 +198,9 @@ class PathfinderProvisioner
     )
     req.run
     if req.response.success?
-      body = JSON.parse(req.response.body)
-      {
-        'success' => true,
-        'data' => body['data']
-      }
+      true
     else
-      return respond_error(req.response)
-    end
+      false
   end
 
   private
