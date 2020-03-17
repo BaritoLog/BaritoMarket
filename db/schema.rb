@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_064025) do
   create_table "deployment_templates", force: :cascade do |t|
     t.string "name"
     t.jsonb "bootstrappers"
+    t.jsonb "source"
     t.index ["name"], name: "index_deployment_templates_on_name", unique: true
   end
 
