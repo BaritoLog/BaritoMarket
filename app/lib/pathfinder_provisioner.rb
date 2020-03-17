@@ -201,6 +201,7 @@ class PathfinderProvisioner
       true
     else
       false
+    end
   end
 
   private
