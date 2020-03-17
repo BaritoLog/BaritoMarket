@@ -6,7 +6,7 @@ class InfrastructuresController < ApplicationController
 
   def show
     @manifests = JSON.pretty_generate(@infrastructure.manifests)
-
+    @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
     @containers = get_containers
   end
 
