@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PathfinderProvisioner do
   describe '#provision!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -69,7 +69,7 @@ RSpec.describe PathfinderProvisioner do
 
   describe '#reprovision!' do
     context 'container already exist' do
-      before(:all) do
+      before(:each) do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
@@ -128,7 +128,7 @@ RSpec.describe PathfinderProvisioner do
     end
 
     context 'container isn\'t exist already' do
-      before(:all) do
+      before(:each) do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
@@ -214,7 +214,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe '#delete_container!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -255,7 +255,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe '#rebootstrap!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -308,7 +308,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe "#bulk_apply!" do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -383,7 +383,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   context "#GET list_containers!" do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -558,7 +558,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe '#update_container!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
