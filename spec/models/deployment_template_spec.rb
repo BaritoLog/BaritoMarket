@@ -8,9 +8,8 @@ RSpec.describe DeploymentTemplate, type: :model do
       deployment_template = create(:deployment_template,
         name: deployment_template_props.name,
         bootstrappers: deployment_template_props.bootstrappers,
-        source: deployment_template_props.source
       )
-      
+
       expect(deployment_template.persisted?).to eq(true)
     end
   end
@@ -25,10 +24,8 @@ RSpec.describe DeploymentTemplate, type: :model do
       deployment_template = DeploymentTemplate.create(
         name: @deployment_template.name,
         bootstrappers: deployment_template_props.bootstrappers,
-        source: deployment_template_props.source
-
       )
-      
+
       expect(deployment_template.persisted?).to eq(false)
     end
   end
