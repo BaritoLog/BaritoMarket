@@ -605,21 +605,7 @@ RSpec.describe PathfinderProvisioner do
     it 'should make necessary calls to Pathfinder and return the response' do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
       provision_result = pathfinder_provisioner.update_container!(@component)
-      expect(provision_result).to eq({
-        'success' => true,
-        'data' => {
-              'containers' => {
-                'id' => 1045,
-                'hostname' => @component.hostname,
-                'ipaddress' => '10.0.0.1',
-                'source' => @component.source,
-                'bootstrappers' => @component.bootstrappers,
-                'node_hostname' => '',
-                'status' => 'PENDING',
-                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
-              }
-            }
-      })
+      expect(provision_result).to eq(true)
     end
   end
 end
