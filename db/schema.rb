@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_10_063431) do
+ActiveRecord::Schema.define(version: 2020_03_17_064025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,19 +83,26 @@ ActiveRecord::Schema.define(version: 2020_03_10_063431) do
 
   create_table "cluster_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "manifests"
+    t.jsonb "instances"
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "manifests"
     t.index ["name"], name: "index_cluster_templates_on_name", unique: true
   end
 
-  create_table "deployment_templates", force: :cascade do |t|
+  create_table "component_templates", force: :cascade do |t|
     t.string "name"
     t.jsonb "bootstrappers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "source"
+    t.index ["name"], name: "index_component_templates_on_name", unique: true
+  end
+
+  create_table "deployment_templates", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "bootstrappers"
     t.index ["name"], name: "index_deployment_templates_on_name", unique: true
   end
 
@@ -155,8 +162,9 @@ ActiveRecord::Schema.define(version: 2020_03_10_063431) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cluster_template_id"
-    t.jsonb "manifests", default: {}, null: false
+    t.jsonb "instances", default: {}, null: false
     t.jsonb "options", default: {}, null: false
+    t.jsonb "manifests"
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
     t.index ["cluster_template_id"], name: "index_infrastructures_on_cluster_template_id"
     t.index ["status"], name: "index_infrastructures_on_status"

@@ -1,6 +1,6 @@
 class AddManifestsToClusterTemplates < ActiveRecord::Migration[5.2]
   def change
-    add_column :cluster_templates, :manifests, :jsonb
+    add_column :cluster_templates, :manifests, :jsonb, default: {}, null: false
 
     reversible do |direction|
       direction.up do
@@ -8,7 +8,7 @@ class AddManifestsToClusterTemplates < ActiveRecord::Migration[5.2]
           cluster_template.update!(
             manifests: cluster_template.instances.map do |instance|
               component_template = ComponentTemplate.find_by(name: instance["type"])
-              is_stateful = instance["type"] in ["zookeeper", "kafka", "elasticsearch"]
+              is_stateful = instance["type"].include? ["zookeeper", "kafka", "elasticsearch"]
 
               {
                 type: instance["type"],

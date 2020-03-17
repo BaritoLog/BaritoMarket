@@ -1,6 +1,6 @@
 class AddManifestsToInfrastructures < ActiveRecord::Migration[5.2]
   def change
-    add_column :infrastructures, :manifests, :jsonb
+    add_column :infrastructures, :manifests, :jsonb, default: {}, null: false
 
     reversible do |direction|
       direction.up do
@@ -9,7 +9,7 @@ class AddManifestsToInfrastructures < ActiveRecord::Migration[5.2]
 
           infrastructure.infrastructure_components.map do |component|
             type = component.component_type
-            is_stateful = type in ["zookeeper", "kafka", "elasticsearch"]
+            is_stateful = type.include? ["zookeeper", "kafka", "elasticsearch"]
 
             if manifests.has_key?(type)
               manifests[type]["count"] += 1

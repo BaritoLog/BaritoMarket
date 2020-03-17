@@ -1,6 +1,6 @@
-class CreateTableDeploymentTemplates < ActiveRecord::Migration[5.2]
+class CreateDeploymentTemplates < ActiveRecord::Migration[5.2]
   def change
-    create_table :table_deployment_templates do |t|
+    create_table :deployment_templates do |t|
       t.string :name
       t.jsonb :bootstrappers
     end
