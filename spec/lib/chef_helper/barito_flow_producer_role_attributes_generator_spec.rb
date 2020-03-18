@@ -5,8 +5,8 @@ module ChefHelper
     before(:each) do
       @producer_manifest = {
                   "type" => "barito-flow-producer",
-                  "count" => 1,
-                  "min_available_count" => 0,
+                  "desired_num_replicas" => 1,
+                  "min_available_replicas" => 0,
                   "deployment_cluster_name"=>"guja",
                   "definition" => {
                     "container_type" => "stateless",
@@ -68,8 +68,8 @@ module ChefHelper
                     "cluster_name" => "barito",
                     "deployment_cluster_name"=>"guja",
                     "type" => "consul",
-                    "count" => 1,
-                    "min_available_count" => 0,
+                    "desired_num_replicas" => 1,
+                    "min_available_replicas" => 0,
                     "definition" => {
                       "container_type" => "stateless",
                       "strategy" => "RollingUpdate",

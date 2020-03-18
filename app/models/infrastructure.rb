@@ -142,7 +142,7 @@ class Infrastructure < ApplicationRecord
     components = []
     manifests.each do |m|
 
-      components += (1..m["count"]).map { |number| component_hash(m["type"], number) }
+      components += (1..m["desired_num_replicas"]).map { |number| component_hash(m["type"], number) }
     end
     components.sort_by {|obj| obj[:seq]}
   end

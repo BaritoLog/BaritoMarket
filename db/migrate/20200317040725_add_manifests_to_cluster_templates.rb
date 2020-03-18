@@ -12,7 +12,7 @@ class AddManifestsToClusterTemplates < ActiveRecord::Migration[5.2]
 
               {
                 type: instance["type"],
-                count: instance["count"],
+                desired_num_replicas: instance["count"],
                 min_available_count: instance["count"] - 1,
                 definition: {
                   source: component_template.source,

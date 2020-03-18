@@ -8,8 +8,8 @@ module ChefHelper
                   "cluster_name" => "barito",
                   "deployment_cluster_name"=>"guja",
                   "type" => "kibana",
-                  "count" => 1,
-                  "min_available_count" => 0,
+                  "desired_num_replicas" => 1,
+                  "min_available_replicas" => 0,
                   "definition" => {
                     "container_type" => "stateless",
                     "strategy" => "RollingUpdate",
@@ -64,8 +64,8 @@ module ChefHelper
                     "cluster_name" => "barito",
                     "deployment_cluster_name"=>"guja",
                     "type" => "consul",
-                    "count" => 1,
-                    "min_available_count" => 0,
+                    "desired_num_replicas" => 1,
+                    "min_available_replicas" => 0,
                     "definition" => {
                       "container_type" => "stateless",
                       "strategy" => "RollingUpdate",

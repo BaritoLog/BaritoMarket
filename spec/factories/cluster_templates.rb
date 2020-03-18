@@ -4,8 +4,8 @@ FactoryBot.define do
     manifests  { [
                   {
                     "type": "consul",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateless",
                       "strategy": "RollingUpdate",
@@ -44,8 +44,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "zookeeper",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateless",
                       "strategy": "RollingUpdate",
@@ -95,8 +95,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "kafka",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateful",
                       "strategy": "RollingUpdate",
@@ -147,8 +147,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "elasticsearch",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateful",
                       "strategy": "RollingUpdate",
@@ -198,8 +198,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "barito-flow-producer",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateless",
                       "strategy": "RollingUpdate",
@@ -257,8 +257,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "barito-flow-consumer",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateless",
                       "strategy": "RollingUpdate",
@@ -323,8 +323,8 @@ FactoryBot.define do
                   },
                   {
                     "type": "kibana",
-                    "count": 1,
-                    "min_available_count": 0,
+                    "desired_num_replicas": 1,
+                    "min_available_replicas": 0,
                     "definition": {
                       "container_type": "stateless",
                       "strategy": "RollingUpdate",

@@ -19,7 +19,7 @@ module ChefHelper
     def update_attrs
       @kafka_attrs["kafka"]["zookeeper"]["hosts"] = ["zookeeper.service.consul"]
       @kafka_attrs["kafka"]["kafka"]["hosts"] = ["kafka.service.consul"]
-      @kafka_attrs["kafka"]["kafka"]["hosts_count"] = @manifest['count']
+      @kafka_attrs["kafka"]["kafka"]["hosts_count"] = @manifest['desired_num_replicas']
       @kafka_attrs["consul"]["hosts"] = @consul_hosts
       @kafka_attrs["run_list"] = ["role[#{@role_name}]"]
 

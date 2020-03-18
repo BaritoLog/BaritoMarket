@@ -45,8 +45,8 @@ module BaritoBlueprint
       it 'should return true if executor returns success' do
         expected_manifest = {
                               "type"=>"consul",
-                              "count"=>1,
-                              "min_available_count"=>0,
+                              "desired_num_replicas"=>1,
+                              "min_available_replicas"=>0,
                               "deployment_cluster_name"=>"guja",
                               "definition"=>
                               {
@@ -77,7 +77,7 @@ module BaritoBlueprint
                                 ],
                                 "healthcheck"=>{"type"=>"tcp", "port"=>9500, "endpoint"=>"", "payload"=>"", "timeout"=>""}},
                               "name"=>"guja-consul",
-                              "cluster_name"=>"barito"
+                              "cluster_name"=>"default"
                             }
         expect(@bootstrapper.generate_manifest!(@infrastructure.manifests[0])).to eq [expected_manifest,true]
       end

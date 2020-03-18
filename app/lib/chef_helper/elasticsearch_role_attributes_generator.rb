@@ -8,12 +8,12 @@ module ChefHelper
       @cluster_name = manifest['cluster_name']
       @hostname = generate_pf_meta("container_hostname")
       @port = opts[:port] || 9200      
-      if manifest['count'].to_i <= 1
+      if manifest['desired_num_replicas'].to_i <= 1
         @index_number_of_replicas = 0
         @minimum_master_nodes = 1
       else
         @index_number_of_replicas = 1
-        @minimum_master_nodes = (manifest['count'].to_i/2 + 1).floor
+        @minimum_master_nodes = (manifest['desired_num_replicas'].to_i/2 + 1).floor
       end
 
       elastic_template = DeploymentTemplate.find_by(name: 'elasticsearch')
