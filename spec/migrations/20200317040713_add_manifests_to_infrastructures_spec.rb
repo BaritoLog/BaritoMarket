@@ -1,7 +1,7 @@
 require 'rails_helper'
 require Rails.root.join('db/migrate/20200317040713_add_manifests_to_infrastructures')
 
-RSpec.describe AddManifestsToInfrastructures, focus: true do
+RSpec.describe AddManifestsToInfrastructures do
   let(:migrations_paths) { ActiveRecord::Migrator.migrations_paths }
   let(:migrations) { ActiveRecord::MigrationContext.new(migrations_paths).migrations }
   let(:previous_version) { 20200127094355 }
