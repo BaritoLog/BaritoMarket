@@ -8,6 +8,11 @@ class AddManifestsToInfrastructures < ActiveRecord::Migration[5.2]
         Infrastructure.reset_column_information
 
         Infrastructure.all.each do |infrastructure|
+          next if [
+            Infrastructure.provisioning_statuses[:deleted],
+            Infrastructure.provisioning_statuses[:delete_error]
+          ].include? infrastructure.provisioning_status
+
           manifests = Hash.new
 
           infrastructure.infrastructure_components.map do |component|

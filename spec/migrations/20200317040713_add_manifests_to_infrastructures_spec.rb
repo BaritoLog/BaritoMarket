@@ -1,7 +1,7 @@
 require 'rails_helper'
 require Rails.root.join('db/migrate/20200317040713_add_manifests_to_infrastructures')
 
-RSpec.describe AddManifestsToInfrastructures do
+RSpec.describe AddManifestsToInfrastructures, focus: true do
   let(:migrations_paths) { ActiveRecord::Migrator.migrations_paths }
   let(:migrations) { ActiveRecord::MigrationContext.new(migrations_paths).migrations }
   let(:previous_version) { 20200127094355 }
@@ -45,11 +45,17 @@ RSpec.describe AddManifestsToInfrastructures do
                                           },
                                         ])
 
+      @deleted_infrastructure = create(
+        :infrastructure, provisioning_status: Infrastructure.provisioning_statuses[:deleted])
+      create(:infrastructure_component, infrastructure: @deleted_infrastructure,
+                                        component_type: "kafka")
+
       ActiveRecord::Migrator.new(:down, migrations, previous_version).migrate
       ActiveRecord::Migrator.new(:up, migrations, current_version).migrate
       Infrastructure.connection.schema_cache.clear!
       Infrastructure.reset_column_information
       @infrastructure.reload
+      @deleted_infrastructure.reload
     end
 
     it 'has correct component_type' do
@@ -59,6 +65,10 @@ RSpec.describe AddManifestsToInfrastructures do
       ].map { |component_type| "#{@infrastructure.cluster_name}-#{component_type}" }
 
       expect(manifest_names).to match_array(desired_manifest_names)
+    end
+
+    it 'does not handle deleted infrastructures' do
+      expect(@deleted_infrastructure.manifests).to eq(Hash.new)
     end
 
     context 'elasticsearch manifest' do
