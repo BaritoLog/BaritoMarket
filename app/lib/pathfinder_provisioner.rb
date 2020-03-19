@@ -146,7 +146,6 @@ class PathfinderProvisioner
     )
     req.run
     if req.response.success?
-      body = JSON.parse(req.response.body)
       {
         'success' => true
       }
