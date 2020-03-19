@@ -3,7 +3,7 @@ class UpdateManifestsWorker
 
   def perform(infrastructure_id)
     begin
-      infrastructure = Infrastructure.find!(infrastructure_id)
+      infrastructure = Infrastructure.find(infrastructure_id)
       provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure,
         PathfinderProvisioner.new(
