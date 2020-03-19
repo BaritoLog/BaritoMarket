@@ -4,16 +4,21 @@ class AddManifestsToClusterTemplates < ActiveRecord::Migration[5.2]
 
     reversible do |direction|
       direction.up do
+        ClusterTemplate.connection.schema_cache.clear!
+        ClusterTemplate.reset_column_information
         ClusterTemplate.all.each do |cluster_template|
-          cluster_template.update!(
-            manifests: cluster_template.instances.map do |instance|
-              component_template = ComponentTemplate.find_by(name: instance["type"])
-              is_stateful = instance["type"].include? ["zookeeper", "kafka", "elasticsearch"]
+          template_mainfests = cluster_template.instances.map { |instance|
+              if instance["count"] == 0
+                next
+              end
 
+              component_template = ComponentTemplate.find_by(name: instance["type"])
+              is_stateful = ["zookeeper", "kafka", "elasticsearch"].include? instance["type"]
+              
               {
                 type: instance["type"],
                 desired_num_replicas: instance["count"],
-                min_available_count: instance["count"] - 1,
+                min_available_replicas: instance["count"] - 1,
                 definition: {
                   source: component_template.source,
                   bootstrappers: component_template.bootstrappers,
@@ -21,8 +26,11 @@ class AddManifestsToClusterTemplates < ActiveRecord::Migration[5.2]
                   allow_failure: !is_stateful
                 }
               }
-            end
-          )
+            }.compact
+
+          cluster_template.update!(
+            manifests: template_mainfests
+          ) if template_mainfests.any?
         end
       end
     end
