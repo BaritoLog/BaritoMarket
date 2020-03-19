@@ -27,7 +27,7 @@ class InfrastructuresController < ApplicationController
 
     success = @infrastructure.update_manifests(manifests)
     if success
-      UpdateManifestsWorker.perform_async(@infrastructure)
+      UpdateManifestsWorker.perform_async(@infrastructure.id)
     end
     redirect_to infrastructure_path
   end

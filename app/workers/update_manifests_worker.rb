@@ -1,8 +1,9 @@
 class UpdateManifestsWorker
   include Sidekiq::Worker
 
-  def perform(infrastructure)
+  def perform(infrastructure_id)
     begin
+      infrastructure = Infrastructure.find(params[:id])
       provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure,
         PathfinderProvisioner.new(
