@@ -32,11 +32,11 @@ RSpec.describe AddManifestsToClusterTemplates do
                       "count": 0
                     }]
       )
-      
+
       ActiveRecord::Migration.suppress_messages do
         ActiveRecord::Migrator.new(:down, migrations, previous_version).migrate
         ActiveRecord::Migrator.new(:up, migrations, current_version).migrate
-        
+
         ClusterTemplate.connection.schema_cache.clear!
         ClusterTemplate.reset_column_information
         @cluster_template.reload
@@ -45,7 +45,7 @@ RSpec.describe AddManifestsToClusterTemplates do
         @cluster_template_yggdrasil.reload
       end
     end
-    
+
     context 'Yggdrasil template' do
       it 'should not create yggdrasil manifest' do
         expect(@cluster_template_yggdrasil[:manifests]).to eq({})
@@ -63,11 +63,11 @@ RSpec.describe AddManifestsToClusterTemplates do
       it 'create consul manifests with the correct minimum available replicas' do
         expect(@cluster_template_consul[:manifests][0]["min_available_replicas"]).to eq(0)
       end
-      
+
       it 'consul manifests container type should be stateless' do
         expect(@cluster_template_consul[:manifests][0]["definition"]["container_type"]).to eq("stateless")
       end
-      
+
       it 'consul manifests container type should be allow to failed' do
         expect(@cluster_template_consul[:manifests][0]["definition"]["allow_failure"]).to eq(true)
       end
@@ -81,11 +81,11 @@ RSpec.describe AddManifestsToClusterTemplates do
       it 'create elasticsearch manifests with the correct minimum available replicas' do
         expect(@cluster_template_elastic[:manifests][0]["min_available_replicas"]).to eq(2)
       end
-      
+
       it 'elasticsearch manifests container type should be stateless' do
         expect(@cluster_template_elastic[:manifests][0]["definition"]["container_type"]).to eq("stateful")
       end
-      
+
       it 'elasticsearch manifests container type should not be allowed to fail' do
         expect(@cluster_template_elastic[:manifests][0]["definition"]["allow_failure"]).to eq(false)
       end

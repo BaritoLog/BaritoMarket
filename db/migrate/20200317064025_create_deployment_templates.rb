@@ -10,6 +10,9 @@ class CreateDeploymentTemplates < ActiveRecord::Migration[5.2]
 
     reversible do |direction|
       direction.up do
+        DeploymentTemplate.connection.schema_cache.clear!
+        DeploymentTemplate.reset_column_information
+
         ComponentTemplate.all.each do |component_template|
           DeploymentTemplate.create!(
             name: component_template.name,
