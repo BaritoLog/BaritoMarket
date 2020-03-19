@@ -110,7 +110,8 @@ class InfrastructuresController < ApplicationController
       if deployment.empty?
         next
       end
-      containers += deployment['containers']
+      deployment_containers = deployment['containers']
+      containers += deployment_containers unless deployment_containers == nil 
     end
     containers
   end
