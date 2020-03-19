@@ -69,7 +69,7 @@ module BaritoBlueprint
                                     "bootstrap_attributes"=>{
                                       "consul"=>{
                                         "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul"
-                                      }, 
+                                      },
                                       "run_list"=>["role[consul]"]
                                     },
                                     "bootstrap_cookbooks_url"=>"https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
@@ -77,7 +77,7 @@ module BaritoBlueprint
                                 ],
                                 "healthcheck"=>{"type"=>"tcp", "port"=>9500, "endpoint"=>"", "payload"=>"", "timeout"=>""}},
                               "name"=>"guja-consul",
-                              "cluster_name"=>"default"
+                              "cluster_name"=>Figaro.env.pathfinder_cluster
                             }
         expect(@bootstrapper.generate_manifest!(@infrastructure.manifests[0])).to eq [expected_manifest,true]
       end
