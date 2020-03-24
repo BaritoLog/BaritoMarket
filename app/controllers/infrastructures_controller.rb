@@ -106,7 +106,7 @@ class InfrastructuresController < ApplicationController
     
     containers = []
     @infrastructure.manifests.each do |manifest|
-      deployment = @provisioner.index_containers!(manifest['name'])
+      deployment = @provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
       if deployment.empty?
         next
       end

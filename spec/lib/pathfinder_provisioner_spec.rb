@@ -391,7 +391,8 @@ RSpec.describe PathfinderProvisioner do
       stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/haza-consul/containers").
         with(
           query: {
-            'name' => 'haza-consul'
+            'name' => 'haza-consul',
+            'cluster_name' => 'default'
           },
           headers: {
             'Content-Type' => 'application/json',
@@ -439,7 +440,7 @@ RSpec.describe PathfinderProvisioner do
     end
     it "should make necessary calls to Pathfinder and get list containers" do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      bootstrap_result = pathfinder_provisioner.index_containers!("haza-consul")
+      bootstrap_result = pathfinder_provisioner.index_containers!("haza-consul", "default")
       expect(bootstrap_result).to eq({
         'success' => true,
         'data' => {

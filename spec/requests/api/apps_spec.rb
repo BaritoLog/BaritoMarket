@@ -193,7 +193,7 @@ RSpec.describe 'Apps API', type: :request do
 
       provisioner = double
       allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul').and_return(@resp))
+        with('haza-consul', 'barito').and_return(@resp))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers

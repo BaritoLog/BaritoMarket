@@ -154,12 +154,13 @@ class PathfinderProvisioner
     end
   end
 
-  def index_containers!(deployment_name)
+  def index_containers!(deployment_name, cluster_name)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v2/ext_app/deployments/#{deployment_name}/containers",
       method: :get,
       params: {
         'name' => deployment_name,
+        'cluster_name' => cluster_name
       },
       headers: {
         'Content-Type' => 'application/json',

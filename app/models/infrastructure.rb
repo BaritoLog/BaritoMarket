@@ -155,7 +155,7 @@ class Infrastructure < ApplicationRecord
       Figaro.env.pathfinder_token,
       Figaro.env.pathfinder_cluster,
     )
-    consul_deployment = provisioner.index_containers!(consul_manifest['name'])
+    consul_deployment = provisioner.index_containers!(consul_manifest['name'], consul_manifest['cluster_name'])
     return [] if consul_deployment.empty?
 
     consul_hosts = consul_deployment.dig('data','containers').map { |c| 

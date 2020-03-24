@@ -288,7 +288,7 @@ RSpec.describe Infrastructure, type: :model do
       
       provisioner = double
       allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul').and_return(@resp))
+        with('haza-consul', 'barito').and_return(@resp))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       expect(infrastructure.fetch_consul_hosts).to eq ["10.0.0.1:#{Figaro.env.default_consul_port}"]
