@@ -28,7 +28,7 @@ module BaritoBlueprint
           @pathfinder_host, @pathfinder_token, @pathfinder_cluster),
       )
       
-      return false unless provisioner.bulk_apply!
+      return false unless provisioner.batch!
       
       return true
     end

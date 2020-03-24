@@ -132,9 +132,9 @@ class PathfinderProvisioner
     end
   end
 
-  def bulk_apply!(deployments)
+  def batch!(deployments)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v2/ext_app/deployments/bulk_apply",
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/batch",
       method: :post,
       body: {
         'deployments' => deployments

@@ -307,7 +307,7 @@ RSpec.describe PathfinderProvisioner do
     end
   end
 
-  describe "#bulk_apply!" do
+  describe "#batch!" do
     before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
@@ -355,7 +355,7 @@ RSpec.describe PathfinderProvisioner do
         }"
       }]
       # Mock Pathfinder API
-      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/bulk_apply").
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/batch").
         with(
           body: {
             'deployments' => @deployments
@@ -375,7 +375,7 @@ RSpec.describe PathfinderProvisioner do
     end
     it "should make necessary calls to Pathfinder and create new containers" do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      bootstrap_result = pathfinder_provisioner.bulk_apply!(@deployments)
+      bootstrap_result = pathfinder_provisioner.batch!(@deployments)
       expect(bootstrap_result).to eq({
         'success' => true
       })

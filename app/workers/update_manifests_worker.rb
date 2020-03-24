@@ -12,7 +12,7 @@ class UpdateManifestsWorker
           Figaro.env.pathfinder_cluster,
         )
       )
-      provisioner.bulk_apply!
+      provisioner.batch!
     rescue JSON::ParserError, StandardError, NoMethodError => ex
       logger.warn "Exception: #{ex}"
       infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')

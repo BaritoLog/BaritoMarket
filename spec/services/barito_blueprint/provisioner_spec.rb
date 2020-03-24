@@ -13,39 +13,39 @@ module BaritoBlueprint
       )
     end
 
-    describe '#bulk_apply!' do
+    describe '#batch!' do
       before(:each) do
       end
 
       it 'should return true if executor returns success' do
         allow(@executor).
-          to receive(:bulk_apply!).
+          to receive(:batch!).
           and_return('success' => true)
-        @provisioner.bulk_apply!
-        expect(@provisioner.bulk_apply!).to eq true
+        @provisioner.batch!
+        expect(@provisioner.batch!).to eq true
       end
 
       it 'should update provisioning status when success' do
         allow(@executor).
-          to receive(:bulk_apply!).
+          to receive(:batch!).
           and_return('success' => true)
-        @provisioner.bulk_apply!
+        @provisioner.batch!
         expect(@infrastructure.provisioning_status).to eq 'DEPLOYMENT_FINISHED'
       end
 
       it 'should return false if executor returns errors' do
         allow(@executor).
-          to receive(:bulk_apply!).
+          to receive(:batch!).
           and_return('success' => false)
-        @provisioner.bulk_apply!
-        expect(@provisioner.bulk_apply!).to eq false
+        @provisioner.batch!
+        expect(@provisioner.batch!).to eq false
       end
 
       it 'should update provisioning status when failed' do
         allow(@executor).
-          to receive(:bulk_apply!).
+          to receive(:batch!).
           and_return('success' => false)
-        @provisioner.bulk_apply!
+        @provisioner.batch!
         expect(@infrastructure.provisioning_status).to eq 'DEPLOYMENT_ERROR'
       end
 

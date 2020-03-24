@@ -14,7 +14,7 @@ module BaritoBlueprint
     describe '#process!' do
       before(:each) do
         provisioner = double
-        allow(provisioner).to(receive(:bulk_apply!).
+        allow(provisioner).to(receive(:batch!).
           and_return(true))
         allow(Provisioner).to receive(:new).and_return(provisioner)
 

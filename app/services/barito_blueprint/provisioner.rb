@@ -17,7 +17,7 @@ module BaritoBlueprint
       }
     end
 
-    def bulk_apply!
+    def batch!
       Processor.produce_log(
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
@@ -25,7 +25,7 @@ module BaritoBlueprint
       @infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
       # Execute reprovisioning
-      res = @executor.bulk_apply!(@infrastructure_manifests)
+      res = @executor.batch!(@infrastructure_manifests)
       Processor.produce_log(
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
