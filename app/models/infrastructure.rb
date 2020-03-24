@@ -141,10 +141,28 @@ class Infrastructure < ApplicationRecord
   def generate_components(manifests)
     components = []
     manifests.each do |m|
-
       components += (1..m["desired_num_replicas"]).map { |number| component_hash(m["type"], number) }
     end
     components.sort_by {|obj| obj[:seq]}
+  end
+
+  def fetch_consul_hosts
+    consul_manifest = find_manifest_by_type('consul')
+    return [] if consul_manifest.nil?
+
+    provisioner = PathfinderProvisioner.new(
+      Figaro.env.pathfinder_host,
+      Figaro.env.pathfinder_token,
+      Figaro.env.pathfinder_cluster,
+    )
+    consul_deployment = provisioner.list_containers!(consul_manifest['name'])
+    return [] if consul_deployment.empty?
+
+    consul_hosts = consul_deployment.dig('data','containers').map { |c| 
+      "#{c['ipaddress']}:#{Figaro.env.default_consul_port}" 
+    } 
+
+    consul_hosts
   end
 
   private
@@ -152,5 +170,9 @@ class Infrastructure < ApplicationRecord
   def component_hash(type, count)
     name = "#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
     { name: name, type: type}
+  end
+
+  def find_manifest_by_type(type)
+    self.manifests.find {|manifest| manifest['type'] == type }
   end
 end

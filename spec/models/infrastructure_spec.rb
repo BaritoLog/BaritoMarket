@@ -188,4 +188,110 @@ RSpec.describe Infrastructure, type: :model do
       expect(infrastructure.allow_delete?).to eq false
     end
   end
+
+  describe '#get_consul_hosts' do
+    before(:each) do
+      pf_host = Figaro.env.pathfinder_host
+      pf_token = Figaro.env.pathfinder_token
+      pf_cluster = Figaro.env.pathfinder_cluster
+      @pf_provisioner = PathfinderProvisioner.new(pf_host, pf_token, pf_cluster)
+      @manifest = {
+        "name" => "haza-consul",
+        "cluster_name" => "barito",
+        "deployment_cluster_name"=>"haza",
+        "type" => "consul",
+        "desired_num_replicas" => 1,
+        "min_available_replicas" => 0,
+        "definition" => {
+          "container_type" => "stateless",
+          "strategy" => "RollingUpdate",
+          "allow_failure" => "false",
+          "source" => {
+            "mode" => "pull",              # can be local or pull. default is pull.
+            "alias" => "lxd-ubuntu-minimal-consul-1.1.0-8",
+            "remote" => {
+              "name" => "barito-registry"
+            },
+            "fingerprint" => "",
+            "source_type" => "image"                      
+          },
+          "resource" => {
+            "cpu_limit" => "0-2",
+            "mem_limit" => "500MB"
+          },
+          "bootstrappers" => [{
+            "bootstrap_type" => "chef-solo",
+            "bootstrap_attributes" => {
+              "consul" => {
+                "hosts" => []
+              },
+              "run_list" => []
+            },
+            "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+          }],
+          "healthcheck" => {
+            "type" => "tcp",
+            "port" => 9500,
+            "endpoint" => "",
+            "payload" => "",
+            "timeout" => ""
+          }
+        }
+      }
+      @resp = {
+          'success'=> true,
+          'data' =>{
+            "containers"=>[{
+              "id"=>1817,
+              "hostname"=>"haza-consul-01",
+              "ipaddress"=>"10.0.0.1",
+              "source"=>{
+                "id"=>23,
+                "source_type"=>"image",
+                "mode"=>"pull",
+                "remote"=>{
+                  "id"=>1,
+                  "name"=>"barito-registry",
+                  "server"=>"https://localhost:8443",
+                  "protocol"=>"lxd",
+                  "auth_type"=>"tls"
+                },
+                "fingerprint"=>"",
+                "alias"=>"lxd-ubuntu-minimal-consul-1.1.0-8"
+              },
+              "bootstrappers"=>[{
+                "bootstrap_type"=>"chef-solo",
+                "bootstrap_attributes"=>{
+                  "consul"=>{
+                    "hosts"=>["172.168.0.1", "172.168.0.2"]
+                  },
+                  "run_list"=>[]
+                },
+                "bootstrap_cookbooks_url"=>
+                  "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"}],
+              "node_hostname"=>"i-barito-worker-node-02",
+              "status"=>"BOOTSTRAPPED",
+              "last_status_update_at"=>"2020-03-19T07:27:54.885Z"}
+            ]
+          }
+        }
+    end
+
+    it 'should return nil if infrastructure doesn\'t have consul manifest' do
+      infrastructure =  create(:infrastructure, cluster_name: 'haza', manifests: {}) 
+      
+      expect(infrastructure.fetch_consul_hosts).to eq []
+    end
+
+    it 'should return list of consul hosts if infrastructure have consul manifest' do
+      infrastructure =  create(:infrastructure, cluster_name: 'haza', manifests: [@manifest]) 
+      
+      provisioner = double
+      allow(provisioner).to(receive(:list_containers!).
+        with('haza-consul').and_return(@resp))
+      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+
+      expect(infrastructure.fetch_consul_hosts).to eq ["10.0.0.1:#{Figaro.env.default_consul_port}"]
+    end
+  end
 end
