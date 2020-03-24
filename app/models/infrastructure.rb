@@ -138,14 +138,6 @@ class Infrastructure < ApplicationRecord
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 
-  def generate_components(manifests)
-    components = []
-    manifests.each do |m|
-      components += (1..m["desired_num_replicas"]).map { |number| component_hash(m["type"], number) }
-    end
-    components.sort_by {|obj| obj[:seq]}
-  end
-
   def fetch_consul_hosts
     consul_manifest = find_manifest_by_type('consul')
     return [] if consul_manifest.nil?

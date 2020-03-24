@@ -1,23 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Infrastructure, type: :model do
-  describe 'Add Infrastructure Component' do
-    let(:infrastructure) { create :infrastructure }
-    let(:cluster_template) { create :cluster_template }
-    before(:each) do
-      @components = infrastructure.generate_components(cluster_template.manifests)
-    end
-
-    it 'should generate correct number of components' do
-      @components.each_with_index do |node, seq|
-        infrastructure.add_component(node, seq + 1)
-      end
-      
-      expect(infrastructure.infrastructure_components.count).
-        to eq(@components.count)
-    end
-  end
-
   context 'Setup Application' do
     let(:cluster_template) { create :cluster_template }
     let(:infrastructure_props) { build(:infrastructure) }
