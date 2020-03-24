@@ -404,37 +404,35 @@ RSpec.describe PathfinderProvisioner do
             'Content-Type' => 'application/json',
           },
           body: {
-            'data' => {
-              'containers' => [
-                {
-                  'id' => 1045,
-                  'hostname' => 'haza-consul-01',
-                  'ipaddress' => '10.0.0.1',
-                  'source' => {
-                    'id' => 180,
-                    'source_type' => 'image',
-                    'mode' => 'pull',
-                    'remote' => {
-                      'id' => 157,
-                      'name' => 'remote-1',
-                      'server' => 'https =>//cloud-images.ubuntu.com/releases',
-                      'protocol' => 'lxd',
-                      'auth_type' => 'tls'
-                    },
-                    'fingerprint' => 'fingerprint-1',
-                    'alias' => 'alias-1'
+            'containers' => [
+              {
+                'id' => 1045,
+                'hostname' => 'haza-consul-01',
+                'ipaddress' => '10.0.0.1',
+                'source' => {
+                  'id' => 180,
+                  'source_type' => 'image',
+                  'mode' => 'pull',
+                  'remote' => {
+                    'id' => 157,
+                    'name' => 'remote-1',
+                    'server' => 'https =>//cloud-images.ubuntu.com/releases',
+                    'protocol' => 'lxd',
+                    'auth_type' => 'tls'
                   },
-                  'bootstrappers' => [
-                    {
-                      'bootstrap_type' => 'none'
-                    }
-                  ],
-                  'node_hostname' => '',
-                  'status' => 'PENDING',
-                  'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
-                }
-              ]
-            }
+                  'fingerprint' => 'fingerprint-1',
+                  'alias' => 'alias-1'
+                },
+                'bootstrappers' => [
+                  {
+                    'bootstrap_type' => 'none'
+                  }
+                ],
+                'node_hostname' => '',
+                'status' => 'PENDING',
+                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+              }
+            ]
           }.to_json
         })
     end

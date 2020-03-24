@@ -172,7 +172,7 @@ class PathfinderProvisioner
       body = JSON.parse(req.response.body)
       {
         'success' => true,
-        'data' => body['data']
+        'data' => body
       }
     else
       return []

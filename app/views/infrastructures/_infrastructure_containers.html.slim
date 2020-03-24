@@ -12,8 +12,8 @@ h4.mb-3 All Infrastructure Containers
     tbody
       - infrastructure_containers.each do |container|
         tr.d-flex
-          td.col-2.word-wrap= container.hostname
-          td.col-2.word-wrap= container.ipaddress
-          td.col-3.word-wrap= container.source
-          td.col-3.word-wrap= container.bootstrappers
-          td.col-2.word-wrap= container.status
+          td.col-2.word-wrap= container['hostname']
+          td.col-2.word-wrap= container['ipaddress']
+          td.col-3.word-wrap= container['source']
+          td.col-3.word-wrap= container['bootstrappers']
+          td.col-2.word-wrap= container['status']
