@@ -8,6 +8,6 @@ task :manifest_seed => :environment do
   
   components = InfrastructureComponent.where(status: 'FINISHED')
   components.each do |component|
-    provisioner.update_container(component)
+    provisioner.update_container!(component)
   end
 end
