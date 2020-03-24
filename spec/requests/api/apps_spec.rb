@@ -192,7 +192,7 @@ RSpec.describe 'Apps API', type: :request do
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
       provisioner = double
-      allow(provisioner).to(receive(:list_containers!).
+      allow(provisioner).to(receive(:index_containers!).
         with('haza-consul').and_return(@resp))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 

@@ -287,7 +287,7 @@ RSpec.describe Infrastructure, type: :model do
       infrastructure =  create(:infrastructure, cluster_name: 'haza', manifests: [@manifest]) 
       
       provisioner = double
-      allow(provisioner).to(receive(:list_containers!).
+      allow(provisioner).to(receive(:index_containers!).
         with('haza-consul').and_return(@resp))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 

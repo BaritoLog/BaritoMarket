@@ -382,13 +382,13 @@ RSpec.describe PathfinderProvisioner do
     end
   end
 
-  context "#GET list_containers!" do
+  context "#GET index_containers!" do
     before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
       # Mock Pathfinder API
-      stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/list_containers").
+      stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/index_containers").
         with(
           query: {
             'name' => 'haza-consul'
@@ -404,46 +404,6 @@ RSpec.describe PathfinderProvisioner do
           },
           body: {
             'data' => {
-              'id' => 639,
-              'name' => 'haza-consul',
-              'count' => 1,
-              'definition' => {
-                'source' => {
-                  'mode' => 'pull',
-                  'alias' => 'lxd-ubuntu-minimal-consul-1.1.0-8',
-                  'remote' => {
-                    'name' => 'barito-registry'
-                  },
-                  'fingerprint' => '',
-                  'source_type' => 'image'
-                },
-                'resource' => {
-                  'cpu_limit' => '0-2',
-                  'mem_limit' => '500MB'
-                },
-                'strategy' => 'RollingUpdate',
-                'healthcheck' => {
-                  'port' => 9500,
-                  'type' => 'tcp',
-                  'payload' => '',
-                  'timeout' => '',
-                  'endpoint' => ''
-                },
-                'allow_failure' => 'false',
-                'bootstrappers' => [
-                  {
-                    'bootstrap_type' => 'chef-solo',
-                    'bootstrap_attributes' => {
-                      'consul' => {
-                        'hosts' => []
-                      },
-                      'run_list' => []
-                    },
-                    'bootstrap_cookbooks_url' => 'https =>//github.com/BaritoLog/chef-repo/archive/master.tar.gz'
-                  }
-                ],
-                'container_type' => 'stateless'
-              },
               'containers' => [
                 {
                   'id' => 1045,
@@ -479,50 +439,10 @@ RSpec.describe PathfinderProvisioner do
     end
     it "should make necessary calls to Pathfinder and get list containers" do
       pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
-      bootstrap_result = pathfinder_provisioner.list_containers!("haza-consul")
+      bootstrap_result = pathfinder_provisioner.index_containers!("haza-consul")
       expect(bootstrap_result).to eq({
         'success' => true,
         'data' => {
-          'id' => 639,
-          'name' => 'haza-consul',
-          'count' => 1,
-          'definition' => {
-            'source' => {
-              'mode' => 'pull',
-              'alias' => 'lxd-ubuntu-minimal-consul-1.1.0-8',
-              'remote' => {
-                'name' => 'barito-registry'
-              },
-              'fingerprint' => '',
-              'source_type' => 'image'
-            },
-            'resource' => {
-              'cpu_limit' => '0-2',
-              'mem_limit' => '500MB'
-            },
-            'strategy' => 'RollingUpdate',
-            'healthcheck' => {
-              'port' => 9500,
-              'type' => 'tcp',
-              'payload' => '',
-              'timeout' => '',
-              'endpoint' => ''
-            },
-            'allow_failure' => 'false',
-            'bootstrappers' => [
-              {
-                'bootstrap_type' => 'chef-solo',
-                'bootstrap_attributes' => {
-                  'consul' => {
-                    'hosts' => []
-                  },
-                  'run_list' => []
-                },
-                'bootstrap_cookbooks_url' => 'https =>//github.com/BaritoLog/chef-repo/archive/master.tar.gz'
-              }
-            ],
-            'container_type' => 'stateless'
-          },
           'containers' => [
             {
               'id' => 1045,

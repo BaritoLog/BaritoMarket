@@ -40,7 +40,7 @@ class Infrastructure < ApplicationRecord
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
       cluster_template_id:  cluster_template.id,
-      manifests:             cluster_template.manifests,
+      manifests:            cluster_template.manifests,
       options:              cluster_template.options,
     )
 
@@ -155,7 +155,7 @@ class Infrastructure < ApplicationRecord
       Figaro.env.pathfinder_token,
       Figaro.env.pathfinder_cluster,
     )
-    consul_deployment = provisioner.list_containers!(consul_manifest['name'])
+    consul_deployment = provisioner.index_containers!(consul_manifest['name'])
     return [] if consul_deployment.empty?
 
     consul_hosts = consul_deployment.dig('data','containers').map { |c| 
