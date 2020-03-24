@@ -10,7 +10,7 @@ h4.mb-3 All Infrastructure Containers
         th.col-3 Bootstrappers
         th.col-2 Status
     tbody
-      - containers.each do |container|
+      - infrastructure_containers.each do |container|
         tr.d-flex
           td.col-2.word-wrap= container.hostname
           td.col-2.word-wrap= container.ipaddress
