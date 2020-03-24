@@ -156,7 +156,7 @@ class PathfinderProvisioner
 
   def index_containers!(deployment_name)
     req = Typhoeus::Request.new(
-      "#{@pathfinder_host}/api/v2/ext_app/deployments/index_containers",
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/#{deployment_name}/containers",
       method: :get,
       params: {
         'name' => deployment_name,

@@ -388,7 +388,7 @@ RSpec.describe PathfinderProvisioner do
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
       # Mock Pathfinder API
-      stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/index_containers").
+      stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/haza-consul/containers").
         with(
           query: {
             'name' => 'haza-consul'
