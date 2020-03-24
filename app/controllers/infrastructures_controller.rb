@@ -109,7 +109,7 @@ class InfrastructuresController < ApplicationController
       if deployment.empty?
         next
       end
-      deployment_containers = deployment['containers']
+      deployment_containers = deployment['data']['containers']
       containers += deployment_containers unless deployment_containers == nil 
     end
     containers
