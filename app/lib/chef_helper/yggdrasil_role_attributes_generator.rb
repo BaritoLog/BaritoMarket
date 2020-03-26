@@ -1,6 +1,6 @@
 module ChefHelper
   class YggdrasilRoleAttributesGenerator < GenericRoleAttributesGenerator
-    def initialize(component, infrastructure_components, opts = {})
+    def initialize(manifest, infrastructure_manifests, opts = {})
       @role_name = opts[:role_name] || 'yggdrasil'
     end
 

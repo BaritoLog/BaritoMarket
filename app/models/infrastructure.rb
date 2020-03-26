@@ -12,6 +12,9 @@ class Infrastructure < ApplicationRecord
   }
   enum provisioning_statuses: {
     pending: 'PENDING',
+    deployment_started: 'DEPLOYMENT_STARTED',
+    deployment_finished: 'DEPLOYMENT_FINISHED',
+    deployment_error: 'DEPLOYMENT_ERROR',
     provisioning_started: 'PROVISIONING_STARTED',
     provisioning_error: 'PROVISIONING_ERROR',
     provisioning_finished: 'PROVISIONING_FINISHED',
@@ -37,15 +40,13 @@ class Infrastructure < ApplicationRecord
       status:               Infrastructure.statuses[:inactive],
       app_group_id:         params[:app_group_id],
       cluster_template_id:  cluster_template.id,
-      instances:            cluster_template.instances,
+      manifests:            cluster_template.manifests,
       options:              cluster_template.options,
     )
 
     if infrastructure.valid?
       infrastructure.save
-      components = infrastructure.generate_components(cluster_template.instances)
       BlueprintWorker.perform_async(
-        components,
         infrastructure_id: infrastructure.id
       )
     end
@@ -54,7 +55,7 @@ class Infrastructure < ApplicationRecord
 
   def add_component(attrs, seq)
     component_type = attrs[:type] || attrs['type']
-    component_template = ComponentTemplate.find_by(name: component_type)
+    component_template = DeploymentTemplate.find_by(name: component_type)
 
     InfrastructureComponent.create(
       infrastructure_id:  self.id,
@@ -86,6 +87,14 @@ class Infrastructure < ApplicationRecord
       update_attribute(:provisioning_status, Infrastructure.provisioning_statuses[status])
     else
       false
+    end
+  end
+
+  def update_manifests(manifests)
+    if manifests.nil? || manifests.empty?
+      false
+    else
+      update_column(:manifests, manifests)
     end
   end
 
@@ -129,13 +138,23 @@ class Infrastructure < ApplicationRecord
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 
-  def generate_components(instances)
-    components = []
-    instances.each do |instance|
+  def fetch_consul_hosts
+    consul_manifest = find_manifest_by_type('consul')
+    return [] if consul_manifest.nil?
 
-      components += (1..instance["count"]).map { |number| component_hash(instance["type"], number) }
-    end
-    components.sort_by {|obj| obj[:seq]}
+    provisioner = PathfinderProvisioner.new(
+      Figaro.env.pathfinder_host,
+      Figaro.env.pathfinder_token,
+      Figaro.env.pathfinder_cluster,
+    )
+    consul_deployment = provisioner.index_containers!(consul_manifest['name'], consul_manifest['cluster_name'])
+    return [] if consul_deployment.empty?
+
+    consul_hosts = consul_deployment.dig('data','containers').map { |c| 
+      "#{c['ipaddress']}:#{Figaro.env.default_consul_port}" 
+    } 
+
+    consul_hosts
   end
 
   private
@@ -143,5 +162,9 @@ class Infrastructure < ApplicationRecord
   def component_hash(type, count)
     name = "#{self.cluster_name}-#{type}-#{format('%02d', count.to_i)}"
     { name: name, type: type}
+  end
+
+  def find_manifest_by_type(type)
+    self.manifests.find {|manifest| manifest['type'] == type }
   end
 end

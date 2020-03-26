@@ -5,7 +5,7 @@
 # Seeds
 # -----------------------------------------------------------------------------
 
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "consul",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -34,7 +34,7 @@ ComponentTemplate.create!(
     }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "zookeeper",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -66,7 +66,7 @@ ComponentTemplate.create!(
     }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "kafka",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -101,7 +101,7 @@ ComponentTemplate.create!(
     }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "elasticsearch",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -139,7 +139,7 @@ ComponentTemplate.create!(
     }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "barito-flow-producer",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -177,7 +177,7 @@ ComponentTemplate.create!(
     }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "barito-flow-consumer",
   source: {
     source_type: "image",       # can be image, migration or copy
@@ -216,7 +216,7 @@ ComponentTemplate.create!(
       }
   }]
 )
-ComponentTemplate.create!(
+DeploymentTemplate.create!(
   name: "kibana",
   source: {
     source_type: "image",       # can be image, migration or copy

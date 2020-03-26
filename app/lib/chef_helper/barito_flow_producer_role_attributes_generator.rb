@@ -1,12 +1,10 @@
 module ChefHelper
   class BaritoFlowProducerRoleAttributesGenerator < GenericRoleAttributesGenerator
-    def initialize(component, infrastructure_components, opts = {})
-      @consul_hosts = fetch_hosts_address_by(
-        infrastructure_components, 'component_type', 'consul')
-      @max_tps = component.infrastructure.options['max_tps'] || 10
+    def initialize(manifest, infrastructure_manifests, opts = {})
+      @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
+        {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || 'barito-flow-producer'
-      @ipaddress = component.ipaddress
-      producer_template = ComponentTemplate.find_by(name: 'barito-flow-producer')
+      producer_template = DeploymentTemplate.find_by(name: 'barito-flow-producer')
       @producer_attrs = get_bootstrap_attributes(producer_template.bootstrappers)
     end
 
@@ -16,10 +14,8 @@ module ChefHelper
     end
 
     def update_attrs
-      @producer_attrs['barito-flow']['producer']['env_vars']['BARITO_PRODUCER_MAX_TPS'] = @max_tps
-
-      @producer_attrs['consul']['hosts'] = @consul_hosts
-      @producer_attrs['run_list'] = ["role[#{@role_name}]"]
+      @producer_attrs["consul"]["hosts"] = @consul_hosts
+      @producer_attrs["run_list"] = ["role[#{@role_name}]"]
 
       @producer_attrs
     end

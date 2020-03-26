@@ -5,7 +5,7 @@
 %w(yggdrasil consul zookeeper kafka elasticsearch barito-flow-producer barito-flow-consumer kibana).each do |n|
   case n
   when "consul"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -28,7 +28,7 @@
       }]
     )
   when "zookeeper"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -60,7 +60,7 @@
       }]
     )
   when "kafka"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -95,7 +95,7 @@
       }]
     )
   when "elasticsearch"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -134,7 +134,7 @@
       }]
     )
   when "barito-flow-producer"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -172,7 +172,7 @@
       }]
     )
   when "barito-flow-consumer"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -211,7 +211,7 @@
       }]
     )
   when "kibana"
-    ::FactoryBot.create(:component_template,
+    ::FactoryBot.create(:deployment_template,
       name: n,
       source: {
         source_type: "image",       # can be image, migration or copy
@@ -242,6 +242,6 @@
       }]
     )
   else
-    ::FactoryBot.create(:component_template, name: n)
+    ::FactoryBot.create(:deployment_template, name: n)
   end
 end

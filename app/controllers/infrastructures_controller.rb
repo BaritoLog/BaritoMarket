@@ -5,7 +5,30 @@ class InfrastructuresController < ApplicationController
   end
 
   def show
-    @infrastructure_components = @infrastructure.infrastructure_components.order(:sequence)
+    @manifests = JSON.pretty_generate(@infrastructure.manifests)
+    @containers = get_containers
+  end
+
+  def edit
+    @manifests = JSON.pretty_generate(@infrastructure.manifests)
+  end
+
+  def update_manifests
+    infrastructure_params = params['infrastructure']
+    begin
+      manifests = JSON.parse(infrastructure_params['manifests'])
+    rescue JSON::ParserError
+      @infrastructure.errors.add(:manifests, "Should be valid JSON")
+      @manifests = JSON.pretty_generate(@infrastructure.manifests)
+      render :edit
+      return
+    end
+
+    success = @infrastructure.update_manifests(manifests)
+    if success
+      UpdateManifestsWorker.perform_async(@infrastructure.id)
+    end
+    redirect_to infrastructure_path
   end
 
   def retry_provision
@@ -67,5 +90,28 @@ class InfrastructuresController < ApplicationController
 
   def set_infrastructure
     @infrastructure = Infrastructure.find(params[:id])
+  end
+
+  def set_provisioner
+    @provisioner = PathfinderProvisioner.new(
+                  Figaro.env.pathfinder_host,
+                  Figaro.env.pathfinder_token,
+                  Figaro.env.pathfinder_cluster,
+                 )
+  end
+
+  def get_containers
+    set_provisioner
+    
+    containers = []
+    @infrastructure.manifests.each do |manifest|
+      deployment = @provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
+      if deployment.empty?
+        next
+      end
+      deployment_containers = deployment['data']['containers']
+      containers += deployment_containers unless deployment_containers == nil 
+    end
+    containers
   end
 end

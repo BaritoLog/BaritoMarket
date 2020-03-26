@@ -132,6 +132,78 @@ class PathfinderProvisioner
     end
   end
 
+  def batch!(deployments)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/batch",
+      method: :post,
+      body: {
+        'deployments' => deployments
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      {
+        'success' => true
+      }
+    else
+      return respond_error(req.response)
+    end
+  end
+
+  def index_containers!(deployment_name, cluster_name)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/deployments/#{deployment_name}/containers",
+      method: :get,
+      params: {
+        'name' => deployment_name,
+        'cluster_name' => cluster_name
+      },
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      body = JSON.parse(req.response.body)
+      {
+        'success' => true,
+        'data' => body
+      }
+    else
+      return []
+    end
+  end
+
+  def update_container!(component)
+    req = Typhoeus::Request.new(
+      "#{@pathfinder_host}/api/v2/ext_app/containers/#{component.hostname}/update",
+      method: :post,
+      params: {
+        'cluster_name' => @pathfinder_cluster
+      },
+      body: {
+        'hostname' => component.hostname,
+        'bootstrappers' => component.bootstrappers,
+        'source' => component.source
+      }.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'X-Auth-Token' => @pathfinder_token
+      }
+    )
+    req.run
+    if req.response.success?
+      true
+    else
+      false
+    end
+  end
+
   private
     def respond_success(response)
       body = JSON.parse(response.body)

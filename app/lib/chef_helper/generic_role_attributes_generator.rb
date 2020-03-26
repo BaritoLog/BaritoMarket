@@ -11,6 +11,13 @@ module ChefHelper
           collect{ |c| c.ipaddress || c.hostname }
       end
 
+      def generate_pf_meta(function_name, opts = {})
+        uri = URI(function_name)
+        uri.query = URI.encode_www_form(opts)
+        
+        "$pf-meta:#{uri.to_s}"
+      end
+
       def bind_hosts_and_port(hosts, port, protocol=nil)
         if port
           hosts = hosts.map{ |host| "#{host}:#{port}" }

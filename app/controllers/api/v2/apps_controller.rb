@@ -134,6 +134,11 @@ class Api::V2::AppsController < Api::V2::BaseController
 
   def generate_profile_response(app)
     infrastructure = app.app_group.infrastructure
+    consul_hosts = infrastructure.infrastructure_components.
+      where(component_type: 'consul').
+      pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
+    consul_hosts = infrastructure.fetch_consul_hosts if consul_hosts.empty?
+    consul_host = app.consul_host == '' || app.consul_host.nil? ? consul_hosts.first : app.consul_host
 
     {
       id: app.id,
@@ -142,8 +147,8 @@ class Api::V2::AppsController < Api::V2::BaseController
       app_group_name: app.app_group_name,
       max_tps: app.max_tps,
       cluster_name: app.cluster_name,
-      consul_host: app.consul_host,
-      consul_hosts: infrastructure.infrastructure_components.where(component_type: 'consul').pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" },
+      consul_host: consul_host,
+      consul_hosts: consul_hosts,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {

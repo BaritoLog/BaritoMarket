@@ -5,12 +5,12 @@ RSpec.describe ComponentTemplate, type: :model do
     let(:component_template_props) { build(:component_template) }
 
     it 'should create the component_template' do
-      component_template = ComponentTemplate.create(
+      component_template = create(:component_template,
         name: component_template_props.name,
         bootstrappers: component_template_props.bootstrappers,
-        source: component_template_props.source
+        source: component_template_props.source,
       )
-      
+
       expect(component_template.persisted?).to eq(true)
     end
   end
@@ -25,10 +25,9 @@ RSpec.describe ComponentTemplate, type: :model do
       component_template = ComponentTemplate.create(
         name: @component_template.name,
         bootstrappers: component_template_props.bootstrappers,
-        source: component_template_props.source
-
+        source: component_template_props.source,
       )
-      
+
       expect(component_template.persisted?).to eq(false)
     end
   end

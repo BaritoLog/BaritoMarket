@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PathfinderProvisioner do
   describe '#provision!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -69,7 +69,7 @@ RSpec.describe PathfinderProvisioner do
 
   describe '#reprovision!' do
     context 'container already exist' do
-      before(:all) do
+      before(:each) do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
@@ -128,7 +128,7 @@ RSpec.describe PathfinderProvisioner do
     end
 
     context 'container isn\'t exist already' do
-      before(:all) do
+      before(:each) do
         @pathfinder_host = '127.0.0.1:3000'
         @pathfinder_token = 'abc'
         @pathfinder_cluster = 'barito'
@@ -214,7 +214,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe '#delete_container!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -255,7 +255,7 @@ RSpec.describe PathfinderProvisioner do
   end
 
   describe '#rebootstrap!' do
-    before(:all) do
+    before(:each) do
       @pathfinder_host = '127.0.0.1:3000'
       @pathfinder_token = 'abc'
       @pathfinder_cluster = 'barito'
@@ -304,6 +304,227 @@ RSpec.describe PathfinderProvisioner do
         'success' => true,
         'data' => {'status' => 'PROVISIONED'}
       })
+    end
+  end
+
+  describe "#batch!" do
+    before(:each) do
+      @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
+      @pathfinder_cluster = 'barito'
+      @deployments = [{
+        'name' => 'haza-consul',
+        'cluster_name' => @pathfinder_cluster,
+        'count' => 1,
+        'definition' => "{
+          'strategy': 'RollingUpdate',
+          'allow_failure': 'false',
+          'source': {
+            'mode': 'pull',              # can be local or pull. default is pull.
+            'alias': 'lxd-ubuntu-minimal-consul-1.1.0-8',
+            'remote': {
+              'name': 'barito-registry',
+            },
+            'fingerprint': '',
+            'source_type': 'image',
+          },
+          'container_type': 'stateless',
+          'resource': {
+            'cpu_limit': '0-2',
+            'mem_limit': '500MB',
+          },
+          'bootstrappers': [
+            {
+              'bootstrap_type': 'chef-solo',
+              'bootstrap_attributes': {
+                'consul': {
+                  'hosts': [],
+                },
+                'run_list': [],
+              },
+              'bootstrap_cookbooks_url': 'https://github.com/BaritoLog/chef-repo/archive/master.tar.gz',
+            }
+          ],
+          'healthcheck': {
+            'type': 'tcp',
+            'port': 9500,
+            'endpoint': '',
+            'payload': '',
+            'timeout': '',
+          }
+        }"
+      }]
+      # Mock Pathfinder API
+      stub_request(:post, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/batch").
+        with(
+          body: {
+            'deployments' => @deployments
+          }.to_json,
+          headers: {
+            'Content-Type' => 'application/json',
+            'X-Auth-Token' => @pathfinder_token,
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+          },
+          body: {
+          }.to_json
+        })
+    end
+    it "should make necessary calls to Pathfinder and create new containers" do
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
+      bootstrap_result = pathfinder_provisioner.batch!(@deployments)
+      expect(bootstrap_result).to eq({
+        'success' => true
+      })
+    end
+  end
+
+  context "#GET index_containers!" do
+    before(:each) do
+      @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
+      @pathfinder_cluster = 'barito'
+      # Mock Pathfinder API
+      stub_request(:get, "http://#{@pathfinder_host}/api/v2/ext_app/deployments/haza-consul/containers").
+        with(
+          query: {
+            'name' => 'haza-consul',
+            'cluster_name' => 'default'
+          },
+          headers: {
+            'Content-Type' => 'application/json',
+            'X-Auth-Token' => @pathfinder_token,
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+          },
+          body: {
+            'containers' => [
+              {
+                'id' => 1045,
+                'hostname' => 'haza-consul-01',
+                'ipaddress' => '10.0.0.1',
+                'source' => {
+                  'id' => 180,
+                  'source_type' => 'image',
+                  'mode' => 'pull',
+                  'remote' => {
+                    'id' => 157,
+                    'name' => 'remote-1',
+                    'server' => 'https =>//cloud-images.ubuntu.com/releases',
+                    'protocol' => 'lxd',
+                    'auth_type' => 'tls'
+                  },
+                  'fingerprint' => 'fingerprint-1',
+                  'alias' => 'alias-1'
+                },
+                'bootstrappers' => [
+                  {
+                    'bootstrap_type' => 'none'
+                  }
+                ],
+                'node_hostname' => '',
+                'status' => 'PENDING',
+                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+              }
+            ]
+          }.to_json
+        })
+    end
+    it "should make necessary calls to Pathfinder and get list containers" do
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
+      bootstrap_result = pathfinder_provisioner.index_containers!("haza-consul", "default")
+      expect(bootstrap_result).to eq({
+        'success' => true,
+        'data' => {
+          'containers' => [
+            {
+              'id' => 1045,
+              'hostname' => 'haza-consul-01',
+              'ipaddress' => '10.0.0.1',
+              'source' => {
+                'id' => 180,
+                'source_type' => 'image',
+                'mode' => 'pull',
+                'remote' => {
+                  'id' => 157,
+                  'name' => 'remote-1',
+                  'server' => 'https =>//cloud-images.ubuntu.com/releases',
+                  'protocol' => 'lxd',
+                  'auth_type' => 'tls'
+                },
+                'fingerprint' => 'fingerprint-1',
+                'alias' => 'alias-1'
+              },
+              'bootstrappers' => [
+                {
+                  'bootstrap_type' => 'none'
+                }
+              ],
+              'node_hostname' => '',
+              'status' => 'PENDING',
+              'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+            }
+          ]
+        }
+      })
+    end
+  end
+
+  describe '#update_container!' do
+    before(:each) do
+      @pathfinder_host = '127.0.0.1:3000'
+      @pathfinder_token = 'abc'
+      @pathfinder_cluster = 'barito'
+
+      @component = create(:infrastructure_component)
+
+      # Mock Pathfinder API
+      stub_request(:post, "#{@pathfinder_host}/api/v2/ext_app/containers/#{@component.hostname}/update").
+        with(
+          query: {
+            'cluster_name' => @pathfinder_cluster
+          },
+          body: {
+            'hostname' => @component.hostname,
+            'bootstrappers' => @component.bootstrappers,
+            'source' => @component.source
+          }.to_json,
+          headers: {
+            'Content-Type' => 'application/json',
+            'X-Auth-Token' => @pathfinder_token,
+          }
+        ).to_return({
+          status: 200,
+          headers: {
+            'Content-Type' => 'application/json',
+          },
+          body: {
+            'data' => {
+              'containers' => {
+                'id' => 1045,
+                'hostname' => @component.hostname,
+                'ipaddress' => '10.0.0.1',
+                'source' => @component.source,
+                'bootstrappers' => @component.bootstrappers,
+                'node_hostname' => '',
+                'status' => 'PENDING',
+                'last_status_update_at' => '2020-03-03T07 =>41 =>50.191Z'
+              }
+            }
+          }.to_json
+        })
+    end
+
+    it 'should make necessary calls to Pathfinder and return the response' do
+      pathfinder_provisioner = PathfinderProvisioner.new(@pathfinder_host, @pathfinder_token, @pathfinder_cluster)
+      provision_result = pathfinder_provisioner.update_container!(@component)
+      expect(provision_result).to eq(true)
     end
   end
 end

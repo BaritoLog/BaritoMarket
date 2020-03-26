@@ -24,10 +24,20 @@
           dd.col-sm-10
             = @infrastructure.status
 
+          dt.col-sm-2 Manifests:
+          dd.col-sm-10
+            pre
+              code
+                = @manifests
+
       .card-footer
-        .btn.btn-primary.btn-sm
-          = link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'text-light', style: 'text-decoration:none'
+        tr.d-flex
+          .btn.btn-primary.btn-sm.mr-2
+            = link_to 'Back to Application Group', app_group_path(@infrastructure.app_group), class: 'text-light', style: 'text-decoration:none'
+          .btn.btn-primary.btn-sm.mr-2
+            i.far.fa-edit.mr-1
+            = link_to 'Edit', edit_infrastructure_path(@infrastructure), class: 'text-light', style: 'text-decoration:none'
 br
 br
 
-= render 'infrastructures/infrastructure_components', infrastructure_components: @infrastructure_components
+= render 'infrastructures/infrastructure_containers', infrastructure_containers: @containers

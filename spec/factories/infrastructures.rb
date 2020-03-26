@@ -7,43 +7,51 @@ FactoryBot.define do
     status                Infrastructure.statuses[:inactive]
     consul_host           Faker::Internet.domain_name
     options               { {"kafka_partition": 1, "kafka_replication_factor": 1, "max_tps": 100} }
-    instances             { 
+    association           :app_group
+    association           :cluster_template
+    manifests             {
                             [
                               {
-                                "type": "yggdrasil",
-                                "count": 0
-                              },
-                              {
                                 "type": "consul",
-                                "count": 1
-                              },
-                              {
-                                "type": "zookeeper",
-                                "count": 1
-                              },
-                              {
-                                "type": "kafka",
-                                "count": 1
-                              },
-                              {
-                                "type": "elasticsearch",
-                                "count": 1
-                              },
-                              {
-                                "type": "barito-flow-producer",
-                                "count": 1
-                              },
-                              {
-                                "type": "barito-flow-consumer",
-                                "count": 1
-                              },
-                              {
-                                "type": "kibana",
-                                "count": 1
+                                "desired_num_replicas": 1,
+                                "min_available_replicas": 0,
+                                "definition": {
+                                  "container_type": "stateless",
+                                  "strategy": "RollingUpdate",
+                                  "allow_failure": "false",
+                                  "source": {
+                                    "mode": "pull",              # can be local or pull. default is pull.
+                                    "alias": "lxd-ubuntu-minimal-consul-1.1.0-8",
+                                    "remote": {
+                                      "name": "barito-registry"
+                                    },
+                                    "fingerprint": "",
+                                    "source_type": "image"                      
+                                  },
+                                  "resource": {
+                                    "cpu_limit": "0-2",
+                                    "mem_limit": "500MB"
+                                  },
+                                  "bootstrappers": [{
+                                    "bootstrap_type": "chef-solo",
+                                    "bootstrap_attributes": {
+                                      "consul": {
+                                        "hosts": []
+                                      },
+                                      "run_list": []
+                                    },
+                                    "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                                  }],
+                                  "healthcheck": {
+                                    "type": "tcp",
+                                    "port": 9500,
+                                    "endpoint": "",
+                                    "payload": "",
+                                    "timeout": ""
+                                  }
+                                }
                               }
                             ]
                           }
-    association           :app_group
-    association           :cluster_template
   end
 end
