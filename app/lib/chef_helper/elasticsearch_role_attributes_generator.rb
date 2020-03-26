@@ -5,7 +5,7 @@ module ChefHelper
         {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
 
       @role_name = opts[:role_name] || 'elasticsearch'
-      @cluster_name = manifest['cluster_name']
+      @cluster_name = manifest['deployment_cluster_name']
       @hostname = generate_pf_meta("container_hostname")
       @port = opts[:port] || 9200      
       if manifest['desired_num_replicas'].to_i <= 1

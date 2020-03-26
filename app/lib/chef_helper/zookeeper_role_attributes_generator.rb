@@ -9,7 +9,7 @@ module ChefHelper
 
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || :zookeeper
-      @cluster_name = manifest['cluster_name']
+      @cluster_name = manifest['deployment_cluster_name']
       @hostname = manifest['name']
       zookeeper_template = DeploymentTemplate.find_by(name: 'zookeeper')
       @zookeeper_attrs = get_bootstrap_attributes(zookeeper_template.bootstrappers)

@@ -120,7 +120,7 @@ module ChefHelper
             },
             "kibana"=>{
               "config"=>{
-                "server.basePath"=>"/barito",
+                "server.basePath"=>"/guja",
                 "elasticsearch.url"=>"http://elasticsearch.service.consul:9200"
               }, 
               "version"=>"6.3.0"

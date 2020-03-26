@@ -4,7 +4,7 @@ module ChefHelper
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
         {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       @role_name = opts[:role_name] || 'kibana'
-      @base_path = manifest['cluster_name']
+      @base_path = manifest['deployment_cluster_name']
       kibana_template = DeploymentTemplate.find_by(name: 'kibana')
       @kibana_attrs = get_bootstrap_attributes(kibana_template.bootstrappers)
     end

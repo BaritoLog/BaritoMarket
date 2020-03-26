@@ -130,7 +130,7 @@ module ChefHelper
             "run_list"=>["role[elasticsearch]", 'recipe[elasticsearch_wrapper_cookbook::elasticsearch_set_replica]'],
             "elasticsearch"=>{
               "version"=>"6.3.0", 
-              "cluster_name"=>"barito", 
+              "cluster_name"=>"guja",
               "allocated_memory"=>12000000, 
               "max_allocated_memory"=>16000000, 
               "minimum_master_nodes"=>1, 

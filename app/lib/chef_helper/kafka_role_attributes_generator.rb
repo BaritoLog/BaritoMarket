@@ -5,7 +5,7 @@ module ChefHelper
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
       
       @role_name = opts[:role_name] || 'kafka'
-      @cluster_name = manifest['cluster_name']
+      @cluster_name = manifest['deployment_cluster_name']
       @hostname = manifest['name']
       kafka_template = DeploymentTemplate.find_by(name: 'kafka')
       @kafka_attrs = get_bootstrap_attributes(kafka_template.bootstrappers)
