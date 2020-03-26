@@ -12,12 +12,19 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
+    consul_hosts = @infrastructure.infrastructure_components.
+      where(component_type: 'consul').
+      pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
+    consul_hosts = @infrastructure.fetch_consul_hosts if consul_hosts.empty?
+    consul_host = @infrastructure.consul_host == '' || @infrastructure.consul_host.nil? ? consul_hosts.first : @infrastructure.consul_host
+
     render json: {
       name: @infrastructure.name,
       app_group_name: @infrastructure.app_group_name,
       capacity: @infrastructure.capacity,
       cluster_name: @infrastructure.cluster_name,
-      consul_host: @infrastructure.consul_host,
+      consul_host: consul_host,
+      consul_hosts: consul_hosts,
       status: @infrastructure.status,
       provisioning_status: @infrastructure.provisioning_status,
       updated_at: @infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
