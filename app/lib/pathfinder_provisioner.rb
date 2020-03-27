@@ -182,7 +182,7 @@ class PathfinderProvisioner
   def update_container!(component)
     req = Typhoeus::Request.new(
       "#{@pathfinder_host}/api/v2/ext_app/containers/#{component.hostname}/update",
-      method: :post,
+      method: :patch,
       params: {
         'cluster_name' => @pathfinder_cluster
       },

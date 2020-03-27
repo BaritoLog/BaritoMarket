@@ -485,7 +485,7 @@ RSpec.describe PathfinderProvisioner do
       @component = create(:infrastructure_component)
 
       # Mock Pathfinder API
-      stub_request(:post, "#{@pathfinder_host}/api/v2/ext_app/containers/#{@component.hostname}/update").
+      stub_request(:patch, "#{@pathfinder_host}/api/v2/ext_app/containers/#{@component.hostname}/update").
         with(
           query: {
             'cluster_name' => @pathfinder_cluster
