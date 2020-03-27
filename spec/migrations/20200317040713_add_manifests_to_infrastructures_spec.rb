@@ -50,12 +50,35 @@ RSpec.describe AddManifestsToInfrastructures do
       create(:infrastructure_component, infrastructure: @deleted_infrastructure,
                                         component_type: "kafka")
 
+      @non_chef_solo_infrastructure = create(:infrastructure)
+      create(:infrastructure_component, infrastructure: @non_chef_solo_infrastructure,
+                                        component_type: "zookeeper",
+                                        bootstrappers: [
+                                          {
+                                            bootstrap_type: "non-chef-solo",
+                                            bootstrap_attributes: {
+                                              consul: {
+                                                hosts: [],
+                                              },
+                                              zookeeper: {
+                                                hosts: [
+                                                  "1.zookeeper.service.consul",
+                                                  "2.zookeeper.service.consul",
+                                                  "0.0.0.0",
+                                                ],
+                                                my_id: 3
+                                              }
+                                            },
+                                          },
+                                        ])
+
       ActiveRecord::Migrator.new(:down, migrations, previous_version).migrate
       ActiveRecord::Migrator.new(:up, migrations, current_version).migrate
       Infrastructure.connection.schema_cache.clear!
       Infrastructure.reset_column_information
       @infrastructure.reload
       @deleted_infrastructure.reload
+      @non_chef_solo_infrastructure.reload
     end
 
     it 'has correct component_type' do
@@ -125,6 +148,12 @@ RSpec.describe AddManifestsToInfrastructures do
         }.first
       end
 
+      let(:non_chef_solo_manifest) do
+        @non_chef_solo_infrastructure.manifests.select { |manifest|
+          manifest["name"] == "#{@non_chef_solo_infrastructure.cluster_name}-zookeeper"
+        }.first
+      end
+
       it 'has Pathfinder script as Zookeeper my_id' do
         bootstrapper = manifest["definition"]["bootstrappers"][0]
         expect(bootstrapper["bootstrap_attributes"]["zookeeper"]["my_id"]).to eq(
@@ -137,6 +166,15 @@ RSpec.describe AddManifestsToInfrastructures do
         expect(bootstrapper["bootstrap_attributes"]["zookeeper"]["hosts"]).to eq(
           "$pf-meta:deployment_host_sequences?host=zookeeper.service.consul"
         )
+      end
+
+      it 'does not process non-chef-solo provisioner' do
+        bootstrapper = non_chef_solo_manifest["definition"]["bootstrappers"][0]
+        expect(bootstrapper["bootstrap_attributes"]["zookeeper"]["hosts"]).to eq([
+          "1.zookeeper.service.consul",
+          "2.zookeeper.service.consul",
+          "0.0.0.0",
+        ])
       end
     end
   end

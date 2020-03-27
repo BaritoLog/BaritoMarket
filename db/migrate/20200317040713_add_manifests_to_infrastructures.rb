@@ -37,15 +37,15 @@ class AddManifestsToInfrastructures < ActiveRecord::Migration[5.2]
                       bootstrapper["bootstrap_attributes"]["consul"]["hosts"] = build_pf_meta(
                         "deployment_ip_addresses", deployment_name: "#{cluster_name}-consul"
                       )
-                    end
 
-                    if type == "zookeeper"
-                      bootstrapper["bootstrap_attributes"]["zookeeper"]["my_id"] = build_pf_meta(
-                        "container_id"
-                      )
-                      bootstrapper["bootstrap_attributes"]["zookeeper"]["hosts"] = build_pf_meta(
-                        "deployment_host_sequences", host: "zookeeper.service.consul"
-                      )
+                      if type == "zookeeper"
+                        bootstrapper["bootstrap_attributes"]["zookeeper"]["my_id"] = build_pf_meta(
+                          "container_id"
+                        )
+                        bootstrapper["bootstrap_attributes"]["zookeeper"]["hosts"] = build_pf_meta(
+                          "deployment_host_sequences", host: "zookeeper.service.consul"
+                        )
+                      end
                     end
 
                     bootstrapper
