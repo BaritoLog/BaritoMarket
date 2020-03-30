@@ -40,6 +40,6 @@
 br
 br
 - if @containers.empty?
-  = render 'infrastructures/infrastructure_components', infrastructure_containers: @infrastructure_components
+  = render 'infrastructures/infrastructure_components', infrastructure_components: @infrastructure_components
 - else
   = render 'infrastructures/infrastructure_containers', infrastructure_containers: @containers
