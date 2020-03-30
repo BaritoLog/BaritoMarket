@@ -6,7 +6,7 @@ task :manifest_seed => :environment do
   pathfinder_cluster = Figaro.env.pathfinder_cluster
   provisioner = PathfinderProvisioner.new(pathfinder_host, pathfinder_token, pathfinder_cluster)
 
-  components = InfrastructureComponent.joins(:infrastructures).where(infrastructures: {provisioning_status: 'FINISHED'})
+  components = InfrastructureComponent.joins(:infrastructure).where.not(infrastructures: {provisioning_status: ['DELETE_ERROR', 'DELETED']})
   components.each do |component|
     provisioner.update_container!(component)
   end
