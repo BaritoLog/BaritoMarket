@@ -30,6 +30,8 @@ module BaritoBlueprint
       
       return false unless provisioner.batch!
       
+      @infrastructure.update_status('ACTIVE')
+
       return true
     end
 
