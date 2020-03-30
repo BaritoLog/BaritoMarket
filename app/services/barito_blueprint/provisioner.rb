@@ -21,7 +21,7 @@ module BaritoBlueprint
       Processor.produce_log(
         @infrastructure,
         "Infrastructure:#{@infrastructure.name}",
-        "Deployment Bulk Apply started")
+        "Deployment Batch started")
       @infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
       # Execute reprovisioning
@@ -35,14 +35,14 @@ module BaritoBlueprint
         Processor.produce_log(
           @infrastructure,
           "Infrastructure:#{@infrastructure.name}",
-          "Deployment Bulk Apply finished")
+          "Deployment Batch finished")
         @infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
         return true
       else
         Processor.produce_log(
           @infrastructure,
           "Infrastructure:#{@infrastructure.name}",
-          "Deployment Bulk Apply error",
+          "Deployment Batch error",
           "#{res['error']}")
         @infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
         return false
