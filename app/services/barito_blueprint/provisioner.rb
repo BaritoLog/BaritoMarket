@@ -48,5 +48,52 @@ module BaritoBlueprint
         return false
       end 
     end
+
+    def delete!
+      Processor.produce_log(
+        @infrastructure,
+        "Infrastructure:#{@infrastructure.name}",
+        "Deployment delete started")
+      @infrastructure.update_provisioning_status('DELETE_STARTED')
+
+      return false unless update_manifests_by_params!({desired_num_replicas: 0, min_available_replicas: 0})
+
+      @infrastructure.reload
+      sleep(5) unless Rails.env.test?
+      
+      res = @executor.batch!(@infrastructure.manifests)
+      Processor.produce_log(
+        @infrastructure,
+        "Infrastructure:#{@infrastructure.name}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "Infrastructure:#{@infrastructure.name}",
+          "Deployment deleted")
+        @infrastructure.update_provisioning_status('DELETED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "Infrastructure:#{@infrastructure.name}",
+          "Deployment delete error",
+          "#{res['error']}")
+        @infrastructure.update_provisioning_status('DELETE_ERROR')
+        return false
+      end 
+    end
+
+    def update_manifests_by_params!(params)
+      @infrastructure_manifests.each_with_index do |manifest, idx|
+        params.each do |k,v|
+          manifest["#{k}"] = v
+        end
+        @infrastructure.manifests[idx] = manifest
+        @infrastructure.save
+      end
+      return true
+    end
   end
 end
