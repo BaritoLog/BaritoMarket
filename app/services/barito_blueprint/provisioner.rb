@@ -56,10 +56,8 @@ module BaritoBlueprint
         "Deployment delete started")
       @infrastructure.update_provisioning_status('DELETE_STARTED')
 
-      return false unless update_manifests_by_params!({desired_num_replicas: 0, min_available_replicas: 0})
-
+      update_manifests_by_params!({desired_num_replicas: 0, min_available_replicas: 0})
       @infrastructure.reload
-      sleep(5) unless Rails.env.test?
       
       res = @executor.batch!(@infrastructure.manifests)
       Processor.produce_log(
@@ -93,7 +91,6 @@ module BaritoBlueprint
         @infrastructure.manifests[idx] = manifest
         @infrastructure.save
       end
-      return true
     end
   end
 end
