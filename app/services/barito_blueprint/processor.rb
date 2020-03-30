@@ -12,7 +12,7 @@ module BaritoBlueprint
       @chef_repo_dir      = opts[:chef_repo_dir]
     end
 
-    def process!()
+    def process!
       bootstrapper = Bootstrapper.new(
         @infrastructure,
         pathfinder_cluster: @pathfinder_cluster
@@ -30,6 +30,8 @@ module BaritoBlueprint
       
       return false unless provisioner.batch!
       
+      @infrastructure.update_status('ACTIVE')
+
       return true
     end
 

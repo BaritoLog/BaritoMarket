@@ -7,14 +7,13 @@ class DeleteInfrastructureWorker
     begin
       provisioner = BaritoBlueprint::Provisioner.new(
         infrastructure,
-        infrastructure.infrastructure_components,
         PathfinderProvisioner.new(
           Figaro.env.pathfinder_host,
           Figaro.env.pathfinder_token,
           Figaro.env.pathfinder_cluster,
           image: Figaro.env.pathfinder_image),
       )
-      provisioner.delete_instances!
+      provisioner.delete!
     rescue JSON::ParserError, StandardError => ex
       logger.warn "Exception: #{ex}"
       infrastructure.update_status('DELETE_ERROR')

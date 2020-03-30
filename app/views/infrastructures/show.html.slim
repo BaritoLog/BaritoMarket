@@ -39,5 +39,7 @@
             = link_to 'Edit', edit_infrastructure_path(@infrastructure), class: 'text-light', style: 'text-decoration:none'
 br
 br
-
-= render 'infrastructures/infrastructure_containers', infrastructure_containers: @containers
+- if @containers.empty?
+  = render 'infrastructures/infrastructure_components', infrastructure_components: @infrastructure_components
+- else
+  = render 'infrastructures/infrastructure_containers', infrastructure_containers: @containers
