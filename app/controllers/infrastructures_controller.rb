@@ -66,7 +66,8 @@ class InfrastructuresController < ApplicationController
     container_hostname = params[:infrastructure_container_hostname]
     container_source = params[:infrastructure_component_source]
     container_bootstrappers = params[:infrastructure_component_bootstrappers]
-    @set_provisioner
+    
+    set_provisioner
     @provisioner.reprovision_container!(container_hostname, container_source, container_bootstrappers)
     
     redirect_to infrastructure_path(@infrastructure.id)
@@ -75,7 +76,8 @@ class InfrastructuresController < ApplicationController
   def retry_bootstrap_container
     container_hostname = params[:infrastructure_container_hostname]
     container_bootstrappers = params[:infrastructure_component_bootstrappers]
-    @set_provisioner
+    
+    set_provisioner
     @provisioner.rebootstrap_container!(container_hostname, container_bootstrappers)
 
     redirect_to infrastructure_path(@infrastructure.id)
