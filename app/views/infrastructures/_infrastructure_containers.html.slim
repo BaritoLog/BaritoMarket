@@ -8,8 +8,8 @@ h4.mb-3 All Infrastructure Containers
         th.col-1 IP Address
         th.col-3 Source
         th.col-3 Bootstrappers
-        th.col-1 Status
-        th.col-2 Actions
+        th.col-2 Status
+        th.col-1 Actions
     tbody
       - infrastructure_containers.each do |container|
         tr.d-flex
@@ -17,8 +17,8 @@ h4.mb-3 All Infrastructure Containers
           td.col-1.word-wrap= container['ipaddress']
           td.col-3.word-wrap= container['source']
           td.col-3.word-wrap= container['bootstrappers']
-          td.col-1.word-wrap= container['status']
-          td.col-2.word-wrap
+          td.col-2.word-wrap= container['status']
+          td.col-1.word-wrap
             = form_with(url: retry_provision_container_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_container_hostname, container['hostname'])
               = hidden_field_tag(:infrastructure_container_source, container['source'])
