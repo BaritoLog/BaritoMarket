@@ -131,5 +131,94 @@ module BaritoBlueprint
         expect(@infrastructure.manifests[0]['min_available_replicas']).to eq 1
       end
     end
+
+    describe '#reprovision_container!' do
+      before(:each) do
+        @container_hostname = 'container-consul-01'
+        @container_source = {
+          "mode": "pull",
+          "alias": "lxd-ubuntu-minimal-consul-1.1.0-8",
+          "remote": {
+            "name": "barito-registry"
+          }
+        }
+        @container_bootstrappers = [{
+                                    "bootstrap_type": "chef-solo",
+                                    "bootstrap_attributes": {
+                                      "consul": {
+                                        "hosts": []
+                                      },
+                                      "run_list": []
+                                    },
+                                    "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                                  }]
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:reprovision!).
+          and_return('success' => true)
+        expect(@provisioner.reprovision_container!(@container_hostname, @container_source, @container_bootstrappers)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:reprovision!).
+          and_return('success' => false)
+        expect(@provisioner.reprovision_container!(@container_hostname, @container_source, @container_bootstrappers)).to eq false
+      end
+    end
+
+    describe '#rebootstrap_container!' do
+      before(:each) do
+        @container_hostname = 'container-consul-01'
+        @container_bootstrappers = [{
+                                    "bootstrap_type": "chef-solo",
+                                    "bootstrap_attributes": {
+                                      "consul": {
+                                        "hosts": []
+                                      },
+                                      "run_list": []
+                                    },
+                                    "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
+                                  }]
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:rebootstrap!).
+          and_return('success' => true)
+        expect(@provisioner.rebootstrap_container!(@container_hostname, @container_bootstrappers)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:rebootstrap!).
+          and_return('success' => false)
+        expect(@provisioner.rebootstrap_container!(@container_hostname, @container_bootstrappers)).to eq false
+      end
+    end
+
+    ### LEGACY BLOCK
+    ### WILL BE DELETED AFTER MIGRATION
+    describe '#reprovision_instance!' do
+      before(:each) do
+        @component = build(:infrastructure_component)
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:reprovision!).
+          and_return('success' => true)
+        expect(@provisioner.reprovision_instance!(@component)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:reprovision!).
+          and_return('success' => false)
+        expect(@provisioner.reprovision_instance!(@component)).to eq false
+      end
+    end
   end
 end

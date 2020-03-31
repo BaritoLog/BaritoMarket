@@ -92,5 +92,130 @@ module BaritoBlueprint
         @infrastructure.save
       end
     end
+    
+    def reprovision_container!(container_hostname, container_source, container_bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "Provisioning #{container_hostname} started")
+
+      # Execute reprovisioning
+      res = @executor.reprovision!(container_hostname, container_source, container_bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} finished")
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} error",
+          "#{res['error']}")
+        return false
+      end
+    end
+
+    def rebootstrap_container!(container_hostname, container_bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "Provisioning #{container_hostname} started")
+
+      # Execute rebootstrap
+      res = @executor.rebootstrap!(container_hostname, container_bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} finished")
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} error",
+          "#{res['error']}")
+        return false
+      end
+    end
+
+    ### LEGACY BLOCK ###
+    ### WILL BE DELETED AFTER MIGRATION ###
+    def reprovision_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Provisioning #{component.hostname} started")
+      component.update_status('PROVISIONING_STARTED')
+
+      # Execute reprovisioning
+      res = @executor.reprovision!(component.hostname, component.source, component.bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} finished")
+        component.update_status('PROVISIONING_FINISHED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('PROVISIONING_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+
+    def rebootstrap_instance!(component)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "Provisioning #{component.hostname} started")
+      component.update_status('BOOTSTRAP_STARTED')
+
+      # Execute reprovisioning
+      res = @executor.rebootstrap!(component.hostname, component.bootstrappers)
+      Processor.produce_log(
+        @infrastructure,
+        "InfrastructureComponent:#{component.id}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} finished")
+        component.update_status('FINISHED')
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "InfrastructureComponent:#{component.id}",
+          "Provisioning #{component.hostname} error",
+          "#{res['error']}")
+        component.update_status('BOOTSTRAP_ERROR', res['error'].to_s)
+        return false
+      end
+    end
+    ### END OF LEGACY BLOCK
   end
 end

@@ -62,6 +62,25 @@ class InfrastructuresController < ApplicationController
     redirect_to infrastructure_path(@infrastructure.id)
   end
 
+  def retry_provision_container
+    container_hostname = params[:infrastructure_container_hostname]
+    container_source = params[:infrastructure_component_source]
+    container_bootstrappers = params[:infrastructure_component_bootstrappers]
+    @set_provisioner
+    @provisioner.reprovision_container!(container_hostname, container_source, container_bootstrap)
+    
+    redirect_to infrastructure_path(@infrastructure.id)
+  end
+
+  def retry_bootstrap_container
+    container_hostname = params[:infrastructure_container_hostname]
+    container_bootstrappers = params[:infrastructure_component_bootstrappers]
+    @set_provisioner
+    @provisioner.rebootstrap_container!(container_hostname, container_bootstrap)
+
+    redirect_to infrastructure_path(@infrastructure.id)
+  end
+
   def toggle_status
     statuses = Infrastructure.statuses
     @infrastructure.status = params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive]
@@ -93,20 +112,27 @@ class InfrastructuresController < ApplicationController
     @infrastructure = Infrastructure.find(params[:id])
   end
 
-  def set_provisioner
-    @provisioner = PathfinderProvisioner.new(
+  def set_pathfinder_provisioner
+    @pathfinder_provisioner = PathfinderProvisioner.new(
                   Figaro.env.pathfinder_host,
                   Figaro.env.pathfinder_token,
                   Figaro.env.pathfinder_cluster,
                  )
   end
 
+  def set_provisioner
+    @provisioner = BaritoBlueprint::Provisioner.new(
+      @infrastructure,
+      @pathfinder_provisioner
+    )
+  end
+
   def get_containers
-    set_provisioner
+    set_pathfinder_provisioner
     
     containers = []
     @infrastructure.manifests.each do |manifest|
-      deployment = @provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
+      deployment = @pathfinder_provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
       if deployment.empty?
         next
       end
