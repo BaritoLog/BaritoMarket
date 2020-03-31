@@ -123,6 +123,7 @@ class InfrastructuresController < ApplicationController
   end
 
   def set_provisioner
+    set_pathfinder_provisioner
     @provisioner = BaritoBlueprint::Provisioner.new(
       @infrastructure,
       @pathfinder_provisioner
