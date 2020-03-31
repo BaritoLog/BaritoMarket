@@ -109,8 +109,10 @@ Rails.application.routes.draw do
       member do
         patch :update_manifests
         post :retry_provision
+        post :retry_provision_container
         post :provisioning_check
         post :retry_bootstrap
+        post :retry_bootstrap_container
         patch :toggle_status
         delete :delete
       end
