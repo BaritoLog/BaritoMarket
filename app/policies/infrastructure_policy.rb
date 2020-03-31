@@ -23,6 +23,14 @@ class InfrastructurePolicy < ApplicationPolicy
     show?
   end
 
+  def retry_provision_container?
+    show?
+  end
+
+  def retry_bootstrap_container?
+    show?
+  end
+
   def toggle_status?
     barito_superadmin?
   end

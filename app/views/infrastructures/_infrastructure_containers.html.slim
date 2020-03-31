@@ -23,7 +23,7 @@ h4.mb-3 All Infrastructure Containers
               = hidden_field_tag(:infrastructure_container_hostname, container['hostname'])
               = hidden_field_tag(:infrastructure_container_source, container['source'])
               = hidden_field_tag(:infrastructure_container_bootstrap, container['bootstrappers'])
-              = f.submit "Retry Provision", class: 'btn btn-warning btn-sm'
+              = f.submit "Retry Provision", class: 'btn btn-danger btn-sm'
             = form_with(url: retry_bootstrap_container_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_container_hostname, container['hostname'])
               = hidden_field_tag(:infrastructure_container_bootstrap, container['bootstrappers'])
