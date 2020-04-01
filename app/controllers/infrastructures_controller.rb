@@ -83,6 +83,15 @@ class InfrastructuresController < ApplicationController
     redirect_to infrastructure_path(@infrastructure.id)
   end
 
+  def schedule_delete_container
+    container_hostname = params[:infrastructure_container_hostname]
+    
+    set_provisioner
+    @provisioner.schedule_delete_container!(container_hostname)
+
+    redirect_to infrastructure_path(@infrastructure.id)
+  end
+
   def toggle_status
     statuses = Infrastructure.statuses
     @infrastructure.status = params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive]

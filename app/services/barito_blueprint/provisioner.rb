@@ -151,6 +151,35 @@ module BaritoBlueprint
       end
     end
 
+    def schedule_delete_container!(container_hostname)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "Provisioning #{container_hostname} started")
+
+      # Execute rebootstrap
+      res = @executor.delete_container!(container_hostname)
+      Processor.produce_log(
+        @infrastructure,
+        "Container Hostname:#{container_hostname}",
+        "#{res}")
+
+      if res['success'] == true
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} finished")
+        return true
+      else
+        Processor.produce_log(
+          @infrastructure,
+          "Container Hostname:#{container_hostname}",
+          "Provisioning #{container_hostname} error",
+          "#{res['error']}")
+        return false
+      end      
+    end
+
     ### LEGACY BLOCK ###
     ### WILL BE DELETED AFTER MIGRATION ###
     def reprovision_instance!(component)

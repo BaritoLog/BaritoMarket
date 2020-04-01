@@ -19,6 +19,9 @@ h4.mb-3 All Infrastructure Containers
           td.col-3.word-wrap= container['bootstrappers']
           td.col-2.word-wrap= container['status']
           td.col-2.word-wrap
+            = form_with(url: schedule_delete_container_infrastructure_path(@infrastructure.id), method: :post) do |f|
+              = hidden_field_tag(:infrastructure_container_hostname, container['hostname'])
+              = f.submit "Schedule Delete", class: 'btn btn-dark btn-sm'
             = form_with(url: retry_provision_container_infrastructure_path(@infrastructure.id), method: :post) do |f|
               = hidden_field_tag(:infrastructure_container_hostname, container['hostname'])
               = hidden_field_tag(:infrastructure_container_source, container['source'])

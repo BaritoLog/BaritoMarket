@@ -113,6 +113,7 @@ Rails.application.routes.draw do
         post :provisioning_check
         post :retry_bootstrap
         post :retry_bootstrap_container
+        post :schedule_delete_container
         patch :toggle_status
         delete :delete
       end

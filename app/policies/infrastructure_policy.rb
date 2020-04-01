@@ -31,6 +31,10 @@ class InfrastructurePolicy < ApplicationPolicy
     show?
   end
 
+  def schedule_delete_container?
+    show?
+  end
+
   def toggle_status?
     barito_superadmin?
   end

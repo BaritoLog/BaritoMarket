@@ -199,6 +199,26 @@ module BaritoBlueprint
       end
     end
 
+    describe '#schedule_delete_container!' do
+      before(:each) do
+        @container_hostname = 'container-consul-01'
+      end
+
+      it 'should return true if executor returns success' do
+        allow(@executor).
+          to receive(:delete_container!).
+          and_return('success' => true)
+        expect(@provisioner.schedule_delete_container!(@container_hostname)).to eq true
+      end
+
+      it 'should return false if executor returns errors' do
+        allow(@executor).
+          to receive(:delete_container!).
+          and_return('success' => false)
+        expect(@provisioner.schedule_delete_container!(@container_hostname)).to eq false
+      end
+    end
+
     ### LEGACY BLOCK
     ### WILL BE DELETED AFTER MIGRATION
     describe '#reprovision_instance!' do
@@ -220,5 +240,6 @@ module BaritoBlueprint
         expect(@provisioner.reprovision_instance!(@component)).to eq false
       end
     end
+    ### END LEGACY BLOCK
   end
 end
