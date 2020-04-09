@@ -49,7 +49,10 @@ class Api::InfrastructuresController < Api::BaseController
     profiles = []
     AppGroup.all.each do |app_group|
       next if app_group.infrastructure == nil
-      next if app_group.infrastructure.provisioning_status != Infrastructure.provisioning_statuses[:finished]
+      next unless [
+        Infrastructure.provisioning_statuses[:finished],
+        Infrastructure.provisioning_statuses[:deployment_finished]
+      ].include? app_group.infrastructure.provisioning_status
 
       es_component = app_group.infrastructure.infrastructure_components.where(
         component_type: 'elasticsearch',
