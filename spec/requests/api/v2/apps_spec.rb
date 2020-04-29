@@ -99,7 +99,7 @@ RSpec.describe 'Apps API', type: :request do
               "bootstrap_type"=>"chef-solo",
               "bootstrap_attributes"=>{
                 "consul"=>{
-                  "hosts"=>["172.168.0.1", "172.168.0.2"]
+                  "hosts"=>["10.0.0.1"]
                 },
                 "run_list"=>[]
               },
@@ -138,10 +138,12 @@ RSpec.describe 'Apps API', type: :request do
       get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[name app_group_name max_tps cluster_name consul_host status].each do |key|
+      %w[name app_group_name max_tps cluster_name status].each do |key|
         expect(json_response.key?(key)).to eq(true)
         expect(json_response[key]).to eq(app.send(key.to_sym))
       end
+
+      expect(json_response['consul_host']).to eq('10.0.0.1:8500')
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['updated_at']).to eq(app_updated_at)
       expect(json_response['meta']['kafka']['replication_factor']).to eq(1)
@@ -177,7 +179,7 @@ RSpec.describe 'Apps API', type: :request do
 
       provisioner = double
       allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@resp))
+        with('haza-consul', 'barito').and_return([]))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
@@ -211,7 +213,7 @@ RSpec.describe 'Apps API', type: :request do
       json_response = JSON.parse(response.body)
 
       expect(json_response['consul_hosts']).to match_array ['10.0.0.1:8500']
-      expect(json_response['consul_host']).to match 'localhost:8500'
+      expect(json_response['consul_host']).to match '10.0.0.1:8500'
     end
 
     context 'when invalid token' do

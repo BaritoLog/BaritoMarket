@@ -15,8 +15,8 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     consul_hosts = @infrastructure.infrastructure_components.
       where(component_type: 'consul').
       pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
-    consul_hosts = @infrastructure.fetch_consul_hosts if consul_hosts.empty?
-    consul_host = @infrastructure.consul_host == '' || @infrastructure.consul_host.nil? ? consul_hosts.first : @infrastructure.consul_host
+    consul_hosts = @infrastructure.fetch_consul_hosts.empty? ? consul_hosts : @infrastructure.fetch_consul_hosts
+    consul_host = @infrastructure.fetch_consul_hosts.empty? ?  @infrastructure.consul_host : consul_hosts.first
 
     render json: {
       name: @infrastructure.name,

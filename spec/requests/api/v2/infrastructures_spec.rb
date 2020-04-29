@@ -83,7 +83,7 @@ RSpec.describe 'App API', type: :request do
               "bootstrap_type"=>"chef-solo",
               "bootstrap_attributes"=>{
                 "consul"=>{
-                  "hosts"=>["172.168.0.1", "172.168.0.2"]
+                  "hosts"=>["10.0.0.1"]
                 },
                 "run_list"=>[]
               },
@@ -148,7 +148,7 @@ RSpec.describe 'App API', type: :request do
 
       provisioner = double
       allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@resp))
+        with('haza-consul', 'barito').and_return([]))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       get api_v2_profile_by_cluster_name_path,
@@ -185,7 +185,7 @@ RSpec.describe 'App API', type: :request do
       json_response = JSON.parse(response.body)
 
       expect(json_response['consul_hosts']).to match_array ['10.0.0.1:8500']
-      expect(json_response['consul_host']).to match 'localhost:8500'
+      expect(json_response['consul_host']).to match '10.0.0.1:8500'
     end
 
     context 'when infrastructure inactive' do
