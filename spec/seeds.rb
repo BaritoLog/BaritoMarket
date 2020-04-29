@@ -246,7 +246,13 @@
             "kibana":{
               "config":{
                 "server.basePath":"", 
-                "elasticsearch.url":"http://elasticsearch.service.consul:9200"
+                "elasticsearch.url":"http://elasticsearch.service.consul:9200",
+                "security":{
+                  "username":"elastic",
+                  "password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+                  "verificationMode":'none',
+                  "xpack.security.enabled":false
+                }
               }, 
               "version":"6.3.0"
             }, 

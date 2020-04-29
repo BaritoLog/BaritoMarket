@@ -374,7 +374,13 @@ ClusterTemplate.create!(
                           "message_format": "Warning: TPS exceeded on these apps: %s. Please ask app group owner to <a style='text-decoration: underline; color: yellow;' target='_blank' href='https://gopay-systems.pages.golabs.io/wiki/products/barito/user/troubleshooting.html#got-alert-tps-an-app-exceeded-on-kibana'>increase TPS</a>.",
                           "prometheus_url": "http://prometheus.barito.golabs.io:9090",
                           "server.basePath": "",
-                          "elasticsearch.url": "http://elasticsearch.service.consul:9200"
+                          "elasticsearch.url": "http://elasticsearch.service.consul:9200",
+                          "security":{
+                            "username":"elastic",
+                            "password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+                            "verificationMode":'none',
+                            "xpack.security.enabled":false
+                          }
                         },
                         "version": "6.8.5"
                       },
