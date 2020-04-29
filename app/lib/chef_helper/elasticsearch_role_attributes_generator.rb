@@ -3,7 +3,7 @@ module ChefHelper
     def initialize(manifest, infrastructure_manifests, opts = {})
       @consul_hosts = generate_pf_meta("deployment_ip_addresses", 
         {deployment_name: "#{manifest['deployment_cluster_name']}-consul"})
-
+      @manifest = manifest
       @role_name = opts[:role_name] || 'elasticsearch'
       @cluster_name = manifest['deployment_cluster_name']
       @hostname = generate_pf_meta("container_hostname")
@@ -27,6 +27,7 @@ module ChefHelper
 
     def update_attrs
       @elastic_attrs["elasticsearch"]["cluster_name"] = @cluster_name
+      @elastic_attrs['elasticsearch']['index_number_of_shards'] = @manifest['desired_num_replicas']
       @elastic_attrs["elasticsearch"]["index_number_of_replicas"] = @index_number_of_replicas
       @elastic_attrs["elasticsearch"]["member_hosts"] = ['elasticsearch.service.consul']
       @elastic_attrs["elasticsearch"]["minimum_master_nodes"] = @minimum_master_nodes
