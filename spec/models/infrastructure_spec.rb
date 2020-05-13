@@ -262,8 +262,9 @@ RSpec.describe Infrastructure, type: :model do
 
     it 'should return nil if infrastructure doesn\'t have consul manifest' do
       infrastructure =  create(:infrastructure, cluster_name: 'haza', manifests: {}) 
-      
-      expect(infrastructure.fetch_consul_hosts).to eq []
+      consul_hosts = infrastructure.fetch_manifest_ipaddresses('consul')
+
+      expect(consul_hosts).to eq []
     end
 
     it 'should return list of consul hosts if infrastructure have consul manifest' do
@@ -273,8 +274,9 @@ RSpec.describe Infrastructure, type: :model do
       allow(provisioner).to(receive(:index_containers!).
         with('haza-consul', 'barito').and_return(@resp))
       allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+      consul_hosts = infrastructure.fetch_manifest_ipaddresses('consul')
 
-      expect(infrastructure.fetch_consul_hosts).to eq ["10.0.0.1:#{Figaro.env.default_consul_port}"]
+      expect(consul_hosts).to eq ["10.0.0.1:#{Figaro.env.default_consul_port}"]
     end
   end
 end

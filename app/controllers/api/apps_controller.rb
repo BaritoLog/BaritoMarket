@@ -139,8 +139,9 @@ class Api::AppsController < Api::BaseController
     consul_hosts = infrastructure.infrastructure_components.
       where(component_type: 'consul').
       pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
-    consul_hosts = infrastructure.fetch_consul_hosts.empty? ? consul_hosts : infrastructure.fetch_consul_hosts
-    consul_host = infrastructure.fetch_consul_hosts.empty? ?  infrastructure.consul_host : consul_hosts.first
+    consul_ipaddresses = infrastructure.fetch_manifest_ipaddresses('consul')
+    consul_hosts = consul_ipaddresses.empty? ? consul_hosts : consul_ipaddresses
+    consul_host = consul_ipaddresses.empty? ?  infrastructure.consul_host : consul_hosts.first
 
     {
       id: app.id,
