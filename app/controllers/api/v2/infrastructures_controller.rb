@@ -11,13 +11,10 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
                code: 404,
              }, status: :not_found) && return
     end
-
     consul_hosts = @infrastructure.infrastructure_components.
       where(component_type: 'consul').
       pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
-    consul_ipaddresses = @infrastructure.fetch_manifest_ipaddresses('consul')
-    consul_hosts = consul_ipaddresses.empty? ? consul_hosts : consul_ipaddresses
-    consul_host = consul_ipaddresses.empty? ?  @infrastructure.consul_host : consul_hosts.first
+    consul_hosts, consul_host = determine_consul_host(@infrastructure, consul_hosts)
 
     render json: {
       name: @infrastructure.name,
