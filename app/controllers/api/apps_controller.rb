@@ -136,10 +136,7 @@ class Api::AppsController < Api::BaseController
 
   def generate_profile_response(app)
     infrastructure = app.app_group.infrastructure
-    consul_hosts = infrastructure.infrastructure_components.
-      where(component_type: 'consul').
-      pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
-    consul_hosts, consul_host = determine_consul_host(infrastructure, consul_hosts)
+    consul_hosts, consul_host = determine_consul_host(infrastructure)
 
     {
       id: app.id,
