@@ -189,7 +189,20 @@ ClusterTemplate.create!(
                         "allocated_memory": 12000000,
                         "max_allocated_memory": 16000000,
                         "minimum_master_nodes": 1,
-                        "index_number_of_replicas": 1
+                        "index_number_of_shards":1,
+                        "index_number_of_replicas": 1,
+                        "index_refresh_interval":"30s",
+                        "node_awareness_value":"$HOSTNAME",
+                        "node_awareness_attribute":"hostname",
+                        "security":{
+                          "ca":"CREATE_CA_IN_BASE_64",
+                          "bootstrap_password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+                          "xpack_security_enabled":false,
+                          "xpack_security_transport_ssl_enabled":true,
+                          "xpack_security_transport_ssl_verification_mode":"certificate",
+                          "xpack_security_transport_ssl_keystore_path":"elastic-certificates.p12",
+                          "xpack_security_transport_ssl_truststore_path":"elastic-certificates.p12"
+                        }
                       }
                     },
                     "bootstrap_cookbooks_url": "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
@@ -361,7 +374,13 @@ ClusterTemplate.create!(
                           "message_format": "Warning: TPS exceeded on these apps: %s. Please ask app group owner to <a style='text-decoration: underline; color: yellow;' target='_blank' href='https://gopay-systems.pages.golabs.io/wiki/products/barito/user/troubleshooting.html#got-alert-tps-an-app-exceeded-on-kibana'>increase TPS</a>.",
                           "prometheus_url": "http://prometheus.barito.golabs.io:9090",
                           "server.basePath": "",
-                          "elasticsearch.url": "http://elasticsearch.service.consul:9200"
+                          "elasticsearch.url": "http://elasticsearch.service.consul:9200",
+                          "security":{
+                            "username":"elastic",
+                            "password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+                            "verificationMode":'none',
+                            "xpack.security.enabled":false
+                          }
                         },
                         "version": "6.8.5"
                       },

@@ -68,7 +68,8 @@ module BaritoBlueprint
                                     "bootstrap_type"=>"chef-solo",
                                     "bootstrap_attributes"=>{
                                       "consul"=>{
-                                        "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul"
+                                        "hosts"=>"$pf-meta:deployment_ip_addresses?deployment_name=guja-consul",
+                                        "hosts_count"=>1
                                       },
                                       "run_list"=>["role[consul]"]
                                     },

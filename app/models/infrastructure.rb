@@ -138,23 +138,33 @@ class Infrastructure < ApplicationRecord
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
 
-  def fetch_consul_hosts
-    consul_manifest = find_manifest_by_type('consul')
-    return [] if consul_manifest.nil?
+  def fetch_manifest_ipaddresses(type, port=nil)
+    manifest = find_manifest_by_type(type)
+    return [] if manifest.nil?
 
     provisioner = PathfinderProvisioner.new(
       Figaro.env.pathfinder_host,
       Figaro.env.pathfinder_token,
       Figaro.env.pathfinder_cluster,
     )
-    consul_deployment = provisioner.index_containers!(consul_manifest['name'], consul_manifest['cluster_name'])
-    return [] if consul_deployment.empty?
+    deployment = provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
+    return [] if deployment.empty?
 
-    consul_hosts = consul_deployment.dig('data','containers').map { |c| 
-      "#{c['ipaddress']}:#{Figaro.env.default_consul_port}" 
-    } 
+    if type == 'consul'
+      ipaddresses = deployment.dig('data','containers').map { |c|
+        "#{c['ipaddress']}:#{Figaro.env.default_consul_port}"
+      }
+    elsif port.nil?
+      ipaddresses = deployment.dig('data','containers').map { |c|
+        "#{c['ipaddress']}"
+      }
+    else
+      ipaddresses = deployment.dig('data','containers').map { |c|
+        "#{c['ipaddress']}:#{port}"
+      }
+    end
 
-    consul_hosts
+    ipaddresses
   end
 
   private

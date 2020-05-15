@@ -133,8 +133,21 @@ DeploymentTemplate.create!(
         "version":"6.3.0", 
         "allocated_memory":12000000, 
         "max_allocated_memory":16000000, 
-        "cluster_name":"", 
-        "index_number_of_replicas":0
+        "cluster_name":"",
+        "index_number_of_shards":1,
+        "index_number_of_replicas":0,
+        "index_refresh_interval":"30s",
+        "node_awareness_value":"$HOSTNAME",
+        "node_awareness_attribute":"hostname",
+        "security":{
+          "ca":"CREATE_CA_IN_BASE_64",
+          "bootstrap_password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+          "xpack_security_enabled":false,
+          "xpack_security_transport_ssl_enabled":true,
+          "xpack_security_transport_ssl_verification_mode":"certificate",
+          "xpack_security_transport_ssl_keystore_path":"elastic-certificates.p12",
+          "xpack_security_transport_ssl_truststore_path":"elastic-certificates.p12"
+        }
       }
     }
   }]
@@ -239,7 +252,13 @@ DeploymentTemplate.create!(
       "kibana":{
         "config":{
           "server.basePath":"", 
-          "elasticsearch.url":""
+          "elasticsearch.url":"",
+          "security":{
+            "username":"elastic",
+            "password":"BOOTSTRAP_PASSWORD_CHANGE_ME",
+            "verificationMode":'none',
+            "xpack.security.enabled":false
+          }
         }, 
         "version":"6.3.0"
       }, 

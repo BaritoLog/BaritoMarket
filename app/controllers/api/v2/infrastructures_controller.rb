@@ -12,11 +12,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
-    consul_hosts = @infrastructure.infrastructure_components.
-      where(component_type: 'consul').
-      pluck(:ipaddress).map { |ip| "#{ip}:#{Figaro.env.default_consul_port}" }
-    consul_hosts = @infrastructure.fetch_consul_hosts if consul_hosts.empty?
-    consul_host = @infrastructure.consul_host == '' || @infrastructure.consul_host.nil? ? consul_hosts.first : @infrastructure.consul_host
+    consul_hosts, consul_host = determine_consul_host(@infrastructure)
 
     render json: {
       name: @infrastructure.name,
@@ -63,11 +59,15 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
         component_type: 'elasticsearch',
         status: InfrastructureComponent.statuses[:finished],
       ).first
+      es_ipaddress = es_component.nil? ? '' : es_component.ipaddress
+      es_ipaddresses = app_group.infrastructure.fetch_manifest_ipaddresses('elasticsearch')
 
-      next if es_component == nil
+      next if es_ipaddress.empty? && es_ipaddresses.empty?
+
+      es_ipaddress = es_ipaddresses.empty? ? es_ipaddress : es_ipaddresses.first
 
       profiles << {
-        ipaddress: es_component.ipaddress,
+        ipaddress: es_ipaddress,
         log_retention_days: app_group.log_retention_days,
         log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
           app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
