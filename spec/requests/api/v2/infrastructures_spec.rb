@@ -216,6 +216,44 @@ RSpec.describe 'App API', type: :request do
         expect(j["consul_hosts"].length).to eq(1)
       end
     end
+
+    it 'should return paginated response' do
+      app_groups = []
+      12.times do |i|
+        app_group = create(:app_group)
+        infrastructure = create(
+          :infrastructure,
+          app_group: app_group,
+          status: Infrastructure.statuses[:active],
+          provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
+        )
+        consul = create(
+          :infrastructure_component,
+          infrastructure: infrastructure,
+          status: Infrastructure.statuses[:active],
+          component_type: "consul"
+        )
+        app_groups << app_group
+      end
+
+      get api_v2_profile_index_path,
+        params: { access_token: @access_token},
+        headers: headers
+      json_response = JSON.parse(response.body)
+      expect(json_response.length).to eq(10)
+
+      get api_v2_profile_index_path,
+        params: { access_token: @access_token, page: 2},
+        headers: headers
+      json_response = JSON.parse(response.body)
+      expect(json_response.length).to eq(2)
+
+      get api_v2_profile_index_path,
+        params: { access_token: @access_token, limit: 20},
+        headers: headers
+      json_response = JSON.parse(response.body)
+      expect(json_response.length).to eq(12)
+    end
   end
 
   describe 'Profile by Cluster Name API' do

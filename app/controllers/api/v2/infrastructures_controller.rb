@@ -2,10 +2,12 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def profile_index 
     profiles = []
-    infrastructures = @infrastructures = Infrastructure.where(
+    infrastructures = Infrastructure.where(
       status: Infrastructure.statuses[:active],
       provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
-    ).limit(10)
+    )
+    .offset((params.fetch(:page, 1).to_i - 1) * params.fetch(:limit, 10).to_i)
+    .limit(params.fetch(:limit, 10).to_i)
     
     infrastructures.each do |infra|
       consul_hosts, consul_host = determine_consul_host(infra)
