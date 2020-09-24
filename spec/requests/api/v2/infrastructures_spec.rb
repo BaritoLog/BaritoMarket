@@ -176,6 +176,48 @@ RSpec.describe 'App API', type: :request do
       }
   end
 
+  describe 'List Profile' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return list profile information of registered appgroups' do
+      app_groups = []
+      3.times do |i|
+        app_group = create(:app_group)
+        infrastructure = create(
+          :infrastructure,
+          app_group: app_group,
+          status: Infrastructure.statuses[:active],
+          provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
+        )
+        consul = create(
+          :infrastructure_component,
+          infrastructure: infrastructure,
+          status: Infrastructure.statuses[:active],
+          component_type: "consul"
+        )
+        app_groups << app_group
+      end
+
+      get api_v2_profile_index_path,
+        params: { access_token: @access_token},
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(json_response.length).to eq(app_groups.length)
+      3.times do |i|
+        j = json_response[i]
+        %w[name app_group_name cluster_name status provisioning_status].
+          each do |key|
+            expect(j.key?(key)).to eq(true)
+            expect(j[key]).to eq(app_groups[i].infrastructure.send(key.to_sym))
+          end
+        expect(j["consul_hosts"].length).to eq(1)
+      end
+    end
+  end
+
   describe 'Profile by Cluster Name API' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
@@ -194,7 +236,7 @@ RSpec.describe 'App API', type: :request do
         headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[name app_group_name capacity cluster_name consul_host status provisioning_status].
+      %w[name app_group_name app_group_secret capacity cluster_name consul_host status provisioning_status].
         each do |key|
           expect(json_response.key?(key)).to eq(true)
           expect(json_response[key]).to eq(infrastructure.send(key.to_sym))
