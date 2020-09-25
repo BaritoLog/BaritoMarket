@@ -182,6 +182,7 @@ RSpec.describe 'App API', type: :request do
     end
 
     it 'should return list profile information of registered appgroups' do
+      Infrastructure.delete_all
       app_groups = []
       3.times do |i|
         app_group = create(:app_group)
@@ -218,6 +219,7 @@ RSpec.describe 'App API', type: :request do
     end
 
     it 'should return paginated response' do
+      Infrastructure.delete_all
       app_groups = []
       12.times do |i|
         app_group = create(:app_group)
