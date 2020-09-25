@@ -112,6 +112,10 @@ class Infrastructure < ApplicationRecord
     app_group&.name
   end
 
+  def app_group_secret
+    app_group&.secret_key
+  end
+
   def active?
     self.status == Infrastructure.statuses[:active]
   end
@@ -165,6 +169,17 @@ class Infrastructure < ApplicationRecord
     end
 
     ipaddresses
+  end
+
+  def default_service_names
+    {
+      producer: 'barito-flow-producer',
+      zookeeper: 'zookeeper',
+      kafka: 'kafka',
+      consumer: 'barito-flow-consumer',
+      elasticsearch: 'elasticsearch',
+      kibana: 'kibana',
+    }
   end
 
   private

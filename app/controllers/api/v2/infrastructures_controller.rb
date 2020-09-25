@@ -1,4 +1,32 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
+
+  def profile_index 
+    profiles = []
+    infrastructures = Infrastructure.where(
+      status: Infrastructure.statuses[:active],
+      provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
+    )
+    .offset((params.fetch(:page, 1).to_i - 1) * params.fetch(:limit, 10).to_i)
+    .limit(params.fetch(:limit, 10).to_i)
+    
+    infrastructures.each do |infra|
+      consul_hosts, consul_host = determine_consul_host(infra)
+      profiles << {
+        name: infra.name,
+        app_group_name: infra.app_group_name,
+        app_group_secret: infra.app_group_secret,
+        cluster_name: infra.cluster_name,
+        consul_hosts: consul_hosts,
+        status: infra.status,
+        provisioning_status: infra.provisioning_status,
+        meta: {
+          service_names: infra.default_service_names
+        },
+      }
+    end
+    render json: profiles
+  end
+
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
       cluster_name: params[:cluster_name],
@@ -17,6 +45,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     render json: {
       name: @infrastructure.name,
       app_group_name: @infrastructure.app_group_name,
+      app_group_secret: @infrastructure.app_group_secret,
       capacity: @infrastructure.capacity,
       cluster_name: @infrastructure.cluster_name,
       consul_host: consul_host,
@@ -25,15 +54,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       provisioning_status: @infrastructure.provisioning_status,
       updated_at: @infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
-        # TODO: we should store this somewhere
-        service_names: {
-          producer: 'barito-flow-producer',
-          zookeeper: 'zookeeper',
-          kafka: 'kafka',
-          consumer: 'barito-flow-consumer',
-          elasticsearch: 'elasticsearch',
-          kibana: 'kibana',
-        },
+        service_names: @infrastructure.default_service_names
       },
     }
   end
