@@ -183,39 +183,35 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return list profile information of registered appgroups' do
       Infrastructure.delete_all
-      app_groups = []
-      3.times do |i|
-        app_group = create(:app_group)
-        infrastructure = create(
-          :infrastructure,
-          app_group: app_group,
-          status: Infrastructure.statuses[:active],
-          provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
-        )
-        consul = create(
-          :infrastructure_component,
-          infrastructure: infrastructure,
-          status: Infrastructure.statuses[:active],
-          component_type: "consul"
-        )
-        app_groups << app_group
-      end
+
+      app_group = create(:app_group)
+      infrastructure = create(
+        :infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
+      )
+      consul = create(
+        :infrastructure_component,
+        infrastructure: infrastructure,
+        status: Infrastructure.statuses[:active],
+        component_type: "consul"
+      )
 
       get api_v2_profile_index_path,
         params: { access_token: @access_token},
         headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response.length).to eq(app_groups.length)
-      3.times do |i|
-        j = json_response[i]
-        %w[name app_group_name cluster_name status provisioning_status].
-          each do |key|
-            expect(j.key?(key)).to eq(true)
-            expect(j[key]).to eq(app_groups[i].infrastructure.send(key.to_sym))
-          end
-        expect(j["consul_hosts"].length).to eq(1)
-      end
+      expect(json_response.length).to eq(1)
+      j = json_response[0]
+      %w[name app_group_name cluster_name status provisioning_status].
+        each do |key|
+          expect(j.key?(key)).to eq(true)
+          expect(j[key]).to eq(app_group.infrastructure.send(key.to_sym))
+        end
+      expect(j["consul_hosts"].length).to eq(1)
+        
     end
 
     it 'should return paginated response' do
