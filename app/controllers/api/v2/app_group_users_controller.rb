@@ -7,11 +7,9 @@ class Api::V2::AppGroupUsersController < Api::V2::BaseController
 
   def create
     app_group_role = AppGroupRole.find_by_name(params[:app_group_role])
-
     render(json: { success: false, errors: ['App group role not found'], data: nil }, status: :not_found) && return if app_group_role.blank?
 
     app_group_user = AppGroupUser.create(app_group_id: @app_group.id, user_id: @user.id, role_id: app_group_role.id)
-
     render(json: { success: false, errors: [app_group_user.errors], data: nil }, status: :unprocessable_entity) && return unless app_group_user.valid?
 
     render json: { success: true, errors: nil, data: ['App group user created'] }, status: :ok
@@ -26,13 +24,11 @@ class Api::V2::AppGroupUsersController < Api::V2::BaseController
 
   def set_app_group
     @app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
-
     render json: { success: false, errors: ['App Group not found'], data: nil }, status: :not_found if @app_group.blank?
   end
 
   def set_user
     @user = User.find_by_username_or_email(params[:user_email])
-
     render json: { success: false, errors: ['User not found'], data: nil }, status: :not_found if @user.blank?
   end
 end
