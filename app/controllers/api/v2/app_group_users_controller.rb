@@ -18,7 +18,7 @@ class Api::V2::AppGroupUsersController < Api::V2::BaseController
   private
 
   def validate_params
-    valid, error_response = validate_required_keys([:app_group_secret, :app_group_role, :user_email])
+    valid, error_response = validate_required_keys([:app_group_secret, :app_group_role, :gate_username])
     render json: error_response, status: error_response[:code] unless valid
   end
 
@@ -28,7 +28,7 @@ class Api::V2::AppGroupUsersController < Api::V2::BaseController
   end
 
   def set_user
-    @user = User.find_by_username_or_email(params[:user_email])
+    @user = User.find_by_username_or_email(params[:gate_username])
     render json: { success: false, errors: ['User not found'], data: nil }, status: :not_found if @user.blank?
   end
 end

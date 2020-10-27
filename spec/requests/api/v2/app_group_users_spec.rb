@@ -19,7 +19,7 @@ RSpec.describe 'App Groups User API', type: :request do
     let(:app_group) { create(:app_group) }
     let(:user) { create(:user) }
     let(:role) { create(:app_group_role, :admin) }
-    let(:app_group_user_params) { { access_token: @access_token, app_group_secret: app_group.secret_key, app_group_role: role.name, user_email: user.email } }
+    let(:app_group_user_params) { { access_token: @access_token, app_group_secret: app_group.secret_key, app_group_role: role.name, gate_username: user.username } }
 
     context 'app group user creation successful' do
       it 'returns success response' do
@@ -46,9 +46,9 @@ RSpec.describe 'App Groups User API', type: :request do
         expect(json_response['errors']).to eq([error_msg])
       end
 
-      it 'when user email is not provided it should return 422' do
-        error_msg = 'Invalid Params: user_email is a required parameter'
-        post api_v2_create_app_group_user_path, params: app_group_user_params.except(:user_email), headers: headers
+      it 'when username is not provided it should return 422' do
+        error_msg = 'Invalid Params: gate_username is a required parameter'
+        post api_v2_create_app_group_user_path, params: app_group_user_params.except(:gate_username), headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
