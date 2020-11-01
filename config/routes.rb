@@ -62,6 +62,9 @@ Rails.application.routes.draw do
       get :cluster_templates,
         to: 'app_groups#cluster_templates',
         defaults: {format: :json}
+      post :create_app_group_user,
+        to: 'app_group_users#create',
+        defaults: {format: :json}
     end
   end
 
