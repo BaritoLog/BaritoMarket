@@ -1,0 +1,152 @@
+#!/bin/bash
+
+log_and_quit_if_error() {
+  log_file="$(mktemp)"
+  trap "rm -f $log_file" RETURN
+  (
+    set -ex
+    "$@"
+  ) 2>"$log_file"
+
+  exit_number=$?
+  if [ $exit_number -ne 0 ]; then
+    echo 1>&2
+    echo "Command is failed. Log:" 1>&2
+    echo 1>&2
+    cat "$log_file" 1>&2
+  fi
+  return $exit_number
+}
+
+stash_changes() {
+  staged_tree="$(git write-tree)"
+  git add .
+  unstaged_tree="$(git write-tree)"
+  echo "$unstaged_tree"
+
+  git read-tree "$staged_tree"
+  git checkout-index -af
+}
+
+generate_diff_from_trees() {
+  git diff-tree --ignore-submodules --binary --no-color --no-ext-diff --unified=0 "$@"
+  echo
+}
+
+apply_tree() {
+  current_tree="$(git write-tree)"
+  target_tree="$1"
+  generate_diff_from_trees "$current_tree" "$target_tree" | git apply -v --whitespace=nowarn --recount --unidiff-zero
+}
+
+list_staged_files() {
+  git diff -z --staged --diff-filter=ACMR --name-only
+}
+
+each_null_terminated() {
+  command=("$@")
+  xargs -0 -n1 bash -c '"$@"' _ "${command[@]}"
+}
+
+each_staged_files() {
+  command=("$@")
+  list_staged_files | each_null_terminated "${command[@]}"
+}
+
+lint_file() {
+  case "$1" in
+    *.rb)
+      bundle exec rubocop -a "$1"
+      ;;
+  esac
+
+  exit_status=$?
+  [ $exit_status -eq 0 ] && git add "$1"
+  return $exit_status
+}
+
+ensure_base_directory_exists() {
+  base_directory_path="$(dirname "$1")"
+  mkdir -p "$base_directory_path"
+}
+
+log_lint_file() {
+  log_dir="$1"
+  target_path="$2"
+  log_file_path="$log_dir/$target_path"
+  ensure_base_directory_exists "$log_file_path"
+
+  if lint_file "$target_path" >"$log_file_path" 2>&1; then
+    rm "$log_file_path"
+  else
+    return 255
+  fi
+}
+
+lint_staged_files() {
+  log_path="$1"
+
+  export -f ensure_base_directory_exists lint_file log_lint_file
+  each_staged_files log_lint_file "$log_path"
+}
+
+each_log_in_path() {
+  log_path="$1"
+  shift
+  command=("$@")
+
+  (
+    cd "$log_path"
+    find . -type f -exec bash -c '"$@"' _ "${command[@]}" {} ';'
+  )
+}
+
+report_log_entry() {
+  echo 1>&2
+  echo "${1:2}:" 1>&2
+  cat "$1" 1>&2
+}
+
+report_logs() {
+  log_path="$1"
+
+  export -f report_log_entry
+  each_log_in_path "$log_path" report_log_entry
+}
+
+lint_staged_files_or_report_error() {
+  log_dir="$(mktemp -d)"
+  trap "rm -rf $log_dir" RETURN
+
+  lint_staged_files "$log_dir"
+  exit_status=$?
+  if [ $exit_status -ne 0 ]; then
+    echo "Lint is failed. Log:" 1>&2
+    report_logs "$log_dir"
+  fi
+  return $exit_status
+}
+
+unstage_changes() {
+  unstaged_tree="$1"
+
+  git read-tree "$unstaged_tree"
+  git checkout-index -af
+}
+
+prepare_index_for_commit() {
+  unstaged_tree="$1"
+  linted_tree="$(git write-tree)"
+
+  unstage_changes "$unstaged_tree"
+  git read-tree "$linted_tree"
+}
+
+unstaged_tree="$(log_and_quit_if_error stash_changes)"
+exit_status=$?
+[ $exit_status -ne 0 ] && exit $exit_status
+
+lint_staged_files_or_report_error
+exit_status=$?
+log_and_quit_if_error prepare_index_for_commit "$unstaged_tree"
+exit $exit_status

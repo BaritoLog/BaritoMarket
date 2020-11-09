@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/brandonweiss/git-hookshot.git
+  revision: f48aa6748aa413049d83715cc74b12bcf6aed027
+  specs:
+    git-hookshot (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -571,6 +577,7 @@ DEPENDENCIES
   fakeredis
   figaro (<= 1.1.1)
   filterrific
+  git-hookshot!
   jar-dependencies (<= 0.3.12)
   jbuilder (<= 2.7.0)
   jquery-rails
