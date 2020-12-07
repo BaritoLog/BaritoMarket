@@ -36,6 +36,10 @@ REDIS_KEY_EXPIRY:            '10'
 DEFAULT_PER_PAGE:            '30'
 DATADOG_HOST:                'localhost'
 DATADOG_PORT:                '8125'
+JAEGER_SERVICE_NAME:         'barito_market'
+JAEGER_ENDPOINT:             'localhost'
+JAEGER_SAMPLING_HOST:        'localhost'
+JAEGER_SAMPLING_PORT:        '6831'
 
 development:
   RAILS_ENV:                 'development'

@@ -33,6 +33,7 @@ gem 'wisper', '<= 2.0.0'
 gem 'filterrific'
 gem 'dogstatsd-ruby'
 gem 'prometheus-client'
+gem 'jaeger-client'
 
 group :development, :test do
   gem 'cane', '<= 3.0'
@@ -50,11 +51,11 @@ group :development, :test do
   gem 'webdrivers', '~> 4.0'
   gem 'webmock', '<= 3.4.1'
   gem 'fakeredis'
+  gem 'pry', '<= 0.11.3'
 end
 
 group :development do
   gem 'listen', '<= 3.1.5'
-  gem 'pry', '<= 0.11.3'
   gem 'spring', '<= 2.0.2'
   gem 'spring-watcher-listen', '<= 2.0.1'
   gem 'web-console', '<= 3.6.2'

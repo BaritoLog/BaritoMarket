@@ -30,6 +30,16 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def profile_by_app_group
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    if extracted_ctx.nil? 
+      span = OpenTracing.start_span("barito_market.profile_by_app_group")
+    else
+      span = OpenTracing.start_span("barito_market.profile_by_app_group", child_of: extracted_ctx)
+    end
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+
     valid, error_response = validate_required_keys(
       [:app_group_secret, :app_name])
     render json: error_response, status: error_response[:code] and return unless valid
@@ -77,6 +87,8 @@ class Api::V2::AppsController < Api::V2::BaseController
       params[:app_group_secret], params[:app_name], profile_response)
 
     render json: profile_response
+
+    span.finish
   end
 
   def increase_log_count
