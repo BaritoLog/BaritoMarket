@@ -31,11 +31,9 @@ class Api::V2::AppsController < Api::V2::BaseController
 
   def profile_by_app_group
     extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
-    if extracted_ctx.nil? 
-      span = OpenTracing.start_span("barito_market.profile_by_app_group")
-    else
-      span = OpenTracing.start_span("barito_market.profile_by_app_group", child_of: extracted_ctx)
-    end
+    span = OpenTracing.start_span("barito_market.profile_by_app_group", child_of: extracted_ctx)
+
+    binding.pry
 
     OpenTracing.scope_manager.activate(span)
     scope = OpenTracing.scope_manager.active
