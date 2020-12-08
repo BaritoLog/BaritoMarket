@@ -1,6 +1,21 @@
 class Api::V2::AppsController < Api::V2::BaseController
   include Wisper::Publisher
 
+  around_action :wrap_span
+
+  def wrap_span
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    span_name = "barito_market.api.v2.#{params[:action]}"
+    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+
+    yield
+
+    span.finish
+  end
+
   def profile
     valid, error_response = validate_required_keys([:app_secret])
     render json: error_response, status: error_response[:code] and return unless valid
@@ -30,14 +45,6 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def profile_by_app_group
-    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
-    span = OpenTracing.start_span("barito_market.profile_by_app_group", child_of: extracted_ctx)
-
-    binding.pry
-
-    OpenTracing.scope_manager.activate(span)
-    scope = OpenTracing.scope_manager.active
-
     valid, error_response = validate_required_keys(
       [:app_group_secret, :app_name])
     render json: error_response, status: error_response[:code] and return unless valid
@@ -85,8 +92,6 @@ class Api::V2::AppsController < Api::V2::BaseController
       params[:app_group_secret], params[:app_name], profile_response)
 
     render json: profile_response
-
-    span.finish
   end
 
   def increase_log_count
