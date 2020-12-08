@@ -1,9 +1,24 @@
 class Api::V2::AppGroupUsersController < Api::V2::BaseController
   include Wisper::Publisher
 
+  around_action :wrap_span
+  
   before_action :validate_params
   before_action :set_app_group
   before_action :set_user
+
+
+  def wrap_span
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    span_name = "barito_market.api.v2.#{params[:action]}"
+    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+    yield
+
+    span.finish
+  end
 
   def create
     app_group_role = AppGroupRole.find_by_name(params[:app_group_role])

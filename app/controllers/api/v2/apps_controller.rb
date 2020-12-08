@@ -15,6 +15,18 @@ class Api::V2::AppsController < Api::V2::BaseController
     span.finish
   end
 
+  def wrap_span
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    span_name = "barito_market.api.v2.#{params[:action]}"
+    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+    yield
+
+    span.finish
+  end
+
   def profile
     valid, error_response = validate_required_keys([:app_secret])
     render json: error_response, status: error_response[:code] and return unless valid
