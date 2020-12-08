@@ -2,6 +2,20 @@
 # This API and all of its inherited APIs will be deprecated in favor of v2
 class Api::InfrastructuresController < Api::BaseController
 
+  around_action :wrap_span
+
+  def wrap_span
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    span_name = "barito_market.api.#{params[:action]}"
+    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+    yield
+
+    span.finish
+  end
+  
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
       cluster_name: params[:cluster_name])

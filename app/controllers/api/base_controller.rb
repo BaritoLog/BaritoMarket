@@ -5,6 +5,20 @@ class Api::BaseController < ActionController::Base
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  around_action :wrap_span
+
+  def wrap_span
+    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
+    span_name = "barito_market.api.#{params[:action]}"
+    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
+
+    OpenTracing.scope_manager.activate(span)
+    scope = OpenTracing.scope_manager.active
+    yield
+
+    span.finish
+  end
+  
   def build_errors(code, errors = [])
     { success: false, errors: errors, code: code }
   end
