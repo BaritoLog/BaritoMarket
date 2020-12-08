@@ -10,7 +10,6 @@ class Api::V2::AppsController < Api::V2::BaseController
 
     OpenTracing.scope_manager.activate(span)
     scope = OpenTracing.scope_manager.active
-
     yield
 
     span.finish
