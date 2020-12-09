@@ -4,9 +4,11 @@ RSpec.describe 'Apps API', type: :request do
   let(:headers) do
     { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
   end
-  
+
   let(:headers_with_tracing) do
-    { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json', 'X-B3-SAMPLED' => "1", 'X-B3-SPANID' => '10509c69eec92c0e', 'X-B3-TRACEID' => '10509c69eec92c0e' }
+    headers.merge('X-B3-SAMPLED' => '1',
+                  'X-B3-SPANID' => '10509c69eec92c0e',
+                  'X-B3-TRACEID' => '10509c69eec92c0e')
   end
 
   before(:all) do
@@ -53,7 +55,7 @@ RSpec.describe 'Apps API', type: :request do
             "name" => "barito-registry"
           },
           "fingerprint" => "",
-          "source_type" => "image"                      
+          "source_type" => "image"
         },
         "resource" => {
           "cpu_limit" => "0-2",
