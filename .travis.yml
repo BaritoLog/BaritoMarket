@@ -1,4 +1,4 @@
-dist: trusty
+dist: focal
 language: ruby
 rvm:
   - 2.5.1
