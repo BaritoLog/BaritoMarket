@@ -6,7 +6,7 @@ RSpec.describe 'Apps API', type: :request do
   end
 
   let(:headers_with_tracing) do
-    headers.merge('X-B3-SAMPLED' => '1',
+    headers.merge('X-B3-SAMPLED' => "1",
                   'X-B3-SPANID' => '10509c69eec92c0e',
                   'X-B3-TRACEID' => '10509c69eec92c0e')
   end
@@ -322,7 +322,6 @@ RSpec.describe 'Apps API', type: :request do
         error_msg = 'Invalid Params: app_group_secret is a required parameter'
         get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers_with_tracing
         json_response = JSON.parse(response.body)
-        headers = ['X-B3-Sampled', 'X-B3-SpanId', 'X-B3-TraceId']
 
         expect(json_response['code']).to eq(422)
         expect(json_response['errors']).to eq([error_msg])

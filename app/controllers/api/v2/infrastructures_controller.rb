@@ -1,20 +1,5 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
-
-  around_action :wrap_span
-
-  def wrap_span
-    extracted_ctx = OpenTracing.extract(OpenTracing::FORMAT_RACK, request.headers)
-    span_name = "barito_market.api.v2.#{params[:action]}"
-    span = OpenTracing.start_span(span_name, child_of: extracted_ctx)
-
-    OpenTracing.scope_manager.activate(span)
-    scope = OpenTracing.scope_manager.active
-    yield
-
-    span.finish
-  end
-  
-  def profile_index 
+  def profile_index
     profiles = []
     infrastructures = Infrastructure.where(
       status: Infrastructure.statuses[:active],
