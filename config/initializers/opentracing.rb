@@ -1,13 +1,8 @@
 # noinspection RubyResolve
 OpenTracing.global_tracer = Jaeger::Client.build(
   service_name: Figaro.env.JAEGER_SERVICE_NAME,
-  reporter: Jaeger::Reporters::RemoteReporter.new(
-    sender: Jaeger::HttpSender.new(
-      url: Figaro.env.JAEGER_ENDPOINT,
-      encoder: Jaeger::Encoders::ThriftEncoder.new(service_name: Figaro.env.JAEGER_SERVICE_NAME)
-    ),
-    flush_interval: 10
-  ),
+  host: Figaro.env.JAEGER_HOST,
+  port: Figaro.env.JAEGER_PORT.to_i,
   injectors: {
     OpenTracing::FORMAT_RACK => [Jaeger::Injectors::B3RackCodec]
   },
