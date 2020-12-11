@@ -1,7 +1,6 @@
 # DEPRECATION NOTICE
 # This API and all of its inherited APIs will be deprecated in favor of v2
 class Api::InfrastructuresController < Api::BaseController
-
   def profile_by_cluster_name
     @infrastructure = Infrastructure.find_by(
       cluster_name: params[:cluster_name])

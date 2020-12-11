@@ -5,6 +5,7 @@ require 'resolv-replace'
 
 require 'prometheus/middleware/collector'
 require 'prometheus/middleware/exporter'
+require 'jaeger/client'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.

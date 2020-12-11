@@ -1,6 +1,5 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
-
-  def profile_index 
+  def profile_index
     profiles = []
     infrastructures = Infrastructure.where(
       status: Infrastructure.statuses[:active],

@@ -1,11 +1,18 @@
 class Api::V2::BaseController < ActionController::Base
   include Pundit
+  include Traceable
 
   before_action :authenticate!
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
+  around_action :traced
+
   def build_errors(code, errors = [])
     { success: false, errors: errors, code: code }
+  end
+
+  def trace_prefix
+    'barito_market'
   end
 
   private

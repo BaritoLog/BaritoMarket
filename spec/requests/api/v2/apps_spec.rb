@@ -5,6 +5,12 @@ RSpec.describe 'Apps API', type: :request do
     { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
   end
 
+  let(:headers_with_tracing) do
+    headers.merge('X-B3-SAMPLED' => "1",
+                  'X-B3-SPANID' => '10509c69eec92c0e',
+                  'X-B3-TRACEID' => '10509c69eec92c0e')
+  end
+
   before(:all) do
     @access_token = 'ABC123'
     @ext_app = create(:ext_app, access_token: @access_token)
@@ -49,7 +55,7 @@ RSpec.describe 'Apps API', type: :request do
             "name" => "barito-registry"
           },
           "fingerprint" => "",
-          "source_type" => "image"                      
+          "source_type" => "image"
         },
         "resource" => {
           "cpu_limit" => "0-2",
@@ -304,6 +310,17 @@ RSpec.describe 'Apps API', type: :request do
         app_group = create(:app_group)
 
         get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key }, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['code']).to eq(422)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'when app_group_secret is provided and have tracing headers' do
+      it 'should return 422' do
+        error_msg = 'Invalid Params: app_group_secret is a required parameter'
+        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers_with_tracing
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
