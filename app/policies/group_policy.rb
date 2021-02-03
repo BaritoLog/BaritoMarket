@@ -20,7 +20,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def see_user_groups?
-    barito_superadmin? || user.can_access_user_group?(record)
+    index?
   end
 
   def manage_access?

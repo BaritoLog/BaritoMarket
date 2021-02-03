@@ -16,6 +16,8 @@ class GroupsController < ApplicationController
     @group_user = GroupUser.new(group: @group)
     @group_users = GroupUser.includes(:user).where(group: @group)
 
+    @allow_manage_access = policy(@group).manage_access?
+
     @roles = {
       member: AppGroupRole.find_by_name('member'),
       admin: AppGroupRole.find_by_name('admin'),

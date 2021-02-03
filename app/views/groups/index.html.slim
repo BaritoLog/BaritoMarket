@@ -19,7 +19,7 @@ table.table.table-hover.table-sm.m-3
           td.col-9
             = link_to link_to group.name, group_path(group)
         - else
-          td.col-9 = app_group.name
+          td.col-9 = group.name
         - if policy(group).destroy?
             td.col-3 = link_to 'Delete', group_path(group), data: { method: :delete }
         - else
