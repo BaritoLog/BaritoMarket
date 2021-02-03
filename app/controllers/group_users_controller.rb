@@ -1,5 +1,7 @@
 class GroupUsersController < ApplicationController
   def create
+    authorize GroupUsers
+    
     @group_user = GroupUser.new(group_user_params)
     @group_user.role = AppGroupRole.find_by_name('member')
     @group_user.save
@@ -8,12 +10,16 @@ class GroupUsersController < ApplicationController
   end
 
   def destroy
+    authorize GroupUsers
+
     @group_user = GroupUser.find(params[:id])
     @group_user.destroy!
     redirect_to group_path(@group_user.group)
   end
 
   def set_role
+    authorize GroupUsers
+
     user = User.find(params[:user_id])
     group_user = user.group_users.find_by(group_id: params[:id])
 

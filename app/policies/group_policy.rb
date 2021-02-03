@@ -1,6 +1,6 @@
 class GroupPolicy < ApplicationPolicy
   def index?
-    barito_superadmin?
+    barito_superadmin? || user.can_access_user_group?(record, roles: %i(owner admin))
   end
 
   def show?
@@ -8,14 +8,14 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def new?
-    index?
+    barito_superadmin?
   end
 
   def create?
-    index?
+    barito_superadmin?
   end
 
   def destroy?
-    index?
+    barito_superadmin?
   end
 end
