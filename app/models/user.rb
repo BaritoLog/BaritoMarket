@@ -50,4 +50,17 @@ class User < ApplicationRecord
     augmented_app_groups.where(app_group_users: where_clause).
         or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause }}))
   end
+
+  def can_access_user_group?(user_group, roles: nil)
+    filter_accessible_user_groups(Group.where(id: user_group.id), roles: roles).exists?
+  end
+
+  def filter_accessible_user_groups(user_group, roles: nil)
+    where_clause = {
+      user: self,
+      role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+    }.compact
+    
+    groups.where(group_users: where_clause)
+  end
 end

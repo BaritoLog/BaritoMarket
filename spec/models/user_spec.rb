@@ -110,4 +110,78 @@ RSpec.describe User, type: :model do
 
     include_examples 'app group user-group associations', 'correct filter'
   end
+
+  shared_examples 'group group-user user associations' do |example_name|
+    context 'user has member association with group' do
+      before :each do
+        create(:group_user, group: group, user: user, role: role)
+      end
+
+      include_examples example_name
+    end
+  end
+
+  describe '#can_access_user_group?' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+
+    it 'should deny access to app group with no association' do
+      expect(user.can_access_user_group?(group)).to be false
+    end
+
+    let(:role) { create(:app_group_role) }
+    let(:role_owner) { create(:app_group_role, :owner) }
+
+    shared_examples 'correct answerer' do
+      it 'should allow access' do
+        expect(user.can_access_user_group?(group)).to be true
+      end
+
+      it 'should deny access if not in specified roles' do
+        allowed_roles = [role_owner.name.to_s]
+        expect(user.can_access_user_group?(group, roles: allowed_roles)).to be false
+      end
+
+      it 'should allow access if in specified roles' do
+        allowed_roles = [role_owner.name.to_s, role.name.to_s]
+        expect(user.can_access_user_group?(group, roles: allowed_roles)).to be true
+      end
+    end
+
+    include_examples 'group group-user user associations', 'correct answerer'
+  end
+
+  describe '#filter_accessible_app_groups' do
+    let(:user) { create(:user) }
+    let!(:group) { create(:group) }
+
+    it 'should filter out unassociated app group' do
+      groups = user.filter_accessible_user_groups(Group.all)
+      expect(groups.exists?).to be false
+    end
+
+    let(:role) { create(:app_group_role) }
+    let(:role_owner) { create(:app_group_role, :owner) }
+
+    shared_examples 'correct filter' do
+      it 'should pass' do
+        groups = user.filter_accessible_user_groups(Group.all)
+        expect(groups).to include(group)
+      end
+
+      it 'should filter out if not in specified roles' do
+        allowed_roles = [role_owner.name.to_s]
+        groups = user.filter_accessible_user_groups(Group.all, roles: allowed_roles)
+        expect(groups.exists?).to be false
+      end
+
+      it 'should pass if in specified roles' do
+        allowed_roles = [role_owner.name.to_s, role.name.to_s]
+        groups = user.filter_accessible_user_groups(Group.all, roles: allowed_roles)
+        expect(groups).to include(group)
+      end
+    end
+
+    include_examples 'group group-user user associations', 'correct filter'
+  end
 end
