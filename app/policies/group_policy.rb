@@ -12,14 +12,18 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def create?
-    barito_superadmin?
+    new?
   end
 
   def destroy?
-    barito_superadmin?
+    new?
   end
 
   def see_user_groups?
     barito_superadmin? || user.can_access_user_group?(record)
+  end
+
+  def manage_access?
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner))
   end
 end

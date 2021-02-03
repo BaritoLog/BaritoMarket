@@ -3,14 +3,14 @@
     h3.mb-3= "Group - #{@group.name}"
     hr
     br
-
-    h4.mb-3 Members
-    = form_for(@group_user) do |f|
-      = f.hidden_field :group_id
-      .form-group
-        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
-      .form-group
-        = f.submit 'Add', class: 'btn btn-primary btn-sm'
+    - policy(@group).manage_access?
+      h4.mb-3 Members
+      = form_for(@group_user) do |f|
+        = f.hidden_field :group_id
+        .form-group
+          = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
+        .form-group
+          = f.submit 'Add', class: 'btn btn-primary btn-sm'
     br
     ul.list-group
       - @group_users.each do |group|
