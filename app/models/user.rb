@@ -61,6 +61,7 @@ class User < ApplicationRecord
       role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
     }.compact
     
-    groups.where(group_users: where_clause)
+    augmented_user_groups = groups.left_outer_joins(:group_users)
+    augmented_user_groups.where(group_users: where_clause)
   end
 end

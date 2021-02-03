@@ -18,4 +18,8 @@ class GroupPolicy < ApplicationPolicy
   def destroy?
     barito_superadmin?
   end
+
+  def see_user_groups?
+    barito_superadmin? || user.can_access_user_group?(record)
+  end
 end
