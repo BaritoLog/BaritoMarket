@@ -125,7 +125,7 @@ RSpec.describe User, type: :model do
     let(:group) { create(:group) }
     let(:user) { create(:user) }
 
-    it 'should deny access to app group with no association' do
+    it 'should deny access to user group with no association' do
       expect(user.can_access_user_group?(group)).to be false
     end
 

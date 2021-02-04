@@ -57,6 +57,7 @@ class User < ApplicationRecord
       for id in ids
         return true if filter_accessible_user_groups(Group.where(id: id), roles: roles).exists?
       end
+      return false
     else
       id = user_group.id
       filter_accessible_user_groups(Group.where(id: id), roles: roles).exists?
@@ -70,8 +71,6 @@ class User < ApplicationRecord
     }.compact
     
     augmented_user_groups = user_group.left_outer_joins(:group_users)
-    i = augmented_user_groups.where(group_users: where_clause)
-    pp i
-    return i
+    augmented_user_groups.where(group_users: where_clause)
   end
 end

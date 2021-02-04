@@ -1,6 +1,6 @@
 class GroupUserPolicy < ApplicationPolicy
   def create?
-    barito_superadmin? || user.can_access_user_group?(record, roles: %i(owner))
+    barito_superadmin? || user.can_access_user_group?(record.group, roles: %i(owner))
   end
 
   def set_role?
@@ -8,6 +8,6 @@ class GroupUserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    barito_superadmin?
+    create?
   end
 end

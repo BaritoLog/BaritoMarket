@@ -3,7 +3,7 @@
     h3.mb-3= "Group - #{@group.name}"
     hr
     br
-    - if @allow_manage_access
+    - if @allow_manage_group_access
       h4.mb-3 Members
       = form_for(@group_user) do |f|
         = f.hidden_field :group_id

@@ -24,6 +24,6 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def manage_access?
-    barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner))
+    barito_superadmin? || user.can_access_user_group?(record, roles: %i(owner))
   end
 end

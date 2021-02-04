@@ -1,6 +1,7 @@
 class GroupUsersController < ApplicationController
   def create
-    authorize GroupUser
+    set_group_from_input
+    authorize @group_user
 
     @group_user = GroupUser.new(group_user_params)
     @group_user.role = AppGroupRole.find_by_name('member')
@@ -9,8 +10,10 @@ class GroupUsersController < ApplicationController
     redirect_to group_path(@group_user.group)
   end
 
+
   def destroy
-    authorize GroupUser
+    set_group_from_group_user
+    authorize @group_user
 
     @group_user = GroupUser.find(params[:id])
     @group_user.destroy!
@@ -18,7 +21,8 @@ class GroupUsersController < ApplicationController
   end
 
   def set_role
-    authorize GroupUser
+    set_group_from_params
+    authorize @group_user
 
     user = User.find(params[:user_id])
     group_user = user.group_users.find_by(group_id: params[:id])
@@ -35,5 +39,17 @@ class GroupUsersController < ApplicationController
 
   def group_user_params
     params.require(:group_user).permit(:group_id, :user_id)
+  end
+
+  def set_group_from_input
+    @group_user = GroupUser.find_by(group_id: group_user_params[:group_id], user_id: current_user.id)
+  end
+
+  def set_group_from_params
+    @group_user = GroupUser.find_by(group_id: params[:id], user_id: current_user.id)
+  end
+
+  def set_group_from_group_user
+    @group_user = GroupUser.find_by(group_id: GroupUser.find(params[:id]).group_id, user_id: current_user.id)
   end
 end
