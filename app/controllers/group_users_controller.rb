@@ -42,14 +42,14 @@ class GroupUsersController < ApplicationController
   end
 
   def set_group_from_input
-    @group_user = GroupUser.find_by(group_id: group_user_params[:group_id], user_id: current_user.id)
+    @group_user = GroupUser.find_by(group_id: group_user_params[:group_id], user_id: current_user.id) || GroupUser.new()
   end
 
   def set_group_from_params
-    @group_user = GroupUser.find_by(group_id: params[:id], user_id: current_user.id)
+    @group_user = GroupUser.find_by(group_id: params[:id], user_id: current_user.id) || GroupUser.new()
   end
 
   def set_group_from_group_user
-    @group_user = GroupUser.find_by(group_id: GroupUser.find(params[:id]).group_id, user_id: current_user.id)
+    @group_user = GroupUser.find_by(group_id: GroupUser.find(params[:id]).group_id, user_id: current_user.id) || GroupUser.new()
   end
 end

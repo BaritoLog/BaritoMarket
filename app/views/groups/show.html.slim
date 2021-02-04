@@ -23,7 +23,9 @@
                   span.badge.badge-secondary.badge-info
                     | &nbsp;As&nbsp;
                     = group.role.name
-            .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
-          .row
-            .col-8
-              = set_group_role_buttons(group, @roles, group_user_id: @group_user.group_id)
+            - if @allow_manage_group_access
+              .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
+          - if @allow_manage_group_access
+            .row
+              .col-8
+                = set_group_role_buttons(group, @roles, group_user_id: @group_user.group_id)

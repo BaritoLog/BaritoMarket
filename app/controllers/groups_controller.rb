@@ -3,6 +3,7 @@ class GroupsController < ApplicationController
 
   def index
     authorize Group
+    @allow_create_new_group = policy(Group).create?
     @groups = Group.all
   end
 

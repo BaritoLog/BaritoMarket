@@ -1,8 +1,9 @@
 .card.m-3
   h5.card-header
     | All Groups
-    .btn.btn-success.btn-sm.float-right
-      = link_to 'New Group', new_group_path, class: 'text-light', style: 'text-decoration: none'
+    - if @allow_create_new_group
+      .btn.btn-success.btn-sm.float-right
+        = link_to 'New Group', new_group_path, class: 'text-light', style: 'text-decoration: none'
 
 table.table.table-hover.table-sm.m-3
   thead
