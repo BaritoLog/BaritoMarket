@@ -23,7 +23,7 @@ html
       #bm-main-navbar.collapse.navbar-collapse
         ul.navbar-nav.ml-auto
           form.form-inline.mt-2.mt-md-0
-            - if user_signed_in? && allow_manage_groups?
+            - if user_signed_in?
               = link_to 'Groups', groups_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
             - if user_signed_in? && allow_manage_ext_apps?
               = link_to 'Ext. Apps', ext_apps_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'

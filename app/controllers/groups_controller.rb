@@ -3,6 +3,7 @@ class GroupsController < ApplicationController
 
   def index
     authorize Group
+    @allow_create_new_group = policy(Group).create?
     @groups = Group.all
   end
 
@@ -16,6 +17,7 @@ class GroupsController < ApplicationController
     @group_user = GroupUser.new(group: @group)
     @group_users = GroupUser.includes(:user).where(group: @group)
 
+    @allow_manage_group_access = policy(@group).manage_access?
     @roles = {
       member: AppGroupRole.find_by_name('member'),
       admin: AppGroupRole.find_by_name('admin'),

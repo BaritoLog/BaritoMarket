@@ -3,14 +3,14 @@
     h3.mb-3= "Group - #{@group.name}"
     hr
     br
-
-    h4.mb-3 Members
-    = form_for(@group_user) do |f|
-      = f.hidden_field :group_id
-      .form-group
-        = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
-      .form-group
-        = f.submit 'Add', class: 'btn btn-primary btn-sm'
+    - if @allow_manage_group_access
+      h4.mb-3 Members
+      = form_for(@group_user) do |f|
+        = f.hidden_field :group_id
+        .form-group
+          = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
+        .form-group
+          = f.submit 'Add', class: 'btn btn-primary btn-sm'
     br
     ul.list-group
       - @group_users.each do |group|
@@ -23,7 +23,9 @@
                   span.badge.badge-secondary.badge-info
                     | &nbsp;As&nbsp;
                     = group.role.name
-            .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
-          .row
-            .col-8
-              = set_group_role_buttons(group, @roles, group_user_id: @group_user.group_id)
+            - if @allow_manage_group_access
+              .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
+          - if @allow_manage_group_access
+            .row
+              .col-8
+                = set_group_role_buttons(group, @roles, group_user_id: @group_user.group_id)
