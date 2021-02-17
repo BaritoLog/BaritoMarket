@@ -8,6 +8,7 @@ class AppGroup < ApplicationRecord
   has_many :app_group_teams
   has_many :groups, through: :app_group_teams
   has_one :infrastructure
+  has_one :helm_infrastructure
 
   enum environment: {
     staging: 'STAGING',

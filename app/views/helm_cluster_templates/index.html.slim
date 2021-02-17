@@ -1,0 +1,29 @@
+.row
+  .col-sm-12
+    - if flash.key?(:messages)
+      .alert.alert-danger
+        b Issue deleting cluster template
+        br
+        - flash[:messages].each do |msg|
+          = "- #{msg}"
+          br
+
+.card.m-3
+  h5.card-header
+    | All Helm Cluster Templates
+    .btn.btn-success.btn-sm.float-right
+      = link_to 'New Helm Cluster Templates', new_helm_cluster_template_path, class: 'text-light', style: 'text-decoration: none'
+          
+table.table.table-hover.table-sm.m-3
+  thead
+    tr.d-flex
+      th.col-9 Name
+      th.col-3 Actions
+  tbody
+    - if @helm_cluster_template.empty?
+      tr.d-flex
+        td = 'No cluster template yet'
+    - @helm_cluster_template.each do |helm_cluster_template|
+      tr.d-flex
+        td.col-9 = link_to helm_cluster_template.name, helm_cluster_template_path(helm_cluster_template)
+        td.col-3 = link_to 'Edit', edit_helm_cluster_template_path(helm_cluster_template)

@@ -51,7 +51,7 @@ RSpec.describe 'Apps API', type: :request do
             "name" => "barito-registry"
           },
           "fingerprint" => "",
-          "source_type" => "image"                      
+          "source_type" => "image"
         },
         "resource" => {
           "cpu_limit" => "0-2",
@@ -129,7 +129,7 @@ RSpec.describe 'Apps API', type: :request do
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
 
       get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
-      
+
       json_response = JSON.parse(response.body)
 
       %w[name app_group_name max_tps cluster_name consul_host status].each do |key|
@@ -201,6 +201,33 @@ RSpec.describe 'Apps API', type: :request do
 
       expect(json_response['consul_hosts']).to match_array ['10.0.0.1:8500']
       expect(json_response['consul_host']).to match '10.0.0.1:8500'
+    end
+
+    it 'should returns K8s producer address if available' do
+      app_group = create(:app_group)
+      cluster_template = create(:cluster_template)
+      create(:infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        capacity: 'small',
+        cluster_template: cluster_template,
+        cluster_name: 'haza',
+        manifests: [@manifest],
+        options: cluster_template.options,
+        consul_host: 'localhost:8500',
+      )
+      app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
+      create(:helm_infrastructure, app_group: app_group, is_active: true)
+
+      provisioner = double
+      allow(provisioner).to(receive(:index_containers!).
+        with('haza-consul', 'barito').and_return(@resp))
+      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+
+      get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(json_response['producer_address']).to match "haza-barito-worker-producer.barito-worker.svc:8080"
     end
 
     context 'when invalid token' do

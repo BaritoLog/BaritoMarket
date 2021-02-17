@@ -1,0 +1,12 @@
+= form_with(model: (nested_in_app_group ? [:app_group, helm_infrastructure] : helm_infrastructure), local: true) do |f|
+  .form-group
+    = f.label :helm_cluster_template
+    = f.collection_select :helm_cluster_template_id, HelmClusterTemplate.all, :id, :name, {}, { class: 'form-control' }
+  .form-group
+    = f.label :override_values
+    = f.text_area :override_values, value: @override_values, cols: 15, rows: 15, class: 'form-control', placeholder: 'Additional values'
+  .form-group
+    = f.check_box :is_active, { "data-toggle": "toggle", "data-on": "Active", "data-off": "Inactive" }
+  .form-group
+    = f.check_box :use_k8s_kibana, { "data-toggle": "toggle", "data-on": "K8s Kibana", "data-off": "LXC Kibana" }
+  .actions = f.submit 'Submit', class: 'btn btn-primary btn-sm'

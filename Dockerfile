@@ -4,7 +4,11 @@ ENV BUNDLER_VERSION 2.1.4
 ENV RAILS_LOG_TO_STDOUT true
 
 RUN apt-get -y update && \
-  apt-get -y install libcurl3 libpq5 && \
+  apt-get -y install apt-transport-https curl gnupg libpq5 && \
+  (curl https://baltocdn.com/helm/signing.asc | apt-key add -) && \
+  (echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list) && \
+  apt-get -y update && \
+  apt-get -y install helm && \
   rm -vrf /var/lib/apt/lists/* && \
   gem install bundler -v "$BUNDLER_VERSION" && \
   rm -vf /usr/local/bundle/cache/*.gem && \

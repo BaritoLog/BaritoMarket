@@ -23,7 +23,7 @@ services:
       - .:/app
     ports:
       - 8080:8080
-  
+
   scheduler:
     build:
       context: .
@@ -42,6 +42,8 @@ services:
       - DB_POOL=5
       - DB_TIMEOUT=60
       - CAS_BASE_URL=""
+    volumes:
+      - .:/app
 
   db:
     image: postgres:12-alpine

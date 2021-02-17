@@ -211,7 +211,7 @@ RSpec.describe 'App API', type: :request do
           expect(j[key]).to eq(app_group.infrastructure.send(key.to_sym))
         end
       expect(j["consul_hosts"].length).to eq(1)
-        
+
     end
 
     it 'should return paginated response' do
@@ -347,6 +347,34 @@ RSpec.describe 'App API', type: :request do
       expect(json_response['consul_host']).to match '10.0.0.1:8500'
     end
 
+    it 'should return K8s Kibana if activated' do
+      app_group = create(:app_group)
+      cluster_template = create(:cluster_template)
+      infrastructure = create(:infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        capacity: 'small',
+        cluster_template: cluster_template,
+        cluster_name: 'haza',
+        manifests: [@consul_manifest],
+        options: cluster_template.options,
+        consul_host: "localhost:8500",
+      )
+      create(:helm_infrastructure, app_group: app_group, use_k8s_kibana: true)
+
+      provisioner = double
+      allow(provisioner).to(receive(:index_containers!).
+        with('haza-consul', 'barito').and_return(@consul_resp))
+      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+
+      get api_v2_profile_by_cluster_name_path,
+        params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(json_response['kibana_address']).to eq("#{infrastructure.cluster_name}-barito-worker-kb-http.barito-worker.svc:5601")
+    end
+
     context 'when infrastructure inactive' do
       it 'should return 404' do
         error_msg = 'Infrastructure not found'
@@ -434,6 +462,36 @@ RSpec.describe 'App API', type: :request do
       ].to_json
     end
 
+    it 'should return K8s Elasticsearch address' do
+      app_group = create(:app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
+      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
+      infrastructure = create(
+        :infrastructure,
+        app_group: app_group,
+        provisioning_status: Infrastructure.provisioning_statuses[:finished],
+        manifests: [@elasticsearch_manifest]
+      )
+      create(:helm_infrastructure, app_group: app_group)
+
+      provisioner = double
+      allow(provisioner).to(receive(:index_containers!).
+        with('haza-elasticsearch', 'barito').and_return(@elasticsearch_resp))
+      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+
+      get api_v2_profile_curator_path,
+        params: { access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+      expect(JSON.parse(response.body)).to include({
+        "ipaddress" => "#{infrastructure.cluster_name}-barito-worker-es-http.barito-worker.svc",
+        "log_retention_days" => app_group.log_retention_days,
+        "log_retention_days_per_topic" => {
+          app2.topic_name => app2.log_retention_days
+        },
+      })
+    end
+
     it 'should return es ipaddress from infrastructure_component' do
       app_group = create(:app_group)
       app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
@@ -496,6 +554,8 @@ RSpec.describe 'App API', type: :request do
         }
       ].to_json
     end
+
+
   end
 
   describe 'Profile for Prometheus Exporters' do

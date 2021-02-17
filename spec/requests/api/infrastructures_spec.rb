@@ -161,6 +161,35 @@ RSpec.describe 'App API', type: :request do
       ].to_json
     end
 
+    it 'should return K8s Elasticsearch address' do
+      app_group = create(:app_group)
+      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
+      infrastructure = create(
+        :infrastructure,
+        app_group: app_group,
+        provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished],
+        manifests: [@manifest]
+      )
+      create(:helm_infrastructure, app_group: app_group)
+
+      provisioner = double
+      allow(provisioner).to(receive(:index_containers!).
+        with('haza-elasticsearch', 'barito').and_return(@resp))
+      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+
+      get api_profile_curator_path,
+          params: { access_token: @access_token, client_key: 'abcd1234' },
+          headers: headers
+
+          expect(JSON.parse(response.body)).to include({
+            "ipaddress" => "#{infrastructure.cluster_name}-barito-worker-es-http.barito-worker.svc",
+            "log_retention_days" => app_group.log_retention_days,
+            "log_retention_days_per_topic" => {
+              app2.topic_name => app2.log_retention_days
+            },
+          })
+    end
+
     it 'should get es ipaddress value from infrastructure_component' do
       app_group = create(:app_group)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
