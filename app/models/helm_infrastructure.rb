@@ -12,15 +12,18 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def producer_address
-    is_active.presence and "#{cluster_name}-barito-worker-producer.barito-worker.svc:8080"
+    producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
+    is_active.presence and sprintf(producer_address_format, cluster_name)
   end
 
   def kibana_address
-    use_k8s_kibana.presence and "#{cluster_name}-barito-worker-kb-http.barito-worker.svc:5601"
+    kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
+    use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
   end
 
   def elasticsearch_address
-    "#{cluster_name}-barito-worker-es-http.barito-worker.svc"
+    elasticsearch_address_format = Figaro.env.ES_ADDRESS_FORMAT
+    sprintf(elasticsearch_address_format, cluster_name)
   end
 
   def values

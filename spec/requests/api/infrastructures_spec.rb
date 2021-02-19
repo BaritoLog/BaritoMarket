@@ -182,7 +182,7 @@ RSpec.describe 'App API', type: :request do
           headers: headers
 
           expect(JSON.parse(response.body)).to include({
-            "ipaddress" => "#{infrastructure.cluster_name}-barito-worker-es-http.barito-worker.svc",
+            "ipaddress" => "#{infrastructure.cluster_name}-es-http.barito-worker.svc",
             "log_retention_days" => app_group.log_retention_days,
             "log_retention_days_per_topic" => {
               app2.topic_name => app2.log_retention_days

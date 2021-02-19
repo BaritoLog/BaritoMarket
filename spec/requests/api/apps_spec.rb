@@ -227,7 +227,7 @@ RSpec.describe 'Apps API', type: :request do
       get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response['producer_address']).to match "haza-barito-worker-producer.barito-worker.svc:8080"
+      expect(json_response['producer_address']).to match "haza-producer.barito-worker.svc:8080"
     end
 
     context 'when invalid token' do

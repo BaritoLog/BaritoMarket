@@ -41,6 +41,9 @@ JAEGER_AGENT_HOST:                 'localhost'
 JAEGER_AGENT_PORT:                 '6831'
 JAEGER_SAMPLING_HOST:        'localhost'
 JAEGER_SAMPLING_PORT:        '6831'
+PRODUCER_ADDRESS_FORMAT:     '%s-producer.barito-worker.svc:8080'
+KIBANA_ADDRESS_FORMAT:       '%s-kb-http.barito-worker.svc:5601'
+ES_ADDRESS_FORMAT:           '%s-es-http.barito-worker.svc'
 
 development:
   RAILS_ENV:                 'development'
