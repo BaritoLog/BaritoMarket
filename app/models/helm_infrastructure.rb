@@ -1,6 +1,7 @@
 class HelmInfrastructure < ApplicationRecord
   belongs_to :app_group
   belongs_to :helm_cluster_template
+  validates :override_values, helm_values: true
 
   def synchronize_async
     HelmSyncWorker.perform_async id

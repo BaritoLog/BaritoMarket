@@ -34,10 +34,12 @@ class HelmInfrastructuresController < ApplicationController
 
   def update
     authorize @helm_infrastructure
-    @helm_infrastructure.update_attributes!(@data_attributes)
-
-    broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
-    redirect_to helm_infrastructure_path(@helm_infrastructure)
+    if @helm_infrastructure.update(@data_attributes)
+      broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
+      redirect_to helm_infrastructure_path(@helm_infrastructure)
+    else
+      flash[:messages] = helm_infrastructure.errors.full_messages
+    end
   end
 
   def synchronize

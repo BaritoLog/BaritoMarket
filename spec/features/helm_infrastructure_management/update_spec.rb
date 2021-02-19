@@ -56,6 +56,21 @@ RSpec.feature 'Helm Infrastructure Management', type: :feature do
         click_button 'Submit'
         expect(page).to have_content("Yes")
       end
+
+      scenario 'User cannot edit helm infra with invlid override values' do
+        set_check_user_groups({ 'groups': ['barito-superadmin'] })
+        login_as user_a
+
+        visit helm_infrastructure_path(@helm_infrastructure)
+
+        click_link 'Edit'
+        within('#edit_helm_infrastructure') do
+          fill_in 'helm_infrastructure[override_values]', with: "\"\""
+        end
+
+        click_button 'Submit'
+        expect(page).to have_content("Invalid Helm values")
+      end
     end
   end
 end

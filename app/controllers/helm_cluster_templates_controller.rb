@@ -45,8 +45,13 @@ class HelmClusterTemplatesController < ApplicationController
     authorize @helm_cluster_template
     attributes = helm_cluster_template_params.clone
     attributes[:values] = YAML.safe_load(attributes[:values])
-    @helm_cluster_template.update_attributes(attributes)
-    redirect_to helm_cluster_template_path(@helm_cluster_template)
+
+    if @helm_cluster_template.update(attributes)
+      redirect_to helm_cluster_template_path(@helm_cluster_template)
+    else
+      flash[:messages] = @helm_cluster_template.errors.full_messages
+      render :edit
+    end
   end
 
   private

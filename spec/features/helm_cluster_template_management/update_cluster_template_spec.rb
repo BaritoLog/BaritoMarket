@@ -23,6 +23,23 @@ RSpec.feature 'Helm Cluster Template Management', type: :feature do
         click_button 'Submit'
         expect(page).to have_content(prep_helm_cluster_template.name)
       end
+
+      scenario 'User cannot edit helm cluster template with invalid values' do
+        set_check_user_groups({ 'groups': ['barito-superadmin'] })
+        login_as user_a
+        prep_helm_cluster_template = build(:helm_cluster_template)
+
+        visit helm_cluster_template_path(@helm_cluster_template)
+
+        click_link 'Edit'
+        within('#edit_helm_cluster_template') do
+          fill_in 'helm_cluster_template[values]', with: "\"\""
+        end
+
+        click_button 'Submit'
+        expect(page).to have_content("Invalid Helm values")
+      end
+
     end
   end
 end
