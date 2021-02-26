@@ -57,7 +57,7 @@ RSpec.feature 'Helm Infrastructure Management', type: :feature do
         expect(page).to have_content("Yes")
       end
 
-      scenario 'User cannot edit helm infra with invlid override values' do
+      scenario 'User cannot edit helm infra with invalid override values' do
         set_check_user_groups({ 'groups': ['barito-superadmin'] })
         login_as user_a
 
