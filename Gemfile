@@ -45,6 +45,7 @@ group :development, :test do
   gem 'rubocop', '<= 0.56'
   gem 'rubocop-rspec', '<= 1.25'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 4.0'
   gem 'simplecov', '<= 0.14'
   gem 'simplecov-console', '<= 0.4'
   gem 'timecop', '<= 0.9.1'

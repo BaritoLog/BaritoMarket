@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_17_064025) do
+ActiveRecord::Schema.define(version: 2021_02_15_094858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,6 +137,27 @@ ActiveRecord::Schema.define(version: 2020_03_17_064025) do
     t.index ["name"], name: "index_groups_on_name"
   end
 
+  create_table "helm_cluster_templates", force: :cascade do |t|
+    t.string "name", null: false
+    t.jsonb "values", null: false
+    t.integer "max_tps", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "helm_infrastructures", force: :cascade do |t|
+    t.bigint "app_group_id", null: false
+    t.bigint "helm_cluster_template_id", null: false
+    t.jsonb "override_values", null: false
+    t.text "last_log"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_active", default: false, null: false
+    t.boolean "use_k8s_kibana", default: false, null: false
+    t.index ["app_group_id"], name: "index_helm_infrastructures_on_app_group_id"
+    t.index ["helm_cluster_template_id"], name: "index_helm_infrastructures_on_helm_cluster_template_id"
+  end
+
   create_table "infrastructure_components", force: :cascade do |t|
     t.string "hostname"
     t.string "component_type"
@@ -192,5 +213,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_064025) do
   add_foreign_key "app_group_teams", "groups"
   add_foreign_key "ext_apps", "users", column: "created_by_id"
   add_foreign_key "group_users", "app_group_roles", column: "role_id"
+  add_foreign_key "helm_infrastructures", "app_groups"
+  add_foreign_key "helm_infrastructures", "helm_cluster_templates"
   add_foreign_key "infrastructures", "cluster_templates"
 end

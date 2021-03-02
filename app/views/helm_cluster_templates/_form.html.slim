@@ -1,0 +1,11 @@
+= form_with(model: helm_cluster_template, local: true) do|f|
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control', placeholder: 'Name of your Helm cluster template'
+  .form-group
+    = f.label :values
+    = f.text_area :values, value: @values, cols: 15, rows: 15, class: 'form-control', placeholder: 'Values'
+  .form-group
+    = f.label :max_tps
+    = f.text_field :max_tps, class: 'form-control', placeholder: 'Max TPS'
+  .actions = f.submit 'Submit',class: 'btn btn-primary btn-sm'

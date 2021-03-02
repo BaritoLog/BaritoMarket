@@ -7,7 +7,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     )
     .offset((params.fetch(:page, 1).to_i - 1) * params.fetch(:limit, 10).to_i)
     .limit(params.fetch(:limit, 10).to_i)
-    
+
     infrastructures.each do |infra|
       consul_hosts, consul_host = determine_consul_host(infra)
       profiles << {
@@ -49,6 +49,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       cluster_name: @infrastructure.cluster_name,
       consul_host: consul_host,
       consul_hosts: consul_hosts,
+      kibana_address: @infrastructure.app_group&.helm_infrastructure&.kibana_address,
       status: @infrastructure.status,
       provisioning_status: @infrastructure.provisioning_status,
       updated_at: @infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
@@ -82,18 +83,31 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       es_ipaddress = es_component.nil? ? '' : es_component.ipaddress
       es_ipaddresses = app_group.infrastructure.fetch_manifest_ipaddresses('elasticsearch')
 
-      next if es_ipaddress.empty? && es_ipaddresses.empty?
+      if !es_ipaddress.empty? || !es_ipaddresses.empty?
+        es_ipaddress = es_ipaddresses.empty? ? es_ipaddress : es_ipaddresses.first
 
-      es_ipaddress = es_ipaddresses.empty? ? es_ipaddress : es_ipaddresses.first
+        profiles << {
+          ipaddress: es_ipaddress,
+          log_retention_days: app_group.log_retention_days,
+          log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
+            app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
+            app_map
+          end
+        }
+      end
 
-      profiles << {
-        ipaddress: es_ipaddress,
-        log_retention_days: app_group.log_retention_days,
-        log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
-          app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
-          app_map
-        end
-      }
+      if app_group.helm_infrastructure.present?
+        es_address = app_group.helm_infrastructure.elasticsearch_address
+
+        profiles << {
+          ipaddress: es_address,
+          log_retention_days: app_group.log_retention_days,
+          log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
+            app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
+            app_map
+          end
+        }
+      end
     end
 
     render json: profiles

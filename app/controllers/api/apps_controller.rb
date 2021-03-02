@@ -147,6 +147,7 @@ class Api::AppsController < Api::BaseController
       cluster_name: app.cluster_name,
       consul_host: consul_host,
       consul_hosts: consul_hosts,
+      producer_address: app.app_group.helm_infrastructure&.producer_address,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {

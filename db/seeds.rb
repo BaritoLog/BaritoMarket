@@ -17,3 +17,4 @@ GroupUser.create(user: user, group: global_viewer_group, role: AppGroupRole.find
 
 load "#{::Rails.root}/db/seeds/master_data/cluster_template.rb"
 load "#{::Rails.root}/db/seeds/master_data/deployment_template.rb"
+load "#{::Rails.root}/db/seeds/master_data/helm_cluster_template.rb"

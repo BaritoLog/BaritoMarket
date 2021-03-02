@@ -81,6 +81,9 @@ Rails.application.routes.draw do
     defaults: { format: :html }
   resources :app_groups,
     only: %i[index show new create update] do
+      resources :helm_infrastructures,
+        only: %i[new create]
+
       member do
         get :manage_access
         post :bookmark
@@ -124,6 +127,13 @@ Rails.application.routes.draw do
         delete :delete
       end
     end
+  resources :helm_infrastructures,
+    only: %i[show edit update],
+    defaults: { format: :html } do
+      member do
+        post :synchronize
+      end
+    end
   resources :infrastructure_components,
     only: %i[edit update index],
     defaults: { format: :html } do
@@ -132,6 +142,8 @@ Rails.application.routes.draw do
       end
     end
   resources :cluster_templates,
+    defaults: { format: :html }
+  resources :helm_cluster_templates,
     defaults: { format: :html }
   resources :deployment_templates,
     defaults: { format: :html }

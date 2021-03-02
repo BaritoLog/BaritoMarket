@@ -42,6 +42,7 @@ class AppGroupsController < ApplicationController
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
+    @allow_see_helm_infrastructure = policy(HelmInfrastructure).show?
     @allow_delete_barito_app = policy(@new_app).delete?
     @allow_add_barito_app = policy(@new_app).create?
     @allow_edit_barito_app_log_retention_days = policy(@new_app).update_log_retention_days?
