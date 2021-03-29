@@ -38,7 +38,7 @@ table.table.table-hover.table-sm
           - if policy(app_group).see_app_groups?
             .btn.btn-primary.btn-sm
               i.fas.fa-search.mr-1
-              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.infrastructure.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
             = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|
               = hidden_field_tag(:app_group_id, app_group.id)
               = f.button class: 'btn btn-sm bg-transparent text-warning'
