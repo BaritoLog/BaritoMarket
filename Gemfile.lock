@@ -262,7 +262,7 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.0.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.0)
     mini_racer (0.2.6)
       libv8 (>= 6.9.411)
     minitar (0.8)
@@ -292,8 +292,9 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.5.0.357)
     nio4r (2.5.1)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.2)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     nori (2.6.0)
     octokit (4.14.0)
       sawyer (~> 0.8.0, >= 0.5.3)
@@ -333,6 +334,7 @@ GEM
     puma (3.12.6)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
+    racc (1.5.2)
     rack (2.2.3)
     rack-protection (2.0.7)
       rack
