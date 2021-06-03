@@ -24,6 +24,10 @@
           dd.col-sm-10
             = @helm_infrastructure.use_k8s_kibana? ? "Yes" : "No"
 
+          dt.col-sm-2 Last updated (UTC):
+          dd.col-sm-10
+            = @helm_infrastructure.updated_at.strftime('%d %B %Y, %T')
+
           dt.col-sm-2 Last Log:
           dd.col-sm-10
             pre
