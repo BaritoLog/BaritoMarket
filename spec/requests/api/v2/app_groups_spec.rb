@@ -18,9 +18,16 @@ RSpec.describe 'App Groups API', type: :request do
   describe 'App Group API' do
     it 'should return app group information' do
       app_group = create(:app_group)
-      helm_cluster_template = create(:helm_cluster_template)
-
-      post api_v2_create_app_group_path, params: { access_token: @access_token, name: app_group.name, cluster_template_id: helm_cluster_template.id }, headers: headers
+      cluster_template = create(:cluster_template)
+      create(:infrastructure,
+        app_group: app_group,
+        status: Infrastructure.statuses[:active],
+        capacity: "small",
+        cluster_template: cluster_template,
+        manifests: cluster_template.manifests,
+        options: cluster_template.options,
+      )
+      post api_v2_create_app_group_path, params: { access_token: @access_token, name: app_group.name, cluster_template_id: cluster_template.id }, headers: headers
       json_response = JSON.parse(response.body)
       
       expect(json_response['data']['name']).to eq(app_group.name)
@@ -35,24 +42,24 @@ RSpec.describe 'App Groups API', type: :request do
       expect(json_response['errors']).to eq([error_msg])
     end
 
-    # it 'should return app status information' do
-    #   app_group = create(:app_group)
-    #   # create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
-    #   app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
+    it 'should return app status information' do
+      app_group = create(:app_group)
+      create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+      app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
       
-    #   get api_v2_check_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
-    #   json_response = JSON.parse(response.body)
+      get api_v2_check_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+      json_response = JSON.parse(response.body)
 
-    #   expect(json_response.key?('provisioning_status')).to eq(true)
-    #   expect(json_response['status']).to eq "ACTIVE"
-    # end
+      expect(json_response.key?('provisioning_status')).to eq(true)
+      expect(json_response['status']).to eq "ACTIVE"
+    end
 
-    it 'should return helm cluster template' do
-      helm_cluster_template = create(:helm_cluster_template)
+    it 'should return cluster template' do
+      cluster_template = create(:cluster_template)
       get api_v2_cluster_templates_path, params: { access_token: @access_token}, headers: headers
 
       json_response = JSON.parse(response.body)
-      expected_result = [{"id"=>helm_cluster_template.id, "name"=>"#{helm_cluster_template.name}"}]
+      expected_result = [{"id"=>cluster_template.id, "name"=>"#{cluster_template.name}"}]
       expect(json_response).to eq expected_result
     end
   end

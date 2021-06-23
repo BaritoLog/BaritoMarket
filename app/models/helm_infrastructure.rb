@@ -2,28 +2,13 @@ class HelmInfrastructure < ApplicationRecord
   belongs_to :app_group
   belongs_to :helm_cluster_template
   validates :override_values, helm_values: true
-  # validates :cluster_name, :provisioning_status, :status, :max_tps
-
-  def self.setup(params)
-    helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
-    helm_infrastructure = HelmInfrastructure.new(
-      app_group_id:              params[:app_group_id],
-      helm_cluster_template_id:  helm_cluster_template.id,
-      is_active: true,
-      use_k8s_kibana: true,
-      override_values: YAML.safe_load('{}'),
-    )
-
-    if helm_infrastructure.valid?
-      helm_infrastructure.save
-      helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
-      helm_infrastructure.synchronize_async
-    end
-    helm_infrastructure
-  end
 
   def synchronize_async
     HelmSyncWorker.perform_async id
+  end
+
+  def cluster_name
+    app_group.infrastructure.cluster_name
   end
 
   def producer_address

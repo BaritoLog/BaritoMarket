@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_23_000000) do
+ActiveRecord::Schema.define(version: 2021_02_15_094858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 2021_06_23_000000) do
 
   create_table "cluster_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "manifest"
+    t.jsonb "instances"
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -120,12 +120,6 @@ ActiveRecord::Schema.define(version: 2021_06_23_000000) do
     t.index ["name"], name: "index_ext_apps_on_name", unique: true
   end
 
-  create_table "group_roles", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "group_users", force: :cascade do |t|
     t.bigint "group_id"
     t.bigint "user_id"
@@ -160,10 +154,6 @@ ActiveRecord::Schema.define(version: 2021_06_23_000000) do
     t.datetime "updated_at", null: false
     t.boolean "is_active", default: false, null: false
     t.boolean "use_k8s_kibana", default: false, null: false
-    t.string "cluster_name"
-    t.string "status"
-    t.string "provisioning_status"
-    t.integer "max_tps"
     t.index ["app_group_id"], name: "index_helm_infrastructures_on_app_group_id"
     t.index ["helm_cluster_template_id"], name: "index_helm_infrastructures_on_helm_cluster_template_id"
   end
@@ -194,7 +184,7 @@ ActiveRecord::Schema.define(version: 2021_06_23_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cluster_template_id"
-    t.jsonb "manifest", default: {}, null: false
+    t.jsonb "instances", default: {}, null: false
     t.jsonb "options", default: {}, null: false
     t.jsonb "manifests", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"
