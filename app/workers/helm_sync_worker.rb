@@ -33,8 +33,17 @@ class HelmSyncWorker
         EOS
       ).strip
     )
+    infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
     out, status = Open3.capture2e(*cmd, stdin_data: stdin_data)
+
+    if status.success?
+      infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
+      infrastructure.update_status('ACTIVE')
+    else
+      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
+    end
+
     infrastructure.update!(last_log:
       (
         <<~EOS

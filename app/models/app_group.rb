@@ -74,11 +74,7 @@ class AppGroup < ApplicationRecord
         log_retention_days: log_retention_days,
         environment: params[:environment],
       )
-      # infrastructure = Infrastructure.setup(
-      #   name: params[:name],
-      #   app_group_id: app_group.id,
-      #   cluster_template_id: params[:cluster_template_id],
-      # )
+
       helm_infrastructure = HelmInfrastructure.setup(
         app_group_id: app_group.id,
         helm_cluster_template_id: params[:cluster_template_id],

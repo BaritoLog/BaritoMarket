@@ -44,6 +44,7 @@ JAEGER_SAMPLING_PORT:        '6831'
 PRODUCER_ADDRESS_FORMAT:     '%s-producer.barito-worker.svc:8080'
 KIBANA_ADDRESS_FORMAT:       '%s-kb-http.barito-worker.svc:5601'
 ES_ADDRESS_FORMAT:           '%s-es-http.barito-worker.svc'
+DEFAULT_MAX_TPS:             '5000'
 
 development:
   RAILS_ENV:                 'development'
