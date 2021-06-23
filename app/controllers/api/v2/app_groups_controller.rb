@@ -44,7 +44,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
   def cluster_templates
    
-    cluster_templates = HelmClusterTemplate.all.map do |cluster|
+    cluster_templates = ClusterTemplate.all.map do |cluster|
       cluster.slice(:id, :name)
     end
     
