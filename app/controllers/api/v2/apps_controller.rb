@@ -133,9 +133,7 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def generate_profile_response(app)
-    infrastructure = app.app_group.infrastructure
-
-    consul_hosts, consul_host = determine_consul_host(infrastructure)
+    helm_infrastructure = app.app_group.helm_infrastructure
 
     {
       id: app.id,
@@ -144,32 +142,9 @@ class Api::V2::AppsController < Api::V2::BaseController
       app_group_name: app.app_group_name,
       max_tps: app.max_tps,
       cluster_name: app.cluster_name,
-      consul_host: consul_host,
-      consul_hosts: consul_hosts,
-      producer_address: app.app_group.helm_infrastructure&.producer_address,
+      producer_address: helm_infrastructure&.producer_address,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
-      meta: {
-        # TODO: we should store this somewhere
-        service_names: {
-          producer: 'barito-flow-producer',
-          zookeeper: 'zookeeper',
-          kafka: 'kafka',
-          consumer: 'barito-flow-consumer',
-          elasticsearch: 'elasticsearch',
-          kibana: 'kibana',
-        },
-        kafka: {
-          topic_name: app.topic_name,
-          partition: infrastructure.options['kafka_partition'],
-          replication_factor: infrastructure.options['kafka_replication_factor'],
-          consumer_group: 'barito',
-        },
-        elasticsearch: {
-          index_prefix: app.topic_name,
-          document_type: 'barito',
-        },
-      },
     }
   end
 
