@@ -17,6 +17,7 @@ class HelmInfrastructure < ApplicationRecord
     delete_started: 'DELETE_STARTED',
     delete_error: 'DELETE_ERROR',
     deleted: 'DELETED',
+    finished: 'FINISHED',
   }
 
   def self.setup(params)

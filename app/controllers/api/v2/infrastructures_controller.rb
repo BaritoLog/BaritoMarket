@@ -1,37 +1,32 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
   def profile_index
     profiles = []
-    infrastructures = Infrastructure.where(
-      status: Infrastructure.statuses[:active],
-      provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
+    helm_infrastructures = HelmInfrastructure.where(
+      status: HelmInfrastructure.statuses[:active],
+      provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished]
     )
     .offset((params.fetch(:page, 1).to_i - 1) * params.fetch(:limit, 10).to_i)
     .limit(params.fetch(:limit, 10).to_i)
 
-    infrastructures.each do |infra|
-      consul_hosts, consul_host = determine_consul_host(infra)
+    helm_infrastructures.each do |infra|
       profiles << {
-        name: infra.name,
+        name: infra.app_group_name,
         app_group_name: infra.app_group_name,
         app_group_secret: infra.app_group_secret,
         cluster_name: infra.cluster_name,
-        consul_hosts: consul_hosts,
         status: infra.status,
         provisioning_status: infra.provisioning_status,
-        meta: {
-          service_names: infra.default_service_names
-        },
       }
     end
     render json: profiles
   end
 
   def profile_by_cluster_name
-    @infrastructure = Infrastructure.find_by(
+    @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],
     )
 
-    if @infrastructure.blank? || !@infrastructure.active?
+    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
                success: false,
                errors: ['Infrastructure not found'],
@@ -39,23 +34,16 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
-    consul_hosts, consul_host = determine_consul_host(@infrastructure)
-
     render json: {
-      name: @infrastructure.name,
-      app_group_name: @infrastructure.app_group_name,
-      app_group_secret: @infrastructure.app_group_secret,
-      capacity: @infrastructure.capacity,
-      cluster_name: @infrastructure.cluster_name,
-      consul_host: consul_host,
-      consul_hosts: consul_hosts,
-      kibana_address: @infrastructure.app_group&.helm_infrastructure&.kibana_address,
-      status: @infrastructure.status,
-      provisioning_status: @infrastructure.provisioning_status,
-      updated_at: @infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
-      meta: {
-        service_names: @infrastructure.default_service_names
-      },
+      name: @helm_infrastructure.app_group_name,
+      app_group_name: @helm_infrastructure.app_group_name,
+      app_group_secret: @helm_infrastructure.app_group_secret,
+      capacity: @helm_infrastructure.helm_cluster_template.name,
+      cluster_name: @helm_infrastructure.cluster_name,
+      kibana_address: @helm_infrastructure&.kibana_address,
+      status: @helm_infrastructure.status,
+      provisioning_status: @helm_infrastructure.provisioning_status,
+      updated_at: @helm_infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
     }
   end
 
@@ -70,31 +58,11 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     profiles = []
     AppGroup.all.each do |app_group|
-      next if app_group.infrastructure == nil
+      next if app_group.helm_infrastructure == nil
       next unless [
-        Infrastructure.provisioning_statuses[:finished],
-        Infrastructure.provisioning_statuses[:deployment_finished]
-      ].include? app_group.infrastructure.provisioning_status
-
-      es_component = app_group.infrastructure.infrastructure_components.where(
-        component_type: 'elasticsearch',
-        status: InfrastructureComponent.statuses[:finished],
-      ).first
-      es_ipaddress = es_component.nil? ? '' : es_component.ipaddress
-      es_ipaddresses = app_group.infrastructure.fetch_manifest_ipaddresses('elasticsearch')
-
-      if !es_ipaddress.empty? || !es_ipaddresses.empty?
-        es_ipaddress = es_ipaddresses.empty? ? es_ipaddress : es_ipaddresses.first
-
-        profiles << {
-          ipaddress: es_ipaddress,
-          log_retention_days: app_group.log_retention_days,
-          log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
-            app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
-            app_map
-          end
-        }
-      end
+        HelmInfrastructure.provisioning_statuses[:finished],
+        HelmInfrastructure.provisioning_statuses[:deployment_finished]
+      ].include? app_group.helm_infrastructure.provisioning_status
 
       if app_group.helm_infrastructure.present?
         es_address = app_group.helm_infrastructure.elasticsearch_address
@@ -132,11 +100,11 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def authorize_by_username
     @current_user = User.find_by_username_or_email(params[:username])
-    @infrastructure = Infrastructure.
+    @helm_infrastructure = HelmInfrastructure.
       find_by_cluster_name(params[:cluster_name])
 
-    if @current_user.blank? || @infrastructure.blank? || !@infrastructure.active? ||
-        !InfrastructurePolicy.new(@current_user, @infrastructure).exists?
+    if @current_user.blank? || @helm_infrastructure.blank? || !@helm_infrastructure.active? ||
+        !HelmInfrastructurePolicy.new(@current_user, @helm_infrastructure).exists?
       render(json: {
                success: false,
                errors: ['Forbidden'],

@@ -10,192 +10,20 @@ RSpec.describe 'App API', type: :request do
     @ext_app.destroy
   end
 
-  before(:each) do
-    @consul_manifest = {
-      "name" => "haza-consul",
-      "cluster_name" => "barito",
-      "deployment_cluster_name"=>"haza",
-      "type" => "consul",
-      "desired_num_replicas" => 1,
-      "min_available_replicas" => 0,
-      "definition" => {
-        "container_type" => "stateless",
-        "strategy" => "RollingUpdate",
-        "allow_failure" => "false",
-        "source" => {
-          "mode" => "pull",              # can be local or pull. default is pull.
-          "alias" => "lxd-ubuntu-minimal-consul-1.1.0-8",
-          "remote" => {
-            "name" => "barito-registry"
-          },
-          "fingerprint" => "",
-          "source_type" => "image"
-        },
-        "resource" => {
-          "cpu_limit" => "0-2",
-          "mem_limit" => "500MB"
-        },
-        "bootstrappers" => [{
-          "bootstrap_type" => "chef-solo",
-          "bootstrap_attributes" => {
-            "consul" => {
-              "hosts" => []
-            },
-            "run_list" => []
-          },
-          "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
-        }],
-        "healthcheck" => {
-          "type" => "tcp",
-          "port" => 9500,
-          "endpoint" => "",
-          "payload" => "",
-          "timeout" => ""
-        }
-      }
-    }
-    @elasticsearch_manifest = {
-      "name" => "haza-elasticsearch",
-      "cluster_name" => "barito",
-      "deployment_cluster_name"=>"haza",
-      "type" => "elasticsearch",
-      "desired_num_replicas" => 1,
-      "min_available_replicas" => 0,
-      "definition" => {
-        "container_type" => "stateless",
-        "strategy" => "RollingUpdate",
-        "allow_failure" => "false",
-        "source" => {
-          "mode" => "pull",              # can be local or pull. default is pull.
-          "alias" => "lxd-ubuntu-minimal-elasticsearch-1.1.0-8",
-          "remote" => {
-            "name" => "barito-registry"
-          },
-          "fingerprint" => "",
-          "source_type" => "image"
-        },
-        "resource" => {
-          "cpu_limit" => "0-2",
-          "mem_limit" => "500MB"
-        },
-        "bootstrappers" => [{
-          "bootstrap_type" => "chef-solo",
-          "bootstrap_attributes" => {
-            "elasticsearch" => {
-              "hosts" => []
-            },
-            "run_list" => []
-          },
-          "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
-        }],
-        "healthcheck" => {
-          "type" => "tcp",
-          "port" => 9500,
-          "endpoint" => "",
-          "payload" => "",
-          "timeout" => ""
-        }
-      }
-    }
-    @elasticsearch_resp = {
-        'success'=> true,
-        'data' =>{
-          "containers"=>[
-            {
-              "id"=>1818,
-              "hostname"=>"haza-elasticsearch-01",
-              "ipaddress"=>"10.0.0.2",
-              "source"=>{
-                "id"=>23,
-                "source_type"=>"image",
-                "mode"=>"pull",
-                "remote"=>{
-                  "id"=>1,
-                  "name"=>"barito-registry",
-                  "server"=>"https://localhost:8443",
-                  "protocol"=>"lxd",
-                  "auth_type"=>"tls"
-                },
-                "fingerprint"=>"",
-                "alias"=>"lxd-ubuntu-minimal-elasticsearch-1.1.0-8"
-              },
-              "bootstrappers"=>[{
-                "bootstrap_type"=>"chef-solo",
-                "bootstrap_attributes"=>{
-                  "elasticsearch"=>{
-                    "hosts"=>["10.0.0.1"]
-                  },
-                  "run_list"=>[]
-                },
-                "bootstrap_cookbooks_url"=>
-                  "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"}],
-              "node_hostname"=>"i-barito-worker-node-02",
-              "status"=>"BOOTSTRAPPED",
-              "last_status_update_at"=>"2020-03-19T07:27:54.885Z"}
-          ]
-        }
-      }
-      @consul_resp = {
-        'success'=> true,
-        'data' =>{
-          "containers"=>[
-            {
-              "id"=>1817,
-              "hostname"=>"haza-consul-01",
-              "ipaddress"=>"10.0.0.1",
-              "source"=>{
-                "id"=>23,
-                "source_type"=>"image",
-                "mode"=>"pull",
-                "remote"=>{
-                  "id"=>1,
-                  "name"=>"barito-registry",
-                  "server"=>"https://localhost:8443",
-                  "protocol"=>"lxd",
-                  "auth_type"=>"tls"
-                },
-                "fingerprint"=>"",
-                "alias"=>"lxd-ubuntu-minimal-consul-1.1.0-8"
-              },
-              "bootstrappers"=>[{
-                "bootstrap_type"=>"chef-solo",
-                "bootstrap_attributes"=>{
-                  "consul"=>{
-                    "hosts"=>["10.0.0.1"]
-                  },
-                  "run_list"=>[]
-                },
-                "bootstrap_cookbooks_url"=>
-                  "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"}],
-              "node_hostname"=>"i-barito-worker-node-02",
-              "status"=>"BOOTSTRAPPED",
-              "last_status_update_at"=>"2020-03-19T07:27:54.885Z"
-            }
-          ]
-        }
-      }
-  end
-
   describe 'List Profile' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
 
     it 'should return list profile information of registered appgroups' do
-      Infrastructure.delete_all
+      HelmInfrastructure.delete_all
 
       app_group = create(:app_group)
-      infrastructure = create(
-        :infrastructure,
+      helm_infrastructure = create(
+        :helm_infrastructure,
         app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
-      )
-      consul = create(
-        :infrastructure_component,
-        infrastructure: infrastructure,
-        status: Infrastructure.statuses[:active],
-        component_type: "consul"
+        status: HelmInfrastructure.statuses[:active],
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished]
       )
 
       get api_v2_profile_index_path,
@@ -205,31 +33,27 @@ RSpec.describe 'App API', type: :request do
 
       expect(json_response.length).to eq(1)
       j = json_response[0]
-      %w[name app_group_name cluster_name status provisioning_status].
+      %w[cluster_name status provisioning_status].
         each do |key|
           expect(j.key?(key)).to eq(true)
-          expect(j[key]).to eq(app_group.infrastructure.send(key.to_sym))
+          expect(j[key]).to eq(app_group.helm_infrastructure.send(key.to_sym))
         end
-      expect(j["consul_hosts"].length).to eq(1)
-
+        expect(j['name']).to eq(helm_infrastructure.app_group_name)
+        expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
     end
 
     it 'should return paginated response' do
-      Infrastructure.delete_all
+      HelmInfrastructure.delete_all
+      helm_cluster_template = create(:helm_cluster_template)
       app_groups = []
       12.times do |i|
         app_group = create(:app_group)
-        infrastructure = create(
-          :infrastructure,
+        helm_infrastructure = create(
+          :helm_infrastructure,
           app_group: app_group,
-          status: Infrastructure.statuses[:active],
-          provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished]
-        )
-        consul = create(
-          :infrastructure_component,
-          infrastructure: infrastructure,
-          status: Infrastructure.statuses[:active],
-          component_type: "consul"
+          status: HelmInfrastructure.statuses[:active],
+          provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
+          helm_cluster_template: helm_cluster_template
         )
         app_groups << app_group
       end
@@ -261,128 +85,56 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return profile information of registered app when supplied cluster name' do
       app_group = create(:app_group)
-      infrastructure = create(
-        :infrastructure,
+      helm_infrastructure = create(
+        :helm_infrastructure,
         app_group: app_group,
-        status: Infrastructure.statuses[:active]
+        status: HelmInfrastructure.statuses[:active]
       )
 
       get api_v2_profile_by_cluster_name_path,
-        params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
+        params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name },
         headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[name app_group_name app_group_secret capacity cluster_name consul_host status provisioning_status].
+      %w[cluster_name status provisioning_status].
         each do |key|
           expect(json_response.key?(key)).to eq(true)
-          expect(json_response[key]).to eq(infrastructure.send(key.to_sym))
+          expect(json_response[key]).to eq(helm_infrastructure.send(key.to_sym))
         end
+
+      expect(json_response['name']).to eq(helm_infrastructure.app_group_name)
+      expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
+      expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
+      expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
       expect(json_response.key?('updated_at')).to eq(true)
-    end
-
-    it 'should returns multiple Consul instances from related infrastructure_component' do
-      app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      infrastructure = create(:infrastructure,
-        app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: "small",
-        cluster_template: cluster_template,
-        cluster_name: 'haza',
-        manifests: [@consul_manifest],
-        options: cluster_template.options,
-        consul_host: "localhost:8500",
-      ).tap do |infrastructure|
-        create(:infrastructure_component,
-          infrastructure: infrastructure,
-          ipaddress: '192.168.0.1',
-          component_type: 'consul',
-        )
-        create(:infrastructure_component,
-          infrastructure: infrastructure,
-          ipaddress: '192.168.0.2',
-          component_type: 'consul',
-        )
-      end
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return([]))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
-
-      get api_v2_profile_by_cluster_name_path,
-        params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
-        headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(json_response['consul_hosts']).to match_array ['192.168.0.1:8500', '192.168.0.2:8500']
-      expect(json_response['consul_host']).to match 'localhost:8500'
-    end
-
-    it 'should returns multiple Consul instances from related pf deployment' do
-      app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      infrastructure = create(:infrastructure,
-        app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_template: cluster_template,
-        cluster_name: 'haza',
-        manifests: [@consul_manifest],
-        options: cluster_template.options,
-        consul_host: "localhost:8500",
-      )
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@consul_resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
-
-      get api_v2_profile_by_cluster_name_path,
-        params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
-        headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(json_response['consul_hosts']).to match_array ['10.0.0.1:8500']
-      expect(json_response['consul_host']).to match '10.0.0.1:8500'
+      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
     end
 
     it 'should return K8s Kibana if activated' do
       app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      infrastructure = create(:infrastructure,
+      helm_infrastructure = create(:helm_infrastructure,
         app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_template: cluster_template,
+        status: HelmInfrastructure.statuses[:active],
         cluster_name: 'haza',
-        manifests: [@consul_manifest],
-        options: cluster_template.options,
-        consul_host: "localhost:8500",
       )
-      create(:helm_infrastructure, app_group: app_group, use_k8s_kibana: true)
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@consul_resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       get api_v2_profile_by_cluster_name_path,
-        params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
+        params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name },
         headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response['kibana_address']).to eq("#{infrastructure.cluster_name}-kb-http.barito-worker.svc:5601")
+      expect(json_response['kibana_address']).to eq("#{helm_infrastructure.cluster_name}-kb-http.barito-worker.svc:5601")
+      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
     end
 
     context 'when infrastructure inactive' do
       it 'should return 404' do
         error_msg = 'Infrastructure not found'
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group)
+        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
 
         get api_v2_profile_by_cluster_name_path,
-          params: { access_token: @access_token, cluster_name: infrastructure.cluster_name },
+          params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name },
           headers: headers
         json_response = JSON.parse(response.body)
 
@@ -402,13 +154,7 @@ RSpec.describe 'App API', type: :request do
       app_group = create(:app_group)
       app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(:infrastructure, app_group: app_group, provisioning_status: Infrastructure.provisioning_statuses[:finished])
-      infrastructure_component = create(
-        :infrastructure_component,
-        infrastructure: infrastructure,
-        component_type: 'elasticsearch',
-        status: InfrastructureComponent.statuses[:finished],
-      )
+      helm_infrastructure = create(:helm_infrastructure, app_group: app_group, provisioning_status: HelmInfrastructure.provisioning_statuses[:finished])
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
@@ -416,44 +162,7 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
-          ipaddress: infrastructure_component.ipaddress,
-          log_retention_days: app_group.log_retention_days,
-          log_retention_days_per_topic: {
-            app2.topic_name => app2.log_retention_days
-          },
-        }
-      ].to_json
-    end
-
-    it 'should return es ipaddress from pathfinder' do
-      app_group = create(:app_group)
-      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
-      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(
-        :infrastructure,
-        app_group: app_group,
-        provisioning_status: Infrastructure.provisioning_statuses[:finished],
-        manifests: [@elasticsearch_manifest]
-      )
-      infrastructure_component = create(
-        :infrastructure_component,
-        infrastructure: infrastructure,
-        component_type: 'elasticsearch',
-        status: InfrastructureComponent.statuses[:finished]
-      )
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-elasticsearch', 'barito').and_return(@elasticsearch_resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
-
-      get api_v2_profile_curator_path,
-        params: { access_token: @access_token, client_key: 'abcd1234' },
-        headers: headers
-
-      expect(response.body).to eq [
-        {
-          ipaddress: '10.0.0.2',
+          ipaddress: helm_infrastructure.elasticsearch_address,
           log_retention_days: app_group.log_retention_days,
           log_retention_days_per_topic: {
             app2.topic_name => app2.log_retention_days
@@ -466,25 +175,18 @@ RSpec.describe 'App API', type: :request do
       app_group = create(:app_group)
       app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(
-        :infrastructure,
+      helm_infrastructure = create(
+        :helm_infrastructure,
         app_group: app_group,
-        provisioning_status: Infrastructure.provisioning_statuses[:finished],
-        manifests: [@elasticsearch_manifest]
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:finished]
       )
-      create(:helm_infrastructure, app_group: app_group)
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-elasticsearch', 'barito').and_return(@elasticsearch_resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
         headers: headers
 
       expect(JSON.parse(response.body)).to include({
-        "ipaddress" => "#{infrastructure.cluster_name}-es-http.barito-worker.svc",
+        "ipaddress" => "#{helm_infrastructure.cluster_name}-es-http.barito-worker.svc",
         "log_retention_days" => app_group.log_retention_days,
         "log_retention_days_per_topic" => {
           app2.topic_name => app2.log_retention_days
@@ -492,53 +194,10 @@ RSpec.describe 'App API', type: :request do
       })
     end
 
-    it 'should return es ipaddress from infrastructure_component' do
-      app_group = create(:app_group)
-      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
-      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(
-        :infrastructure,
-        app_group: app_group,
-        provisioning_status: Infrastructure.provisioning_statuses[:finished],
-        manifests: [@elasticsearch_manifest]
-      )
-      infrastructure_component = create(
-        :infrastructure_component,
-        infrastructure: infrastructure,
-        component_type: 'elasticsearch',
-        status: InfrastructureComponent.statuses[:finished]
-      )
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-elasticsearch', 'barito').and_return([]))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
-
-      get api_v2_profile_curator_path,
-        params: { access_token: @access_token, client_key: 'abcd1234' },
-        headers: headers
-
-      expect(response.body).to eq [
-        {
-          ipaddress: infrastructure_component.ipaddress,
-          log_retention_days: app_group.log_retention_days,
-          log_retention_days_per_topic: {
-            app2.topic_name => app2.log_retention_days
-          },
-        }
-      ].to_json
-    end
-
     it 'should works for DEPLOYMENT_FINISHED infrastructures' do
       app_group = create(:app_group)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      infrastructure = create(:infrastructure, app_group: app_group, provisioning_status: Infrastructure.provisioning_statuses[:deployment_finished])
-      infrastructure_component = create(
-        :infrastructure_component,
-        infrastructure: infrastructure,
-        component_type: 'elasticsearch',
-        status: InfrastructureComponent.statuses[:finished],
-      )
+      helm_infrastructure = create(:helm_infrastructure, app_group: app_group, provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished])
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
@@ -546,7 +205,7 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
-          ipaddress: infrastructure_component.ipaddress,
+          ipaddress: helm_infrastructure.elasticsearch_address,
           log_retention_days: app_group.log_retention_days,
           log_retention_days_per_topic: {
             app2.topic_name => app2.log_retention_days
@@ -594,13 +253,13 @@ RSpec.describe 'App API', type: :request do
         login_as user_a
         create(:group, name: 'barito-superadmin')
         app_group = create(:app_group)
-        infrastructure = create(
-          :infrastructure, app_group: app_group, status: Infrastructure.statuses[:active]
+        helm_infrastructure = create(
+          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
         )
 
         get api_v2_authorize_path, params: {
           access_token: @access_token,
-          cluster_name: infrastructure.cluster_name,
+          cluster_name: helm_infrastructure.cluster_name,
           username: user_a[:username],
         }, headers: headers
 
@@ -611,7 +270,7 @@ RSpec.describe 'App API', type: :request do
     context 'when invalid username or invalid cluster_name' do
       it 'should return 403' do
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group)
+        create(:helm_infrastructure, app_group: app_group)
 
         get api_v2_authorize_path, params: {
           access_token: @access_token,
@@ -626,11 +285,11 @@ RSpec.describe 'App API', type: :request do
     context 'when valid username and cluster name but with inactive infrastructure' do
       it 'should return 403' do
         app_group = create(:app_group)
-        infrastructure = create(:infrastructure, app_group: app_group)
+        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
 
         get api_v2_authorize_path, params: {
           access_token: @access_token,
-          cluster_name: infrastructure.cluster_name,
+          cluster_name: helm_infrastructure.cluster_name,
           username: user_a.username,
         }, headers: headers
 
