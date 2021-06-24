@@ -39,7 +39,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :not_found and return
     end
 
-    render json: app_group.infrastructure
+    render json: app_group.helm_infrastructure
   end
 
   def cluster_templates
@@ -64,7 +64,5 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def app_group_params
     params.permit(:name, :cluster_template_id,)
   end
-
-  
 
 end

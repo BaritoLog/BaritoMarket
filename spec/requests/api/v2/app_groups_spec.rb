@@ -35,17 +35,17 @@ RSpec.describe 'App Groups API', type: :request do
       expect(json_response['errors']).to eq([error_msg])
     end
 
-    # it 'should return app status information' do
-    #   app_group = create(:app_group)
-    #   # create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
-    #   app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
+    it 'should return app status information' do
+      app_group = create(:app_group)
+      create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
+      app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
       
-    #   get api_v2_check_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
-    #   json_response = JSON.parse(response.body)
+      get api_v2_check_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+      json_response = JSON.parse(response.body)
 
-    #   expect(json_response.key?('provisioning_status')).to eq(true)
-    #   expect(json_response['status']).to eq "ACTIVE"
-    # end
+      expect(json_response.key?('provisioning_status')).to eq(true)
+      expect(json_response['status']).to eq "ACTIVE"
+    end
 
     it 'should return helm cluster template' do
       helm_cluster_template = create(:helm_cluster_template)
