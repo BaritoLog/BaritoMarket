@@ -48,27 +48,38 @@ class HelmInfrastructure < ApplicationRecord
 
   def producer_address
     producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
-    is_active.presence and sprintf(producer_address_format, cluster_name)
+    is_active.presence and sprintf(producer_address_format, self.cluster_name)
   end
 
   def kibana_address
     kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
-    use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
+    use_k8s_kibana.presence and sprintf(kibana_address_format, self.cluster_name)
   end
 
   def elasticsearch_address
     elasticsearch_address_format = Figaro.env.ES_ADDRESS_FORMAT
-    sprintf(elasticsearch_address_format, cluster_name)
+    sprintf(elasticsearch_address_format, self.cluster_name)
   end
 
   def values
     helm_cluster_template.values.deep_merge(override_values)
   end
 
+  def app_group_name
+    app_group&.name
+  end
+
+  def app_group_secret
+    app_group&.secret_key
+  end
+
   def self.generate_cluster_index
     HelmInfrastructure.all.size + CLUSTER_NAME_PADDING
   end
 
+  def active?
+    self.status == HelmInfrastructure.statuses[:active]
+  end
 
   def update_status(status)
     status = status.downcase.to_sym

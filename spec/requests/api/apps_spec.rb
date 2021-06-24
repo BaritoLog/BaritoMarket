@@ -28,103 +28,14 @@ RSpec.describe 'Apps API', type: :request do
     @statsd.connection.instance_variable_set(:@socket, socket)
   end
 
-  before(:each) do
-    pf_host = Figaro.env.pathfinder_host
-    pf_token = Figaro.env.pathfinder_token
-    pf_cluster = Figaro.env.pathfinder_cluster
-    @pf_provisioner = PathfinderProvisioner.new(pf_host, pf_token, pf_cluster)
-    @manifest = {
-      "name" => "haza-consul",
-      "cluster_name" => "barito",
-      "deployment_cluster_name"=>"haza",
-      "type" => "consul",
-      "desired_num_replicas" => 1,
-      "min_available_replicas" => 0,
-      "definition" => {
-        "container_type" => "stateless",
-        "strategy" => "RollingUpdate",
-        "allow_failure" => "false",
-        "source" => {
-          "mode" => "pull",              # can be local or pull. default is pull.
-          "alias" => "lxd-ubuntu-minimal-consul-1.1.0-8",
-          "remote" => {
-            "name" => "barito-registry"
-          },
-          "fingerprint" => "",
-          "source_type" => "image"
-        },
-        "resource" => {
-          "cpu_limit" => "0-2",
-          "mem_limit" => "500MB"
-        },
-        "bootstrappers" => [{
-          "bootstrap_type" => "chef-solo",
-          "bootstrap_attributes" => {
-            "consul" => {
-              "hosts" => []
-            },
-            "run_list" => []
-          },
-          "bootstrap_cookbooks_url" => "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"
-        }],
-        "healthcheck" => {
-          "type" => "tcp",
-          "port" => 9500,
-          "endpoint" => "",
-          "payload" => "",
-          "timeout" => ""
-        }
-      }
-    }
-    @resp = {
-        'success'=> true,
-        'data' =>{
-          "containers"=>[{
-            "id"=>1817,
-            "hostname"=>"haza-consul-01",
-            "ipaddress"=>"10.0.0.1",
-            "source"=>{
-              "id"=>23,
-              "source_type"=>"image",
-              "mode"=>"pull",
-              "remote"=>{
-                "id"=>1,
-                "name"=>"barito-registry",
-                "server"=>"https://localhost:8443",
-                "protocol"=>"lxd",
-                "auth_type"=>"tls"
-              },
-              "fingerprint"=>"",
-              "alias"=>"lxd-ubuntu-minimal-consul-1.1.0-8"
-            },
-            "bootstrappers"=>[{
-              "bootstrap_type"=>"chef-solo",
-              "bootstrap_attributes"=>{
-                "consul"=>{
-                  "hosts"=>["10.0.0.1"]
-                },
-                "run_list"=>[]
-              },
-              "bootstrap_cookbooks_url"=>
-                "https://github.com/BaritoLog/chef-repo/archive/master.tar.gz"}],
-            "node_hostname"=>"i-barito-worker-node-02",
-            "status"=>"BOOTSTRAPPED",
-            "last_status_update_at"=>"2020-03-19T07:27:54.885Z"}
-          ]
-        }
-      }
-  end
-
   describe 'Profile API' do
     it 'should return profile information of registered app' do
       app_group = create(:app_group)
-      create(:infrastructure,
+      create(:helm_infrastructure,
         app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_name: 'haza',
-        manifests: [@manifest],
-        consul_host: 'localhost:8500')
+        status: HelmInfrastructure.statuses[:active],
+        cluster_name: 'haza'
+      )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
 
@@ -132,97 +43,25 @@ RSpec.describe 'Apps API', type: :request do
 
       json_response = JSON.parse(response.body)
 
-      %w[name app_group_name max_tps cluster_name consul_host status].each do |key|
+      %w[name app_group_name max_tps cluster_name status].each do |key|
         expect(json_response.key?(key)).to eq(true)
         expect(json_response[key]).to eq(app.send(key.to_sym))
       end
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['updated_at']).to eq(app_updated_at)
-      expect(json_response['meta']['kafka']['replication_factor']).to eq(1)
-      expect(json_response['meta']['kafka']['partition']).to eq(1)
-    end
-
-    it 'should returns multiple Consul instances from related infrastructure_component' do
-      app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      create(:infrastructure,
-        app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_template: cluster_template,
-        manifests: cluster_template.manifests,
-        options: cluster_template.options,
-        consul_host: 'localhost:8500',
-      ).tap do |infrastructure|
-        create(:infrastructure_component,
-          infrastructure: infrastructure,
-          ipaddress: '192.168.0.1',
-          component_type: 'consul',
-        )
-        create(:infrastructure_component,
-          infrastructure: infrastructure,
-          ipaddress: '192.168.0.2',
-          component_type: 'consul',
-        )
-      end
-      app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
-      app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
-
-      get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(json_response['consul_hosts']).to match_array ['192.168.0.1:8500', '192.168.0.2:8500']
-      expect(json_response['consul_host']).to match 'localhost:8500'
-    end
-
-
-    it 'should returns multiple Consul instances from related pf deployment' do
-      app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      create(:infrastructure,
-        app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_template: cluster_template,
-        cluster_name: 'haza',
-        manifests: [@manifest],
-        options: cluster_template.options,
-        consul_host: 'localhost:8500',
-      )
-      app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
-
-      get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(json_response['consul_hosts']).to match_array ['10.0.0.1:8500']
-      expect(json_response['consul_host']).to match '10.0.0.1:8500'
+      expect(json_response['cluster_name']).to eq(app_group.helm_infrastructure.cluster_name)
     end
 
     it 'should returns K8s producer address if available' do
       app_group = create(:app_group)
-      cluster_template = create(:cluster_template)
-      create(:infrastructure,
-        app_group: app_group,
-        status: Infrastructure.statuses[:active],
-        capacity: 'small',
-        cluster_template: cluster_template,
-        cluster_name: 'haza',
-        manifests: [@manifest],
-        options: cluster_template.options,
-        consul_host: 'localhost:8500',
-      )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
-      create(:helm_infrastructure, app_group: app_group, is_active: true)
-
-      provisioner = double
-      allow(provisioner).to(receive(:index_containers!).
-        with('haza-consul', 'barito').and_return(@resp))
-      allow(PathfinderProvisioner).to receive(:new).and_return(provisioner)
+      create(:helm_infrastructure, 
+        app_group: app_group, 
+        status: HelmInfrastructure.statuses[:active],
+        is_active: true, 
+        cluster_name: 'haza',
+        use_k8s_kibana: true
+      )
 
       get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
@@ -259,7 +98,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group)
 
         get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
@@ -275,7 +114,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group)
+        create(:helm_infrastructure, app_group: app_group)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
         get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
@@ -290,7 +129,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_secret is provided and valid, app is active and infrastructure is active' do
       it 'should return appropriate app' do
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
 
         get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
@@ -328,7 +167,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App is inactive'
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:inactive])
 
         get api_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
@@ -343,7 +182,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is provided and valid and params[:app_name] is provided and app is active' do
       it 'should return appropriate app' do
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
 
         get api_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
@@ -357,7 +196,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is provided and valid and params[:app_name] is provided and app is blank' do
       it 'should create new app with params[:app_name]' do
         app_group = create(:app_group)
-        create(:infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
 
         get api_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-02" }, headers: headers
         json_response = JSON.parse(response.body)

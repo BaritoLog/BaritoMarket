@@ -34,7 +34,7 @@ class BaritoApp < ApplicationRecord
   end
 
   def available?
-    active? && app_group.infrastructure.active?
+    active? && app_group.helm_infrastructure.active?
   end
 
   def update_status(status)
