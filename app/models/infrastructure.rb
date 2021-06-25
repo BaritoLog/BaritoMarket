@@ -44,12 +44,12 @@ class Infrastructure < ApplicationRecord
       options:              cluster_template.options,
     )
 
-    # if infrastructure.valid?
-    #   infrastructure.save
-    #   BlueprintWorker.perform_async(
-    #     infrastructure_id: infrastructure.id
-    #   )
-    # end
+    if infrastructure.valid?
+      infrastructure.save
+      BlueprintWorker.perform_async(
+        infrastructure_id: infrastructure.id
+      )
+    end
     infrastructure
   end
 

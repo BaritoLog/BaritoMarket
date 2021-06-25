@@ -63,10 +63,6 @@ class BaritoApp < ApplicationRecord
   end
 
   def cluster_name
-    app_group&.infrastructure&.cluster_name
-  end
-
-  def consul_host
-    app_group&.infrastructure&.consul_host
+    app_group&.helm_infrastructure&.cluster_name
   end
 end
