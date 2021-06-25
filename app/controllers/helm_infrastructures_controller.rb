@@ -1,7 +1,7 @@
 class HelmInfrastructuresController < ApplicationController
   include Wisper::Publisher
 
-  before_action :configure_current_object, only: %i(show destroy update edit synchronize)
+  before_action :configure_current_object, only: %i(show destroy update edit synchronize toggle_status)
   before_action :configure_data_attributes, only: %i(create update)
 
   def new
@@ -47,6 +47,20 @@ class HelmInfrastructuresController < ApplicationController
     @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
     @helm_infrastructure.synchronize_async
     redirect_to helm_infrastructure_path(@helm_infrastructure)
+  end
+
+  def toggle_status
+    statuses = HelmInfrastructure.statuses
+    puts @helm_infrastructure
+    @helm_infrastructure.status = params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive]
+    @helm_infrastructure.save!
+
+    if params[:app_group_id]
+      app_group = AppGroup.find(params[:app_group_id])
+      redirect_to app_group_path(app_group)
+    else
+      redirect_to app_groups_path
+    end
   end
 
   private

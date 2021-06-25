@@ -10,7 +10,7 @@ RSpec.feature 'Application Group Management', type: :feature do
 
     @app_group_a = create(:app_group)
 
-    [@app_group_a].each { |app_group| create(:infrastructure, app_group: app_group, provisioning_status: 'FINISHED') }
+    [@app_group_a].each { |app_group| create(:helm_infrastructure, app_group: app_group, provisioning_status: 'FINISHED') }
   end
 
   describe 'Delete Infrastructure' do

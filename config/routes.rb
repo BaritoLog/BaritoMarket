@@ -129,6 +129,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :synchronize
+        patch :toggle_status
       end
     end
   resources :infrastructure_components,

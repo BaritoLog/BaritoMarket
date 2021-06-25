@@ -34,35 +34,35 @@
 
           dt.col-sm-2 Cluster Name:
           dd.col-sm-10
-            = @app_group.infrastructure.cluster_name
+            = @app_group.helm_infrastructure.cluster_name
 
           dt.col-sm-2 Capacity:
           dd.col-sm-10
-            = "#{@app_group.infrastructure.capacity.camelcase} (#{max_tps(@app_group.infrastructure)} TPS)"
+            = "#{@app_group.helm_infrastructure.helm_cluster_template.name.camelcase} (#{@app_group.helm_infrastructure.max_tps} TPS)"
 
           dt.col-sm-2 TPS:
           dd.col-sm-10
             - if @allow_edit_metadata
               = form_for @app_group do |f|
-                = f.fields :infrastructure do |infrastructure_field|
-                  = infrastructure_field.fields :options, model: OpenStruct.new(f.object.infrastructure.options) do |field|
-                    .input-group.col-sm-5(style="padding-left:0px;")
-                      = field.number_field :max_tps, id: 'app_group_infrastructure_options_max_tps', class: 'form-control'
+                = f.fields_for :helm_infrastructure, @app_group.helm_infrastructure do |helm_infrastructure_fields|
+                  .input-group.col-sm-5(style="padding-left:0px;")
+                      = helm_infrastructure_fields.number_field :max_tps, id: 'app_group_infrastructure_max_tps', class: 'form-control'
                       .input-group-append
                         = f.button(:class => 'btn btn-outline-secondary btn-sm')
                           i.fas.fa-check
+
             - else
-              = max_tps(@app_group.infrastructure)
+              = max_tps(@app_group.helm_infrastructure)
 
           dt.col-sm-2 Provisioning Status:
           dd.col-sm-10
-            = @app_group.infrastructure.provisioning_status
+            = @app_group.helm_infrastructure.provisioning_status
 
           dt.col-sm-2 Status:
           dd.col-sm-10
             - if @allow_set_status
-              = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
-              = form_tag toggle_status_infrastructure_path(@app_group.infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
+              = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.helm_infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+              = form_tag toggle_status_helm_infrastructure_path(@app_group.helm_infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_status
                 = hidden_field_tag :app_group_id, @app_group.id
 
@@ -75,10 +75,6 @@
           .btn.btn-primary.btn-sm.mr-2
             i.fas.fa-key.mr-1
             = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'text-light', style: 'text-decoration: none'
-        - if @allow_see_infrastructure
-          .btn.btn-primary.btn-sm.mr-2
-            i.fas.fa-server.mr-1
-            = link_to 'Show Infrastructure', infrastructure_path(@app_group.infrastructure.id), class: 'text-light', style: 'text-decoration: none'
         - if @allow_see_helm_infrastructure
           .btn.btn-primary.btn-sm.mr-2
             i.fas.fa-server.mr-1
@@ -86,10 +82,10 @@
               = link_to 'Show Helm Infrastructure', helm_infrastructure_path(@app_group.helm_infrastructure), class: 'text-light', style: 'text-decoration: none'
             - else
               = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
-        - if @allow_delete_infrastructure
-          div class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("delete_infrastructure_#{@app_group.infrastructure.id}")
-            i.far.fa-trash-alt.mr-1
-            = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
+        / - if @allow_delete_infrastructure
+        /   div class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("delete_infrastructure_#{@app_group.infrastructure.id}")
+        /     i.far.fa-trash-alt.mr-1
+        /     = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
 
 br
