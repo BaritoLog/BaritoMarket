@@ -82,11 +82,10 @@
               = link_to 'Show Helm Infrastructure', helm_infrastructure_path(@app_group.helm_infrastructure), class: 'text-light', style: 'text-decoration: none'
             - else
               = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
-        / - if @allow_delete_infrastructure
-        /   div class=("btn btn-danger btn-sm text-light #{!@allow_delete_infrastructure ? 'disabled' : ''}") id=("delete_infrastructure_#{@app_group.infrastructure.id}")
-        /     i.far.fa-trash-alt.mr-1
-        /     = link_to "Delete Infrastructure", delete_infrastructure_path(@app_group.infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
-
+        - if @allow_delete_helm_infrastructure
+          div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{@app_group.helm_infrastructure.id}")
+            i.far.fa-trash-alt.mr-1
+            = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(@app_group.helm_infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
 br
 br

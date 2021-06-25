@@ -130,6 +130,7 @@ Rails.application.routes.draw do
       member do
         post :synchronize
         patch :toggle_status
+        delete :delete
       end
     end
   resources :infrastructure_components,

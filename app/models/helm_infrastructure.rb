@@ -99,4 +99,13 @@ class HelmInfrastructure < ApplicationRecord
       false
     end
   end
+
+  def allow_delete?
+    [
+      'DEPLOYMENT_FINISHED',
+      'DEPLOYMENT_ERROR',
+      'FINISHED',
+      'DELETE_ERROR'
+    ].include?(self.provisioning_status) && self.status == 'INACTIVE'
+  end
 end

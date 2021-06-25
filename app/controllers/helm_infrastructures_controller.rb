@@ -1,7 +1,7 @@
 class HelmInfrastructuresController < ApplicationController
   include Wisper::Publisher
 
-  before_action :configure_current_object, only: %i(show destroy update edit synchronize toggle_status)
+  before_action :configure_current_object, only: %i(show destroy update edit synchronize toggle_status delete)
   before_action :configure_data_attributes, only: %i(create update)
 
   def new
@@ -61,6 +61,18 @@ class HelmInfrastructuresController < ApplicationController
     else
       redirect_to app_groups_path
     end
+  end
+
+  def delete
+    app_group = @helm_infrastructure.app_group
+    barito_apps = app_group.barito_apps
+    barito_apps.each do |app|
+      app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
+    end
+    @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
+    DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
+
+    redirect_to app_groups_path
   end
 
   private

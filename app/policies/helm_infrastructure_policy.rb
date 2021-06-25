@@ -26,4 +26,8 @@ class HelmInfrastructurePolicy < ApplicationPolicy
   def exists?
     barito_superadmin? || user.can_access_app_group?(record.app_group)
   end
+
+  def delete?
+    show?
+  end
 end

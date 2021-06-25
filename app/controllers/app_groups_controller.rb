@@ -48,7 +48,7 @@ class AppGroupsController < ApplicationController
     @allow_edit_barito_app_log_retention_days = policy(@new_app).update_log_retention_days?
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
-    # @allow_delete_infrastructure = policy(@app_group.infrastructure).delete?
+    @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
   end
 
   def new
