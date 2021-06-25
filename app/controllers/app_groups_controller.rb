@@ -88,7 +88,7 @@ class AppGroupsController < ApplicationController
     name = params.permit(app_group: :name)['app_group']['name']
 
     @app_group.update_attributes(name: name)
-    @app_group.infrastructure.update_attributes(name: name)
+    # @app_group.infrastructure.update_attributes(name: name)
 
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)

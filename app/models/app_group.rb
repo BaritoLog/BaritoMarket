@@ -18,7 +18,7 @@ class AppGroup < ApplicationRecord
   scope :active, -> {
     includes(:helm_infrastructure).
       includes(:barito_apps).
-      where.not(helm_infrastructure: { provisioning_status: 'DELETED' })
+      where.not(helm_infrastructures: { provisioning_status: 'DELETED' })
   }
 
   filterrific default_filter_params: { sorted_by: 'created_at_desc' },
