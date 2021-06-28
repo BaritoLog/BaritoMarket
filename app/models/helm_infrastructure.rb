@@ -108,4 +108,17 @@ class HelmInfrastructure < ApplicationRecord
       'DELETE_ERROR'
     ].include?(self.provisioning_status) && self.status == 'INACTIVE'
   end
+
+
+  # will be deleted along with cleanup legacy code
+  def default_service_names
+    {
+      producer: 'barito-flow-producer',
+      zookeeper: 'zookeeper',
+      kafka: 'kafka',
+      consumer: 'barito-flow-consumer',
+      elasticsearch: 'elasticsearch',
+      kibana: 'kibana',
+    }
+  end
 end

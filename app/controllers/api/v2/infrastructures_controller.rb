@@ -14,8 +14,12 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
         app_group_name: infra.app_group_name,
         app_group_secret: infra.app_group_secret,
         cluster_name: infra.cluster_name,
+        consul_hosts: [],
         status: infra.status,
         provisioning_status: infra.provisioning_status,
+        meta: {
+          service_names: infra.default_service_names
+        },
       }
     end
     render json: profiles
@@ -40,10 +44,15 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       app_group_secret: @helm_infrastructure.app_group_secret,
       capacity: @helm_infrastructure.helm_cluster_template.name,
       cluster_name: @helm_infrastructure.cluster_name,
+      consul_host: '',
+      consul_hosts: [],
       kibana_address: @helm_infrastructure&.kibana_address,
       status: @helm_infrastructure.status,
       provisioning_status: @helm_infrastructure.provisioning_status,
       updated_at: @helm_infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        service_names: @helm_infrastructure.default_service_names
+      },
     }
   end
 

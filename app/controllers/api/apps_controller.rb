@@ -135,6 +135,8 @@ class Api::AppsController < Api::BaseController
   end
 
   def generate_profile_response(app)
+    environment = app.app_group&.environment
+    replication_factor = environment == "production" ? 3 : 1
     {
       id: app.id,
       name: app.name,
@@ -142,9 +144,24 @@ class Api::AppsController < Api::BaseController
       app_group_name: app.app_group_name,
       max_tps: app.max_tps,
       cluster_name: app.cluster_name,
+      consul_host: "",
+      consul_hosts: [],
       producer_address: app.app_group.helm_infrastructure&.producer_address,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        service_names: app.app_group.helm_infrastructure.default_service_names,
+        kafka:{
+          topic_name: app.topic_name,
+          partition: 50,
+          replication_factor: replication_factor,
+          consumer_group: 'barito',
+        },
+        elasticsearch: {
+          index_prefix: app.topic_name,
+          document_type: 'barito',
+        },
+      },
     }
   end
 
