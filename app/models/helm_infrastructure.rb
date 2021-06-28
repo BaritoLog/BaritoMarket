@@ -38,7 +38,7 @@ class HelmInfrastructure < ApplicationRecord
       helm_infrastructure.save
       helm_infrastructure.update_provisioning_status('PENDING')
       helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
-      helm_infrastructure.synchronize_async
+      HelmSyncWorker.perform_async helm_infrastructure.id
     end
     helm_infrastructure
   end
