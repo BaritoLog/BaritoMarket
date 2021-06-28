@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AppsController, type: :controller do
-  let(:infrastructure) { create(:infrastructure) }
-  let(:app_group) { infrastructure.app_group }
+  let(:helm_infrastructure) { create(:helm_infrastructure) }
+  let(:app_group) { helm_infrastructure.app_group }
   let(:app) { create(:barito_app, app_group: app_group) }
 
   let(:user) { create(:user) }
