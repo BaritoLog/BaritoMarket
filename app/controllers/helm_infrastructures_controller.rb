@@ -38,7 +38,8 @@ class HelmInfrastructuresController < ApplicationController
       broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
       redirect_to helm_infrastructure_path(@helm_infrastructure)
     else
-      flash[:messages] = helm_infrastructure.errors.full_messages
+      flash[:messages] = @helm_infrastructure.errors.full_messages
+      render :edit
     end
   end
 
