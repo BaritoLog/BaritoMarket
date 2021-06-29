@@ -3,7 +3,6 @@ class HelmInfrastructure < ApplicationRecord
   belongs_to :app_group
   belongs_to :helm_cluster_template
   validates :override_values, helm_values: true
-  # validates :cluster_name, :provisioning_status, :status, :max_tps
 
   enum statuses: {
     inactive: 'INACTIVE',
@@ -38,7 +37,7 @@ class HelmInfrastructure < ApplicationRecord
       helm_infrastructure.save
       helm_infrastructure.update_provisioning_status('PENDING')
       helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
-      
+
       helm_infrastructure.reload
       helm_infrastructure.synchronize_async
     end
@@ -51,17 +50,17 @@ class HelmInfrastructure < ApplicationRecord
 
   def producer_address
     producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
-    is_active.presence and sprintf(producer_address_format, self.cluster_name)
+    is_active.presence and sprintf(producer_address_format, cluster_name)
   end
 
   def kibana_address
     kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
-    use_k8s_kibana.presence and sprintf(kibana_address_format, self.cluster_name)
+    use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
   end
 
   def elasticsearch_address
     elasticsearch_address_format = Figaro.env.ES_ADDRESS_FORMAT
-    sprintf(elasticsearch_address_format, self.cluster_name)
+    sprintf(elasticsearch_address_format, cluster_name)
   end
 
   def values

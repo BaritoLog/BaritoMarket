@@ -16,7 +16,6 @@ class Api::InfrastructuresController < Api::BaseController
     render json: {
       name: @helm_infrastructure.app_group_name,
       app_group_name: @helm_infrastructure.app_group_name,
-      app_group_secret: @helm_infrastructure.app_group_secret,
       capacity: @helm_infrastructure.helm_cluster_template.name,
       cluster_name: @helm_infrastructure.cluster_name,
       consul_host: '',
