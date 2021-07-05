@@ -93,11 +93,11 @@ class AppGroup < ApplicationRecord
   end
 
   def available?
-    helm_infrastructure.active?
+    helm_infrastructure.nil? ? false : helm_infrastructure.active?
   end
 
   def max_tps
-    helm_infrastructure.max_tps
+    helm_infrastructure.nil? ? 0 : helm_infrastructure.max_tps
   end
 
   def new_total_tps(diff_tps)
