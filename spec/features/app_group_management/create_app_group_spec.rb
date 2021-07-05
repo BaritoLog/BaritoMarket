@@ -4,7 +4,7 @@ RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
   before(:each) do
-    @cluster_template = create(:cluster_template)
+    @helm_cluster_template = create(:helm_cluster_template)
   end
 
   describe 'Create applications group' do
@@ -19,7 +19,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         click_link 'New Application Group'
         within('#app_group_form') do
           fill_in 'app_group_name', with: prep_app_group.name
-          select @cluster_template.name, from: 'app_group[cluster_template_id]'
+          select @helm_cluster_template.name, from: 'app_group[cluster_template_id]'
         end
 
         click_button 'Submit'

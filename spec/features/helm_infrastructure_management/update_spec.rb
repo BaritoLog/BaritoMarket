@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.feature 'Helm Infrastructure Management', type: :feature do
   let(:user_a) { create(:user) }
   before(:each) do
-    infrastructure = create(:infrastructure)
+    app_group = create(:app_group)
     @helm_infrastructure = create(
       :helm_infrastructure,
-      app_group: infrastructure.app_group
+      app_group: app_group
     )
   end
 

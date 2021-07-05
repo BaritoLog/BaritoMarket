@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
+  let(:helm_cluster_template) { create(:helm_cluster_template) }
   let(:admin) { create(:user) }
 
   before(:each) do
@@ -10,7 +11,7 @@ RSpec.feature 'Application Group Management', type: :feature do
 
     @app_group_a = create(:app_group)
 
-    [@app_group_a].each { |app_group| create(:infrastructure, app_group: app_group) }
+    [@app_group_a].each { |app_group| create(:helm_infrastructure, app_group: app_group, helm_cluster_template: helm_cluster_template) }
   end
 
   describe 'Managing Access', js: true do
@@ -65,7 +66,7 @@ RSpec.feature 'Application Group Management', type: :feature do
     context 'When set to only specific AppGroup' do
       scenario 'Should only set to specifc AppGroup' do
         @app_group_b = create(:app_group)
-        create(:infrastructure, app_group: @app_group_b)
+        create(:helm_infrastructure, app_group: @app_group_b, helm_cluster_template: helm_cluster_template)
         set_check_user_groups({ 'groups' => ['barito-superadmin'] })
         create(:group, name: 'barito-superadmin')
         create(:app_group_role)
@@ -95,7 +96,7 @@ RSpec.feature 'Application Group Management', type: :feature do
     context 'Removing access to user' do
       scenario 'Not removing User access in another AppGroup' do
         @app_group_b = create(:app_group)
-        create(:infrastructure, app_group: @app_group_b)
+        create(:helm_infrastructure, app_group: @app_group_b, helm_cluster_template: helm_cluster_template)
         member_role = create(:app_group_role)
         [:admin, :owner].each { |role| create(:app_group_role, role) }
 

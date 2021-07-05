@@ -8,12 +8,11 @@ RSpec.feature 'Barito App Management', type: :feature do
   before(:each) do
     set_check_user_groups({ 'groups' => [] })
     @app_group = create(:app_group)
-    cluster_template = create(:cluster_template)
-    create(:infrastructure,
+    helm_cluster_template = create(:helm_cluster_template)
+    create(:helm_infrastructure,
       app_group: @app_group,
-      cluster_template_id: cluster_template.id,
-      manifests: cluster_template.manifests,
-      options: cluster_template.options,
+      helm_cluster_template: helm_cluster_template,
+      max_tps: 100
     )
     @barito_app = create(:barito_app, app_group: @app_group, max_tps: 50)
     @barito_app2 = create(:barito_app, app_group:@app_group, max_tps: 50, topic_name: 'barito-app-2')

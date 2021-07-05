@@ -16,9 +16,9 @@ class AppGroup < ApplicationRecord
   }
 
   scope :active, -> {
-    includes(:infrastructure).
+    includes(:helm_infrastructure).
       includes(:barito_apps).
-      where.not(infrastructures: { provisioning_status: 'DELETED' })
+      where.not(helm_infrastructures: { provisioning_status: 'DELETED' })
   }
 
   filterrific default_filter_params: { sorted_by: 'created_at_desc' },
@@ -38,7 +38,7 @@ class AppGroup < ApplicationRecord
       terms.map do
         or_clauses = [
           'LOWER(app_groups.name) LIKE ?',
-          'LOWER(infrastructures.cluster_name) LIKE ?',
+          'LOWER(helm_infrastructures.cluster_name) LIKE ?',
           'LOWER(barito_apps.name) LIKE ?'
         ].join(' OR ')
         "(#{or_clauses})"
@@ -74,13 +74,13 @@ class AppGroup < ApplicationRecord
         log_retention_days: log_retention_days,
         environment: params[:environment],
       )
-      infrastructure = Infrastructure.setup(
-        name: params[:name],
+
+      helm_infrastructure = HelmInfrastructure.setup(
         app_group_id: app_group.id,
-        cluster_template_id: params[:cluster_template_id],
+        helm_cluster_template_id: params[:cluster_template_id],
       )
 
-      [app_group, infrastructure]
+      [app_group, helm_infrastructure]
     end
   end
 
@@ -93,11 +93,11 @@ class AppGroup < ApplicationRecord
   end
 
   def available?
-    infrastructure.active?
+    helm_infrastructure.active?
   end
 
   def max_tps
-    infrastructure.options['max_tps'].to_i
+    helm_infrastructure.max_tps
   end
 
   def new_total_tps(diff_tps)

@@ -3,13 +3,14 @@ require 'rails_helper'
 RSpec.feature 'Application Group Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
+  let(:helm_cluster_template) { create(:helm_cluster_template) }
   let(:admin) { create(:user) }
 
   before(:each) do
     set_check_user_groups('groups' => [])
 
     @app_group_a = create(:app_group)
-    create(:infrastructure, app_group: @app_group_a)
+    create(:helm_infrastructure, app_group: @app_group_a, helm_cluster_template: helm_cluster_template)
   end
 
   describe 'Edit metadata' do
@@ -48,24 +49,24 @@ RSpec.feature 'Application Group Management', type: :feature do
         visit root_path
         click_link @app_group_a.name
 
-        fill_in 'app_group_infrastructure_options_max_tps', with: '32850'
-        find('input#app_group_infrastructure_options_max_tps').native.send_keys :enter
+        fill_in 'app_group_helm_infrastructure_max_tps', with: '32850'
+        find('input#app_group_helm_infrastructure_max_tps').native.send_keys :enter
 
-        expect(page).to have_css("input#app_group_infrastructure_options_max_tps[value='32850']")
+        expect(page).to have_css("input#app_group_helm_infrastructure_max_tps[value='32850']")
       end
 
-      scenario 'Max TPS editing preserves other options', js: true do
+      scenario 'Should update max_tps value', js: true do
         visit root_path
         click_link @app_group_a.name
 
-        infrastructure = @app_group_a.infrastructure
-        infrastructure.update(options: { max_tps: 100, preserve_me: 1 })
+        helm_infrastructure = @app_group_a.helm_infrastructure
+        helm_infrastructure.update(max_tps: 100)
 
-        fill_in 'app_group_infrastructure_options_max_tps', with: '200'
-        find('input#app_group_infrastructure_options_max_tps').native.send_keys :enter
+        fill_in 'app_group_helm_infrastructure_max_tps', with: '200'
+        find('input#app_group_helm_infrastructure_max_tps').native.send_keys :enter
 
-        infrastructure.reload
-        expect(infrastructure.options).to include('preserve_me')
+        helm_infrastructure.reload
+        expect(helm_infrastructure.max_tps).to eq 200
       end
     end
 
@@ -125,7 +126,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         visit root_path
         click_link @app_group_a.name
 
-        expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
+        expect(page).not_to have_css('input#app_group_helm_infrastructure_max_tps')
       end
 
       scenario 'Log retention days cannot be edited by owner' do
@@ -151,7 +152,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         visit root_path
         click_link @app_group_a.name
 
-        expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
+        expect(page).not_to have_css('input#app_group_helm_infrastructure_max_tps')
       end
 
       scenario 'Log retention days cannot be edited by admin' do
@@ -177,7 +178,7 @@ RSpec.feature 'Application Group Management', type: :feature do
         visit root_path
         click_link @app_group_a.name
 
-        expect(page).not_to have_css('input#app_group_infrastructure_options_max_tps')
+        expect(page).not_to have_css('input#app_group_helm_infrastructure_max_tps')
       end
     end
   end

@@ -1,7 +1,7 @@
 require "open3"
 require "shellwords"
 
-class HelmSyncWorker
+class DeleteHelmInfrastructureWorker
   include Sidekiq::Worker
   sidekiq_options retry: false
 
@@ -9,11 +9,8 @@ class HelmSyncWorker
     infrastructure = HelmInfrastructure.find(helm_infrastructure_id)
 
     release_name = infrastructure.cluster_name
-    repository = Figaro.env.HELM_REPOSITORY.to_s
-    chart_name = Figaro.env.HELM_CHART_NAME.to_s
-    chart_version = Figaro.env.HELM_CHART_VERSION.to_s
 
-    cmd = ["helm", "upgrade", release_name, chart_name, "--install", "--repo", repository, "--version", chart_version, "-f", "-"]
+    cmd = ["helm", "delete", release_name]
     stdin_data = YAML.dump(infrastructure.values)
 
     invocation_info = (
@@ -27,27 +24,27 @@ class HelmSyncWorker
     infrastructure.update!(last_log:
       (
         <<~EOS
-          Running Helm.
+          Deleting Helm.
 
           #{invocation_info}
         EOS
       ).strip
     )
-    infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
+    infrastructure.update_provisioning_status('DELETE_STARTED')
 
-    out, status = Open3.capture2e(*cmd, stdin_data: stdin_data)
+    out, status = Open3.capture2e(*cmd)
 
     if status.success?
-      infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
-      infrastructure.update_status('ACTIVE')
+      infrastructure.update_provisioning_status('DELETED')
+      infrastructure.update_status('INACTIVE')
     else
-      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
+      infrastructure.update_provisioning_status('DELETE_ERROR')
     end
 
     infrastructure.update!(last_log:
       (
         <<~EOS
-          Helm ran #{status.success? ? "successfully" : "with failure"}.
+          Helm deleted #{status.success? ? "successfully" : "with failure"}.
 
           #{invocation_info}
 

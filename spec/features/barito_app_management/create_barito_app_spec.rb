@@ -4,12 +4,13 @@ RSpec.feature 'Barito App Management', type: :feature do
   let(:user_a) { create(:user) }
   let(:user_b) { create(:user) }
   let(:admin) { create(:user) }
+  let(:helm_cluster_template) { create(:helm_cluster_template) }
 
   describe 'Create new barito app' do
     before(:each) do
       set_check_user_groups({ 'groups' => [] })
       @app_group = create(:app_group)
-      create(:infrastructure, app_group: @app_group)
+      create(:helm_infrastructure, app_group: @app_group, helm_cluster_template: helm_cluster_template)
     end
 
     context 'As Superadmin' do

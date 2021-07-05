@@ -37,7 +37,7 @@ class AppGroupsController < ApplicationController
     @new_app = BaritoApp.new(app_group_id: @app_group.id)
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
-      @app_group.infrastructure.cluster_name.to_s + "/"
+      @app_group.helm_infrastructure.cluster_name.to_s + "/"
 
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
@@ -48,7 +48,7 @@ class AppGroupsController < ApplicationController
     @allow_edit_barito_app_log_retention_days = policy(@new_app).update_log_retention_days?
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
-    @allow_delete_infrastructure = policy(@app_group.infrastructure).delete?
+    @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
   end
 
   def new
@@ -58,13 +58,13 @@ class AppGroupsController < ApplicationController
 
   def create
     authorize AppGroup
-    @app_group, @infrastructure = AppGroup.setup(permitted_params)
-    if @app_group.valid? && @infrastructure.valid?
+    @app_group, @helm_infrastructure = AppGroup.setup(permitted_params)
+    if @app_group.valid? && @helm_infrastructure.valid?
       broadcast(:team_count_changed)
       return redirect_to root_path
     else
       flash[:messages] = @app_group.errors.full_messages
-      flash[:messages] << @infrastructure.errors.full_messages
+      flash[:messages] << @helm_infrastructure.errors.full_messages
       return redirect_to new_app_group_path
     end
   end
@@ -73,11 +73,10 @@ class AppGroupsController < ApplicationController
     authorize @app_group
 
     app_group_params = permitted_params
-    infrastructure_params = app_group_params.delete(:infrastructure) || {}
-    infrastructure_params['options'] = @app_group.infrastructure.options.merge(infrastructure_params['options']) if infrastructure_params.include?('options')
+    helm_infrastructure_params = app_group_params.delete(:helm_infrastructure) || {}
 
     @app_group.update_attributes(app_group_params)
-    @app_group.infrastructure.update_attributes(infrastructure_params)
+    @app_group.helm_infrastructure.update_attributes(helm_infrastructure_params)
 
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
@@ -89,7 +88,6 @@ class AppGroupsController < ApplicationController
     name = params.permit(app_group: :name)['app_group']['name']
 
     @app_group.update_attributes(name: name)
-    @app_group.infrastructure.update_attributes(name: name)
 
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
@@ -139,11 +137,9 @@ class AppGroupsController < ApplicationController
       :log_retention_days,
       :cluster_template_id,
       :environment,
-      infrastructure: [
-        options: [
-          :max_tps,
-        ],
-      ],
+      helm_infrastructure: [
+        :max_tps,
+      ]
     )
   end
 
