@@ -11,7 +11,8 @@ class AddInfrastructureFieldsToHelmInfrastructure < ActiveRecord::Migration[5.2]
         HelmInfrastructure.reset_column_information
 
         Infrastructure.all.each do |infra|
-          helm_infra = infra.app_group.helm_infrastructure
+          helm_infra = infra.app_group&.helm_infrastructure
+
           helm_infra.update!(
             cluster_name: infra.cluster_name,
             status: infra.status,
