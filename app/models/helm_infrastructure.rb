@@ -19,29 +19,35 @@ class HelmInfrastructure < ApplicationRecord
     finished: 'FINISHED',
   }
 
-  def self.setup(params)
-    helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
-    helm_infrastructure = HelmInfrastructure.new(
-      cluster_name:               Rufus::Mnemo.from_i(HelmInfrastructure.generate_cluster_index),
-      app_group_id:               params[:app_group_id],
-      helm_cluster_template_id:   helm_cluster_template.id,
-      is_active:                  true,
-      use_k8s_kibana:             true,
-      override_values:            YAML.safe_load('{}'),
-      provisioning_status:        HelmInfrastructure.provisioning_statuses[:pending],
-      status:                     HelmInfrastructure.statuses[:inactive],
-      max_tps:                    Figaro.env.DEFAULT_MAX_TPS
-    )
+  class << self
+    def setup(params)
+      helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
+      helm_infrastructure = HelmInfrastructure.new(
+        cluster_name:               Rufus::Mnemo.from_i(HelmInfrastructure.generate_cluster_index),
+        app_group_id:               params[:app_group_id],
+        helm_cluster_template_id:   helm_cluster_template.id,
+        is_active:                  true,
+        use_k8s_kibana:             true,
+        override_values:            YAML.safe_load('{}'),
+        provisioning_status:        HelmInfrastructure.provisioning_statuses[:pending],
+        status:                     HelmInfrastructure.statuses[:inactive],
+        max_tps:                    Figaro.env.DEFAULT_MAX_TPS
+      )
 
-    if helm_infrastructure.valid?
-      helm_infrastructure.save
-      helm_infrastructure.update_provisioning_status('PENDING')
-      helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
+      if helm_infrastructure.valid?
+        helm_infrastructure.save
+        helm_infrastructure.update_provisioning_status('PENDING')
+        helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
 
-      helm_infrastructure.reload
-      helm_infrastructure.synchronize_async
+        helm_infrastructure.reload
+        helm_infrastructure.synchronize_async
+      end
+      helm_infrastructure
     end
-    helm_infrastructure
+
+    def generate_cluster_index
+      CLUSTER_NAME_PADDING + count
+    end
   end
 
   def synchronize_async
@@ -73,10 +79,6 @@ class HelmInfrastructure < ApplicationRecord
 
   def app_group_secret
     app_group&.secret_key
-  end
-
-  def self.generate_cluster_index
-    HelmInfrastructure.all.size + CLUSTER_NAME_PADDING
   end
 
   def active?
