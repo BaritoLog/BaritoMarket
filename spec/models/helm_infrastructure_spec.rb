@@ -1,24 +1,40 @@
 require 'rails_helper'
 
 RSpec.describe HelmInfrastructure, type: :model do
-  subject { create(:helm_infrastructure) }
+  context 'validates' do
+    describe ':override_values' do
+      context 'Nil (default value) is a valid Override Values' do
+        subject { build(:helm_infrastructure, override_values: nil) }
 
-  let(:app_group) { create(:app_group) }
-  let(:helm_cluster_template) { create(:helm_cluster_template) }
+        it { is_expected.to validate_helm_values_of(:override_values) }
+      end
 
-  it 'raises error if invalid override values' do
-    # noinspection RubyResolve
-    subject.override_values = ''
-    expect(subject).to_not be_valid
+      context 'Hash is a valid Override Values' do
+        subject { build(:helm_infrastructure, override_values: {}) }
+
+        it { is_expected.to validate_helm_values_of(:override_values) }
+      end
+
+      context 'String is an invalid Override Values' do
+        subject { build(:helm_infrastructure, override_values: '') }
+
+        it { is_expected.to_not validate_helm_values_of(:override_values) }
+      end
+    end
   end
 
-  it 'should create the helm_infrastructure' do
-    helm_infrastructure = HelmInfrastructure.setup(
-      app_group_id: app_group.id,
-      helm_cluster_template_id: helm_cluster_template.id,
-    )
+  describe '.setup' do
+    let(:app_group) { create(:app_group) }
+    let(:helm_cluster_template) { create(:helm_cluster_template) }
 
-    expect(helm_infrastructure.persisted?).to eq(true)
+    it 'should create the helm_infrastructure' do
+      helm_infrastructure = HelmInfrastructure.setup(
+        app_group_id: app_group.id,
+        helm_cluster_template_id: helm_cluster_template.id,
+        )
+
+      expect(helm_infrastructure).to be_persisted
+    end
   end
 
   describe '.generate_cluster_index' do
