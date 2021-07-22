@@ -9,7 +9,7 @@ RSpec.describe HelmInfrastructure, type: :model do
   it 'raises error if invalid override values' do
     # noinspection RubyResolve
     subject.override_values = ''
-    expect(subject.valid?).to eq false
+    expect(subject).to_not be_valid
   end
 
   it 'should create the helm_infrastructure' do
