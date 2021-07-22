@@ -46,7 +46,7 @@ class HelmInfrastructure < ApplicationRecord
     end
 
     def generate_cluster_index
-      HelmInfrastructure.all.size + CLUSTER_NAME_PADDING
+      CLUSTER_NAME_PADDING + count
     end
   end
 
