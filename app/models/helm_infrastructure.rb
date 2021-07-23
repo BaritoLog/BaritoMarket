@@ -1,5 +1,4 @@
 class HelmInfrastructure < ApplicationRecord
-  CLUSTER_NAME_PADDING = 1000
   belongs_to :app_group
   belongs_to :helm_cluster_template
   validates :override_values, helm_values: true
@@ -46,7 +45,9 @@ class HelmInfrastructure < ApplicationRecord
     end
 
     def generate_cluster_index
-      CLUSTER_NAME_PADDING + count
+      column = 'cluster_index'
+      query = "SELECT nextval('cluster_index_seq') AS #{column}"
+      connection.execute(query).first[column]
     end
   end
 
