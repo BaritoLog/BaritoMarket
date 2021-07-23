@@ -2,7 +2,7 @@ class AddClusterIndexSequence < ActiveRecord::Migration[5.2]
   def up
     execute <<-SQL
       CREATE SEQUENCE cluster_index_seq;
-      SELECT setval('cluster_index_seq', 1000 + 2 * (COUNT(*) + 1)) FROM infrastructures;
+      SELECT setval('cluster_index_seq', 1000 + 4 * (COUNT(*) + 1)) FROM helm_infrastructures;
     SQL
   end
 

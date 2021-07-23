@@ -65,8 +65,10 @@ RSpec.describe HelmInfrastructure, type: :model do
       expect(infrastructure_clusters & helm_infrastructure_clusters).to be_empty
     end
 
+    private
+
     def sequence_seed(total_count)
-      1000 + 2 * (total_count + 1)
+      1000 + 4 * (total_count + 1)
     end
   end
 end
