@@ -1,7 +1,9 @@
 class HelmInfrastructure < ApplicationRecord
-  belongs_to :app_group
-  belongs_to :helm_cluster_template
+  belongs_to :app_group, required: true
+  belongs_to :helm_cluster_template, required: true
+
   validates :override_values, helm_values: true
+  validates :cluster_name, uniqueness: true
 
   enum statuses: {
     inactive: 'INACTIVE',

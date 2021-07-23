@@ -1,7 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe HelmInfrastructure, type: :model do
+  context 'relations' do
+    it { is_expected.to belong_to(:app_group).required }
+    it { is_expected.to belong_to(:helm_cluster_template).required }
+  end
+
   context 'validates' do
+    describe ':cluster_name' do
+      subject { create(:helm_infrastructure) }
+
+      it { is_expected.to validate_uniqueness_of(:cluster_name) }
+    end
+
     describe ':override_values' do
       context 'Nil (default value) is a valid Override Values' do
         subject { build(:helm_infrastructure, override_values: nil) }
