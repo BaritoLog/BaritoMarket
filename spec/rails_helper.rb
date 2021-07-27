@@ -27,13 +27,7 @@ require 'datadog/statsd'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Dir[Rails.root.join('spec/support/helpers/*.rb')].each do |helper_file|
-  require(helper_file)
-end
-
-Dir[Rails.root.join('spec/support/matchers/*.rb')].each do |matcher_file|
-  require(matcher_file)
-end
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.

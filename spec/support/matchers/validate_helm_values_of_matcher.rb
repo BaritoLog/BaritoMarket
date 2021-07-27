@@ -1,3 +1,5 @@
+require_relative '../helpers/strings_helper'
+
 module Shoulda
   module Matchers
     module ActiveModel
