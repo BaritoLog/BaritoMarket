@@ -56,6 +56,37 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     }
   end
 
+
+  def profile_by_app_group_name
+    @app_group = AppGroup.find_by(
+      name: params[:app_group_name],
+    )
+
+    if @app_group.blank? || !@app_group.available?
+      render(json: {
+               success: false,
+               errors: ['App Group not found'],
+               code: 404,
+             }, status: :not_found) && return
+    end
+
+    @helm_infrastructure = @app_group.helm_infrastructure
+
+    render json: {
+      app_group_name: @app_group.name,
+      app_group_secret: @app_group.secret_key,
+      capacity: @helm_infrastructure.helm_cluster_template.name,
+      cluster_name: @helm_infrastructure.cluster_name,
+      kibana_address: @helm_infrastructure&.kibana_address,
+      status: @helm_infrastructure.status,
+      provisioning_status: @helm_infrastructure.provisioning_status,
+      updated_at: @helm_infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
+      meta: {
+        service_names: @helm_infrastructure.default_service_names
+      },
+    }
+  end
+
   def profile_curator
     if Figaro.env.es_curator_client_key != params[:client_key]
       render(json: {
