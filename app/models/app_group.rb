@@ -1,5 +1,6 @@
 class AppGroup < ApplicationRecord
   validates :name, :secret_key, presence: true
+  validates :name, uniqueness: true
 
   has_many :barito_apps
   has_many :app_group_users
