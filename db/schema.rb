@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_23_011211) do
+ActiveRecord::Schema.define(version: 2021_11_15_000000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2021_07_23_011211) do
     t.string "secret_key"
     t.integer "log_retention_days", default: 30
     t.string "environment", default: "PRODUCTION"
+    t.index ["name"], name: "index_app_groups_on_name"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end
 
@@ -83,7 +84,7 @@ ActiveRecord::Schema.define(version: 2021_07_23_011211) do
 
   create_table "cluster_templates", force: :cascade do |t|
     t.string "name"
-    t.jsonb "instances"
+    t.jsonb "manifest"
     t.jsonb "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -118,6 +119,12 @@ ActiveRecord::Schema.define(version: 2021_07_23_011211) do
     t.index ["created_by_id"], name: "index_ext_apps_on_created_by_id"
     t.index ["hashed_access_token"], name: "index_ext_apps_on_hashed_access_token"
     t.index ["name"], name: "index_ext_apps_on_name", unique: true
+  end
+
+  create_table "group_roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -188,7 +195,7 @@ ActiveRecord::Schema.define(version: 2021_07_23_011211) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cluster_template_id"
-    t.jsonb "instances", default: {}, null: false
+    t.jsonb "manifest", default: {}, null: false
     t.jsonb "options", default: {}, null: false
     t.jsonb "manifests", default: {}, null: false
     t.index ["app_group_id"], name: "index_infrastructures_on_app_group_id"

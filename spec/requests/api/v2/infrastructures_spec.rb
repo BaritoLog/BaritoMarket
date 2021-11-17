@@ -145,6 +145,72 @@ RSpec.describe 'App API', type: :request do
     end
   end
 
+  describe 'Profile by App Group Name API' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return profile information of registered app when supplied cluster name' do
+      app_group = create(:app_group)
+      helm_infrastructure = create(
+        :helm_infrastructure,
+        app_group: app_group,
+        status: HelmInfrastructure.statuses[:active]
+      )
+
+      get api_v2_profile_by_app_group_name_path,
+        params: { access_token: @access_token, app_group_name: app_group.name },
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      %w[cluster_name status provisioning_status].
+        each do |key|
+          expect(json_response.key?(key)).to eq(true)
+          expect(json_response[key]).to eq(helm_infrastructure.send(key.to_sym))
+        end
+
+      expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
+      expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
+      expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
+      expect(json_response.key?('updated_at')).to eq(true)
+      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
+    end
+
+    it 'should return K8s Kibana if activated' do
+      app_group = create(:app_group)
+      helm_infrastructure = create(:helm_infrastructure,
+        app_group: app_group,
+        status: HelmInfrastructure.statuses[:active],
+        cluster_name: 'haza',
+      )
+
+      get api_v2_profile_by_app_group_name_path,
+        params: { access_token: @access_token, app_group_name: app_group.name },
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(json_response['kibana_address']).to eq("#{helm_infrastructure.cluster_name}-kb-http.barito-worker.svc:5601")
+      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
+    end
+
+    context 'when App Group unavailable' do
+      it 'should return 404' do
+        error_msg = 'App Group not found'
+        app_group = create(:app_group)
+        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
+
+        get api_v2_profile_by_app_group_name_path,
+          params: { access_token: @access_token, app_group_name: app_group.name },
+          headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to eq false
+        expect(json_response['code']).to eq 404
+        expect(json_response['errors']).to eq [error_msg]
+      end
+    end
+  end
+
   describe 'Profile for Curator' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
@@ -213,8 +279,6 @@ RSpec.describe 'App API', type: :request do
         }
       ].to_json
     end
-
-
   end
 
   describe 'Profile for Prometheus Exporters' do

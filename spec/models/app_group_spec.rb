@@ -1,6 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe AppGroup, type: :model do
+  context 'uniqueness validation' do
+    describe ':name' do
+      subject { create(:app_group) }
+
+      it { is_expected.to validate_uniqueness_of(:name) }
+    end
+  end
+
+  context 'presence validation' do
+    it 'should check presence of name' do
+      expect(build(:app_group, name: nil)).not_to be_valid
+    end
+
+    it 'should check presence of secret_key' do
+      expect(build(:app_group, secret_key: nil)).not_to be_valid
+    end
+  end
+
   context 'Setup Application' do
     let(:app_group_props) { build(:app_group) }
     let(:helm_cluster_template) { create(:helm_cluster_template) }
