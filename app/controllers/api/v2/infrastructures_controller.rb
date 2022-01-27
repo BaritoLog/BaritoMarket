@@ -58,7 +58,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
 
   def profile_by_app_group_name
-    @app_group = AppGroup.find_by(
+    @app_group = AppGroup.active.find_by(
       name: params[:app_group_name],
     )
 
