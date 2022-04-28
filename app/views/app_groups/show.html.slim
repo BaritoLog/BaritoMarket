@@ -70,6 +70,9 @@
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-search.mr-1
           = link_to 'Open Kibana', @open_kibana_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
+        .btn.btn-primary.btn-sm.mr-2
+          i.fas.fa-tachometer-alt.mr-1
+          = link_to 'Monitoring', @open_katulampa_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
 
         - if @allow_manage_access
           .btn.btn-primary.btn-sm.mr-2
