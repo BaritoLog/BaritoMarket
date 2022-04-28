@@ -80,50 +80,9 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def increase_log_count
-    # Metrics are sent in batch
-    app_group_metrics = metric_params[:application_groups]
-    errors = []
-    log_count_data = []
-
-    if not app_group_metrics.blank?
-      app_group_metrics.each do |app_metric|
-        # Find app based on secret
-        app_secret = app_metric[:token] || ""
-        app = BaritoApp.find_by_secret_key(app_secret)
-        if app.blank?
-          errors << "#{app_secret} : is not a valid App Secret"
-          next
-        end
-
-        # Increase log count on both app_group and app
-        app_group = app.app_group
-        app_group.increase_log_count(app_metric[:new_log_count])
-        app.increase_log_count(app_metric[:new_log_count])
-
-        app.reload
-        log_count_data << {
-          token: app_metric[:token],
-          log_count: app.log_count
-        }
-
-        broadcast(:log_count_changed,
-          app.id,
-          app_metric[:new_log_count].to_i
-        )
-      end
-    end
-
-    if errors.empty? && !app_group_metrics.blank?
-      render json: {
-        data: log_count_data
-      }, status: :ok
-    else
-      render json: {
-        success: false,
-        errors: errors,
-        code: 404
-      }, status: :not_found
-    end
+    render json: {
+      data: []
+    }, status: :ok
   end
 
   private

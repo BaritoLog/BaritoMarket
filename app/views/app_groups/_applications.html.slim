@@ -10,8 +10,7 @@ h4.mb-3 All Applications
         th.col-1 Retention Days
         th.col-1 Max TPS
         th.col-1 Status
-        th.col-1 Log Count
-        th.col-1 Created At (UTC)
+        th.col-2 Created At (UTC)
         th.col-1 Actions
     tbody
       - apps.each do |app|
@@ -49,8 +48,7 @@ h4.mb-3 All Applications
                 = hidden_field_tag :toggle_status
             - else
               = app.status
-          td.col-1= app.log_count
-          td.col-1= app.created_at.strftime('%d %B %Y, %T')
+          td.col-2= app.created_at.strftime('%d %B %Y, %T')
           td.col-1
             - if allow_delete
               .btn.btn-danger.btn-sm
