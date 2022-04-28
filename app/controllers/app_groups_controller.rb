@@ -38,7 +38,7 @@ class AppGroupsController < ApplicationController
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
       @app_group.helm_infrastructure.cluster_name.to_s + "/"
-
+    @open_katulampa_url = sprintf(Figaro.env.MONITORING_LINK_FORMAT, @app_group.helm_infrastructure.cluster_name.to_s)
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
