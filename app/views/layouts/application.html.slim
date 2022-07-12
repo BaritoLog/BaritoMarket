@@ -31,7 +31,7 @@ html
             li.nav-item
               = link_to current_user.display_name, '#', class: 'nav-link'
             li.nav-item
-              = link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link'
+              = link_to 'Sign Out', logout_path, method: :delete, class: 'nav-link'
 
 
     .container.align-items-center.pt-4.pb-4

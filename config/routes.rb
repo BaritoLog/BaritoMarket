@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
 
-  devise_for :users
+  match '/logout', to: 'sessions#logout', via: [:delete, :get]
+  devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks'}
+  as :user do
+    get 'signin', to: 'devise/sessions#new', as: :new_user_session
+  end
 
   get 'ping', to: 'health_checks#ping'
 
