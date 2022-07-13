@@ -55,19 +55,11 @@ class ApplicationPolicy
 
   def get_user_groups
     return false if user.nil?
-    if Figaro.env.enable_cas_integration == 'true'
-      gate_groups = GateClient.
-        new(user).
-        check_user_groups.
-        symbolize_keys[:groups] || []
-      return gate_groups
-    else
-      user_groups = []
-      user.groups.each do |group|
-        user_groups << group.name
-      end
-      return user_groups
+    user_groups = []
+    user.groups.each do |group|
+      user_groups << group.name
     end
+    return user_groups
   end
 
   def barito_superadmin?
