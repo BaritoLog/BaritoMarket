@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'berkshelf', '<= 7.0.2'
 gem 'bootstrap', '~> 4.3.1'
 gem 'devise', "~> 4.8.0"
-gem 'devise_cas_authenticatable'
 gem 'elasticsearch'
 gem 'execjs', '<= 2.7.0'
 gem 'faker', '<= 1.8.7'

@@ -34,22 +34,13 @@ class AppGroupPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if Figaro.env.global_viewer == 'true' &&
-          (get_merge_groups(user).include?('barito-superadmin') ||
-            get_merge_groups(user).include?(Figaro.env.global_viewer_role))
+          (get_user_groups(user).uniq.include?('barito-superadmin') ||
+            get_user_groups(user).uniq.include?(Figaro.env.global_viewer_role))
         return scope.active
       end
 
-      return scope.active if get_gate_groups(user).include?('barito-superadmin') ||
-          get_user_groups(user).include?('barito-superadmin')
+      return scope.active if get_user_groups(user).include?('barito-superadmin')
       user.filter_accessible_app_groups(scope.active)
-    end
-
-    def get_gate_groups(user)
-      gate_groups = []
-      if Figaro.env.enable_cas_integration == 'true'
-        gate_groups = GateClient.new(user).check_user_groups.symbolize_keys[:groups]
-      end
-      gate_groups
     end
 
     def get_user_groups(user)
@@ -58,10 +49,6 @@ class AppGroupPolicy < ApplicationPolicy
         user_groups << group.name
       end
       user_groups
-    end
-
-    def get_merge_groups(user)
-      (get_gate_groups(user) + get_user_groups(user)).uniq
     end
   end
 end
