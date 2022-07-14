@@ -5,9 +5,7 @@ global_viewer_group = Group.create(name: Figaro.env.global_viewer_role)
   AppGroupRole.create(name: role)
 end
 
-if Figaro.env.enable_cas_integration == 'true'
-  user = User.create(email: 'superadmin@barito.com', username: 'superadmin')
-else
+if Figaro.env.enable_sso_integration == 'false'
   user = User.create(email: 'superadmin@barito.com', username: 'superadmin', password: '123456', password_confirmation: '123456')
 end
 GroupUser.create(user: user, group: superadmin_group, role: AppGroupRole.find_by_name('admin'))

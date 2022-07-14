@@ -1,10 +1,8 @@
 class User < ApplicationRecord
   after_create :add_global_viewer_group, if: :is_global_viewer?
 
-  if Figaro.env.google_client_id != ""
+  if Figaro.env.enable_sso_integration == "true"
     devise :trackable, :omniauthable, omniauth_providers: %i[google_oauth2]
-  elsif Figaro.env.enable_cas_integration == 'true'
-    devise :cas_authenticatable, :trackable
   else
     devise :database_authenticatable, :trackable, :registerable
   end
