@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
 
   match '/logout', to: 'sessions#logout', via: [:delete, :get]
-  devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks'}
+  if Figaro.env.enable_sso_integration == "true"
+    devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks'}
+  end
   as :user do
     get 'signin', to: 'devise/sessions#new', as: :new_user_session
   end
