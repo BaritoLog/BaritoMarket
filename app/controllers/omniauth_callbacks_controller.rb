@@ -11,7 +11,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 		@user = User.find_or_create_by_email(email)
 		if @user && @user.deactivated_at.nil?
-			flash[:alert] = I18n.t 'devise.omniauth_callbacks.success', kind: 'Google'
 			sign_in_and_redirect @user, event: :authentication
 		else
 			flash[:alert] = 'There is something wrong, please contact the administrator'
