@@ -126,7 +126,7 @@ GEM
     cleanroom (1.0.0)
     coderay (1.1.2)
     concurrent-ruby (1.1.10)
-    connection_pool (2.2.2)
+    connection_pool (2.2.5)
     coveralls (0.7.1)
       multi_json (~> 1.3)
       rest-client
@@ -374,7 +374,7 @@ GEM
       activesupport (>= 3.0.0)
     racc (1.6.0)
     rack (2.2.4)
-    rack-protection (2.0.7)
+    rack-protection (2.2.1)
       rack
     rack-test (2.0.2)
       rack (>= 1.3)
@@ -475,11 +475,11 @@ GEM
     semverse (3.0.0)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
-    sidekiq (5.1.3)
-      concurrent-ruby (~> 1.0)
-      connection_pool (~> 2.2, >= 2.2.0)
+    sidekiq (5.2.9)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack (~> 2.0)
       rack-protection (>= 1.5.0)
-      redis (>= 3.3.5, < 5)
+      redis (>= 3.3.5, < 4.2)
     simplecov (0.14.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -647,7 +647,7 @@ DEPENDENCIES
   select2-rails
   selenium-webdriver
   shoulda-matchers (~> 4.0)
-  sidekiq (<= 5.1.3)
+  sidekiq (<= 5.2.10)
   simplecov (<= 0.14)
   simplecov-console (<= 0.4)
   slim (<= 3.0.9)
