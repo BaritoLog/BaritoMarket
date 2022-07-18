@@ -51,9 +51,11 @@ class User < ApplicationRecord
 
   def add_global_viewer_group
     group = Group.find_by(name: Figaro.env.global_viewer_role)
+    group_role = AppGroupRole.find_by_name('member')
     group_user = GroupUser.create(
       group_id: group.id,
-      user_id: self.id
+      user_id: self.id,
+      role_id: group_role.id
     )
   end
 

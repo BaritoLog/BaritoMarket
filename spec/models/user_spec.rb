@@ -2,6 +2,13 @@ require 'rails_helper'
 require 'faker'
 
 RSpec.describe User, type: :model do
+  if Figaro.env.global_viewer == "true"
+    before(:each) do
+      create(:group, name: Figaro.env.global_viewer_role)
+      @role = create(:app_group_role)
+    end
+  end
+
   describe '#self.find_by_username_or_email' do
     before(:each) do
       @user = create(:user, username: 'test_user', email: 'test@test.com')
@@ -99,7 +106,7 @@ RSpec.describe User, type: :model do
     let!(:app_group) { create(:app_group) }
 
     it 'should filter out unassociated app group' do
-      app_groups = user.filter_accessible_app_groups(AppGroup.all)
+      app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
       expect(app_groups.exists?).to be false
     end
 
@@ -173,7 +180,7 @@ RSpec.describe User, type: :model do
     let!(:group) { create(:group) }
 
     it 'should filter out unassociated app group' do
-      groups = user.filter_accessible_user_groups(Group.all)
+      groups = user.filter_accessible_user_groups(Group.all, roles: @role)
       expect(groups.exists?).to be false
     end
 
