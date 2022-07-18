@@ -72,7 +72,7 @@ sudo cat >bootstrap.json <<EOF
       "pathfinder_host": "127.0.0.1:8080",
       "pathfinder_cluster": "default",
       "pathfinder_token": "pathfinder",
-      "enable_cas_integration": false
+      "enable_sso_integration": false
     }
   },
   "pathfinder-mono": {

@@ -34,3 +34,6 @@ coverage
 # Ignore .vagrant
 .vagrant
 *.log
+
+
+.vscode

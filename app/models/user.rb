@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   after_create :add_global_viewer_group, if: :is_global_viewer?
 
-  if Figaro.env.enable_cas_integration == 'true'
-    devise :cas_authenticatable, :trackable
+  if Figaro.env.enable_sso_integration == "true"
+    devise :trackable, :omniauthable, omniauth_providers: %i[google_oauth2]
   else
     devise :database_authenticatable, :trackable, :registerable
   end
@@ -22,6 +22,31 @@ class User < ApplicationRecord
 
   def self.find_by_username_or_email(input)
     User.where("username = :input OR email = :input", input: input).first
+  end
+
+  # find user by email 
+  #   if not exists, find by it's username then bind the email
+  #   if no username match, create the user
+  def self.find_or_create_by_email(email)
+    user = User.where(email: email).first
+
+    if user.nil?
+      username_from_email = email.split('@').first
+      user = User.where(username: username_from_email).first
+      unless user.nil?
+        user.update_attribute(:email, email)
+      else
+        user = User.create(username: username_from_email, email: email)
+      end
+    end
+
+    user
+  end
+
+  def self.valid_email_domain? email
+    domain = email.split('@').last
+    hosted_domains = Figaro.env.whitelisted_email_domains.to_s.split(',')
+    hosted_domains.include?(domain)
   end
 
   def add_global_viewer_group

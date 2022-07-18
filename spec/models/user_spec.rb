@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'faker'
 
 RSpec.describe User, type: :model do
   describe '#self.find_by_username_or_email' do
@@ -12,6 +13,22 @@ RSpec.describe User, type: :model do
 
     it 'should return correctly if we find by email' do
       expect(User.find_by_username_or_email('test@test.com')).to eq @user
+    end
+  end
+
+  describe '#self.find_or_create_by_email' do
+    it 'should create a new user if not exists' do
+      email = Faker::Internet.email
+      expect(User.where(email: email).first.nil?).to eq true
+      User.find_or_create_by_email(email)
+      expect(User.where(email: email).first.nil?).to eq false
+    end
+
+    it 'should update the matching username' do
+      @existing = create(:user, username: 'firstname.lastname', email: '')
+      email = 'firstname.lastname@test.com'
+      User.find_or_create_by_email(email)
+      expect(User.where(username: 'firstname.lastname').first.email).to eq email
     end
   end
 

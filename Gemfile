@@ -2,8 +2,7 @@ source 'https://rubygems.org'
 
 gem 'berkshelf', '<= 7.0.2'
 gem 'bootstrap', '~> 4.3.1'
-gem 'devise'
-gem 'devise_cas_authenticatable'
+gem 'devise', "~> 4.8.0"
 gem 'elasticsearch'
 gem 'execjs', '<= 2.7.0'
 gem 'faker', '<= 1.8.7'
@@ -34,6 +33,10 @@ gem 'filterrific'
 gem 'dogstatsd-ruby'
 gem 'prometheus-client'
 gem 'jaeger-client'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'oauth2', '~> 1.4.9'
+gem 'jwt'
 
 group :development, :test do
   gem 'cane', '<= 3.0'
