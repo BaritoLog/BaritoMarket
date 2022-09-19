@@ -25,6 +25,69 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     render json: profiles
   end
 
+  def helm_infrastructure
+    @helm_infrastructure = HelmInfrastructure.find_by(
+      cluster_name: params[:cluster_name],
+    )
+    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+      render(json: {
+               success: false,
+               errors: ['Infrastructure not found'],
+               code: 404,
+             }, status: :not_found)
+    else
+      render json: @helm_infrastructure
+    end
+  end
+
+  def update_helm_manifest
+    @helm_infrastructure = HelmInfrastructure.find_by(
+      cluster_name: params[:cluster_name],
+    )
+    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+      render(json: {
+               success: false,
+               errors: ['Infrastructure not found'],
+               code: 404,
+             }, status: :not_found) && return
+    end
+
+    ov = params[:override_values]
+    if ov.nil?
+      render(json: {
+               success: false,
+               errors: ['Invalid payload'],
+               code: 400,
+             }, status: :bad_request) && return
+    end
+
+    if @helm_infrastructure.update({override_values: ov})
+      render json: @helm_infrastructure
+    else
+      render(json: {
+               success: false,
+               errors: ['Invalid payload'],
+               code: 400,
+             }, status: :bad_request) && return
+    end
+  end
+
+  def sync_helm_manifest
+    @helm_infrastructure = HelmInfrastructure.find_by(
+      cluster_name: params[:cluster_name],
+    )
+    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+      render(json: {
+               success: false,
+               errors: ['Infrastructure not found'],
+               code: 404,
+             }, status: :not_found) && return
+    end
+
+    @helm_infrastructure.synchronize_async
+    render json: @helm_infrastructure
+  end
+
   def profile_by_cluster_name
     @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],

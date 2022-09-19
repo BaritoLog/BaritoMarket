@@ -50,6 +50,15 @@ Rails.application.routes.draw do
       get :profile_index,
         to: 'infrastructures#profile_index',
         defaults: { format: :json }
+      get :helm_infrastructure,
+        to: 'infrastructures#helm_infrastructure',
+        defaults: { format: :json }
+      patch :update_helm_manifest,
+        to: 'infrastructures#update_helm_manifest',
+        defaults: { format: :json }
+      post :sync_helm_manifest,
+        to: 'infrastructures#sync_helm_manifest',
+        defaults: { format: :json }
       get :authorize,
         to: 'infrastructures#authorize_by_username',
         defaults: { format: :json }
