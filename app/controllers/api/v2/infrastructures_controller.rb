@@ -72,7 +72,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     end
   end
 
-  def sync_helm_manifest
+  def sync_helm_infrastructure
     @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],
     )

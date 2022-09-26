@@ -56,8 +56,8 @@ Rails.application.routes.draw do
       patch :update_helm_manifest,
         to: 'infrastructures#update_helm_manifest',
         defaults: { format: :json }
-      post :sync_helm_manifest,
-        to: 'infrastructures#sync_helm_manifest',
+      post :sync_helm_infrastructure,
+        to: 'infrastructures#sync_helm_infrastructure',
         defaults: { format: :json }
       get :authorize,
         to: 'infrastructures#authorize_by_username',
