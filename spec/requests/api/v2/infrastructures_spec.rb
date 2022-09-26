@@ -308,28 +308,13 @@ RSpec.describe 'App API', type: :request do
     end
   end
 
-  describe 'Get Helm Infrastructures' do
-    let(:headers) do
-      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
-    end
-
-    it 'should return 404 if cluster_name does not exists' do
-      get api_v2_helm_infrastructure_path,
-        params: { access_token: @access_token},
-        headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(response.status).to eq 404
-    end
-  end
-
   describe 'Update Helm Manifest' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
 
     it 'should return 404 if cluster_name does not exists' do
-      patch api_v2_update_helm_manifest_path,
+      patch api_v2_update_helm_manifest_by_cluster_name_path,
         params: { access_token: @access_token},
         headers: headers
       json_response = JSON.parse(response.body)
@@ -342,7 +327,7 @@ RSpec.describe 'App API', type: :request do
       helm_infrastructure = create(
         :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
       )
-      patch api_v2_update_helm_manifest_path,
+      patch api_v2_update_helm_manifest_by_cluster_name_path,
         params: {
           access_token: @access_token,
           cluster_name: helm_infrastructure.cluster_name
@@ -363,7 +348,7 @@ RSpec.describe 'App API', type: :request do
         }
       } 
 
-      patch api_v2_update_helm_manifest_path,
+      patch api_v2_update_helm_manifest_by_cluster_name_path,
         params: {
           access_token: @access_token,
           cluster_name: helm_infrastructure.cluster_name,
@@ -383,7 +368,7 @@ RSpec.describe 'App API', type: :request do
     end
 
     it 'should return 404 if cluster_name does not exists' do
-      get api_v2_helm_infrastructure_path,
+      get api_v2_helm_infrastructure_by_cluster_name_path,
         params: { access_token: @access_token},
         headers: headers
       json_response = JSON.parse(response.body)
@@ -396,7 +381,7 @@ RSpec.describe 'App API', type: :request do
         helm_infrastructure = create(
           :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
         )
-      get api_v2_helm_infrastructure_path,
+      get api_v2_helm_infrastructure_by_cluster_name_path,
         params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name},
         headers: headers
 
@@ -405,36 +390,6 @@ RSpec.describe 'App API', type: :request do
       expect(json_response["cluster_name"]).to eq helm_infrastructure.cluster_name
     end
   end
-
-  describe 'Get Helm Infrastructures' do
-    let(:headers) do
-      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
-    end
-
-    it 'should return 404 if cluster_name does not exists' do
-      get api_v2_helm_manifest_path,
-        params: { access_token: @access_token},
-        headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(response.status).to eq 404
-    end
-
-    it 'should return specific helm infrastructure based on cluster_name' do
-        app_group = create(:app_group)
-        helm_infrastructure = create(
-          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
-        )
-      get api_v2_helm_manifest_path,
-        params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name},
-        headers: headers
-
-      json_response = JSON.parse(response.body)
-      expect(response.status).to eq 200
-      expect(json_response["cluster_name"]).to eq helm_infrastructure.cluster_name
-    end
-  end
-
 
   describe 'Authorize API' do
     let(:user_a) { create(:user) }
