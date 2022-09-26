@@ -25,7 +25,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     render json: profiles
   end
 
-  def helm_infrastructure
+  def helm_infrastructure_by_cluster_name
     @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],
     )
@@ -40,7 +40,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     end
   end
 
-  def update_helm_manifest
+  def update_helm_manifest_by_cluster_name
     @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],
     )
@@ -72,7 +72,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     end
   end
 
-  def sync_helm_infrastructure
+  def sync_helm_infrastructure_by_cluster_name
     @helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name],
     )
