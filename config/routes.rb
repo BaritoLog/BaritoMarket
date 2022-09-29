@@ -41,6 +41,9 @@ Rails.application.routes.draw do
       get :profile_by_app_group,
         to: 'apps#profile_by_app_group',
         defaults: { format: :json }
+      patch :update_barito_app,
+        to: 'apps#update_barito_app',
+        defaults: { format: :json }
       get :profile_by_cluster_name,
         to: 'infrastructures#profile_by_cluster_name',
         defaults: { format: :json }

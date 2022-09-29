@@ -85,6 +85,10 @@ class Api::V2::AppsController < Api::V2::BaseController
     }, status: :ok
   end
 
+  def update_barito_app
+    
+  end
+
   private
 
   def metric_params
