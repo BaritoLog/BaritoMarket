@@ -355,6 +355,25 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
+    context 'When app_group_secret is provided but is not found' do
+      it 'Should return 404' do
+        error_msg = 'AppGroup not found or inactive'
+        patch api_v2_update_barito_app_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: "fake_secret",
+          app_name: "test-app-01",
+          max_tps: 100,
+          log_retention_days: 14
+        }, headers: headers
+        expect(response.status).to eq 404
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+
+      end
+    end
+
     context 'When app_group_secret is provided and valid BaritoApp is not found' do
       it 'Should return 404' do
         error_msg = 'App/Release not found or inactive'
