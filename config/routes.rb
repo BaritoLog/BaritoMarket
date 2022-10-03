@@ -89,6 +89,9 @@ Rails.application.routes.draw do
       post :create_group_user,
         to: 'group_users#create',
         defaults: {format: :json}
+      post :create_app_group_team,
+        to: 'app_group_teams#create',
+        defaults: {format: :json}
     end
   end
 
