@@ -92,6 +92,9 @@ Rails.application.routes.draw do
       post :create_app_group_team,
         to: 'app_group_teams#create',
         defaults: {format: :json}
+      get :check_group,
+        to: 'groups#check_group',
+        defaults: {format: :json}
     end
   end
 
