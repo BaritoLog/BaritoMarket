@@ -20,7 +20,7 @@ RSpec.describe 'Groups User API', type: :request do
       @user = create(:user)
       @role = create(:app_group_role, :admin)
 
-      @group_user_params = { access_token: @access_token, name: @group.name, group_role: @role.name, username: @user.username }
+      @group_user_params = { access_token: @access_token, group_name: @group.name, group_role: @role.name, username: @user.username }
     end
     context 'group user creation successful' do
       it 'returns success response' do
@@ -38,8 +38,8 @@ RSpec.describe 'Groups User API', type: :request do
 
     context 'group user creation unsuccessful' do
       it 'when params group name is not provided it should return 422' do
-        error_msg = 'Invalid Params: name is a required parameter'
-        post api_v2_create_group_user_path, params: @group_user_params.except(:name), headers: headers
+        error_msg = 'Invalid Params: group_name is a required parameter'
+        post api_v2_create_group_user_path, params: @group_user_params.except(:group_name), headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)

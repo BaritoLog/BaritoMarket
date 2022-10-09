@@ -17,12 +17,12 @@ class Api::V2::GroupUsersController < Api::V2::BaseController
   private
 
   def validate_params
-    valid, error_response = validate_required_keys([:name, :group_role, :username])
+    valid, error_response = validate_required_keys([:group_name, :group_role, :username])
     render json: error_response, status: error_response[:code] unless valid
   end
 
   def set_group
-    @group = Group.find_by_name(params[:name])
+    @group = Group.find_by_name(params[:group_name])
     render json: { success: false, errors: ['Group not found'], data: nil }, status: :not_found if @group.blank?
   end
 
