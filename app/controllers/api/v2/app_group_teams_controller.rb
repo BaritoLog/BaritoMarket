@@ -15,7 +15,7 @@ class Api::V2::AppGroupTeamsController < Api::V2::BaseController
   private
 
   def validate_params
-    valid, error_response = validate_required_keys([:group_name, :app_group_secret])
+    valid, error_response = validate_required_keys([:group_name, :app_group_name])
     render json: error_response, status: error_response[:code] unless valid
   end
 
@@ -25,7 +25,7 @@ class Api::V2::AppGroupTeamsController < Api::V2::BaseController
   end
 
   def set_app_group
-    @app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    @app_group = AppGroup.find_by(name: params[:app_group_name])
     render json: { success: false, errors: ['AppGroup not found'], data: nil, code: 404 }, status: :not_found if @app_group.blank?
   end
 end

@@ -19,8 +19,7 @@ RSpec.describe 'App Groups Teams API', type: :request do
     before(:each) do
         @group = create(:group, name: 'group_1')
         @app_group = create(:app_group, name:'app_group_1', secret_key: 'test_secret_key')
-  
-        @app_group_team_params = { access_token: @access_token, group_name: @group.name, app_group_secret: @app_group.secret_key }
+        @app_group_team_params = { access_token: @access_token, group_name: @group.name, app_group_name:@app_group.name }
       end
 
     context 'app group team creation is successful' do
@@ -39,14 +38,14 @@ RSpec.describe 'App Groups Teams API', type: :request do
     end
 
     context 'app group team creation unsuccessful' do
-        it 'should return error status 422 when param AppGroup secret is not provided' do
-            error_msg = 'Invalid Params: app_group_secret is a required parameter'
-            post api_v2_create_app_group_team_path params: @app_group_team_params.except(:app_group_secret), headers: headers
+        it 'should return error status 422 when param AppGroup name is not provided' do
+          error_msg = 'Invalid Params: app_group_name is a required parameter'
+          post api_v2_create_app_group_team_path params: @app_group_team_params.except(:app_group_name), headers: headers
 
-            json_response = JSON.parse(response.body)
-            expect(json_response['code']).to eq(422)
-            expect(json_response['errors']).to eq([error_msg])
-        end
+          json_response = JSON.parse(response.body)
+          expect(json_response['code']).to eq(422)
+          expect(json_response['errors']).to eq([error_msg])
+      end
 
         it 'should return error status 422 when param group name is not provided' do
             error_msg = 'Invalid Params: group_name is a required parameter'
@@ -60,7 +59,7 @@ RSpec.describe 'App Groups Teams API', type: :request do
         it 'should return error status 404 when AppGroup object is not found' do
             error_msg = 'AppGroup not found'
             app_group_test = @app_group_team_params
-            app_group_test[:app_group_secret] = "test_secret_key_2"
+            app_group_test[:app_group_name] = 'app_group_2'
 
             post api_v2_create_app_group_team_path params: app_group_test, headers: headers
 
