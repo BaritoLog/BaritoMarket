@@ -5,6 +5,14 @@ class Api::V2::AppGroupTeamsController < Api::V2::BaseController
   
   def create
     app_group_team = AppGroupTeam.create(group_id: @group.id, app_group_id: @app_group.id)
+
+    render(json: {
+      success: false,
+      errors: [app_group_team.errors],
+      data: nil
+      }, status: :unprocessable_entity
+    ) && return unless app_group_team.valid?
+
     render json: {
       success: true, 
       errors: nil, 

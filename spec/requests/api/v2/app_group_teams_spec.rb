@@ -45,7 +45,7 @@ RSpec.describe 'App Groups Teams API', type: :request do
           json_response = JSON.parse(response.body)
           expect(json_response['code']).to eq(422)
           expect(json_response['errors']).to eq([error_msg])
-      end
+        end
 
         it 'should return error status 422 when param group name is not provided' do
             error_msg = 'Invalid Params: group_name is a required parameter'
@@ -79,6 +79,17 @@ RSpec.describe 'App Groups Teams API', type: :request do
             json_response = JSON.parse(response.body)
             expect(json_response['code']).to eq(404)
             expect(json_response['errors']).to eq([error_msg])
+        end
+
+        it 'when AppGroupTeam creation fails' do
+          allow_any_instance_of(AppGroupTeam).to receive(:valid?).and_return(false)
+          allow_any_instance_of(AppGroupTeam).to receive(:errors).and_return('some error')
+
+          post api_v2_create_app_group_team_path, params: @app_group_team_params, headers: headers
+          json_response = JSON.parse(response.body)
+
+          expect(json_response['success']).to eq(false)
+          expect(json_response['errors']).to eq(['some error'])
         end
     end
   end
