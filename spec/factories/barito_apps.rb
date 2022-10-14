@@ -6,6 +6,7 @@ FactoryBot.define do
     secret_key      BaritoApp.generate_key
     status          BaritoApp.statuses[:inactive]
     max_tps         [10, 100, 1000].sample
+    log_retention_days         [10, 100, 1000].sample
 
     trait :invalid do
       name nil

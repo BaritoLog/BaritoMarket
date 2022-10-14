@@ -276,4 +276,118 @@ RSpec.describe 'Apps API', type: :request do
       expect(socket.recv).to include('begrutten-suffusion:536|g')
     end
   end
+
+  describe 'Update BaritoApp API' do
+    before(:each) do
+      @app_group = create(:app_group)
+      create(:helm_infrastructure,
+        app_group: @app_group,
+        status: HelmInfrastructure.statuses[:active]
+      )
+      @app = create(:barito_app,
+        app_group: @app_group,
+        name: "test-app-01",
+        max_tps: 50,
+        log_retention_days: 7,
+        status: BaritoApp.statuses[:active]
+      )
+    end
+
+    context 'When all params is provided' do
+      it 'Should update BaritoApp information' do
+        expect(@app.max_tps).to eq 50
+        expect(@app.log_retention_days).to eq 7
+
+        patch api_v2_update_barito_app_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: @app_group.secret_key,
+            app_name: "test-app-01",
+            max_tps: 100,
+            log_retention_days: 14
+          }, headers: headers
+        expect(response.status).to eq 200
+
+        json_response = JSON.parse(response.body)
+        expect(json_response.key?('max_tps')).to eq(true)
+        expect(json_response.key?('log_retention_days')).to eq(true)
+
+        expect(json_response['max_tps']).to eq 100
+        expect(json_response['log_retention_days']).to eq 14
+      end
+    end
+
+    context 'When app_group_secret is not provided' do
+      it 'Should return 422' do
+        error_msg = 'Invalid Params: app_group_secret is a required parameter'
+
+        patch api_v2_update_barito_app_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: '',
+            app_name: "test-app-01",
+            max_tps: 100,
+            log_retention_days: 14
+          }, headers: headers
+        expect(response.status).to eq 422
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided and valid but params[:app_name] is not provided' do
+      it 'should return 422' do
+        error_msg = 'Invalid Params: app_name is a required parameter'
+
+        patch api_v2_update_barito_app_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: @app_group.secret_key,
+          }, headers: headers
+        expect(response.status).to eq 422
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided but is not found' do
+      it 'Should return 404' do
+        error_msg = 'AppGroup not found or inactive'
+
+        patch api_v2_update_barito_app_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: "fake_secret",
+          app_name: "test-app-01",
+          max_tps: 100,
+          log_retention_days: 14
+        }, headers: headers
+        expect(response.status).to eq 404
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided and valid BaritoApp is not found' do
+      it 'Should return 404' do
+        error_msg = 'App/Release not found or inactive'
+
+        patch api_v2_update_barito_app_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: @app_group.secret_key,
+          app_name: "test-app-02",
+          max_tps: 100,
+          log_retention_days: 14
+        }, headers: headers
+        expect(response.status).to eq 404
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+  end
 end

@@ -41,6 +41,9 @@ Rails.application.routes.draw do
       get :profile_by_app_group,
         to: 'apps#profile_by_app_group',
         defaults: { format: :json }
+      patch :update_barito_app,
+        to: 'apps#update_barito_app',
+        defaults: { format: :json }
       get :profile_by_cluster_name,
         to: 'infrastructures#profile_by_cluster_name',
         defaults: { format: :json }
@@ -79,6 +82,18 @@ Rails.application.routes.draw do
         defaults: {format: :json}
       post :create_app_group_user,
         to: 'app_group_users#create',
+        defaults: {format: :json}
+      post :create_group,
+        to: 'groups#create',
+        defaults: {format: :json}
+      post :create_group_user,
+        to: 'group_users#create',
+        defaults: {format: :json}
+      post :create_app_group_team,
+        to: 'app_group_teams#create',
+        defaults: {format: :json}
+      get :check_group,
+        to: 'groups#check_group',
         defaults: {format: :json}
     end
   end
