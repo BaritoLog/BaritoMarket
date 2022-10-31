@@ -87,10 +87,10 @@ class Api::V2::AppsController < Api::V2::BaseController
 
   def update_barito_app
     valid, error_response = validate_required_keys(
-      [:app_group_secret, :app_name])
+      [:cluster_name, :app_name])
     render json: error_response, status: error_response[:code] and return unless valid
 
-    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    app_group = AppGroup.find_by(helm_infrastructure: HelmInfrastructure.find_by_cluster_name(params[:cluster_name]))
     if app_group.blank? || !app_group.available?
       render json: {
         success: false,
@@ -162,6 +162,4 @@ class Api::V2::AppsController < Api::V2::BaseController
       },
     }
   end
-
-
 end

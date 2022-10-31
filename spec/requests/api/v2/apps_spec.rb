@@ -280,9 +280,10 @@ RSpec.describe 'Apps API', type: :request do
   describe 'Update BaritoApp API' do
     before(:each) do
       @app_group = create(:app_group)
-      create(:helm_infrastructure,
+      @helm_infra = create(:helm_infrastructure,
         app_group: @app_group,
-        status: HelmInfrastructure.statuses[:active]
+        status: HelmInfrastructure.statuses[:active],
+        cluster_name: "test-cluster"
       )
       @app = create(:barito_app,
         app_group: @app_group,
@@ -301,7 +302,7 @@ RSpec.describe 'Apps API', type: :request do
         patch api_v2_update_barito_app_path,
           params: {
             access_token: @access_token,
-            app_group_secret: @app_group.secret_key,
+            cluster_name: @helm_infra.cluster_name,
             app_name: "test-app-01",
             max_tps: 100,
             log_retention_days: 14
@@ -317,14 +318,14 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'When app_group_secret is not provided' do
+    context 'When cluster_name is not provided' do
       it 'Should return 422' do
-        error_msg = 'Invalid Params: app_group_secret is a required parameter'
+        error_msg = 'Invalid Params: cluster_name is a required parameter'
 
         patch api_v2_update_barito_app_path,
           params: {
             access_token: @access_token,
-            app_group_secret: '',
+            cluster_name: '',
             app_name: "test-app-01",
             max_tps: 100,
             log_retention_days: 14
@@ -336,14 +337,14 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'When app_group_secret is provided and valid but params[:app_name] is not provided' do
+    context 'When cluster_name is provided and valid but params[:app_name] is not provided' do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_name is a required parameter'
 
         patch api_v2_update_barito_app_path,
           params: {
             access_token: @access_token,
-            app_group_secret: @app_group.secret_key,
+            cluster_name: @helm_infra.cluster_name,
           }, headers: headers
         expect(response.status).to eq 422
 
@@ -352,14 +353,14 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'When app_group_secret is provided but is not found' do
+    context 'When cluster_name is provided but is not found' do
       it 'Should return 404' do
         error_msg = 'AppGroup not found or inactive'
 
         patch api_v2_update_barito_app_path,
         params: {
           access_token: @access_token,
-          app_group_secret: "fake_secret",
+          cluster_name: "fake_cluster",
           app_name: "test-app-01",
           max_tps: 100,
           log_retention_days: 14
@@ -371,14 +372,14 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'When app_group_secret is provided and valid BaritoApp is not found' do
+    context 'When cluster_name is provided and valid but BaritoApp is not found' do
       it 'Should return 404' do
         error_msg = 'App/Release not found or inactive'
 
         patch api_v2_update_barito_app_path,
         params: {
           access_token: @access_token,
-          app_group_secret: @app_group.secret_key,
+          cluster_name: @helm_infra.cluster_name,
           app_name: "test-app-02",
           max_tps: 100,
           log_retention_days: 14
