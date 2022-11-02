@@ -372,8 +372,39 @@ RSpec.describe 'Apps API', type: :request do
     end
 
     context 'When app_group_secret is provided and valid BaritoApp is not found' do
-      it 'Should return 404' do
-        error_msg = 'App/Release not found or inactive'
+      it 'Should create new app' do
+        patch api_v2_update_barito_app_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: @app_group.secret_key,
+          app_name: "test-app-03",
+          max_tps: 100,
+          log_retention_days: 14
+        }, headers: headers
+        expect(response.status).to eq 200
+
+        json_response = JSON.parse(response.body)
+        expect(json_response.key?('max_tps')).to eq(true)
+        expect(json_response.key?('log_retention_days')).to eq(true)
+
+        expect(json_response['name']).to eq "test-app-03"
+        expect(json_response['max_tps']).to eq 100
+        expect(json_response['log_retention_days']).to eq 14
+      end
+    end
+
+    context 'When app_group_secret is provided and valid BaritoApp is not active' do
+      it 'Should return 503' do
+        error_msg = 'App is inactive'
+
+        create(:barito_app,
+          app_group: @app_group,
+          name: "test-app-02",
+          topic_name: "test-app-02",
+          max_tps: 50,
+          log_retention_days: 7,
+          status: BaritoApp.statuses[:inactive]
+        )
 
         patch api_v2_update_barito_app_path,
         params: {
@@ -383,7 +414,7 @@ RSpec.describe 'Apps API', type: :request do
           max_tps: 100,
           log_retention_days: 14
         }, headers: headers
-        expect(response.status).to eq 404
+        expect(response.status).to eq 503
 
         json_response = JSON.parse(response.body)
         expect(json_response['errors']).to eq([error_msg])

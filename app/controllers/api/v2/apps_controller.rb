@@ -103,12 +103,22 @@ class Api::V2::AppsController < Api::V2::BaseController
       app_group: app_group,
       name: params[:app_name]
     )
-    if app.blank? || !app.available?
+    if app.blank?
+      app = BaritoApp.create(
+        app_group_id: app_group.id,
+        name: params[:app_name],
+        topic_name: params[:app_name].gsub(/ /, '-'),
+        secret_key: BaritoApp.generate_key,
+        max_tps: params[:max_tps].to_i,
+        log_retention_days: params[:log_retention_days].to_i,
+        status: BaritoApp.statuses[:active],
+      )
+    elsif !app.available?
       render json: {
         success: false,
-        errors: ['App/Release not found or inactive'],
-        code: 404
-      }, status: :not_found and return
+        errors: ["App is inactive"],
+        code: 503
+      }, status: :service_unavailable and return
     else
       app.update(
         max_tps: params[:max_tps],
@@ -116,9 +126,12 @@ class Api::V2::AppsController < Api::V2::BaseController
       )
     end
 
-   app_response = generate_profile_response(app)
-   broadcast(:profile_response_updated,
-     app.secret_key, app_response)
+    app_response = generate_profile_response(app)
+    broadcast(:profile_response_updated,
+      app.secret_key, app_response)
+
+    broadcast(:app_group_profile_response_updated,
+      params[:app_group_secret], params[:app_name], app_response)
 
    render json: app_response
   end
