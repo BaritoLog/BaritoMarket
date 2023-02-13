@@ -56,4 +56,109 @@ RSpec.describe 'App Groups API', type: :request do
       expect(json_response).to eq expected_result
     end
   end
+
+  describe 'Profile app' do
+    it 'should return list profile information of registered Barito apps inside an appgroup when override values of replication and log retention are defined' do 
+      AppGroup.delete_all
+      BaritoApp.delete_all
+      kafka_count = 2
+      elasticsearch_count = 3
+
+      app_group = create(:app_group)
+      
+      override_values = {
+        "kafka" => {
+          "count": kafka_count,
+        },
+        "elasticsearch" => {
+          "count": elasticsearch_count,
+        }
+      } 
+      helm_infrastructure = create(
+        :helm_infrastructure,
+        app_group: app_group,
+        cluster_name: "test",
+        status: HelmInfrastructure.statuses[:active],
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
+        override_values: override_values
+      )
+      app1 = create(:barito_app, app_group: app_group, topic_name: "topic1", name: "test-app-1", status: BaritoApp.statuses[:active])
+      app2 = create(:barito_app, app_group: app_group, topic_name: "topic2", name: "test-app-2", status: BaritoApp.statuses[:active])
+
+      get api_v2_profile_app_path,
+        params: { access_token: @access_token},
+        headers: headers
+      
+      expect(response.status).to eq 200
+      json_response = JSON.parse(response.body)
+
+      expect(json_response.length).to eq(1)
+      j = json_response[0]
+
+      expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
+      expect(j['app_group_cluster_name']).to eq(helm_infrastructure.cluster_name)
+      expect(j['app_group_replication_factor']['replication_factor_kafka']).to eq(kafka_count)
+      expect(j['app_group_replication_factor']['replication_factor_elasticsearch']).to eq(elasticsearch_count)
+      
+      expect(j['app_group_barito_apps'][0]['app_name']).to eq(app1.name)
+      expect(j['app_group_barito_apps'][0]['app_log_retention']).to eq(app1.log_retention_days)
+
+      expect(j['app_group_barito_apps'][1]['app_name']).to eq(app2.name)
+      expect(j['app_group_barito_apps'][1]['app_log_retention']).to eq(app2.log_retention_days)
+    end
+
+    it 'should return list profile information of registered Barito apps inside an appgroup when override values of replication and log retention are not defined' do 
+      AppGroup.delete_all
+      BaritoApp.delete_all
+      default_prod_kafka_count = 2
+      default_prod_elasticsearch_count = 3
+      default_prod_log_retention_days = 14
+
+      app_group = create(:app_group)
+      
+      override_values = {
+        "kafka" => {
+          "storage" => {
+            "size": "24Gi"
+          },
+        },
+        "elasticsearch" => {
+          "storage" => {
+            "size": "24Gi"
+          },
+        }
+      } 
+      helm_infrastructure = create(
+        :helm_infrastructure,
+        app_group: app_group,
+        cluster_name: "test",
+        status: HelmInfrastructure.statuses[:active],
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
+        override_values: override_values
+      )
+      app1 = create(:barito_app, app_group: app_group, topic_name: "topic1", name: "test-app-1", status: BaritoApp.statuses[:active], log_retention_days: nil)
+      app2 = create(:barito_app, app_group: app_group, topic_name: "topic2", name: "test-app-2", status: BaritoApp.statuses[:active], log_retention_days: nil)
+
+      get api_v2_profile_app_path,
+        params: { access_token: @access_token},
+        headers: headers
+      
+      expect(response.status).to eq 200
+      json_response = JSON.parse(response.body)
+
+      expect(json_response.length).to eq(1)
+      j = json_response[0]
+
+      expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
+      expect(j['app_group_cluster_name']).to eq(helm_infrastructure.cluster_name)
+      expect(j['app_group_replication_factor']['replication_factor_kafka']).to eq(default_prod_kafka_count)
+      expect(j['app_group_replication_factor']['replication_factor_elasticsearch']).to eq(default_prod_elasticsearch_count)
+      
+      expect(j['app_group_barito_apps'][0]['app_name']).to eq(app1.name)
+      expect(j['app_group_barito_apps'][0]['app_log_retention']).to eq(default_prod_log_retention_days)
+
+      expect(j['app_group_barito_apps'][1]['app_name']).to eq(app2.name)
+      expect(j['app_group_barito_apps'][1]['app_log_retention']).to eq(default_prod_log_retention_days)
+    end
+  end
 end
