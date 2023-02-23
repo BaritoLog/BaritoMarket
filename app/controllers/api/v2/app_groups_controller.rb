@@ -31,7 +31,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
     app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
 
-    if app_group.blank? 
+    if app_group.blank?
       render json: {
         success: false,
         errors: ["AppGroup is not found"],
@@ -43,11 +43,11 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   end
 
   def cluster_templates
-   
+
     cluster_templates = HelmClusterTemplate.all.map do |cluster|
       cluster.slice(:id, :name)
     end
-    
+
     if cluster_templates.blank?
       render json: {
         success: false,
@@ -64,14 +64,14 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     AppGroup.active.all.each do |appGroup|
       environment = appGroup.environment
       helm_infra = appGroup.helm_infrastructure
-      
+
       infra_values = helm_infra.values.to_json
       object = JSON.parse(infra_values, object_class: OpenStruct)
-      
+
       replication_factor_kafka = nil
       replication_factor_elasticsearch = nil
 
-      if object.kafka.count == nil 
+      if object.kafka.count == nil
         replication_factor_kafka = environment == "production" ? 2 : 1
       else
         replication_factor_kafka = object.kafka.count
@@ -106,6 +106,44 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }
     end
     render json: profiles
+  end
+
+  def update_cost
+    affected_app = 0
+    cost_data = params[:data]
+
+    cost_data.each do |cost_datum|
+      app_group = AppGroup.find_by(name: cost_datum[:app_group_name])
+      if app_group.blank? || !app_group.available?
+        render json: {
+          success: false,
+          errors: ['AppGroup not found or inactive'],
+          code: 404
+        }, status: :not_found and return
+      end
+
+      app = BaritoApp.find_by(
+        app_group: app_group,
+        name: cost_datum[:app_name]
+      )
+      if app.blank? || !app.available?
+        render json: {
+          success: false,
+          errors: ['App not found or inactive'],
+          code: 404
+        }, status: :not_found and return
+      end
+
+      app.update(
+        latest_cost: cost_datum[:calculation_price],
+        latest_ingested_log_bytes: cost_datum[:app_log_bytes],
+      )
+    end
+
+    render json: {
+      success: true,
+      affected_app: affected_app
+    }, status: :ok and return
   end
 
   private
