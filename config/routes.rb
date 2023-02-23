@@ -76,6 +76,9 @@ Rails.application.routes.draw do
       post :create_app_group,
         to: 'app_groups#create_app_group',
         defaults: {format: :json}
+      patch :update_cost,
+        to: 'app_groups#update_cost',
+        defaults: {format: :json}
       get :profile_app,
         to: 'app_groups#profile_app',
         defaults: {format: :json}
