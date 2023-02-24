@@ -66,6 +66,14 @@
                 = hidden_field_tag :toggle_status
                 = hidden_field_tag :app_group_id, @app_group.id
 
+          dt.col-sm-2 Total Log Ingested:
+          dd.col-sm-10
+            = number_to_human_size(@app_group.latest_total_ingested_log_bytes)
+
+          dt.col-sm-2 Total Cost (USD):
+          dd.col-sm-10
+            = sprintf("%0.9f", @app_group.latest_total_cost.to_f / 10 ** 9)
+
       .card-footer
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-search.mr-1

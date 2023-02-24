@@ -101,6 +101,14 @@ class AppGroup < ApplicationRecord
     helm_infrastructure.nil? ? 0 : helm_infrastructure.max_tps
   end
 
+  def latest_total_cost
+    barito_apps.sum(:latest_cost)
+  end
+
+  def latest_total_ingested_log_bytes
+    barito_apps.sum(:latest_ingested_log_bytes)
+  end
+
   def new_total_tps(diff_tps)
     barito_apps.sum(:max_tps) + diff_tps
   end

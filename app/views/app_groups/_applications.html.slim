@@ -4,18 +4,20 @@ h4.mb-3 All Applications
   table.table.table-hover.table-sm
     thead
       tr.d-flex
-        th.col-2 Name
+        th.col-1 Name
         th.col-1 Topic Name
         th.col-3 App Secret
         th.col-1 Retention Days
         th.col-1 Max TPS
         th.col-1 Status
-        th.col-2 Created At (UTC)
+        th.col-1 Created At (UTC)
+        th.col-1 Log Ingested
+        th.col-1 Cost (USD)
         th.col-1 Actions
     tbody
       - apps.each do |app|
         tr.d-flex
-          td.col-2= app.name
+          td.col-1= app.name
           td.col-1= app.topic_name
           td.col-3= app.secret_key
           td.col-1
@@ -48,7 +50,9 @@ h4.mb-3 All Applications
                 = hidden_field_tag :toggle_status
             - else
               = app.status
-          td.col-2= app.created_at.strftime('%d %B %Y, %T')
+          td.col-1= app.created_at.strftime('%d %B %Y, %T')
+          td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
+          td.col-1= sprintf(app.latest_cost.to_f < 10 ** 8 ? "%0.9f" : "%0.2f" ,app.latest_cost.to_f / 10 ** 9)
           td.col-1
             - if allow_delete
               .btn.btn-danger.btn-sm
@@ -59,11 +63,12 @@ h4.mb-3 All Applications
         = form_for(new_app, url: apps_path) do |f|
           = f.hidden_field :app_group_id, value: app_group.id
           tr.d-flex
-            td.col-2= f.text_field :name, class: 'form-control'
+            td.col-1= f.text_field :name, class: 'form-control'
             td.col-1= f.text_field :topic_name, class: 'form-control'
             td.col-3
             td.col-1
             td.col-1= f.number_field :max_tps, class: 'form-control'
+            td.col-1
             td.col-1
             td.col-1
             td.col-1
