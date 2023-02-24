@@ -75,8 +75,8 @@ ActiveRecord::Schema.define(version: 2023_02_23_100302) do
     t.string "topic_name"
     t.integer "max_tps"
     t.integer "log_retention_days"
-    t.integer "latest_cost"
-    t.integer "latest_ingested_log_bytes"
+    t.bigint "latest_cost"
+    t.bigint "latest_ingested_log_bytes"
     t.index ["app_group_id", "name"], name: "index_barito_apps_on_app_group_id_and_name", unique: true
     t.index ["app_group_id", "topic_name"], name: "index_barito_apps_on_app_group_id_and_topic_name", unique: true
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"
