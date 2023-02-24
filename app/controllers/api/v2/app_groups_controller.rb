@@ -138,6 +138,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         latest_cost: cost_datum[:calculation_price],
         latest_ingested_log_bytes: cost_datum[:app_log_bytes],
       )
+      affected_app += 1
     end
 
     render json: {

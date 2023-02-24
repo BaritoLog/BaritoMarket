@@ -163,7 +163,7 @@ RSpec.describe 'App Groups API', type: :request do
   end
 
   describe 'Update latest cost' do
-    it 'should return fail update status' do
+    it 'should return fail update status when wrong access token is provided' do
       AppGroup.delete_all
       BaritoApp.delete_all
 
@@ -178,10 +178,10 @@ RSpec.describe 'App Groups API', type: :request do
             {
               id: "40afaf60-ccab-4d33-90e5-72f78bd6f8ae",
               created_at: "2023-02-23T17:38:08.400645+07:00",
-              app_group_name: "test-app-group",
+              app_group_name: app_group.name,
               app_group_cluster_name: "test",
               app_group_replication_factor: 5,
-              app_name: "test-app-1",
+              app_name: app1.name,
               app_log_retention: 14,
               app_log_bytes: 30000,
               calculation_price: 90003920,
@@ -193,10 +193,10 @@ RSpec.describe 'App Groups API', type: :request do
             {
               id: "40afaf60-ccab-4d33-90e5-72f78bd6f8ae",
               created_at: "2023-02-23T17:38:08.400645+07:00",
-              app_group_name: "test-app-group",
+              app_group_name: app_group.name,
               app_group_cluster_name: "test",
               app_group_replication_factor: 5,
-              app_name: "test-app-2",
+              app_name: app2.name,
               app_log_retention: 14,
               app_log_bytes: 59182930,
               calculation_price: 273810589,
@@ -209,7 +209,8 @@ RSpec.describe 'App Groups API', type: :request do
         }, headers: headers
       expect(response.status).to eq 401
     end
-    it 'should return success update status' do
+
+    it 'should return success update status when all params are correctly provided' do
       AppGroup.delete_all
       BaritoApp.delete_all
 
@@ -263,7 +264,7 @@ RSpec.describe 'App Groups API', type: :request do
       expect(response.status).to eq 200
 
       json_response = JSON.parse(response.body)
-      puts json_response
+
       expect(json_response['success']).to eq(true)
       expect(json_response['affected_app']).to eq(2)
     end
