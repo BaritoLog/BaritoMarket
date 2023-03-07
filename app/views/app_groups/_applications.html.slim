@@ -54,6 +54,9 @@ h4.mb-3 All Applications
           td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
           td.col-1= sprintf(app.latest_cost.to_f < 10 ** 8 ? "%0.9f" : "%0.2f" ,app.latest_cost.to_f / 10 ** 9)
           td.col-1
+            .btn.btn-primary.btn-sm
+              = link_to "", app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{app.id}", class: 'fa fa-tag text-light'
+
             - if allow_delete
               .btn.btn-danger.btn-sm
                 = link_to "", app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{app.id}", class: 'far fa-trash-alt text-light'

@@ -81,6 +81,10 @@
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-tachometer-alt.mr-1
           = link_to 'Monitoring', @open_katulampa_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
+       
+        .btn.btn-primary.btn-sm.mr-2
+          i.fa.fa-tag.mr-1
+          = link_to 'Manage Labels', '#', class: 'text-light', style: 'text-decoration: none', id: 'manage-labels-appgroup'
 
         - if @allow_manage_access
           .btn.btn-primary.btn-sm.mr-2
@@ -101,4 +105,31 @@
 br
 br
 
+div.d-none#modal
+    | foobaba
+
+button.btn.btn-primary data-toggle= "modal" data-target= "#exampleModal"
+    | foo
+
+div.modal.fade#exampleModal tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden=true
+    div.modal-dialog role="document"
+        div.modal-content
+            div.modal-header
+                h5.modal-title#exampleModalLabel
+                    | Modal title
+                button.close data-dismiss="modal" aria-label="close" type="button"
+                    span aria-hidden=true
+                        | &times;
+            div.modal-body
+                | anything
+            div.modal-footer
+                button.btn.btn-secondary type="button" data-dismiss="modal"
+                    | close
+
 = render 'app_groups/applications', new_app: @new_app, app_group: @app_group, apps: @apps, allow_delete: @allow_delete_barito_app, allow_add: @allow_add_barito_app
+
+javascript:
+    document.getElementById('manage-labels-appgroup').addEventListener('click', (e) => {
+        let modal = document.getElementById('modal')
+        modal.classList.toggle('d-none')
+    })
