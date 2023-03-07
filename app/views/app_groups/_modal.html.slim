@@ -19,9 +19,16 @@ div.modal.fade id="manage-label-#{id}" tabindex="-1" role="dialog" aria-labelled
                       - labels.each do |key,val|
                         tr
                           td
-                            = key
+                            input.form-control value=key
                           td
-                            = val
+                            input.form-control value=val
+                      tr
+                        td
+                          input.form-control
+                        td
+                          input.form-control
             div.modal-footer
+                button#add-button.btn.btn-secondary type="button" 
+                    | add
                 button.btn.btn-secondary type="button" data-dismiss="modal"
                     | close

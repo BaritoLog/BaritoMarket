@@ -49,6 +49,7 @@ class AppGroupsController < ApplicationController
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
+#    @app_group_labels = @app_group.labels
     @app_group_labels = {
       "gopay.sh/stream": "observability",
       "gopay.sh/pod": "infrastructure-engineering",

@@ -56,7 +56,6 @@ h4.mb-3 All Applications
           td.col-1
             .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-#{app.name}"
               i.fa.fa-tag.text-light
-            = render 'app_groups/modal', labels: @app_group_labels, title: "#{app.name}", id: "#{app.name}"
 
             - if allow_delete
               .btn.btn-danger.btn-sm
