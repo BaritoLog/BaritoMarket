@@ -1,0 +1,27 @@
+div.modal.fade id="manage-label-#{id}" tabindex="-1" role="dialog" aria-labelledby="manage-label-modal" aria-hidden=true
+    div.modal-dialog role="document"
+        div.modal-content
+            div.modal-header
+                h5.modal-title#manage-label-modal
+                    = "#{title} Manage Labels"
+                button.close data-dismiss="modal" aria-label="close" type="button"
+                    span aria-hidden=true
+                        | &times;
+            div.modal-body
+                table.table
+                  thead
+                    tr
+                      th[scope="col"]
+                        | Key
+                      th[scope="col"]
+                        | Value
+                  tbody
+                      - labels.each do |key,val|
+                        tr
+                          td
+                            = key
+                          td
+                            = val
+            div.modal-footer
+                button.btn.btn-secondary type="button" data-dismiss="modal"
+                    | close
