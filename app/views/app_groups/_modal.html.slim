@@ -106,11 +106,15 @@ javascript:
         return getApplicationNameFromClickedButton(event) === undefined
     }
 
+    const modifyTitle = text => {
+        $('#manage-label-modal-title').text(text)
+    }
+
     const modifyModalForManageApplicationLabels = event => {
         let appName = getApplicationNameFromClickedButton(event)
 
         // change the title
-        title.text(`Manage Labels #{app_group}: ${appName}`)
+        modifyTitle(`Manage Labels #{app_group}: ${appName}`)
 
         // add app_name field
         $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
@@ -127,6 +131,7 @@ javascript:
 
         let shownLabel = []
         if (isManageAppGroupLabelsEvent(event)) {
+            modifyTitle(`Manage Labels #{app_group}`)
             shownLabel = labels['app-group']
         } else {
             let appName = modifyModalForManageApplicationLabels(event)
