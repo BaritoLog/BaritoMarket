@@ -20,8 +20,8 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
                         | Actions
                   tbody#label-body
             div.modal-footer
-                button.btn.btn-secondary type="button" data-dismiss="modal"
-                    | close
+                button#remove-all-labels.btn.btn-danger type="button"
+                    | remove all labels
                 button#add-label.btn.btn-success type="button" 
                     | add label
                 button#submit-label.btn.btn-primary type="submit"
@@ -29,12 +29,15 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
 
 javascript:
     const labels = #{labels.to_json.html_safe}
+    const removeAllLabels = () => {
+        $(`tbody#label-body tr[data-idx]`).map(idx => removeLabel(idx+1))
+    }
+
     const removeLabel = idx => {
         let row = $(`tbody#label-body tr[data-idx="${idx}"]`)
         if (row.length < 1) {
             console.log(`rows with label ${key} not found`)
         }
-        console.log(row)
 
         row[0].remove()
     }
@@ -61,6 +64,9 @@ javascript:
 
     $('body').on('click', '#manage-label-modal button.btn', e => {
         switch(e.currentTarget.id) {
+            case "remove-all-labels":
+                removeAllLabels()
+                break
             case "remove-label":
                 const idx = $(e.currentTarget).attr('data-idx')
                 removeLabel(idx)
@@ -73,6 +79,9 @@ javascript:
 
     // manage modal data
     $('#manage-label-modal').on('show.bs.modal', e => {
+        removeAllLabels()
+        $(`input[name="app_name"]`).remove()
+
         const title = $('#manage-label-modal-title')
         let appName = $(e.relatedTarget).attr('data-app-name')
         let shownLabel = labels['app-group']
@@ -82,7 +91,6 @@ javascript:
             shownLabel = labels[appName]
         }
 
-        $(`tbody#label-body tr[data-idx]`).map(idx => removeLabel(idx+1))
         Object.keys(shownLabel).map((key, idx) => addLabel(key, shownLabel[key], idx+1))
     })
 
