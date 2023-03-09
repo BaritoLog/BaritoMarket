@@ -82,7 +82,7 @@
           i.fas.fa-tachometer-alt.mr-1
           = link_to 'Monitoring', @open_katulampa_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
        
-        .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-label-app-group"
+        .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-label-modal"
           i.fa.fa-tag.mr-1
           | Manage Labels
 
@@ -105,5 +105,5 @@
 br
 br
 
-= render 'app_groups/modal', labels: @app_group_labels, title: "App Group", id: "app-group"
 = render 'app_groups/applications', new_app: @new_app, app_group: @app_group, apps: @apps, allow_delete: @allow_delete_barito_app, allow_add: @allow_add_barito_app
+= render 'app_groups/modal', labels: @labels, app_group: @app_group.name

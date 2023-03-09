@@ -1,6 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -49,11 +49,12 @@ class AppGroupsController < ApplicationController
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
-#    @app_group_labels = @app_group.labels
-    @app_group_labels = {
-      "gopay.sh/stream": "observability",
-      "gopay.sh/pod": "infrastructure-engineering",
-    }
+
+    @labels = {}
+    @labels.store('app-group', @app_group.labels)
+    @apps.each do |app|
+      @labels.store(app.name, app.labels)
+    end
   end
 
   def new
@@ -129,6 +130,30 @@ class AppGroupsController < ApplicationController
       bookmarked.delete
     else
       AppGroupBookmark.create(user_id: current_user.id, app_group_id: params[:app_group_id])
+    end
+
+    redirect_to request.referer
+  end
+
+  def update_labels
+    authorize @app_group
+
+    labels = {}
+
+    if params[:keys].present?
+      params[:keys].zip(params[:values]).each do |key,val|
+        unless val.empty? || key.empty?
+          labels.store(key, val)
+        end
+      end
+    end
+
+    if params[:app_name].present?
+      @app_group.barito_apps.where(:name => params[:app_name]).update(labels: labels)
+    else
+      @app_group.update(labels: labels)
+      # update the applications with no labels with app group labels
+      @app_group.barito_apps.where(:labels => {}).update(labels: labels)
     end
 
     redirect_to request.referer

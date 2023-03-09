@@ -31,6 +31,10 @@ class AppGroupPolicy < ApplicationPolicy
     barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner))
   end
 
+  def update_labels?
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(admin))
+  end
+
   class Scope < Scope
     def resolve
       if Figaro.env.global_viewer == 'true' &&

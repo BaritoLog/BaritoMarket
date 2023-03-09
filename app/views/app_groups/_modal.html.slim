@@ -1,9 +1,10 @@
-div.modal.fade id="manage-label-#{id}" tabindex="-1" role="dialog" aria-labelledby="manage-label-modal" aria-hidden=true
+div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelledby="manage-label-modal-title" aria-hidden=true
     div.modal-dialog role="document"
         div.modal-content
+            = form_with(url: update_labels_app_group_path, method: 'patch', local: true, id: 'update-labels')
             div.modal-header
-                h5.modal-title#manage-label-modal
-                    = "#{title} Manage Labels"
+                h5.modal-title#manage-label-modal-title
+                    = "Manage Labels #{app_group}"
                 button.close data-dismiss="modal" aria-label="close" type="button"
                     span aria-hidden=true
                         | &times;
@@ -15,20 +16,73 @@ div.modal.fade id="manage-label-#{id}" tabindex="-1" role="dialog" aria-labelled
                         | Key
                       th[scope="col"]
                         | Value
-                  tbody
-                      - labels.each do |key,val|
-                        tr
-                          td
-                            input.form-control value=key
-                          td
-                            input.form-control value=val
-                      tr
-                        td
-                          input.form-control
-                        td
-                          input.form-control
+                      th[scope="col"]
+                        | Actions
+                  tbody#label-body
             div.modal-footer
-                button#add-button.btn.btn-secondary type="button" 
-                    | add
                 button.btn.btn-secondary type="button" data-dismiss="modal"
                     | close
+                button#add-label.btn.btn-success type="button" 
+                    | add label
+                button#submit-label.btn.btn-primary type="submit"
+                    | update
+
+javascript:
+    const labels = #{labels.to_json.html_safe}
+    const removeLabel = idx => {
+        let row = $(`tbody#label-body tr[data-idx="${idx}"]`)
+        if (row.length < 1) {
+            console.log(`rows with label ${key} not found`)
+        }
+        console.log(row)
+
+        row[0].remove()
+    }
+
+    const addLabel = (key, val, idx) => {
+        let tbody = $('tbody#label-body')
+        let lastIdx = idx || Number($(tbody.children().last()).attr('data-idx'))+1
+        let lastKey = key || ""
+        let lastVal = val || ""
+        tbody.append(`<tr data-idx="${lastIdx}">
+            <td>
+                <input class="form-control" name=keys[] value="${lastKey}">
+            </td>
+            <td>
+                <input class="form-control" name=values[] value="${lastVal}">
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" data-idx="${lastIdx}" id="remove-label" type="button">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>`)
+    }
+
+    $('body').on('click', '#manage-label-modal button.btn', e => {
+        switch(e.currentTarget.id) {
+            case "remove-label":
+                const idx = $(e.currentTarget).attr('data-idx')
+                removeLabel(idx)
+                break
+            case "add-label":
+                addLabel()
+                break
+        }
+    })
+
+    // manage modal data
+    $('#manage-label-modal').on('show.bs.modal', e => {
+        const title = $('#manage-label-modal-title')
+        let appName = $(e.relatedTarget).attr('data-app-name')
+        let shownLabel = labels['app-group']
+        if (appName !== undefined) {
+            title.text(`Manage Labels #{app_group}: ${appName}`)
+            $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
+            shownLabel = labels[appName]
+        }
+
+        $(`tbody#label-body tr[data-idx]`).map(idx => removeLabel(idx+1))
+        Object.keys(shownLabel).map((key, idx) => addLabel(key, shownLabel[key], idx+1))
+    })
+

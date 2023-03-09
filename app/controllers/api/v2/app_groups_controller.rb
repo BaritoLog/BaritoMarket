@@ -152,5 +152,4 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def app_group_params
     params.permit(:name, :cluster_template_id,)
   end
-
 end

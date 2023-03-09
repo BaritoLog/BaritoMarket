@@ -126,6 +126,7 @@ Rails.application.routes.draw do
         get :manage_access
         post :bookmark
         patch :update_app_group_name
+        patch :update_labels
       end
       collection do
         get :search
