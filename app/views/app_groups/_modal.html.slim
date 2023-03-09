@@ -29,14 +29,18 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
 
 javascript:
     const labels = #{labels.to_json.html_safe}
+
     const removeAllLabels = () => {
-        $(`tbody#label-body tr[data-idx]`).map(idx => removeLabel(idx+1))
+        const rows = $(`tbody#label-body tr[data-idx]`)
+        for (let row of rows) {
+            row.remove()
+        }
     }
 
     const removeLabel = idx => {
         let row = $(`tbody#label-body tr[data-idx="${idx}"]`)
         if (row.length < 1) {
-            console.log(`rows with label ${key} not found`)
+            console.log(`rows with label ${idx} not found`)
         }
 
         row[0].remove()
@@ -62,35 +66,77 @@ javascript:
         </tr>`)
     }
 
-    $('body').on('click', '#manage-label-modal button.btn', e => {
-        switch(e.currentTarget.id) {
+    const getIdFromClickedButton = event => {
+        return event.currentTarget.id
+    }
+
+    const getRowNumberFromClickedButton = event => {
+        return $(event.currentTarget).attr('data-idx')
+    }
+
+    const onModalButtonClicked = event => {
+        const buttonId = getIdFromClickedButton(event)
+        switch(buttonId) {
             case "remove-all-labels":
                 removeAllLabels()
                 break
             case "remove-label":
-                const idx = $(e.currentTarget).attr('data-idx')
+                const idx = getRowNumberFromClickedButton(event)
                 removeLabel(idx)
                 break
             case "add-label":
                 addLabel()
                 break
         }
-    })
+    }
 
-    // manage modal data
-    $('#manage-label-modal').on('show.bs.modal', e => {
-        removeAllLabels()
+    const removeAppNameField = () => {
         $(`input[name="app_name"]`).remove()
+    }
 
-        const title = $('#manage-label-modal-title')
-        let appName = $(e.relatedTarget).attr('data-app-name')
-        let shownLabel = labels['app-group']
-        if (appName !== undefined) {
-            title.text(`Manage Labels #{app_group}: ${appName}`)
-            $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
+    const resetModalFields = () => {
+        removeAllLabels()
+        removeAppNameField()
+    }
+
+    const getApplicationNameFromClickedButton = event => {
+        return $(event.relatedTarget).attr('data-app-name') 
+    }
+    const isManageAppGroupLabelsEvent = event => {
+        return getApplicationNameFromClickedButton(event) === undefined
+    }
+
+    const modifyModalForManageApplicationLabels = event => {
+        let appName = getApplicationNameFromClickedButton(event)
+
+        // change the title
+        title.text(`Manage Labels #{app_group}: ${appName}`)
+
+        // add app_name field
+        $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
+
+        return appName
+    }
+
+    const showCurrentLabels = labels => {
+        Object.keys(labels).map((key, idx) => addLabel(key, labels[key], idx+1))
+    }
+
+    const onModalOpen = event => {
+        resetModalFields()
+
+        let shownLabel = []
+        if (isManageAppGroupLabelsEvent(event)) {
+            shownLabel = labels['app-group']
+        } else {
+            let appName = modifyModalForManageApplicationLabels(event)
             shownLabel = labels[appName]
         }
 
-        Object.keys(shownLabel).map((key, idx) => addLabel(key, shownLabel[key], idx+1))
-    })
+        showCurrentLabels(shownLabel)
+    }
 
+    // triggered when the modal is opened
+
+    $('body').on('click', '#manage-label-modal button.btn', onModalButtonClicked)
+    $('#manage-label-modal').on('show.bs.modal', onModalOpen)
