@@ -140,19 +140,15 @@ class AppGroupsController < ApplicationController
 
     labels = {}
 
-    if params[:keys].present?
+    if params[:keys].present? && params[:values].present?
       params[:keys].zip(params[:values]).each do |key,val|
         unless val.empty? || key.empty?
           labels.store(key, val)
         end
       end
     end
-
-    if params[:app_name].present?
-      @app_group.barito_apps.where(:name => params[:app_name]).update(labels: labels)
-    else
-      @app_group.update(labels: labels)
-    end
+    
+    @app_group.update(labels: labels)
 
     redirect_to request.referer
   end

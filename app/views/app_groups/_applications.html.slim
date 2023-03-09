@@ -54,7 +54,7 @@ h4.mb-3 All Applications
           td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
           td.col-1= sprintf(app.latest_cost.to_f < 10 ** 8 ? "%0.9f" : "%0.2f" ,app.latest_cost.to_f / 10 ** 9)
           td.col-1
-            .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-modal" data-app-name=app.name
+            .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-modal" data-app-name=app.name data-app-path=update_labels_app_path(app)
               i.fa.fa-tag.text-light
 
             - if allow_delete

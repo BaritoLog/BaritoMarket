@@ -137,6 +137,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :update_log_retention_days
+        patch :update_labels
       end
     end
   resources :ext_apps,

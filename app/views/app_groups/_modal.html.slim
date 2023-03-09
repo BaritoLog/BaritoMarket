@@ -97,8 +97,13 @@ javascript:
     const resetModalFields = () => {
         removeAllLabels()
         removeAppNameField()
+        modifyTitle(`Manage Labels #{app_group}`)
+        modifyFormAction(`#{update_labels_app_group_path}`)
     }
 
+    const getApplicationURLFromClickedButton = event => {
+        return $(event.relatedTarget).attr('data-app-path')
+    }
     const getApplicationNameFromClickedButton = event => {
         return $(event.relatedTarget).attr('data-app-name') 
     }
@@ -110,8 +115,13 @@ javascript:
         $('#manage-label-modal-title').text(text)
     }
 
+    const modifyFormAction = action => {
+        $('form#update-labels').attr('action', action) 
+    }
+
     const modifyModalForManageApplicationLabels = event => {
         let appName = getApplicationNameFromClickedButton(event)
+        modifyFormAction(getApplicationURLFromClickedButton(event))
 
         // change the title
         modifyTitle(`Manage Labels #{app_group}: ${appName}`)
@@ -131,7 +141,7 @@ javascript:
 
         let shownLabel = []
         if (isManageAppGroupLabelsEvent(event)) {
-            modifyTitle(`Manage Labels #{app_group}`)
+            
             shownLabel = labels['app-group']
         } else {
             let appName = modifyModalForManageApplicationLabels(event)
