@@ -152,8 +152,6 @@ class AppGroupsController < ApplicationController
       @app_group.barito_apps.where(:name => params[:app_name]).update(labels: labels)
     else
       @app_group.update(labels: labels)
-      # update the applications with no labels with app group labels
-      @app_group.barito_apps.where(:labels => {}).update(labels: labels)
     end
 
     redirect_to request.referer
