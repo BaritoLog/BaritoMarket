@@ -11,6 +11,8 @@ class AppsController < ApplicationController
     authorize @app
 
     @app = BaritoApp.setup(app_params)
+    @app.update(labels: @app.app_group.labels)
+
     if @app.persisted?
       broadcast(:app_count_changed)
       return redirect_to @app.app_group

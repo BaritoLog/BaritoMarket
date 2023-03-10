@@ -64,7 +64,8 @@ class Api::AppsController < Api::BaseController
         app_group_id: app_group.id,
         name: params[:app_name],
         topic_name: params[:app_name],
-        max_tps: Figaro.env.default_app_max_tps
+        max_tps: Figaro.env.default_app_max_tps,
+        labels: app_group.labels
       })
     elsif !app.available?
       render json: {
