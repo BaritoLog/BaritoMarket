@@ -106,4 +106,4 @@ br
 br
 
 = render 'app_groups/applications', new_app: @new_app, app_group: @app_group, apps: @apps, allow_delete: @allow_delete_barito_app, allow_add: @allow_add_barito_app
-= render 'app_groups/modal', labels: @labels, app_group: @app_group.name
+= render 'app_groups/modal', labels: @labels, app_group: @app_group.name, allow_manage_labels:@allow_manage_labels

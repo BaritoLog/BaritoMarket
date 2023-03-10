@@ -49,6 +49,7 @@ class AppGroupsController < ApplicationController
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
+    @allow_manage_labels = policy(@app_group).update_labels?
 
     @labels = {}
     @labels.store('app-group', @app_group.labels)

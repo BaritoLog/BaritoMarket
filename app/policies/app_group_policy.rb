@@ -32,7 +32,7 @@ class AppGroupPolicy < ApplicationPolicy
   end
 
   def update_labels?
-    barito_superadmin? || user.can_access_app_group?(record, roles: %i(admin))
+    barito_superadmin? || user.can_access_app_group?(record, roles: %i(admin owner))
   end
 
   class Scope < Scope

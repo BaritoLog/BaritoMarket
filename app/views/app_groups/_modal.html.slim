@@ -16,19 +16,22 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
                         | Key
                       th[scope="col"]
                         | Value
-                      th[scope="col"]
-                        | Actions
+                      - if @allow_manage_labels
+                        th[scope="col"]
+                            | Actions
                   tbody#label-body
             div.modal-footer
-                button#remove-all-labels.btn.btn-danger type="button"
-                    | remove all labels
-                button#add-label.btn.btn-success type="button" 
-                    | add label
-                button#submit-label.btn.btn-primary type="submit"
-                    | update
+                - if @allow_manage_labels
+                    button#remove-all-labels.btn.btn-danger type="button"
+                        | remove all labels
+                    button#add-label.btn.btn-success type="button" 
+                        | add label
+                    button#submit-label.btn.btn-primary type="submit"
+                        | update
 
 javascript:
     const labels = #{labels.to_json.html_safe}
+    const allow_manage_labels = #{allow_manage_labels}
 
     const removeAllLabels = () => {
         const rows = $(`tbody#label-body tr[data-idx]`)
@@ -46,24 +49,32 @@ javascript:
         row[0].remove()
     }
 
+    const generateRow = (key, val, idx) => {
+            let delete_button = ""
+            if (allow_manage_labels) {
+                delete_button = ` <td>
+                    <button class="btn btn-sm btn-danger" data-idx="${idx}" id="remove-label" type="button">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </td>`
+            }
+            return `<tr data-idx="${idx}">
+                <td>
+                    <input class="form-control" name=keys[] value="${key}" ${allow_manage_labels ? "" : "disabled"}>
+                </td>
+                <td>
+                    <input class="form-control" name=values[] value="${val}" ${allow_manage_labels ? "" : "disabled"}>
+                </td>
+                ${delete_button}          
+            </tr>`
+        }
+
     const addLabel = (key, val, idx) => {
         let tbody = $('tbody#label-body')
         let lastIdx = idx || Number($(tbody.children().last()).attr('data-idx'))+1
         let lastKey = key || ""
         let lastVal = val || ""
-        tbody.append(`<tr data-idx="${lastIdx}">
-            <td>
-                <input class="form-control" name=keys[] value="${lastKey}">
-            </td>
-            <td>
-                <input class="form-control" name=values[] value="${lastVal}">
-            </td>
-            <td>
-                <button class="btn btn-sm btn-danger" data-idx="${lastIdx}" id="remove-label" type="button">
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            </td>
-        </tr>`)
+        tbody.append(generateRow(lastKey, lastVal, lastIdx))
     }
 
     const getIdFromClickedButton = event => {
