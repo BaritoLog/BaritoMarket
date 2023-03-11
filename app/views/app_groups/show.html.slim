@@ -73,6 +73,14 @@
           dt.col-sm-2 Total Cost (USD):
           dd.col-sm-10
             = sprintf("%0.9f", @app_group.latest_total_cost.to_f / 10 ** 9)
+          
+          - @required_labels.each do |label|
+            dt.col-sm-2 =sprintf("%s:", label)
+            
+            dd.col-sm-10
+              - if (@labels['app-group'].present?)
+                = @labels['app-group'][label]
+
 
       .card-footer
         .btn.btn-primary.btn-sm.mr-2

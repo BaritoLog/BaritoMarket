@@ -74,6 +74,7 @@ class AppGroup < ApplicationRecord
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
         environment: params[:environment],
+        labels: params[:labels]
       )
 
       helm_infrastructure = HelmInfrastructure.setup(

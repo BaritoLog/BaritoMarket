@@ -38,7 +38,7 @@ class AppGroupsController < ApplicationController
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
       @app_group.helm_infrastructure.cluster_name.to_s + "/"
-    @open_katulampa_url = sprintf("%s", @app_group.helm_infrastructure.cluster_name.to_s)
+    @open_katulampa_url = sprintf(Figaro.env.MONITORING_LINK_FORMAT, @app_group.helm_infrastructure.cluster_name.to_s)
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
@@ -50,7 +50,8 @@ class AppGroupsController < ApplicationController
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
     @allow_manage_labels = policy(@app_group).update_labels?
-
+    @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
+  
     @labels = {}
     @labels.store('app-group', @app_group.labels)
     @apps.each do |app|
@@ -61,12 +62,24 @@ class AppGroupsController < ApplicationController
   def new
     authorize AppGroup
     @app_group = AppGroup.new
+    @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
   end
 
   def create
     authorize AppGroup
-    @app_group, @helm_infrastructure = AppGroup.setup(permitted_params)
+
+    app_group_params = permitted_params
+
+    app_group_params[:labels].each do |key, val|
+      if val.empty?
+        flash[:messages] = ["Required #{key} values must be filled."]
+        return redirect_to new_app_group_path
+      end
+    end
+
+    @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
+      @app_group.update(labels: params[:labels])  # TODO: move labels to permitted params
       broadcast(:team_count_changed)
       return redirect_to root_path
     else
@@ -164,7 +177,8 @@ class AppGroupsController < ApplicationController
       :environment,
       helm_infrastructure: [
         :max_tps,
-      ]
+      ],
+      labels: {},
     )
   end
 

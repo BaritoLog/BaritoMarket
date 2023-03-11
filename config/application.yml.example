@@ -46,6 +46,8 @@ PRODUCER_ADDRESS_FORMAT:     '%s-producer.barito-worker.svc:8080'
 KIBANA_ADDRESS_FORMAT:       '%s-kb-http.barito-worker.svc:5601'
 ES_ADDRESS_FORMAT:           '%s-es-http.barito-worker.svc'
 DEFAULT_MAX_TPS:             '5000'
+MONITORING_LINK_FORMAT       '%s'
+DEFAULT_REQUIRED_LABELS      ''
 
 development:
   RAILS_ENV:                 'development'
