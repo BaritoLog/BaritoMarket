@@ -103,6 +103,9 @@ Rails.application.routes.draw do
       get :check_group,
         to: 'groups#check_group',
         defaults: {format: :json}
+      patch :update_barito_app_labels,
+        to: 'apps#update_barito_app_labels',
+        defaults: {format: :json}
     end
   end
 

@@ -138,6 +138,52 @@ class Api::V2::AppsController < Api::V2::BaseController
    render json: app_response
   end
 
+  def update_barito_app_labels
+    valid, error_response = validate_required_keys(
+      [:app_group_secret, :app_name])
+    render json: error_response, status: error_response[:code] and return unless valid
+
+    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    if app_group.blank? || !app_group.available?
+      render json: {
+        success: false,
+        errors: ['AppGroup not found or inactive'],
+        code: 404
+      }, status: :not_found and return
+    end
+    
+    app = BaritoApp.find_by(
+      app_group: app_group,
+      name: params[:app_name]
+    )
+    if app.blank?
+      render json: {
+        success: false,
+        errors: ['App not found or inactive'],
+        code: 404
+      }, status: :not_found and return 
+    elsif !app.available?
+      render json: {
+        success: false,
+        errors: ["App is inactive"],
+        code: 503
+      }, status: :service_unavailable and return
+    else
+      app.update(
+        labels: params[:labels],
+      )
+    end
+
+    app_response = generate_profile_response(app)
+    broadcast(:profile_response_updated,
+      app.secret_key, app_response)
+
+    broadcast(:app_group_profile_response_updated,
+      params[:app_group_secret], params[:app_name], app_response)
+
+   render json: app_response
+  end
+
   private
 
   def metric_params
@@ -157,6 +203,7 @@ class Api::V2::AppsController < Api::V2::BaseController
       max_tps: app.max_tps,
       log_retention_days: app.log_retention_days,
       cluster_name: app.cluster_name,
+      labels: app.labels,
       consul_host: '',
       consul_hosts: [],
       producer_address: helm_infrastructure&.producer_address,
@@ -177,6 +224,4 @@ class Api::V2::AppsController < Api::V2::BaseController
       },
     }
   end
-
-
 end
