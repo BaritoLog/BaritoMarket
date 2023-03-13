@@ -53,6 +53,10 @@ class AppGroupsController < ApplicationController
     @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
   
     @labels = {}
+    if @app_group.labels.nil?
+      @app_group.labels = {}
+    end
+
     @labels.store('app-group', @app_group.labels)
     @apps.each do |app|
       @labels.store(app.name, app.labels)
@@ -70,11 +74,15 @@ class AppGroupsController < ApplicationController
 
     app_group_params = permitted_params
 
-    app_group_params[:labels].each do |key, val|
-      if val.empty?
-        flash[:messages] = ["Required #{key} values must be filled."]
-        return redirect_to new_app_group_path
+    if app_group_params[:labels].present?
+      app_group_params[:labels].each do |key, val|
+        if val.empty?
+          flash[:messages] = ["Required #{key} values must be filled."]
+          return redirect_to new_app_group_path
+        end
       end
+    else
+      app_group_params[:labels] = {}
     end
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
