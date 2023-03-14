@@ -61,6 +61,7 @@ RSpec.describe 'App Groups API', type: :request do
     it 'should return list profile information of registered Barito apps inside an appgroup when override values of replication and log retention are defined' do
       AppGroup.delete_all
       BaritoApp.delete_all
+      default_prod_replication_factor = 2
       kafka_count = 2
       elasticsearch_count = 3
 
@@ -97,8 +98,7 @@ RSpec.describe 'App Groups API', type: :request do
 
       expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
       expect(j['app_group_cluster_name']).to eq(helm_infrastructure.cluster_name)
-      expect(j['app_group_replication_factor']['replication_factor_kafka']).to eq(kafka_count)
-      expect(j['app_group_replication_factor']['replication_factor_elasticsearch']).to eq(elasticsearch_count)
+      expect(j['app_group_replication_factor']).to eq(default_prod_replication_factor)
 
       expect(j['app_group_barito_apps'][0]['app_name']).to eq(app1.name)
       expect(j['app_group_barito_apps'][0]['app_log_retention']).to eq(app1.log_retention_days)
@@ -110,7 +110,7 @@ RSpec.describe 'App Groups API', type: :request do
     it 'should return list profile information of registered Barito apps inside an appgroup when override values of replication and log retention are not defined' do
       AppGroup.delete_all
       BaritoApp.delete_all
-      default_prod_kafka_count = 2
+      default_prod_replication_factor = 2
       default_prod_elasticsearch_count = 3
       default_prod_log_retention_days = 14
 
@@ -151,8 +151,7 @@ RSpec.describe 'App Groups API', type: :request do
 
       expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
       expect(j['app_group_cluster_name']).to eq(helm_infrastructure.cluster_name)
-      expect(j['app_group_replication_factor']['replication_factor_kafka']).to eq(default_prod_kafka_count)
-      expect(j['app_group_replication_factor']['replication_factor_elasticsearch']).to eq(default_prod_elasticsearch_count)
+      expect(j['app_group_replication_factor']).to eq(default_prod_replication_factor)
 
       expect(j['app_group_barito_apps'][0]['app_name']).to eq(app1.name)
       expect(j['app_group_barito_apps'][0]['app_log_retention']).to eq(default_prod_log_retention_days)

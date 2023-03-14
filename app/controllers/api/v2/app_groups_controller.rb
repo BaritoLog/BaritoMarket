@@ -68,20 +68,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       infra_values = helm_infra.values.to_json
       object = JSON.parse(infra_values, object_class: OpenStruct)
 
-      replication_factor_kafka = nil
-      replication_factor_elasticsearch = nil
-
-      if object.kafka.count == nil
-        replication_factor_kafka = environment == "production" ? 2 : 1
-      else
-        replication_factor_kafka = object.kafka.count
-      end
-
-      if object.elasticsearch.count == nil
-        replication_factor_elasticsearch = environment == "production" ? 3 : 1
-      else
-        replication_factor_elasticsearch = object.elasticsearch.count
-      end
+      replication_factor = environment == "production" ? 2 : 1
 
       barito_apps =[]
       appGroup.barito_apps.where(status:"ACTIVE").each do |barito_app|
@@ -98,10 +85,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       profiles << {
         app_group_name: appGroup.name,
         app_group_cluster_name: helm_infra.cluster_name,
-        app_group_replication_factor: {
-          replication_factor_kafka: replication_factor_kafka,
-          replication_factor_elasticsearch: replication_factor_elasticsearch,
-        },
+        app_group_replication_factor: replication_factor,
         app_group_barito_apps: barito_apps,
       }
     end
