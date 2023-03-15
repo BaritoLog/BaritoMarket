@@ -65,16 +65,15 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       environment = appGroup.environment
       helm_infra = appGroup.helm_infrastructure
 
-      infra_values = helm_infra.values.to_json
-      object = JSON.parse(infra_values, object_class: OpenStruct)
-
+      template = HelmClusterTemplate.find_by(id: helm_infra.helm_cluster_template_id)
+      environment = template.name.split(' ', -1)[0].downcase
       replication_factor = environment == "production" ? 2 : 1
 
       barito_apps =[]
       appGroup.barito_apps.where(status:"ACTIVE").each do |barito_app|
         days = barito_app.log_retention_days
         if days == nil
-          days = environment == "production" ? 14 : 7
+          days = appGroup.log_retention_days
         end
         barito_apps << {
           app_name: barito_app.name,
