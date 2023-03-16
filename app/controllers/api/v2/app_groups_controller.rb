@@ -66,8 +66,12 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       helm_infra = appGroup.helm_infrastructure
 
       template = HelmClusterTemplate.find_by(id: helm_infra.helm_cluster_template_id)
-      environment = template.name.split(' ', -1)[0].downcase
-      replication_factor = environment == "production" ? 2 : 1
+
+      if template.name.downcase.include?"production"
+        replication_factor = 2
+      else
+        replication_factor = 1
+      end
 
       barito_apps =[]
       appGroup.barito_apps.where(status:"ACTIVE").each do |barito_app|
