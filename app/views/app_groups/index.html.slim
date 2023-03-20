@@ -14,6 +14,74 @@
             = f.text_field :search_query,
                            :class => 'filterrific-periodically-observed form-control',
                            :placeholder => 'Name or cluster or app name'
-
+    = form_for_filterrific @filterrific, html: { id: 'filterrific-no-ajax-auto-submit' } do |f|
+      .row
+        .col-md-3
+          .form-group#search-by-labels
+            .font-weight-bold Search by app group labels
+            .container#search-by-labels-query
+            button#add-label.btn.btn-success.btn-sm type="button"
+              | add label
 #results
   = render :partial => 'app_groups/list', :locals => { :app_groups => @app_groups }
+
+javascript:
+  const searchByLabelsQuery = #{@filterrific.search_by_labels.to_json.html_safe}
+  $(document).ready(function() {
+    if (searchByLabelsQuery === null) {
+      return
+    }
+
+    const labels = Object.entries(searchByLabelsQuery.table)
+
+    for (let i = 0 ; i < labels.length ; i+=2) {
+      let key = labels[i][1]
+      let val = labels[i+1][1]
+      if (key === '' || val === '') {
+        continue
+      }
+      appendSearchByLabelsQuery(
+        key,
+        val,
+        )
+    }
+  })
+
+  const appendSearchByLabelsQuery = (k, v) => {
+    const lastIdx = Number($('.container#search-by-labels-query').children().last().attr('data-idx') || -1)
+    $('.container#search-by-labels-query').append(`
+      <div class="row" data-idx="${lastIdx+1}">
+        <input multiple="multiple" class="col-sm filterrific-periodically-observed form-control" placeholder="Key" type="text" name="filterrific[search_by_labels][keys_${lastIdx+1}]" id="filterrific_search_by_labels_keys" value="${k}">
+        <input multiple="multiple" class="col-sm filterrific-periodically-observed form-control" placeholder="Value" type="text" name="filterrific[search_by_labels][values_${lastIdx+1}]" id="filterrific_search_by_labels_values"value="${v}">
+        <button class="btn btn-sm btn-danger" data-idx="${lastIdx+1}" id="remove-label" type="button">
+          <i class="far fa-trash-alt"></i>
+        </button>
+      </div>
+    `)
+    $(".filterrific-periodically-observed").filterrific_observe_field(
+      0.5,
+      Filterrific.submitFilterForm
+    );
+  }
+
+    const onModalButtonClicked = event => {
+        switch(event.currentTarget.id) {
+            case "remove-label":
+            const dataIdx = $(event.currentTarget).attr('data-idx')
+            const rows = $(`.container#search-by-labels-query > .row[data-idx="${dataIdx}"]`)
+            if (rows.length >= 1) {
+              let row = $(rows[0])
+              row.children()[0].value = ''
+              row.children()[1].value = ''
+              // removing row will makes the filterrific error
+              // @TODO find a way to remove row
+              row.css('display', 'none')
+            }
+            break
+        }
+    }
+
+  $('body').on('click', 'button#remove-label', onModalButtonClicked)
+  $('button#add-label').on('click', e => {
+    appendSearchByLabelsQuery("", "")
+  })
