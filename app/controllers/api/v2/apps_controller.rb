@@ -169,8 +169,13 @@ class Api::V2::AppsController < Api::V2::BaseController
         code: 503
       }, status: :service_unavailable and return
     else
+      labels = params[:labels]
+      if labels.nil? || labels.blank?
+        labels = {}
+      end
+
       app.update(
-        labels: params[:labels],
+        labels: labels,
       )
     end
 
