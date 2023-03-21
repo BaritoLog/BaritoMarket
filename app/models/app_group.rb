@@ -70,8 +70,6 @@ class AppGroup < ApplicationRecord
       end
     end
 
-    puts sprintf("%s: %s", queries.join(' AND '), values)
-
     where(
       queries.join(' AND '),
       *values
