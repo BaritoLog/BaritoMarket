@@ -51,7 +51,8 @@ class AppGroupsController < ApplicationController
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
     @allow_manage_labels = policy(@app_group).update_labels?
     @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
-  
+    @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
+
     @labels = {}
     if @app_group.labels.nil?
       @app_group.labels = {}
