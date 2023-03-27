@@ -4,20 +4,29 @@ h4.mb-3 All Applications
   table.table.table-hover.table-sm
     thead
       tr.d-flex
-        th.col-1 Name
+        - if @show_log_and_cost_col
+            th.col-1 Name
+        - else
+            th.col-2 Name
         th.col-1 Topic Name
         th.col-3 App Secret
         th.col-1 Retention Days
         th.col-1 Max TPS
         th.col-1 Status
-        th.col-1 Created At (UTC)
-        th.col-1 Log Ingested
-        th.col-1 Cost (USD)
+        - if @show_log_and_cost_col
+            th.col-1 Created At (UTC)
+            th.col-1 Log Ingested
+            th.col-1 Cost (USD)
+        - else
+            th.col-2 Created At (UTC)
         th.col-1 Actions
     tbody
       - apps.each do |app|
         tr.d-flex
-          td.col-1= app.name
+          - if @show_log_and_cost_col
+              td.col-1= app.name
+          - else
+              td.col-2= app.name
           td.col-1= app.topic_name
           td.col-3= app.secret_key
           td.col-1
@@ -50,9 +59,12 @@ h4.mb-3 All Applications
                 = hidden_field_tag :toggle_status
             - else
               = app.status
-          td.col-1= app.created_at.strftime('%d %B %Y, %T')
-          td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
-          td.col-1= sprintf(app.latest_cost.to_f < 10 ** 8 ? "%0.9f" : "%0.2f" ,app.latest_cost.to_f / 10 ** 9)
+          - if @show_log_and_cost_col    
+            td.col-1= app.created_at.strftime('%d %B %Y, %T')
+            td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
+            td.col-1= sprintf(app.latest_cost.to_f < 10 ** 8 ? "%0.9f" : "%0.2f" ,app.latest_cost.to_f / 10 ** 9)
+          - else
+            td.col-2= app.created_at.strftime('%d %B %Y, %T')
           td.col-1
             .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-modal" data-app-name=app.name data-app-path=update_labels_app_path(app)
               i.fa.fa-tag.text-light
@@ -65,7 +77,10 @@ h4.mb-3 All Applications
         = form_for(new_app, url: apps_path) do |f|
           = f.hidden_field :app_group_id, value: app_group.id
           tr.d-flex
-            td.col-1= f.text_field :name, class: 'form-control'
+            - if @show_log_and_cost_col
+              td.col-1= f.text_field :name, class: 'form-control'
+            - else
+              td.col-2= f.text_field :name, class: 'form-control'
             td.col-1= f.text_field :topic_name, class: 'form-control'
             td.col-3
             td.col-1
@@ -73,7 +88,8 @@ h4.mb-3 All Applications
             td.col-1
             td.col-1
             td.col-1
-            td.col-1
+            - if @show_log_and_cost_col 
+              td.col-1
             td.col-1
               = button_tag(:class => 'btn btn-success btn-sm') do
                 i.fas.fa-plus.mr-1
