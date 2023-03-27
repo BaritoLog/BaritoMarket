@@ -88,7 +88,6 @@ class AppGroupsController < ApplicationController
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
-      @app_group.update(labels: params[:labels])  # TODO: move labels to permitted params
       broadcast(:team_count_changed)
       return redirect_to root_path
     else
