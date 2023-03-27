@@ -4,6 +4,40 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def create_app_group
     errors = []
 
+    required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
+
+    # force request to have labels if DEFAULT_REQUIRED_LABELS is defined
+    if required_labels.present?
+      if app_group_params[:labels].nil? || app_group_params[:labels].empty?
+        errors << "labels attributes are required for #{required_labels}"
+      end
+
+      unless errors.empty?
+        return render json: {
+          success: false,
+          errors: errors,
+          code: 400
+        }, status: :bad_request
+      end
+
+      labels = app_group_params[:labels]
+
+      required_labels.each do |label|
+        val = labels[label]
+        if val.nil? || val.strip.empty?
+          errors << "labels attributes are required for #{label}"
+        end
+      end
+
+      unless errors.empty?
+        return render json: {
+          success: false,
+          errors: errors,
+          code: 400
+        }, status: :bad_request
+      end
+    end
+
     if not app_group_params.blank?
       @app_group, @infrastructure = AppGroup.setup(app_group_params)
       if @app_group.blank?
@@ -137,6 +171,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   private
 
   def app_group_params
-    params.permit(:name, :cluster_template_id,)
+    params.permit(:name, :cluster_template_id,
+      labels: {},
+    )
   end
 end
