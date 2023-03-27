@@ -421,4 +421,139 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
   end
+
+  describe 'Update BaritoApp labels API' do
+    before(:each) do
+      @app_group = create(:app_group)
+      create(:helm_infrastructure,
+        app_group: @app_group,
+        status: HelmInfrastructure.statuses[:active]
+      )
+      @app = create(:barito_app,
+        app_group: @app_group,
+        name: "test-app-01",
+        max_tps: 50,
+        log_retention_days: 7,
+        status: BaritoApp.statuses[:active]
+      )
+    end
+
+    context 'When all params is provided' do
+      it 'Should update BaritoApp label information' do
+
+        patch api_v2_update_barito_app_labels_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: @app_group.secret_key,
+            app_name: "test-app-01",
+            labels: {
+              "pod": "infrastructure-engineering",
+              "stream": "cloud-observability",
+            }
+          }, headers: headers
+        expect(response.status).to eq 200
+
+        json_response = JSON.parse(response.body)
+        expect(json_response.key?('labels')).to eq(true)
+
+        expect(json_response['labels']['pod']).to eq "infrastructure-engineering"
+        expect(json_response['labels']['stream']).to eq "cloud-observability"
+      end
+    end
+
+    context 'When app_group_secret is not provided' do
+      it 'Should return 422' do
+        error_msg = 'Invalid Params: app_group_secret is a required parameter'
+
+        patch api_v2_update_barito_app_labels_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: '',
+            app_name: "test-app-01",
+            labels: {
+              "pod": "infrastructure-engineering",
+              "stream": "cloud-observability",
+            }
+          }, headers: headers
+        expect(response.status).to eq 422
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided and valid but params[:app_name] is not provided' do
+      it 'should return 422' do
+        error_msg = 'Invalid Params: app_name is a required parameter'
+
+        patch api_v2_update_barito_app_labels_path,
+          params: {
+            access_token: @access_token,
+            app_group_secret: @app_group.secret_key,
+          }, headers: headers
+        expect(response.status).to eq 422
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided but is not found' do
+      it 'Should return 404' do
+        error_msg = 'AppGroup not found or inactive'
+
+        patch api_v2_update_barito_app_labels_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: "fake_secret",
+          app_name: "test-app-01",
+        }, headers: headers
+        expect(response.status).to eq 404
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided and valid BaritoApp is not found' do
+      it 'Should return 404' do
+        error_msg = 'App not found or inactive'
+
+        patch api_v2_update_barito_app_labels_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: @app_group.secret_key,
+          app_name: "test-app-03"
+        }, headers: headers
+        expect(response.status).to eq 404
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'When app_group_secret is provided and valid BaritoApp is not active' do
+      it 'Should return 503' do
+        error_msg = 'App is inactive'
+
+        create(:barito_app,
+          app_group: @app_group,
+          name: "test-app-02",
+          topic_name: "test-app-02",
+          status: BaritoApp.statuses[:inactive]
+        )
+
+        patch api_v2_update_barito_app_labels_path,
+        params: {
+          access_token: @access_token,
+          app_group_secret: @app_group.secret_key,
+          app_name: "test-app-02",
+        }, headers: headers
+        expect(response.status).to eq 503
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+  end
 end

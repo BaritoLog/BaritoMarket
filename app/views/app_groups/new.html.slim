@@ -24,5 +24,12 @@
               dt.col-sm-3 Environment
               dd.col-sm-9
                 = select_tag 'app_group[environment]', options_for_select(AppGroup.environments), { class: 'form-control' }
+
+              - @required_labels.each do |label|
+                  dt.col-sm-3 =label
+                  
+                  dd.col-sm-9
+                    input.form-control name='app_group[labels][#{label}]' placeholder='Please enter #{label} value'
+
           .card-footer.text-right
             = submit_tag 'Submit', class: 'btn btn-primary btn-sm'

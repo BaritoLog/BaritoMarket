@@ -103,6 +103,9 @@ Rails.application.routes.draw do
       get :check_group,
         to: 'groups#check_group',
         defaults: {format: :json}
+      patch :update_barito_app_labels,
+        to: 'apps#update_barito_app_labels',
+        defaults: {format: :json}
     end
   end
 
@@ -126,6 +129,7 @@ Rails.application.routes.draw do
         get :manage_access
         post :bookmark
         patch :update_app_group_name
+        patch :update_labels
       end
       collection do
         get :search
@@ -136,6 +140,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :update_log_retention_days
+        patch :update_labels
       end
     end
   resources :ext_apps,
