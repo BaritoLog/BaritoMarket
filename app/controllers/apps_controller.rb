@@ -69,6 +69,7 @@ class AppsController < ApplicationController
       end
     end
     @app.update(labels: labels)
+    broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
 
     redirect_to request.referer
   end
