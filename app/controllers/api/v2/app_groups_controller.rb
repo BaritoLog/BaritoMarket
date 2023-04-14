@@ -4,6 +4,40 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def create_app_group
     errors = []
 
+    required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
+
+    # force request to have labels if DEFAULT_REQUIRED_LABELS is defined
+    if required_labels.present?
+      if app_group_params[:labels].nil? || app_group_params[:labels].empty?
+        errors << "labels attributes are required for #{required_labels}"
+      end
+
+      unless errors.empty?
+        return render json: {
+          success: false,
+          errors: errors,
+          code: 400
+        }, status: :bad_request
+      end
+
+      labels = app_group_params[:labels]
+
+      required_labels.each do |label|
+        val = labels[label]
+        if val.nil? || val.strip.empty?
+          errors << "labels attributes are required for #{label}"
+        end
+      end
+
+      unless errors.empty?
+        return render json: {
+          success: false,
+          errors: errors,
+          code: 400
+        }, status: :bad_request
+      end
+    end
+
     if not app_group_params.blank?
       @app_group, @infrastructure = AppGroup.setup(app_group_params)
       if @app_group.blank?
@@ -31,7 +65,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
     app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
 
-    if app_group.blank? 
+    if app_group.blank?
       render json: {
         success: false,
         errors: ["AppGroup is not found"],
@@ -43,11 +77,11 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   end
 
   def cluster_templates
-   
+
     cluster_templates = HelmClusterTemplate.all.map do |cluster|
       cluster.slice(:id, :name)
     end
-    
+
     if cluster_templates.blank?
       render json: {
         success: false,
@@ -59,10 +93,86 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     render json: cluster_templates
   end
 
+  def profile_app
+    profiles = []
+    AppGroup.active.all.each do |appGroup|
+      environment = appGroup.environment
+      helm_infra = appGroup.helm_infrastructure
+
+      template = HelmClusterTemplate.find_by(id: helm_infra.helm_cluster_template_id)
+
+      if template.name.downcase.include?"production"
+        replication_factor = 2
+      else
+        replication_factor = 1
+      end
+
+      barito_apps =[]
+      appGroup.barito_apps.where(status:"ACTIVE").each do |barito_app|
+        days = barito_app.log_retention_days
+        if days == nil
+          days = appGroup.log_retention_days
+        end
+        barito_apps << {
+          app_name: barito_app.name,
+          app_log_retention: days,
+        }
+      end
+
+      profiles << {
+        app_group_name: appGroup.name,
+        app_group_cluster_name: helm_infra.cluster_name,
+        app_group_replication_factor: replication_factor,
+        app_group_barito_apps: barito_apps,
+      }
+    end
+    render json: profiles
+  end
+
+  def update_cost
+    affected_app = 0
+    cost_data = params[:data]
+
+    cost_data.each do |cost_datum|
+      app_group = AppGroup.find_by(name: cost_datum[:app_group_name])
+      if app_group.blank? || !app_group.available?
+        render json: {
+          success: false,
+          errors: ['AppGroup not found or inactive'],
+          code: 404
+        }, status: :not_found and return
+      end
+
+      app = BaritoApp.find_by(
+        app_group: app_group,
+        name: cost_datum[:app_name]
+      )
+      if app.blank? || !app.available?
+        render json: {
+          success: false,
+          errors: ['App not found or inactive'],
+          code: 404
+        }, status: :not_found and return
+      end
+
+      app.update(
+        latest_cost: cost_datum[:calculation_price],
+        latest_ingested_log_bytes: cost_datum[:app_log_bytes],
+      )
+      affected_app += 1
+    end
+
+    render json: {
+      success: true,
+      affected_app: affected_app
+    }, status: :ok and return
+  end
+
   private
 
   def app_group_params
-    params.permit(:name, :cluster_template_id,)
+    params.permit(:name, :cluster_template_id,
+      labels: {},
+    )
   end
-
 end

@@ -1,6 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -49,16 +49,44 @@ class AppGroupsController < ApplicationController
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
+    @allow_manage_labels = policy(@app_group).update_labels?
+    @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
+    @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
+
+    @labels = {}
+    if @app_group.labels.nil?
+      @app_group.labels = {}
+    end
+
+    @labels.store('app-group', @app_group.labels)
+    @apps.each do |app|
+      @labels.store(app.name, app.labels)
+    end
   end
 
   def new
     authorize AppGroup
     @app_group = AppGroup.new
+    @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
   end
 
   def create
     authorize AppGroup
-    @app_group, @helm_infrastructure = AppGroup.setup(permitted_params)
+
+    app_group_params = permitted_params
+
+    if app_group_params[:labels].present?
+      app_group_params[:labels].each do |key, val|
+        if val.empty?
+          flash[:messages] = ["Required #{key} values must be filled."]
+          return redirect_to new_app_group_path
+        end
+      end
+    else
+      app_group_params[:labels] = {}
+    end
+
+    @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
       broadcast(:team_count_changed)
       return redirect_to root_path
@@ -129,6 +157,24 @@ class AppGroupsController < ApplicationController
     redirect_to request.referer
   end
 
+  def update_labels
+    authorize @app_group
+
+    labels = {}
+
+    if params[:keys].present? && params[:values].present?
+      params[:keys].zip(params[:values]).each do |key,val|
+        unless val.empty? || key.empty?
+          labels.store(key, val)
+        end
+      end
+    end
+    
+    @app_group.update(labels: labels)
+
+    redirect_to request.referer
+  end
+
   private
 
   def permitted_params
@@ -139,7 +185,8 @@ class AppGroupsController < ApplicationController
       :environment,
       helm_infrastructure: [
         :max_tps,
-      ]
+      ],
+      labels: {},
     )
   end
 

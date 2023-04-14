@@ -1,7 +1,7 @@
 class AppsController < ApplicationController
   include Wisper::Publisher
 
-  before_action :set_app, except: :create
+  before_action :set_app, except: :create 
   before_action except: :create do
     authorize @app
   end
@@ -11,6 +11,8 @@ class AppsController < ApplicationController
     authorize @app
 
     @app = BaritoApp.setup(app_params)
+    @app.update(labels: @app.app_group.labels)
+
     if @app.persisted?
       broadcast(:app_count_changed)
       return redirect_to @app.app_group
@@ -54,6 +56,22 @@ class AppsController < ApplicationController
     @app.update_attributes(status: params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive])
 
     redirect_to app_group_path(params[:app_group_id])
+  end
+
+  def update_labels
+    labels = {}
+
+    if params[:keys].present? && params[:values].present?
+      params[:keys].zip(params[:values]).each do |key,val|
+        unless val.empty? || key.empty?
+          labels.store(key, val)
+        end
+      end
+    end
+    @app.update(labels: labels)
+    broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
+
+    redirect_to request.referer
   end
 
   private

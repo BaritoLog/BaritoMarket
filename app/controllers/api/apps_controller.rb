@@ -64,7 +64,8 @@ class Api::AppsController < Api::BaseController
         app_group_id: app_group.id,
         name: params[:app_name],
         topic_name: params[:app_name],
-        max_tps: Figaro.env.default_app_max_tps
+        max_tps: Figaro.env.default_app_max_tps,
+        labels: app_group.labels
       })
     elsif !app.available?
       render json: {
@@ -102,7 +103,9 @@ class Api::AppsController < Api::BaseController
       app_secret: app.secret_key,
       app_group_name: app.app_group_name,
       max_tps: app.max_tps,
+      log_retention_days: app.log_retention_days,
       cluster_name: app.cluster_name,
+      labels: app.labels,
       consul_host: "",
       consul_hosts: [],
       producer_address: app.app_group.helm_infrastructure&.producer_address,

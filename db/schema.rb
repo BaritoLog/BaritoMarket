@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_13_072447) do
+ActiveRecord::Schema.define(version: 2023_03_07_104145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2022_07_13_072447) do
     t.string "secret_key"
     t.integer "log_retention_days", default: 30
     t.string "environment", default: "PRODUCTION"
+    t.jsonb "labels", default: {}
     t.index ["name"], name: "index_app_groups_on_name"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end
@@ -75,6 +76,9 @@ ActiveRecord::Schema.define(version: 2022_07_13_072447) do
     t.string "topic_name"
     t.integer "max_tps"
     t.integer "log_retention_days"
+    t.bigint "latest_cost"
+    t.bigint "latest_ingested_log_bytes"
+    t.jsonb "labels", default: {}
     t.index ["app_group_id", "name"], name: "index_barito_apps_on_app_group_id_and_name", unique: true
     t.index ["app_group_id", "topic_name"], name: "index_barito_apps_on_app_group_id_and_topic_name", unique: true
     t.index ["app_group_id"], name: "index_barito_apps_on_app_group_id"

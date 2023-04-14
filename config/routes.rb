@@ -4,9 +4,11 @@ Rails.application.routes.draw do
   match '/logout', to: 'sessions#logout', via: [:delete, :get]
   if Figaro.env.enable_sso_integration == "true"
     devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks'}
-  end
-  as :user do
-    get 'signin', to: 'devise/sessions#new', as: :new_user_session
+    as :user do
+      get 'signin', to: 'devise/sessions#new_sso', as: :new_user_session
+    end
+  else
+    devise_for :users
   end
 
   get 'ping', to: 'health_checks#ping'
@@ -74,6 +76,12 @@ Rails.application.routes.draw do
       post :create_app_group,
         to: 'app_groups#create_app_group',
         defaults: {format: :json}
+      patch :update_cost,
+        to: 'app_groups#update_cost',
+        defaults: {format: :json}
+      get :profile_app,
+        to: 'app_groups#profile_app',
+        defaults: {format: :json}
       get :check_app_group,
         to: 'app_groups#check_app_group',
         defaults: {format: :json}
@@ -94,6 +102,9 @@ Rails.application.routes.draw do
         defaults: {format: :json}
       get :check_group,
         to: 'groups#check_group',
+        defaults: {format: :json}
+      patch :update_barito_app_labels,
+        to: 'apps#update_barito_app_labels',
         defaults: {format: :json}
     end
   end
@@ -118,6 +129,7 @@ Rails.application.routes.draw do
         get :manage_access
         post :bookmark
         patch :update_app_group_name
+        patch :update_labels
       end
       collection do
         get :search
@@ -128,6 +140,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :update_log_retention_days
+        patch :update_labels
       end
     end
   resources :ext_apps,

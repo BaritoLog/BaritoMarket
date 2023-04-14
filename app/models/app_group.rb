@@ -26,6 +26,7 @@ class AppGroup < ApplicationRecord
               available_filters: %w[
                 sorted_by
                 search_query
+                search_by_labels
               ]
 
   scope :search_query, ->(query) {
@@ -45,6 +46,33 @@ class AppGroup < ApplicationRecord
         "(#{or_clauses})"
       end.join(' AND '),
       *terms.map { |e| [e] * num_or_conditions }.flatten,
+    )
+  }
+
+  scope :search_by_labels, ->(query) {
+    return nil if query.blank?
+
+    queries = []
+    values = []
+    query.each_pair do |k,v|
+      if k.blank? || v.blank?
+        next
+      end
+
+      if k.to_s.starts_with?("keys_")
+        queries.append("app_groups.labels->>? LIKE ?")
+      end
+
+      if k.to_s.starts_with?("values_")
+        values.append("%#{v}%")
+      else
+        values.append(v)
+      end
+    end
+
+    where(
+      queries.join(' AND '),
+      *values
     )
   }
 
@@ -74,6 +102,7 @@ class AppGroup < ApplicationRecord
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
         environment: params[:environment],
+        labels: params[:labels]
       )
 
       helm_infrastructure = HelmInfrastructure.setup(
@@ -99,6 +128,14 @@ class AppGroup < ApplicationRecord
 
   def max_tps
     helm_infrastructure.nil? ? 0 : helm_infrastructure.max_tps
+  end
+
+  def latest_total_cost
+    barito_apps.sum(:latest_cost)
+  end
+
+  def latest_total_ingested_log_bytes
+    barito_apps.sum(:latest_ingested_log_bytes)
   end
 
   def new_total_tps(diff_tps)
