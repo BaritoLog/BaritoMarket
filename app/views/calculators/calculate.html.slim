@@ -1,0 +1,47 @@
+.row.justify-content-center
+  .col-sm-6
+    .card
+      h5.card-header Price Calculator
+      = form_with(url: calculate_price_path, method: 'post', id: 'calculate-price', remote: true) do |f|
+        .card-body
+          .dl.row
+            dt.col-sm-5 Log bytes ingested (in GBs):
+            dd.col-sm-7
+              = f.number_field 'instance[log_bytes]', step: :any, min: 0, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter value in GBs'
+            dt.col-sm-5 App retention days:
+            dd.col-sm-7
+              = f.number_field 'instance[retention]', step: :any, min: 0, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter days'
+
+            dt.col-sm-5 App environment:
+            dd.col-sm-7
+              = f.select 'instance[replication]', [['Staging (1 replication)', 1], ['Production (2 replication)', 2]], {}, class: 'form-control', id: 'replication'
+
+            dt.col-sm-5 Estimated price (in $):
+            dd.col-sm-7
+              = f.text_field 'instance[price]', class: 'form-control', readonly: true, id: 'instance_price'
+
+        .card-footer
+          button#submit-data.btn.btn-primary.btn-sm.mr-2 type="button"
+            | Calculate
+          button#reset-button.btn.btn-primary.btn-sm.mr-2 type="button"
+            | Reset
+
+javascript:
+  var path = `#{calculate_price_path}`;
+  $("#submit-data").on("click", function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: path,
+      data: $("#calculate-price").serialize(),
+      success: function(result) {
+        var result = JSON.parse(result);
+        $('input#instance_price')[0].value = result;
+      },
+    });
+  });
+
+  $("#reset-button").on("click", function(event) {
+    $('#calculate-price')[0].reset();
+  });
+    

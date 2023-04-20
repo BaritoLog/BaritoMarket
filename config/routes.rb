@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     devise_for :users
   end
 
+  match '/calculator', to: 'calculators#calculate', via: [:get]
+  match '/calculate_price', to: 'calculators#calculate_price', via: [:post]
+
   get 'ping', to: 'health_checks#ping'
 
   namespace :api do
