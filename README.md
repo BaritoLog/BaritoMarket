@@ -41,6 +41,14 @@ These tools are required for developing in local machine:
 - [Ruby](https://www.ruby-lang.org/en/downloads) version 2.5.1, or you can use RVM, or equivalent tools.
 - [PostgreSQL](https://postgresql.org/download).
 
+### Run via Docker Compose
+
+```shell
+docker compose up --build
+# migrate database if needed
+docker exec -it baritomarket-web-1 bundle exec rake db:migrate
+```
+
 ## Testing
 
 To run unit tests:

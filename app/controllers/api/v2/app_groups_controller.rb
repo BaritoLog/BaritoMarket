@@ -116,6 +116,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         barito_apps << {
           app_name: barito_app.name,
           app_log_retention: days,
+          app_max_tps: barito_app.max_tps,
+          app_labels: barito_app.labels,
         }
       end
 
@@ -123,6 +125,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         app_group_name: appGroup.name,
         app_group_cluster_name: helm_infra.cluster_name,
         app_group_replication_factor: replication_factor,
+        app_group_labels: appGroup.labels,
+        app_group_environment: appGroup.environment,
         app_group_barito_apps: barito_apps,
       }
     end
