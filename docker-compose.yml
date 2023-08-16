@@ -2,6 +2,8 @@ version: '3'
 
 services:
   web:
+    platform: linux/amd64
+    image: baritomarket-web-dev:latest
     build:
       context: .
       args:
@@ -25,10 +27,10 @@ services:
       - 8080:8080
 
   scheduler:
-    build:
-      context: .
-      args:
-        - RAILS_ENV=development
+    platform: linux/amd64
+    image: baritomarket-web-dev:latest
+    depends_on:
+      - web
     command: ["sidekiq"]
     environment:
       - DB_USER=barito

@@ -3,6 +3,7 @@ FROM ruby:2.5.1-slim AS base
 ENV BUNDLER_VERSION 2.1.4
 ENV RAILS_LOG_TO_STDOUT true
 
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 RUN apt-get -y update && \
   apt-get -y install apt-transport-https curl gnupg libpq5 shared-mime-info && \
   (curl https://baltocdn.com/helm/signing.asc | apt-key add -) && \
@@ -22,7 +23,7 @@ ENV RACK_ENV=${RACK_ENV}
 FROM base AS build
 
 RUN apt-get -y update && \
-  apt-get install -y build-essential libpq-dev nodejs
+  apt-get install -y build-essential libpq-dev nodejs make
 USER app
 
 COPY --chown=app:app Gemfile* ./
