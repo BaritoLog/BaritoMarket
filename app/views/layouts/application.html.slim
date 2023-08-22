@@ -23,7 +23,7 @@ html
       #bm-main-navbar.collapse.navbar-collapse
         ul.navbar-nav.ml-auto
           form.form-inline.mt-2.mt-md-0
-            - if user_signed_in?
+            - if user_signed_in? && Figaro.env.SHOW_LOG_AND_COST_COL == "true"
               = link_to 'Price Calculator', '/calculator', class: 'btn btn-outline-light ml-sm-2 btn-sm'
             - if user_signed_in?
               = link_to 'Groups', groups_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
