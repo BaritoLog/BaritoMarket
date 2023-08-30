@@ -96,13 +96,17 @@ class AppGroup < ApplicationRecord
     end
     log_retention_days = params[:log_retention_days].to_i unless params[:log_retention_days].blank?
 
+    if params[:labels].nil? || params[:labels].empty?
+      labels = {}
+    end
+
     ActiveRecord::Base.transaction do
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
         environment: params[:environment],
-        labels: params[:labels]
+        labels: labels
       )
 
       helm_infrastructure = HelmInfrastructure.setup(
