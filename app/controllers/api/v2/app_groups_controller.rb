@@ -178,7 +178,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   private
 
   def app_group_params
-    params.permit(:name, :cluster_template_id,
+    params.permit(:name, :cluster_template_id, :environment,
       labels: {},
     )
   end
