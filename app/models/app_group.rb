@@ -98,6 +98,8 @@ class AppGroup < ApplicationRecord
 
     if params[:labels].nil? || params[:labels].empty?
       labels = {}
+    else
+      labels = params[:labels]
     end
 
     ActiveRecord::Base.transaction do
