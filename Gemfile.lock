@@ -369,7 +369,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (3.1.1)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
     racc (1.6.0)
@@ -635,7 +636,7 @@ DEPENDENCIES
   pg (<= 1.0.0)
   prometheus-client
   pry (<= 0.11.3)
-  puma (<= 3.12.7)
+  puma (<= 4.3.13)
   pundit
   rails (~> 5.2.2.1)
   redis (<= 4.0.2)
