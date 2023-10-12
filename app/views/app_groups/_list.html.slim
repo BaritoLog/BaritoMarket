@@ -30,7 +30,31 @@ table.table.table-hover.table-sm
 
         - else
           td.col-3= app_group.name
-        td.col-2= app_group.helm_infrastructure.cluster_name
+        td.col-2
+          = app_group.helm_infrastructure.cluster_name  
+          - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elastalert"].present?
+            - if app_group.helm_infrastructure.override_values["elastalert"]["enabled"] == true
+              span(style="float: right;")
+                .btn.btn-success.btn-sm (style="margin-left: 5px;")
+                  i.fas.fa-database.fa-xs.mr-1 (title="elastalert")
+                  |elastalert
+            - else
+              |
+          - else
+            |
+          - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elasticsearch"].present?
+            - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elasticsearch"]["plugins"].present?
+              - if app_group.helm_infrastructure.override_values["elasticsearch"]["plugins"].include?("repository-gcs")
+                span(style="float: right;")
+                  .btn.btn-info.btn-sm
+                    i.fas.fa-cloud.fa-xs.mr-1 (title="gcs")
+                    |gcs 
+              - else
+                |
+            - else
+              |
+          - else
+            | 
         td.col-2= app_group.helm_infrastructure.helm_cluster_template.name.camelcase
         td.col-2= app_group.helm_infrastructure.provisioning_status
         td.col-1= app_group.helm_infrastructure.status

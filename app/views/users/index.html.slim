@@ -1,0 +1,22 @@
+.card.m-3
+  h5.card-header
+    | Users
+
+table.table.table-hover.table-sm.m-3
+  thead
+    tr.d-flex
+      th.col-3 Username
+      th.col-3 Email
+      th.col-3 Last Sign in
+      th.col-3 Status
+  tbody
+    - @users.each do |user|
+      tr.d-flex
+        td.col-3= user.username
+        td.col-3= user.email
+        td.col-3= user.last_sign_in_at
+        td.col-3
+          - if user.deactivated_at.present?
+            button.btn-danger Deactivated 
+          - else
+            button.btn-success Active 
