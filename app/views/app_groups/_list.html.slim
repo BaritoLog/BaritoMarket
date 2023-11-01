@@ -11,6 +11,7 @@ table.table.table-hover.table-sm
     tr.d-flex
       th.col-3 =filterrific_sorting_link(@filterrific, :name)
       th.col-2 Cluster Name
+      th.col-2 Plugins
       th.col-2 Capacity
       th.col-2 Provisioning Status
       th.col-1 Status
@@ -30,8 +31,8 @@ table.table.table-hover.table-sm
 
         - else
           td.col-3= app_group.name
+        td.col-2= app_group.helm_infrastructure.cluster_name
         td.col-2
-          = app_group.helm_infrastructure.cluster_name  
           - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elastalert"].present?
             - if app_group.helm_infrastructure.override_values["elastalert"]["enabled"] == true
               span(style="float: right;")
