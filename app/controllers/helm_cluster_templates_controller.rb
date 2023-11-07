@@ -30,6 +30,7 @@ class HelmClusterTemplatesController < ApplicationController
     @helm_cluster_template = HelmClusterTemplate.new(attributes)
 
     if @helm_cluster_template.save
+      audit_log :create_helm_cluster_template, { "helm_cluster_template_name" => @helm_cluster_template.name }
       redirect_to helm_cluster_templates_path
     else
       flash[:messages] = @helm_cluster_template.errors.full_messages
@@ -43,10 +44,12 @@ class HelmClusterTemplatesController < ApplicationController
 
   def update
     authorize @helm_cluster_template
+    from_attributes = @helm_cluster_template.attributes
     attributes = helm_cluster_template_params.clone
     attributes[:values] = YAML.safe_load(attributes[:values])
 
     if @helm_cluster_template.update(attributes)
+      audit_log :update_helm_cluster_template, { "from_attributes" => from_attributes, "to_attributes" => attributes }
       redirect_to helm_cluster_template_path(@helm_cluster_template)
     else
       flash[:messages] = @helm_cluster_template.errors.full_messages

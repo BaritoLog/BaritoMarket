@@ -88,6 +88,7 @@ class AppGroupsController < ApplicationController
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
+      audit_log :create_new_app_group, { "app_group_id" => @app_group.id, "app_group_name" => @app_group.name, "app_group" => @helm_infrastructure.cluster_name }
       broadcast(:team_count_changed)
       return redirect_to root_path
     else
@@ -106,6 +107,7 @@ class AppGroupsController < ApplicationController
     @app_group.update_attributes(app_group_params)
     @app_group.helm_infrastructure.update_attributes(helm_infrastructure_params)
 
+    audit_log :update_app_group, { "app_group_params" => app_group_params.to_h, "helm_infrastructure_params" => helm_infrastructure_params.to_h }
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
   end
@@ -113,10 +115,12 @@ class AppGroupsController < ApplicationController
   def update_app_group_name
     authorize @app_group
 
+    from_name = @app_group.name
     name = params.permit(app_group: :name)['app_group']['name']
 
     @app_group.update_attributes(name: name)
 
+    audit_log :update_app_group_name, { "from_name" => from_name, "to_name" => name }
     broadcast(:app_group_updated, @app_group.id)
     redirect_to app_group_path(@app_group)
   end
@@ -160,6 +164,7 @@ class AppGroupsController < ApplicationController
   def update_labels
     authorize @app_group
 
+    from_labels = @app_group.labels
     labels = {}
 
     if params[:keys].present? && params[:values].present?
@@ -169,8 +174,12 @@ class AppGroupsController < ApplicationController
         end
       end
     end
-    
+
     @app_group.update(labels: labels)
+    audit_log :update_labels, {
+      "from_labels" => from_labels,
+      "to_labels" => labels
+    }
 
     redirect_to request.referer
   end

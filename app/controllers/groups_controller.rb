@@ -35,6 +35,7 @@ class GroupsController < ApplicationController
     @group = Group.new(group_params)
 
     if @group.save
+      audit_log :create_new_group, { "group_id" => @group.id, "group_name" => @group.name }
       redirect_to groups_path
     else
       flash[:messages] = @group.errors.full_messages
@@ -45,6 +46,8 @@ class GroupsController < ApplicationController
   def destroy
     authorize @group
     @group.destroy!
+
+    audit_log :delete_group, { "group_id" => @group.id, "group_name" => @group.name }
     redirect_to groups_path
   end
 
