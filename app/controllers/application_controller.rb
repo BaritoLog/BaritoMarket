@@ -23,10 +23,13 @@ class ApplicationController < ActionController::Base
   end
 
   def with_audit_logger
-    puts "+--start"
     begin
       yield
     ensure
+      if controller_path == "health_checks"
+        return
+      end
+
       begin
         req_audit = {
           "type" => "audit",
