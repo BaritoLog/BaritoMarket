@@ -32,8 +32,10 @@ class Api::BaseController < ActionController::Base
         req_audit = {
           "type" => "audit",
           "timestamp" => Time.now.utc.iso8601,
+          "pod_name" => Socket.gethostname,
           "controller" => controller_path,
           "action" => action_name,
+          "request_host" => request.host,
           "request_method" => request.method,
           "request_path" => request.path,
           "access_token" => params[:access_token] ? params[:access_token][0,4] + "*****" : "",

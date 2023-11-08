@@ -34,8 +34,10 @@ class ApplicationController < ActionController::Base
         req_audit = {
           "type" => "audit",
           "timestamp" => Time.now.utc.iso8601,
+          "pod_name" => Socket.gethostname,
           "controller" => controller_path,
           "action" => action_name,
+          "request_host" => request.host,
           "request_method" => request.method,
           "request_path" => request.path,
           "user" => current_user ? current_user.username : "",
