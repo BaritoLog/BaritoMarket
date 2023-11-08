@@ -26,6 +26,9 @@ class ExtAppsController < ApplicationController
     @ext_app.access_token = access_token
     @ext_app.created_by_id = current_user.id
 
+
+    audit_log :create_new_ext_app, { "ext_app_id" => @ext_app.id, "ext_app_name" => @ext_app.name }
+
     if @ext_app.save
       flash[:access_token] = access_token
       redirect_to ext_app_path(@ext_app)
@@ -37,7 +40,9 @@ class ExtAppsController < ApplicationController
 
   def update
     authorize @ext_app
+
     if @ext_app.update(ext_app_params)
+      audit_log :update_ext_app, { "ext_app_id" => @ext_app.id, "ext_app_name" => @ext_app.name }
       redirect_to @ext_app
     else
       flash[:messages] = @ext_app.errors.full_messages
@@ -48,6 +53,9 @@ class ExtAppsController < ApplicationController
   def destroy
     authorize @ext_app
     @ext_app.destroy
+
+    audit_log :delete_ext_app, { "ext_app_id" => @ext_app.id, "ext_app_name" => @ext_app.name }
+
     redirect_to ext_apps_path
   end
 
@@ -55,6 +63,7 @@ class ExtAppsController < ApplicationController
     authorize @ext_app
     access_token = SecureRandom.urlsafe_base64(48)
     if @ext_app.update(access_token: access_token)
+      audit_log :regenerate_token_ext_app, { "ext_app_id" => @ext_app.id, "ext_app_name" => @ext_app.name }
       flash[:access_token] = access_token
       redirect_to @ext_app
     else

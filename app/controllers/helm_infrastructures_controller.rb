@@ -15,6 +15,7 @@ class HelmInfrastructuresController < ApplicationController
     helm_infrastructure.app_group = AppGroup.find(params[:app_group_id])
 
     if helm_infrastructure.save
+      audit_log :create_helm_infrastructure, { "helm_infrastructure_id" => helm_infrastructure.id }
       redirect_to app_group_path(helm_infrastructure.app_group)
     else
       flash[:messages] = helm_infrastructure.errors.full_messages
@@ -34,7 +35,13 @@ class HelmInfrastructuresController < ApplicationController
 
   def update
     authorize @helm_infrastructure
+
+    from_attributes = @helm_infrastructure.attributes.slice("helm_cluster_template_id", "override_values", "is_active", "use_k8s_kibana")
     if @helm_infrastructure.update(@data_attributes)
+      audit_log :update_helm_infrastructure, {
+        "from_attributes" => from_attributes,
+        "to_attributes" => @data_attributes.slice(:helm_cluster_template_id, :override_values, :is_active, :use_k8s_kibana)
+      }
       broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
       redirect_to helm_infrastructure_path(@helm_infrastructure)
     else
@@ -52,9 +59,12 @@ class HelmInfrastructuresController < ApplicationController
 
   def toggle_status
     statuses = HelmInfrastructure.statuses
-    puts @helm_infrastructure
+
+    from_status = @helm_infrastructure.status
     @helm_infrastructure.status = params[:toggle_status] == 'true' ? statuses[:active] : statuses[:inactive]
     @helm_infrastructure.save!
+
+    audit_log :toggle_helm_infrastructure_status, { "from_status" => from_status, "to_status" => @helm_infrastructure.status }
 
     if params[:app_group_id]
       app_group = AppGroup.find(params[:app_group_id])
@@ -73,6 +83,7 @@ class HelmInfrastructuresController < ApplicationController
     @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
     DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
 
+    audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => @helm_infrastructure.id }
     redirect_to app_groups_path
   end
 
@@ -80,6 +91,7 @@ class HelmInfrastructuresController < ApplicationController
 
   def configure_current_object
     @helm_infrastructure = HelmInfrastructure.find(params[:id])
+    @app_group = @helm_infrastructure.app_group
   end
 
   def configure_data_attributes

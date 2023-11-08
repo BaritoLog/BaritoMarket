@@ -7,6 +7,12 @@ class GroupUsersController < ApplicationController
     @group_user.role = AppGroupRole.find_by_name('member')
     @group_user.save
 
+    audit_log :group_add_user, {
+      "user" => @group_user.user.username,
+      "group_name" => @group_user.group.name,
+      "group_id" => @group_user.group.id,
+    }
+
     redirect_to group_path(@group_user.group)
   end
 
@@ -17,6 +23,13 @@ class GroupUsersController < ApplicationController
 
     @group_user = GroupUser.find(params[:id])
     @group_user.destroy!
+
+    audit_log :group_remove_user, {
+      "user" => @group_user.user.username,
+      "group_name" => @group_user.group.name,
+      "group_id" => @group_user.group.id,
+    }
+
     redirect_to group_path(@group_user.group)
   end
 
@@ -26,11 +39,20 @@ class GroupUsersController < ApplicationController
 
     user = User.find(params[:user_id])
     group_user = user.group_users.find_by(group_id: params[:id])
+    previous_role = group_user.role.name
 
     # Make sure only valid role that can be set to user
     role = AppGroupRole.find_by(id: params[:role_id])
     group_user.role = role || AppGroupRole.find_by_name('member')
     group_user.save
+
+    audit_log :group_role_changed, {
+      "user" => user.username,
+      "group_name" => group_user.group.name,
+      "group_id" => group_user.group.id,
+      "from_role" => previous_role ,
+      "to_role" => group_user.role.name,
+    }
 
     redirect_to group_path(group_user.group_id)
   end
