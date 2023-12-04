@@ -153,8 +153,8 @@ Rails.application.routes.draw do
       end
     end
   resources :users,
+    only: %i[index show edit update],
     defaults: { format: :html }
-
   resources :groups,
     except: %i[edit update],
     defaults: { format: :html }

@@ -29,7 +29,7 @@ html
               = link_to 'Users', users_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
             - if user_signed_in?
               = link_to 'Groups', groups_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
-            - if user_signed_in? && allow_manage_ext_apps?
+            - if user_signed_in? && allow_manage_users?
               = link_to 'Ext. Apps', ext_apps_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
           - if user_signed_in?
             li.nav-item
