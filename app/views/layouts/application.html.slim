@@ -25,11 +25,11 @@ html
           form.form-inline.mt-2.mt-md-0
             - if user_signed_in? && Figaro.env.SHOW_LOG_AND_COST_COL == "true"
               = link_to 'Price Calculator', '/calculator', class: 'btn btn-outline-light ml-sm-2 btn-sm'
-            - if user_signed_in? && allow_manage_ext_apps?
+            - if user_signed_in? && allow_manage_users?
               = link_to 'Users', users_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
             - if user_signed_in?
               = link_to 'Groups', groups_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
-            - if user_signed_in? && allow_manage_users?
+            - if user_signed_in? && allow_manage_ext_apps?
               = link_to 'Ext. Apps', ext_apps_path, class: 'btn btn-outline-light ml-sm-2 btn-sm'
           - if user_signed_in?
             li.nav-item
