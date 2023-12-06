@@ -152,6 +152,9 @@ Rails.application.routes.draw do
         post :regenerate_token
       end
     end
+  resources :users,
+    only: %i[index show edit update],
+    defaults: { format: :html }
   resources :groups,
     except: %i[edit update],
     defaults: { format: :html }
