@@ -11,11 +11,6 @@
             dt.col-sm-5 App retention days:
             dd.col-sm-7
               = f.number_field 'instance[retention]', step: :any, min: 0, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter days'
-
-            / dt.col-sm-5 App environment:
-            / dd.col-sm-7
-            /   = f.select 'instance[replication]', [['Staging (1 replication)', 1], ['Production (2 replication)', 2]], {}, class: 'form-control', id: 'replication'
-
             dt.col-sm-5 Estimated price (in $):
             dd.col-sm-7
               = f.text_field 'instance[price]', class: 'form-control', readonly: true, id: 'instance_price'
