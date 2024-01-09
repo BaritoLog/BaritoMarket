@@ -73,11 +73,11 @@
 
             dt.col-sm-2 Total Cost (USD):
             dd.col-sm-10
-              = sprintf("%0.9f", @app_group.latest_total_cost.to_f / 10 ** 9)
-          
+              = sprintf(@app_group.latest_total_cost.to_f >= 10 ** 10 ? "%0.2f" : "%0.6f", @app_group.latest_total_cost.to_f / 10 ** 6)
+
           - @required_labels.each do |label|
             dt.col-sm-2 =sprintf("%s:", label)
-            
+
             dd.col-sm-10
               - if (@labels['app-group'].present?)
                 = @labels['app-group'][label]
@@ -90,7 +90,7 @@
         .btn.btn-primary.btn-sm.mr-2
           i.fas.fa-tachometer-alt.mr-1
           = link_to 'Monitoring', @open_katulampa_url, target: '_blank', rel: 'noopener noreferrer', class: 'text-light', style: 'text-decoration: none'
-       
+
         .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-label-modal"
           i.fa.fa-tag.mr-1
           | Manage Labels
