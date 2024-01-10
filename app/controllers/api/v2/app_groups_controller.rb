@@ -143,11 +143,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     cost_data.each do |cost_datum|
       app_group = AppGroup.find_by(name: cost_datum[:app_group_name])
       if app_group.blank? || !app_group.available?
-        render json: {
-          success: false,
-          errors: ['AppGroup not found or inactive'],
-          code: 404
-        }, status: :not_found and return
+        next
       end
 
       app = BaritoApp.find_by(
@@ -155,11 +151,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         name: cost_datum[:app_name]
       )
       if app.blank? || !app.available?
-        render json: {
-          success: false,
-          errors: ['App not found or inactive'],
-          code: 404
-        }, status: :not_found and return
+        next
       end
 
       app.update(
