@@ -67,13 +67,13 @@
                 = hidden_field_tag :app_group_id, @app_group.id
 
           - if @show_log_and_cost_col
-            dt.col-sm-2 Total Log Ingested:
+            dt.col-sm-2 Total Daily Log Ingested:
             dd.col-sm-10
               = number_to_human_size(@app_group.latest_total_ingested_log_bytes)
 
-            dt.col-sm-2 Total Cost (USD):
+            dt.col-sm-2 Total Daily Cost:
             dd.col-sm-10
-              = sprintf(@app_group.latest_total_cost.to_f >= 10 ** 10 ? "%0.2f" : "%0.6f", @app_group.latest_total_cost.to_f / 10 ** 6)
+              = sprintf(@app_group.latest_total_cost.to_f >= 10 ** 6 ? "$%0.2f" : "$%0.6f", @app_group.latest_total_cost.to_f / 10 ** 6)
 
           - @required_labels.each do |label|
             dt.col-sm-2 =sprintf("%s:", label)

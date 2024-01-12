@@ -15,8 +15,8 @@ h4.mb-3 All Applications
         th.col-1 Status
         - if @show_log_and_cost_col
             th.col-1 Created At (UTC)
-            th.col-1 Log Ingested
-            th.col-1 Cost (USD)
+            th.col-1 Daily Log Ingested
+            th.col-1 Daily Cost
         - else
             th.col-2 Created At (UTC)
         th.col-1 Actions
@@ -62,7 +62,7 @@ h4.mb-3 All Applications
           - if @show_log_and_cost_col
             td.col-1= app.created_at.strftime('%d %B %Y, %T')
             td.col-1= number_to_human_size(app.latest_ingested_log_bytes)
-            td.col-1= sprintf(app.latest_cost.to_f >= 10 ** 10 ? "%0.2f" : "%0.6f", app.latest_cost.to_f / 10 ** 6)
+            td.col-1= sprintf(app.latest_cost.to_f >= 10 ** 6 ? "$%0.2f" : "$%0.6f", app.latest_cost.to_f / 10 ** 6)
           - else
             td.col-2= app.created_at.strftime('%d %B %Y, %T')
           td.col-1

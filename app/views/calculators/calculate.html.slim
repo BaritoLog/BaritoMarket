@@ -10,8 +10,8 @@
               = f.number_field 'instance[log_bytes]', step: :any, min: 0, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter value in GBs'
             dt.col-sm-5 App retention days:
             dd.col-sm-7
-              = f.number_field 'instance[retention]', step: :any, min: 0, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter days'
-            dt.col-sm-5 Estimated price (in $):
+              = f.number_field 'instance[retention]', step: :any, min: Figaro.env.STANDARD_RETENTION.to_f, oninput: "validity.valid||(value='');", class: 'form-control', placeholder: 'Please enter days'
+            dt.col-sm-5 Estimated price:
             dd.col-sm-7
               = f.text_field 'instance[price]', class: 'form-control', readonly: true, id: 'instance_price'
 
@@ -31,7 +31,7 @@ javascript:
       data: $("#calculate-price").serialize(),
       success: function(result) {
         var result = JSON.parse(result);
-        $('input#instance_price')[0].value = result;
+        $('input#instance_price')[0].value = "$"+result;
       },
     });
   });
