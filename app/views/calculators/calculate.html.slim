@@ -31,7 +31,7 @@ javascript:
       data: $("#calculate-price").serialize(),
       success: function(result) {
         var result = JSON.parse(result);
-        $('input#instance_price')[0].value = result;
+        $('input#instance_price')[0].value = "$"+result;
       },
     });
   });
