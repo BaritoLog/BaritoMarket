@@ -107,7 +107,6 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       app_group_id: @helm_infrastructure.app_group_id,
       app_group_secret: @helm_infrastructure.app_group_secret,
       capacity: @helm_infrastructure.helm_cluster_template.name,
-      cluster_id: @helm_infrastructure.id,
       cluster_name: @helm_infrastructure.cluster_name,
       consul_host: '',
       consul_hosts: [],
