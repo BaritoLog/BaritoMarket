@@ -174,4 +174,15 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       labels: {},
     )
   end
+  def delete
+    app_group = @infrastructure.app_group
+    barito_apps = app_group.barito_apps
+    barito_apps.each do |app|
+      app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
+    end
+    @infrastructure.update_provisioning_status('DELETE_STARTED')
+    DeleteInfrastructureWorker.perform_async(@infrastructure.id)
+  
+    render json: { message: 'Infrastructure deletion started.' }
+  end
 end

@@ -1,6 +1,6 @@
 class Api::V2::HelmInfrastructuresController < Api::V2::BaseController
   def delete
-    @helm_infrastructure = HelmInfrastructure.find_by(id: params[:id])
+    @helm_infrastructure = HelmInfrastructure.find_by(cluster_name: params[:id])
     
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
