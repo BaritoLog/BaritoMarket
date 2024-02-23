@@ -219,13 +219,22 @@ RSpec.describe 'App Groups API', type: :request do
       expect(json_response['affected_app']).to eq(2)
     end
   end
-  describe 'Delete Helm Infrastructure' do
-    it 'should delete the Helm Infrastructure' do
-      # Create a Helm Infrastructure
-      helm_infrastructure = create(:helm_infrastructure, status: HelmInfrastructure.statuses[:active])
+
+  describe 'Deactivated App Group by Cluster Name' do
+    let(:access_token) { 'aa5olF1jBEm-zZm_9dW9KRRsIODccNkpgu9GrXO0-187WZSICNfDX70NcVM3hWD_' }
+    it 'should deactivated the app group' do
+      # Create a App Group
+      app_group = create(:app_group)
+      helm_infrastructure = create(
+        :helm_infrastructure,
+        app_group: app_group,
+        cluster_name: "test-delete",
+        status: HelmInfrastructure.statuses[:active],
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished]
+      )
 
       # Send a DELETE request to the delete action
-      delete api_v2_helm_infrastructure_delete_path(id: helm_infrastructure.cluster_name), headers: headers
+      post api_v2_deactivated_by_cluster_name_path(cluster_name: helm_infrastructure.cluster_name), headers: headers
 
       # Expect a successful response
       expect(response.status).to eq(200)
@@ -235,15 +244,15 @@ RSpec.describe 'App Groups API', type: :request do
 
       # Expect the response to indicate success
       expect(json_response['success']).to eq(true)
-      expect(json_response['message']).to eq('Infrastructure deleted successfully')
+      expect(json_response['message']).to eq('App Group deactivated successfully')
 
       # Verify that the Helm Infrastructure has been deleted
-      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name)).to be_nil
+      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to eq('DELETED')
     end
 
     it 'should return 404 if Helm Infrastructure is not found' do
       # Send a DELETE request to the delete action with an invalid ID
-      delete api_v2_helm_infrastructure_delete_path(id: 'nonexistent_cluster'), headers: headers
+      post api_v2_deactivated_by_cluster_name_path(cluster_name: 'nonexistent_cluster'), headers: headers
 
       # Expect a 404 response
       expect(response.status).to eq(404)
@@ -253,7 +262,7 @@ RSpec.describe 'App Groups API', type: :request do
 
       # Expect the response to indicate failure and the reason
       expect(json_response['success']).to eq(false)
-      expect(json_response['errors']).to eq(['Infrastructure not found'])
+      expect(json_response['errors']).to eq(['Helm Infrastructure not found'])
     end
 
     it 'should return 404 if Helm Infrastructure is not active' do
@@ -261,7 +270,7 @@ RSpec.describe 'App Groups API', type: :request do
       helm_infrastructure = create(:helm_infrastructure, status: HelmInfrastructure.statuses[:inactive])
 
       # Send a DELETE request to the delete action
-      delete api_v2_helm_infrastructure_delete_path(id: helm_infrastructure.cluster_name), headers: headers
+      post api_v2_deactivated_by_cluster_name_path(cluster_name: helm_infrastructure.cluster_name), headers: headers
 
       # Expect a 404 response
       expect(response.status).to eq(404)
@@ -271,7 +280,7 @@ RSpec.describe 'App Groups API', type: :request do
 
       # Expect the response to indicate failure and the reason
       expect(json_response['success']).to eq(false)
-      expect(json_response['errors']).to eq(['Infrastructure not found'])
+      expect(json_response['errors']).to eq(['Helm Infrastructure not found'])
     end
   end
 end
