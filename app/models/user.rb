@@ -73,12 +73,44 @@ class User < ApplicationRecord
       role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
     }.compact
 
-    group_ids = GroupUser.where("user_id = :userid AND to_expire_on >= :time", userid: self.id, time: Time.now).pluck(:group_id)
-    app_group_ids = AppGroupTeam.where(group_id: group_ids).pluck(:app_group_id)
+    # where_clause_team = {
+    #   user: self,
+    #   role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
+    #   expiration_date: Time.now..Float::INFINITY
+    # }.compact
+
+    where_clause_team = {}
+
+    t = AppGroupTeam.where(app_group_id: app_groups.first.id).pluck(:group_id)
+    k = GroupUser.where(group_id: t, user_id: self.id).pluck(:expiration_date)
+    if k.all?(&:nil?)
+      where_clause_team = {
+        user: self,
+        role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+      }.compact
+    else
+      where_clause_team = {
+        user: self,
+        role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
+        expiration_date: Time.now..Float::INFINITY
+      }.compact
+    end
+
+    # group_ids = GroupUser.where("user_id = :userid AND expiration_date >= :time", userid: self.id, time: Time.now).pluck(:group_id)
+
+    # app_group_roles_id = AppGroupRole.where(name: roles).pluck(:id) if roles
+    # group_ts = GroupUser.where("user_id = :userid AND expiration_date >= :time", userid: self.id, time: Time.now)
+    # group_ids_with_role_consideration = group_ts.where(role: app_group_roles_id).pluck(:group_id)
+
+
+
+    # app_group_ids = AppGroupTeam.where(group_id: group_ids_with_role_consideration).pluck(:app_group_id)
     augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
-    app_groups_from_teams = augmented_app_groups.where(id: app_group_ids)
+    # app_groups_from_teams = AppGroup.where(id: app_group_ids)
+
     augmented_app_groups.where(app_group_users: where_clause).
-        or(app_groups_from_teams)
+        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause_team }}))
+    # augmented_app_groups.where(app_group_users: where_clause)
   end
 
   def can_access_user_group?(user_group, roles: nil)

@@ -60,7 +60,7 @@ class GroupUsersController < ApplicationController
   private
 
   def group_user_params
-    params.require(:group_user).permit(:group_id, :user_id, :to_expire_on)
+    params.require(:group_user).permit(:group_id, :user_id, :expiration_date)
   end
 
   def set_group_from_input
