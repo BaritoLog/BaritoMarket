@@ -6,7 +6,7 @@ RSpec.describe 'Deactivated App Group by Cluster Name', type: :request do
   end
 
   before(:all) do
-    @access_token = 'E8cjTcUKucBxRs-XV_EvosUgMsytLGVBhmD_b6KpOVbYnhX3THgVtLMXOHS606Us'
+    @access_token = 'ABCDE'
     @ext_app = create(:ext_app, access_token: @access_token)
   end
 
@@ -36,7 +36,9 @@ RSpec.describe 'Deactivated App Group by Cluster Name', type: :request do
       expect(json_response['message']).to eq('App Group deactivated successfully')
 
       # Verify that the Helm Infrastructure has been deleted
-      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to include('DELETE')
+      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to eq('DELETE_STARTED')
+      sleep 5
+      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to eq('DELETED')
 
     end
 
