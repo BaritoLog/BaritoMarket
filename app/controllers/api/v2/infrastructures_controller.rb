@@ -104,6 +104,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     render json: {
       name: @helm_infrastructure.app_group_name,
       app_group_name: @helm_infrastructure.app_group_name,
+      app_group_id: @helm_infrastructure.app_group_id,
       app_group_secret: @helm_infrastructure.app_group_secret,
       capacity: @helm_infrastructure.helm_cluster_template.name,
       cluster_name: @helm_infrastructure.cluster_name,
@@ -112,6 +113,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       kibana_address: @helm_infrastructure&.kibana_address,
       status: @helm_infrastructure.status,
       provisioning_status: @helm_infrastructure.provisioning_status,
+      created_at: @helm_infrastructure.created_at.strftime(Figaro.env.timestamp_format),
       updated_at: @helm_infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
         service_names: @helm_infrastructure.default_service_names
