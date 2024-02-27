@@ -158,6 +158,14 @@ RSpec.describe User, type: :model do
         app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
         expect(app_groups.exists?).to be true
       end
+
+      it 'should not filter out app groups for users who does not have expiration date' do
+        create(:app_group_team, app_group: app_group, group: group)
+
+        create(:group_user, group: group, user: user, role: role)
+        app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
+        expect(app_groups.exists?).to be true
+      end
     end
   end
 
