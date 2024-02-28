@@ -8,8 +8,8 @@ end
 if Figaro.env.enable_sso_integration == 'false'
   user = User.create(email: 'superadmin@barito.com', username: 'superadmin', password: '123456', password_confirmation: '123456')
 end
-GroupUser.create(user: user, group: superadmin_group, role: AppGroupRole.find_by_name('admin'), expiration_date: Time.now + 10.days)
-GroupUser.create(user: user, group: global_viewer_group, role: AppGroupRole.find_by_name('admin'), expiration_date: Time.now + 10.days)
+GroupUser.create(user: user, group: superadmin_group, role: AppGroupRole.find_by_name('admin'))
+GroupUser.create(user: user, group: global_viewer_group, role: AppGroupRole.find_by_name('admin'))
 
 
 
