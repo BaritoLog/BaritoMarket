@@ -75,7 +75,8 @@ class User < ApplicationRecord
 
     where_clause_team = {}
 
-    group_ids = AppGroupTeam.where(app_group_id: app_groups.first.id).pluck(:group_id)
+    app_group_ids = app_groups.pluck(:id)
+    group_ids = AppGroupTeam.where(app_group_id: app_group_ids).pluck(:group_id)
     user_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id).pluck(:expiration_date)
     if user_expiration_date.all?(&:nil?)
       where_clause_team = {
