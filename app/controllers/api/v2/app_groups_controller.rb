@@ -169,7 +169,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
   def deactivated_by_cluster_name
     cluster_name = params[:cluster_name]
-    app_group_name = params[:name]
+    app_group_name = params[:app_group_name]
   
     # Validate presence of both cluster_name and app_group_name
     unless cluster_name.present? && app_group_name.present?
@@ -180,7 +180,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :bad_request) && return
     end
   
-    @helm_infrastructure = HelmInfrastructure.find_by(cluster_name: cluster_name)
+    @helm_infrastructure = HelmInfrastructure.joins(:app_group).where(cluster_name: cluster_name, app_groups:{name: app_group_name})
   
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
@@ -207,11 +207,11 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   
     @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
     DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
-  
+
     render json: {
       success: true,
       message: 'App Group deactivated successfully',
-    }
+    }, status: :ok and return
   end
 
   private
