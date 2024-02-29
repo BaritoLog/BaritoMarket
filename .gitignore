@@ -37,3 +37,6 @@ coverage
 
 
 .vscode
+
+.DS_Store
+.bash_history

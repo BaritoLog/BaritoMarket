@@ -73,9 +73,28 @@ class User < ApplicationRecord
       role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
     }.compact
 
+    where_clause_team = {}
+
+    app_group_ids = app_groups.pluck(:id)
+    group_ids = AppGroupTeam.where(app_group_id: app_group_ids).pluck(:group_id)
+    user_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id).pluck(:expiration_date)
+    if user_expiration_date.all?(&:nil?)
+      where_clause_team = {
+        user: self,
+        role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+      }.compact
+    else
+      where_clause_team = {
+        user: self,
+        role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
+        expiration_date: Time.now..Float::INFINITY
+      }.compact
+    end
+
     augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
+
     augmented_app_groups.where(app_group_users: where_clause).
-        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause }}))
+        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause_team }}))
   end
 
   def can_access_user_group?(user_group, roles: nil)

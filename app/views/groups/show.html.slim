@@ -8,7 +8,10 @@
       = form_for(@group_user) do |f|
         = f.hidden_field :group_id
         .form-group
-          = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
+          = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id', required: true
+        .form-group
+          = f.label :expiration_date
+          = f.date_field :expiration_date, as: :date, min: Date.today, value: f.object.try(:strftime,"%d/%m/%Y"), class: 'form-control'
         .form-group
           = f.submit 'Add', class: 'btn btn-primary btn-sm'
     br
@@ -19,9 +22,14 @@
             .col-10
               = group.user.username + ' - ' + group.user.email
               | &nbsp;
+              - if group.expiration_date != nil
+                span.badge.badge-secondary.badge-info
+                  | &nbsp;Expiry on:&nbsp;
+                  - if group.expiration_date != nil
+                    = group.expiration_date.strftime("%d-%m-%Y")
               - if !group.role.nil?
                   span.badge.badge-secondary.badge-info
-                    | &nbsp;As&nbsp;
+                    | &nbsp;&nbsp;As&nbsp;
                     = group.role.name
             - if @allow_manage_group_access
               .col-2.text-right= link_to 'Delete', group_user_path(group), class: 'btn btn-danger btn-sm', data: { method: :delete }
