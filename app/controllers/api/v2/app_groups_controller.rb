@@ -189,16 +189,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         code: 404,
       }, status: :not_found) && return
     end
-  
-    # Check if the Helm Infrastructure's app_group_name matches the provided app_group_name
-    unless @helm_infrastructure.app_group.name == app_group_name
-      render(json: {
-        success: false,
-        errors: ['Mismatched app_group_name and cluster_name'],
-        code: 400,
-      }, status: :bad_request) && return
-    end
-  
+    
     app_group = @helm_infrastructure.app_group
     barito_apps = app_group.barito_apps 
     barito_apps.each do |app|
