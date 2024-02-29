@@ -185,7 +185,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
         success: false,
-        errors: ['Helm Infrastructure not found or not active'],
+        errors: ['Helm Infrastructure not found'],
         code: 404,
       }, status: :not_found) && return
     end
