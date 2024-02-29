@@ -180,7 +180,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :bad_request) && return
     end
   
-    @helm_infrastructure = HelmInfrastructure.joins(:app_groups).where(cluster_name: cluster_name, app_groups:{name: app_group_name})
+    @helm_infrastructure = HelmInfrastructure.joins(:app_group).find_by(cluster_name: cluster_name, app_groups: { name: app_group_name })
   
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
