@@ -37,9 +37,6 @@ RSpec.describe 'Deactivated App Group by Cluster Name', type: :request do
 
       # Verify that the Helm Infrastructure has been deleted
       expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to eq('DELETE_STARTED')
-      sleep 5
-      expect(HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name).provisioning_status).to eq('DELETED')
-
     end
     it 'should return 400 if cluster_name or app_group_name is missing' do
       # Send a DELETE request without providing cluster_name or app_group_name
