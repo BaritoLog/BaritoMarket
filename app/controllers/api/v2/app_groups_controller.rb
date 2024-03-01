@@ -166,29 +166,43 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       affected_app: affected_app
     }, status: :ok and return
   end
+
   def deactivated_by_cluster_name
-    @helm_infrastructure = HelmInfrastructure.find_by(cluster_name: params[:cluster_name])
-    
+    cluster_name = params[:cluster_name]
+    app_group_name = params[:app_group_name]
+  
+    # Validate presence of both cluster_name and app_group_name
+    unless cluster_name.present? && app_group_name.present?
+      render(json: {
+        success: false,
+        errors: ['Both cluster_name and app_group_name are required'],
+        code: 400,
+      }, status: :bad_request) && return
+    end
+  
+    @helm_infrastructure = HelmInfrastructure.joins(:app_group).find_by(cluster_name: cluster_name, app_groups: { name: app_group_name })
+  
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
-                 success: false,
-                 errors: ['Helm Infrastructure not found'],
-                 code: 404,
-               }, status: :not_found) && return
+        success: false,
+        errors: ['Helm Infrastructure not found'],
+        code: 404,
+      }, status: :not_found) && return
     end
     
     app_group = @helm_infrastructure.app_group
-    barito_apps = app_group.barito_apps
+    barito_apps = app_group.barito_apps 
     barito_apps.each do |app|
       app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
+  
     @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
     DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
 
     render json: {
       success: true,
       message: 'App Group deactivated successfully',
-    }
+    }, status: :ok and return
   end
 
   private
