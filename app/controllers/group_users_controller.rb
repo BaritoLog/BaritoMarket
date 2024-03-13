@@ -3,19 +3,24 @@ class GroupUsersController < ApplicationController
     set_group_from_input
     authorize @group_user
 
-    @group_user = GroupUser.new(group_user_params)
-    @group_user.role = AppGroupRole.find_by_name('member')
-    @group_user.save
+    check_if_group_user_already_exist
+    if @group_user.user != nil
+      @group_user.expiration_date = group_user_params[:expiration_date]
+      @group_user.save
+      redirect_to group_path(@group_user.group)
+    else
+      @group_user = GroupUser.new(group_user_params)
+      @group_user.role = AppGroupRole.find_by_name('member')
+      @group_user.save
+      redirect_to group_path(@group_user.group)
+    end
 
     audit_log :group_add_user, {
       "user" => @group_user.user.username,
       "group_name" => @group_user.group.name,
       "group_id" => @group_user.group.id,
     }
-
-    redirect_to group_path(@group_user.group)
   end
-
 
   def destroy
     set_group_from_group_user
@@ -65,6 +70,10 @@ class GroupUsersController < ApplicationController
 
   def set_group_from_input
     @group_user = GroupUser.find_by(group_id: group_user_params[:group_id], user_id: current_user.id) || GroupUser.new()
+  end
+
+  def check_if_group_user_already_exist
+    @group_user = GroupUser.find_by(group_id: group_user_params[:group_id], user_id: group_user_params[:user_id]) || GroupUser.new()
   end
 
   def set_group_from_params
