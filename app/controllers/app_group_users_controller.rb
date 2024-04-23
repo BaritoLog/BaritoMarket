@@ -1,12 +1,18 @@
 class AppGroupUsersController < ApplicationController
   def create
-    app_group_user = AppGroupUser.new(app_group_user_params)
-    app_group_user.role = AppGroupRole.find_by_name('member')
-    app_group_user.save
 
-    audit_log :app_group_add_user, { "user" => app_group_user.user.username }
-
-    redirect_to manage_access_app_group_path(app_group_user.app_group_id)
+    check_if_app_group_user_already_exist
+    if @app_group_user.user != nil
+      @app_group_user.expiration_date = app_group_user_params[:expiration_date]
+      @app_group_user.save
+      redirect_to manage_access_app_group_path(@app_group_user.app_group_id)
+    else
+      app_group_user = AppGroupUser.new(app_group_user_params)
+      app_group_user.role = AppGroupRole.find_by_name('member')
+      app_group_user.save
+      audit_log :app_group_add_user, { "user" => app_group_user.user.username }
+      redirect_to manage_access_app_group_path(app_group_user.app_group_id)
+    end
   end
 
   def set_role
@@ -41,6 +47,10 @@ class AppGroupUsersController < ApplicationController
   private
 
   def app_group_user_params
-    params.require(:app_group_user).permit(:app_group_id, :role_id, :user_id)
+    params.require(:app_group_user).permit(:app_group_id, :role_id, :user_id, :expiration_date)
+  end
+
+  def check_if_app_group_user_already_exist
+    @app_group_user = AppGroupUser.find_by(app_group_id: app_group_user_params[:app_group_id], user_id: app_group_user_params[:user_id]) || AppGroupUser.new()
   end
 end

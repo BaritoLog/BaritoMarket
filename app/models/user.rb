@@ -68,14 +68,18 @@ class User < ApplicationRecord
   end
 
   def filter_accessible_app_groups(app_groups, roles: nil)
-    where_clause = {
-      user: self,
-      role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
-    }.compact
+    # where_clause = {
+    #   user: self,
+    #   role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+    # }.compact
+
+    # add logic of app group team separation here
 
     where_clause_team = {}
+    where_clause_app_group = {}
 
     app_group_ids = app_groups.pluck(:id)
+    puts("this is the app group ids: ", app_group_ids)
     group_ids = AppGroupTeam.where(app_group_id: app_group_ids).pluck(:group_id)
     user_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id).pluck(:expiration_date)
     if user_expiration_date.all?(&:nil?)
@@ -91,9 +95,24 @@ class User < ApplicationRecord
       }.compact
     end
 
+    user_expiration_date_app_group = AppGroupUser.where(app_group_id: app_group_ids, user_id: self.id).pluck(:expiration_date)
+    puts("this is user_expiration_date_app_group: ", user_expiration_date_app_group)
+
+    where_clause_app_group_1 = {
+      user: self,
+      role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
+    }.compact
+
+    where_clause_app_group_2 = {
+      user: self,
+      role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
+      expiration_date: Time.now..Float::INFINITY
+    }.compact
+
     augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
 
-    augmented_app_groups.where(app_group_users: where_clause).
+    augmented_app_groups.where(app_group_users: where_clause_app_group_1).
+        or(augmented_app_groups.where(app_group_users: where_clause_app_group_2)).
         or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause_team }}))
   end
 
