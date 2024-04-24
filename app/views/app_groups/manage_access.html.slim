@@ -10,7 +10,7 @@
         = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
       .form-group
           = f.label :expiration_date
-          = f.date_field :expiration_date, as: :date, min: Date.today, value: f.object.try(:strftime,"%d/%m/%Y"), class: 'form-control'
+          = f.date_field :expiration_date, as: :date, min: Date.today, value: Date.today + 7.days, class: 'form-control'
       .form-group
         = f.submit 'Add/Update Members', class: 'btn btn-primary btn-sm'
         = link_to 'Back to Application Group', app_group_path(@app_group), class: 'btn btn-primary ml-2 btn-sm'
