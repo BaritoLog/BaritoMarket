@@ -68,52 +68,40 @@ class User < ApplicationRecord
   end
 
   def filter_accessible_app_groups(app_groups, roles: nil)
-    # where_clause = {
-    #   user: self,
-    #   role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
-    # }.compact
-
-    # add logic of app group team separation here
-
-    where_clause_team = {}
-    where_clause_app_group = {}
 
     app_group_ids = app_groups.pluck(:id)
-    puts("this is the app group ids: ", app_group_ids)
+
     group_ids = AppGroupTeam.where(app_group_id: app_group_ids).pluck(:group_id)
-    user_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id).pluck(:expiration_date)
-    if user_expiration_date.all?(&:nil?)
-      where_clause_team = {
-        user: self,
-        role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
-      }.compact
-    else
-      where_clause_team = {
-        user: self,
-        role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
-        expiration_date: Time.now..Float::INFINITY
-      }.compact
-    end
 
-    user_expiration_date_app_group = AppGroupUser.where(app_group_id: app_group_ids, user_id: self.id).pluck(:expiration_date)
-    puts("this is user_expiration_date_app_group: ", user_expiration_date_app_group)
+    group_having_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id).where.not(expiration_date:nil).pluck(:group_id)
 
-    where_clause_app_group_1 = {
+    group_not_having_expiration_date = GroupUser.where(group_id: group_ids, user_id: self.id, expiration_date:nil).pluck(:group_id)
+
+    app_group_having_group_expiration_date = AppGroupTeam.where(group_id: group_having_expiration_date).pluck(:app_group_id)
+
+    app_group_not_having_group_expiration_date = AppGroupTeam.where(group_id: group_not_having_expiration_date).pluck(:app_group_id)
+
+    where_clause_no_expiration = {
       user: self,
       role: (AppGroupRole.where(name: roles).pluck(:id) if roles)
     }.compact
 
-    where_clause_app_group_2 = {
+    where_clause_with_expiration = {
       user: self,
       role: (AppGroupRole.where(name: roles).pluck(:id) if roles),
       expiration_date: Time.now..Float::INFINITY
     }.compact
 
+    app_group_having_expiration_date = AppGroupUser.where(app_group_id: app_group_ids, user_id: self.id).where.not(expiration_date:nil).pluck(:app_group_id)
+
+    app_group_not_having_expiration_date = AppGroupUser.where(app_group_id: app_group_ids, user_id: self.id, expiration_date:nil).pluck(:app_group_id)
+
     augmented_app_groups = app_groups.left_outer_joins(:app_group_users, groups: :group_users)
 
-    augmented_app_groups.where(app_group_users: where_clause_app_group_1).
-        or(augmented_app_groups.where(app_group_users: where_clause_app_group_2)).
-        or(augmented_app_groups.where(app_group_teams: { groups: { group_users: where_clause_team }}))
+    augmented_app_groups.where(id: app_group_not_having_expiration_date, app_group_users: where_clause_no_expiration).
+    or(augmented_app_groups.where(id: app_group_having_expiration_date, app_group_users: where_clause_with_expiration)).
+    or(augmented_app_groups.where(id: app_group_having_group_expiration_date, app_group_teams: { groups: { group_users: where_clause_with_expiration }})).
+    or(augmented_app_groups.where(id: app_group_not_having_group_expiration_date, app_group_teams: { groups: { group_users: where_clause_no_expiration }}))
   end
 
   def can_access_user_group?(user_group, roles: nil)
