@@ -33,6 +33,22 @@ RSpec.describe 'Groups User API', type: :request do
         expect(GroupUser.first.group_id).to eq(@group.id)
         expect(GroupUser.first.role.id).to eq(@role.id)
         expect(GroupUser.first.user_id).to eq(@user.id)
+        expect(GroupUser.first.expiration_date).to eq(nil)
+      end
+
+      it 'should handle expiration_date param' do
+        expiration_date = '2024-01-01'
+        with_expiration_date = { access_token: @access_token, group_name: @group.name, group_role: @role.name, username: @user.username, expiration_date: expiration_date}
+        post api_v2_create_group_user_path, params: with_expiration_date, headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['data']).to eq(["Group user created"])
+        expect(json_response['success']).to eq(true)
+
+        expect(GroupUser.first.group_id).to eq(@group.id)
+        expect(GroupUser.first.role.id).to eq(@role.id)
+        expect(GroupUser.first.user_id).to eq(@user.id)
+        expect(GroupUser.first.expiration_date).to eq(expiration_date)
       end
     end
 

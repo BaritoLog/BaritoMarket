@@ -8,7 +8,9 @@ class Api::V2::GroupUsersController < Api::V2::BaseController
     app_group_role = AppGroupRole.find_by_name(role)
     render(json: { success: false, errors: ['App group role not found'], data: nil }, status: :not_found) && return if app_group_role.blank?
 
-    group_user = GroupUser.create(group_id: @group.id, user_id: @user.id, role_id: app_group_role.id)
+    expiration_date = params[:expiration_date].present? ? params[:expiration_date] : nil
+
+    group_user = GroupUser.create(group_id: @group.id, user_id: @user.id, role_id: app_group_role.id, expiration_date: expiration_date)
     render(json: { success: false, errors: [group_user.errors], data: nil }, status: :unprocessable_entity) && return unless group_user.valid?
 
     render json: { success: true, errors: nil, data: ['Group user created'] }, status: :ok
@@ -31,4 +33,3 @@ class Api::V2::GroupUsersController < Api::V2::BaseController
     render json: { success: false, errors: ['User not found'], data: nil }, status: :not_found if @user.blank?
   end
 end
-  
