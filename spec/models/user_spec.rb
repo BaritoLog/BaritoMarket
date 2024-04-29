@@ -169,6 +169,36 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#filter_accessible_app_groups testing app group user expiration date' do
+    context 'filter app groups view based on expiration date' do
+      let(:user) { create(:user) }
+      let(:app_group) { create(:app_group) }
+      let(:role) { create(:app_group_role) }
+      let(:role_admin) { create(:app_group_role, :admin) }
+
+      it 'should filter out app groups for users who have expired their access' do
+        create(:app_group_user, app_group: app_group, user: user, role: role, expiration_date: Time.now - 10.days)
+
+        app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
+        expect(app_groups.exists?).to be false
+      end
+
+      it 'should not filter out app groups for users who have not expired their access' do
+        create(:app_group_user, app_group: app_group, user: user, role: role, expiration_date: Time.now + 10.days)
+
+        app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
+        expect(app_groups.exists?).to be true
+      end
+
+      it 'should not filter out app groups for users who does not have expiration date' do
+        create(:app_group_user, app_group: app_group, user: user, role: role)
+
+        app_groups = user.filter_accessible_app_groups(AppGroup.all, roles: @role)
+        expect(app_groups.exists?).to be true
+      end
+    end
+  end
+
   shared_examples 'group group-user user associations' do |example_name|
     context 'user has member association with group' do
       before :each do

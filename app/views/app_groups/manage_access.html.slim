@@ -9,7 +9,10 @@
       .form-group
         = f.select :user_id, [], {}, class: 'form-control', id: 'assign_member_user_id'
       .form-group
-        = f.submit 'Add', class: 'btn btn-primary btn-sm'
+          = f.label :expiration_date
+          = f.date_field :expiration_date, as: :date, min: Date.today, value: Date.today + 7.days, class: 'form-control'
+      .form-group
+        = f.submit 'Add/Update Members', class: 'btn btn-primary btn-sm'
         = link_to 'Back to Application Group', app_group_path(@app_group), class: 'btn btn-primary ml-2 btn-sm'
 
     br
@@ -20,6 +23,11 @@
             .col-10
               = member.user.display_name
               | &nbsp;
+              - if member.expiration_date != nil
+                span.badge.badge-secondary.badge-info
+                  | &nbsp;Expiry on:&nbsp;
+                  - if member.expiration_date != nil
+                    = member.expiration_date.strftime("%d-%m-%Y")
               span.badge.badge-secondary.badge-info
                 | &nbsp;As&nbsp;
                 = member.role.name
