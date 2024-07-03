@@ -1,10 +1,10 @@
-div.modal.fade id="manage-label-redact-modal" tabindex="-1" role="dialog" aria-labelledby="manage-label-modal-title" aria-hidden=true
+div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labeledby="manage-redact-modal-title" aria-hidden=true
     div.modal-dialog role="document"
         div.modal-content
-            = form_with(url: update_labels_app_group_path, method: 'patch', local: true, id: 'update-labels')
+            = form_with(url: update_labels_app_group_path, method: 'patch', local: true, id: 'update-redacts')
             div.modal-header
-                h5.modal-title#manage-label-redact-modal-title
-                    = "Manage PII redact Data #{app_group}"
+                h5.modal-title#manage-redact-modal-title
+                    = "Manage PII Redact Data #{app_group}"
                 button.close data-dismiss="modal" aria-label="close" type="button"
                     span aria-hidden=true
                         | &times;
@@ -19,150 +19,155 @@ div.modal.fade id="manage-label-redact-modal" tabindex="-1" role="dialog" aria-l
                       - if @allow_manage_labels
                         th[scope="col"]
                             | Actions
-                  tbody#label-body
+                  tbody#redact-body
             div.modal-footer
                 - if @allow_manage_labels
-                    button#remove-all-labels.btn.btn-danger type="button"
-                        | remove all labels
-                    button#add-label.btn.btn-success type="button" 
-                        | add label
-                    button#submit-label.btn.btn-primary type="submit"
+                    button#remove-all-redacts.btn.btn-danger type="button"
+                        | remove all PII
+                    button#add-redact.btn.btn-success type="button" 
+                        | add PII
+                    button#submit-redact.btn.btn-primary type="submit"
                         | update
 
 javascript:
-    const labels = #{labels.to_json.html_safe}
-    const allow_manage_labels = #{allow_manage_labels}
+    const redacts = #{labels.to_json.html_safe}
+    const allow_manage_redacts = #{allow_manage_labels}
 
-    const removeAllLabels = () => {
-        const rows = $(`tbody#label-body tr[data-idx]`)
+    const removeAllRedacts = () => {
+        const rows = $(`tbody#redact-body tr[data-idx]`)
         for (let row of rows) {
             row.remove()
         }
     }
 
-    const removeLabel = idx => {
-        let row = $(`tbody#label-body tr[data-idx="${idx}"]`)
+    const removeRedact = idx => {
+        let row = $(`tbody#redact-body tr[data-idx="${idx}"]`)
         if (row.length < 1) {
-            console.log(`rows with label ${idx} not found`)
+            console.log(`rows with redact ${idx} not found`)
         }
 
         row[0].remove()
     }
 
-    const generateRow = (pii, data, idx) => {
+    const generateRowRedact = (pii, val, idx) => {
             let delete_button = ""
             if (allow_manage_labels) {
                 delete_button = ` <td>
-                    <button class="btn btn-sm btn-danger" data-idx="${idx}" id="remove-label" type="button">
+                    <button class="btn btn-sm btn-danger" data-idx="${idx}" id="remove-redact" type="button">
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </td>`
             }
             return `<tr data-idx="${idx}">
                 <td>
-                    <input class="form-control" name=pii[] value="${pii}" ${allow_manage_labels ? "" : "disabled"}>
+                    <input class="form-control" name=piis[] value="${pii}" ${allow_manage_labels ? "" : "disabled"}>
                 </td>
                 <td>
-                    <input class="form-control" name=values[] value="${data}" ${allow_manage_labels ? "" : "disabled"}>
+                <input class="form-control" name=values[] value="${val}" ${allow_manage_labels ? "" : "disabled"}>
                 </td>
                 ${delete_button}          
             </tr>`
+            console.log("Generated row:", row);
+            return row;
         }
 
-    const addLabel = (pii, data, idx) => {
-        let tbody = $('tbody#label-body')
+    const addRedact = (pii, val, idx) => {
+        console.log("Adding label:", pii, val, idx)
+        let tbody = $('tbody#redact-body')
         let lastIdx = idx || Number($(tbody.children().last()).attr('data-idx'))+1
-        let lastPii = Pii || ""
-        let lastData = data || ""
-        tbody.append(generateRow(lastPii, lastData, lastIdx))
+        let lastPii = pii || ""
+        let lastVal = val || ""
+        tbody.append(generateRowRedact(lastPii, lastVal, lastIdx))
     }
 
-    const getIdFromClickedButton = event => {
+    const getIdFromClickedButtonRedact = event => {
         return event.currentTarget.id
     }
 
-    const getRowNumberFromClickedButton = event => {
+    const getRowNumberFromClickedButtonRedact = event => {
         return $(event.currentTarget).attr('data-idx')
     }
 
-    const onModalButtonClicked = event => {
-        const buttonId = getIdFromClickedButton(event)
+    const onModalButtonClickedRedact = event => {
+        console.log("Button clicked:", event.currentTarget.id)
+        const buttonId = getIdFromClickedButtonRedact(event)
         switch(buttonId) {
-            case "remove-all-labels":
-                removeAllLabels()
+            case "remove-all-redacts":
+                removeAllRedacts()
                 break
-            case "remove-label":
-                const idx = getRowNumberFromClickedButton(event)
-                removeLabel(idx)
+            case "remove-redact":
+                const idx = getRowNumberFromClickedButtonRedact(event)
+                removeRedact(idx)
                 break
-            case "add-label":
-                addLabel()
+            case "add-redact":
+                addRedact()
                 break
         }
     }
 
-    const removeAppNameField = () => {
+    const removeAppNameFieldRedact = () => {
         $(`input[name="app_name"]`).remove()
     }
 
-    const resetModalFields = () => {
-        removeAllLabels()
-        removeAppNameField()
+    const resetModalFieldsRedact = () => {
+        removeAllRedacts()
+        removeAppNameFieldRedact()
         modifyTitle(`Manage PII redact Data #{app_group}`)
         modifyFormAction(`#{update_labels_app_group_path}`)
     }
 
-    const getApplicationURLFromClickedButton = event => {
+    const getApplicationURLFromClickedButtonRedact = event => {
         return $(event.relatedTarget).attr('data-app-path')
     }
-    const getApplicationNameFromClickedButton = event => {
+    const getApplicationNameFromClickedButtonRedact = event => {
         return $(event.relatedTarget).attr('data-app-name') 
     }
-    const isManageAppGroupLabelsEvent = event => {
-        return getApplicationNameFromClickedButton(event) === undefined
+    const isManageAppGroupRedactsEventRedact = event => {
+        return getApplicationNameFromClickedButtonRedact(event) === undefined
     }
 
-    const modifyTitle = text => {
-        $('#manage-label-redact-modal-title').text(text)
+    const modifyTitleRedact = text => {
+        $('#manage-redact-modal-title').text(text)
     }
 
-    const modifyFormAction = action => {
-        $('form#update-labels').attr('action', action) 
+    const modifyFormActionRedact = action => {
+        $('form#update-redacts').attr('action', action) 
     }
 
-    const modifyModalForManageApplicationLabels = event => {
-        let appName = getApplicationNameFromClickedButton(event)
-        modifyFormAction(getApplicationURLFromClickedButton(event))
+    const modifyModalForManageApplicationRedacts = event => {
+        let appName = getApplicationNameFromClickedButtonRedact(event)
+        modifyFormAction(getApplicationURLFromClickedButtonRedact(event))
 
-        // change the title
-        modifyTitle(`Manage PII redact Data #{app_group}: ${appName}`)
+        modifyTitleRedact(`Manage PII Redact Data #{app_group}: ${appName}`)
 
-        // add app_name field
-        $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
+        $('tbody#redact-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
 
         return appName
     }
 
-    const showCurrentLabels = labels => {
-        Object.pii(labels).map((pii, idx) => addLabel(pii, labels[pii], idx+1))
+    const showCurrentRedacts = redacts => {
+        Object.piis(redacts).map((pii, idx) => addRedact(pii, redacts[pii], idx+1))
     }
 
-    const onModalOpen = event => {
-        resetModalFields()
+    const onModalOpenRedact = event => {
+        resetModalFieldsRedact()
 
-        let shownLabel = []
-        if (isManageAppGroupLabelsEvent(event)) {
-            shownLabel = labels['app-group']
+        let shownRedact = []
+        if (isManageAppGroupRedactsEvent(event)) {
+            shownRedact = redacts['app-group']
         } else {
-            let appName = modifyModalForManageApplicationLabels(event)
-            shownLabel = labels[appName]
+            let appName = modifyModalForManageApplicationRedacts(event)
+            shownRedact = redacts[appName]
         }
 
-        showCurrentLabels(shownLabel)
+        showCurrentRedacts(shownRedact)
     }
 
-    // triggered when the modal is opened
+    if (typeof $ === 'undefined') {
+        console.log("jQuery is not loaded!");
+    } else {
+        console.log("jQuery is loaded and ready to use.");
+    }
 
-    $('body').on('click', '#manage-label-redact-modal button.btn', onModalButtonClicked)
-    $('#manage-label-redact-modal').on('show.bs.modal', onModalOpen)
-    
+    $('body').on('click', '#manage-redact-modal button.btn', onModalButtonClickedRedact)
+    $('#manage-redact-modal').on('show.bs.modal', onModalOpen)

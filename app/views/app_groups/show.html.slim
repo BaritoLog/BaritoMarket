@@ -107,8 +107,8 @@
             - else
               = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
     
-        .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-label-redact-modal"
-          i.fa.fa-tag.mr-1
+        .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-redact-modal"
+          i.fa.fa-user-shield.mr-1
           | Redact PII Data
 
         - if @allow_delete_helm_infrastructure
