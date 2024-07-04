@@ -68,6 +68,9 @@ h4.mb-3 All Applications
           td.col-1
             .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-modal" data-app-name=app.name data-app-path=update_labels_app_path(app)
               i.fa.fa-tag.text-light
+              
+            .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-redact-modal" data-app-name=app.name data-app-path=update_labels_app_path(app)
+              i.fa.fa-user-shield.text-light
 
             - if allow_delete
               .btn.btn-danger.btn-sm
