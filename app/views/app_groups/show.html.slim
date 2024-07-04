@@ -109,7 +109,7 @@
     
         .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-redact-modal"
           i.fa.fa-user-shield.mr-1
-          | Redact PII Data
+          | Redact PII Data Rules
 
         - if @allow_delete_helm_infrastructure
           div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{@app_group.helm_infrastructure.id}")

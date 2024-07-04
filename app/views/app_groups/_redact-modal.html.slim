@@ -4,7 +4,7 @@ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labeled
             = form_with(url: update_labels_app_group_path, method: 'patch', local: true, id: 'update-redacts')
             div.modal-header
                 h5.modal-title#manage-redact-modal-title
-                    = "Manage PII Redact Data #{app_group}"
+                    = "Manage PII Redact Data Rules #{app_group}"
                 button.close data-dismiss="modal" aria-label="close" type="button"
                     span aria-hidden=true
                         | &times;
