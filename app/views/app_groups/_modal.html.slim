@@ -29,6 +29,7 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
                     button#submit-label.btn.btn-primary type="submit"
                         | update
 
+
 javascript:
     const labels = #{labels.to_json.html_safe}
     const allow_manage_labels = #{allow_manage_labels}
@@ -134,10 +135,8 @@ javascript:
         let appName = getApplicationNameFromClickedButton(event)
         modifyFormAction(getApplicationURLFromClickedButton(event))
 
-        // change the title
         modifyTitle(`Manage Labels #{app_group}: ${appName}`)
 
-        // add app_name field
         $('tbody#label-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
 
         return appName
