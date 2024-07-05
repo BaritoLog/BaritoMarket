@@ -102,13 +102,20 @@ class AppGroup < ApplicationRecord
       labels = params[:labels]
     end
 
+    if params[:redact_labels].nil? || params[:redact_labels].empty?
+      redact_labels = {}
+    else
+      redact_labels = params[:redact_labels]
+    end
+
     ActiveRecord::Base.transaction do
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
         environment: params[:environment],
-        labels: labels
+        labels: labels,
+        redact_labels: redact_labels
       )
 
       helm_infrastructure = HelmInfrastructure.setup(

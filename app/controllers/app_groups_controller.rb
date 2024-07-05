@@ -1,6 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -50,8 +50,10 @@ class AppGroupsController < ApplicationController
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
     @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
     @allow_manage_labels = policy(@app_group).update_labels?
+    @allow_manage_redact = policy(@app_group).update_redact_labels?
     @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
     @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
+    @show_redact_pii = Figaro.env.SHOW_REDACT_PII == "true"
 
     @labels = {}
     if @app_group.labels.nil?
@@ -62,6 +64,22 @@ class AppGroupsController < ApplicationController
     @apps.each do |app|
       @labels.store(app.name, app.labels)
     end
+
+    puts("in app group controller: labels: ", @labels)
+
+    @redact_labels = {}
+    if @app_group.redact_labels.nil?
+      @app_group.redact_labels = {}
+    end
+    @redact_labels.store('app-group', @app_group.redact_labels)
+    puts("in app group controller: redact labels: ", @redact_labels)
+
+
+
+    # @redact_labels.store('app-group', @app_group.redact_labels)
+    # @apps.each do |app|
+    #   @redact_labels.store(app.name, app.redact_labels)
+    # end
   end
 
   def new
@@ -85,6 +103,19 @@ class AppGroupsController < ApplicationController
     else
       app_group_params[:labels] = {}
     end
+
+    # not sure if needed
+
+    # if app_group_params[:redact_labels].present?
+    #   app_group_params[:redact_labels].each do |key, val|
+    #     if val.empty?
+    #       flash[:messages] = ["Required #{key} values must be filled."]
+    #       return redirect_to new_app_group_path
+    #     end
+    #   end
+    # else
+    #   app_group_params[:redact_labels] = {}
+    # end
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
@@ -163,6 +194,7 @@ class AppGroupsController < ApplicationController
 
   def update_labels
     authorize @app_group
+    puts("inside app groups controller update labels ")
 
     from_labels = @app_group.labels
     labels = {}
@@ -184,6 +216,32 @@ class AppGroupsController < ApplicationController
     redirect_to request.referer
   end
 
+  def update_redact_labels
+    puts("inside app groups controller update redact ")
+    authorize @app_group
+
+    from_labels = @app_group.redact_labels
+    redact_labels = {}
+    puts("these are the keys: ", params[:piis])
+    puts("these are the values: ", params[:values])
+
+    if params[:keys].present? && params[:values].present?
+      params[:keys].zip(params[:values]).each do |key,val|
+        unless val.empty? || key.empty?
+          redact_labels.store(key, val)
+        end
+      end
+    end
+
+    # @app_group.update(redact_labels: redact_labels)
+    # audit_log :update_labels, {
+    #   "from_labels" => from_labels,
+    #   "to_labels" => labels
+    # }
+
+    redirect_to request.referer
+  end
+
   private
 
   def permitted_params
@@ -196,6 +254,7 @@ class AppGroupsController < ApplicationController
         :max_tps,
       ],
       labels: {},
+      redact_labels: {},
     )
   end
 

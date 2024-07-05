@@ -89,6 +89,29 @@ class AppsController < ApplicationController
     redirect_to request.referer
   end
 
+  def update_redact_labels
+    puts("inside barito apps controller update redact ")
+    from_labels = @app.redact_labels
+    redact_labels = {}
+
+    if params[:keys].present? && params[:values].present?
+      params[:keys].zip(params[:values]).each do |key,val|
+        unless val.empty? || key.empty?
+          redact_labels.store(key, val)
+        end
+      end
+    end
+    @app.update(redact_labels: redact_labels)
+    broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
+
+    # audit_log :update_labels, {
+    #   "from_labels" => from_labels,
+    #   "to_labels" => labels
+    # }
+
+    redirect_to request.referer
+  end
+
   private
     def app_params
       params.require(:barito_app).permit(

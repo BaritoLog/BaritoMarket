@@ -135,6 +135,7 @@ Rails.application.routes.draw do
         get :manage_access
         post :bookmark
         patch :update_app_group_name
+        patch :update_redact_labels
         patch :update_labels
       end
       collection do
@@ -146,6 +147,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :update_log_retention_days
+        patch :update_redact_labels
         patch :update_labels
       end
     end
