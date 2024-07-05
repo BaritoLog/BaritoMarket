@@ -65,21 +65,15 @@ class AppGroupsController < ApplicationController
       @labels.store(app.name, app.labels)
     end
 
-    puts("in app group controller: labels: ", @labels)
-
     @redact_labels = {}
     if @app_group.redact_labels.nil?
       @app_group.redact_labels = {}
     end
     @redact_labels.store('app-group', @app_group.redact_labels)
-    puts("in app group controller: redact labels: ", @redact_labels)
 
-
-
-    # @redact_labels.store('app-group', @app_group.redact_labels)
-    # @apps.each do |app|
-    #   @redact_labels.store(app.name, app.redact_labels)
-    # end
+    @apps.each do |app|
+      @redact_labels.store(app.name, app.redact_labels)
+    end
   end
 
   def new
@@ -194,7 +188,6 @@ class AppGroupsController < ApplicationController
 
   def update_labels
     authorize @app_group
-    puts("inside app groups controller update labels ")
 
     from_labels = @app_group.labels
     labels = {}
@@ -217,13 +210,10 @@ class AppGroupsController < ApplicationController
   end
 
   def update_redact_labels
-    puts("inside app groups controller update redact ")
     authorize @app_group
 
     from_labels = @app_group.redact_labels
     redact_labels = {}
-    puts("these are the keys: ", params[:piis])
-    puts("these are the values: ", params[:values])
 
     if params[:keys].present? && params[:values].present?
       params[:keys].zip(params[:values]).each do |key,val|
@@ -233,11 +223,11 @@ class AppGroupsController < ApplicationController
       end
     end
 
-    # @app_group.update(redact_labels: redact_labels)
-    # audit_log :update_labels, {
-    #   "from_labels" => from_labels,
-    #   "to_labels" => labels
-    # }
+    @app_group.update(redact_labels: redact_labels)
+    audit_log :update_redact_labels, {
+      "from_labels" => from_labels,
+      "to_labels" => redact_labels
+    }
 
     redirect_to request.referer
   end

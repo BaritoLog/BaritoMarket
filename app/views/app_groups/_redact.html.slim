@@ -1,42 +1,10 @@
-/ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelledby="manage-redact-modal-title" aria-hidden=true
-/     div.modal-dialog role="document"
-/         div.modal-content
-/             = form_with(url: update_redact_labels_app_group_path, method: 'patch', local: true, id: 'update-redact' )
-/             div.modal-header
-/                 h5.modal-title#manage-redact-modal-title
-/                     = "Manage redact #{app_group}"
-/                 button.close data-dismiss="modal" aria-label="close" type="button"
-/                     span aria-hidden=true
-/                         | &times;
-/             div.modal-body
-/                 table.table
-/                   thead
-/                     tr
-/                       th[scope="col"]
-/                         | Key
-/                       th[scope="col"]
-/                         | Value
-/                       - if @allow_manage_redact
-/                         th[scope="col"]
-/                             | Actions
-/                   tbody#redact-body
-/             div.modal-footer
-/                 - if @allow_manage_redact
-/                     button#remove-all-redact.btn.btn-danger type="button"
-/                         | remove all redact
-/                     button#add-redact.btn.btn-success type="button" 
-/                         | add redact
-/                     button#submit-redact.btn.btn-primary type="submit"
-/                         | update
-
-
 div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelledby="manage-redact-modal-title" aria-hidden=true
     div.modal-dialog role="document"
         div.modal-content
-          form#update-redact
+          = form_with(url: update_redact_labels_app_group_path, method: 'patch', local: true, id: 'update-redact' )
             div.modal-header
                 h5.modal-title#manage-redact-modal-title
-                    = "Manage redact #{app_group}"
+                    = "Redact PII data: #{app_group}"
                 button.close data-dismiss="modal" aria-label="close" type="button"
                     span aria-hidden=true
                         | &times;
@@ -45,9 +13,9 @@ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelle
                   thead
                     tr
                       th[scope="col"]
-                        | Key
+                        | Key to redact
                       th[scope="col"]
-                        | Value
+                        | Static/JsonPath rule
                       - if @allow_manage_redact
                         th[scope="col"]
                             | Actions
@@ -55,11 +23,11 @@ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelle
             div.modal-footer
                 - if @allow_manage_redact
                     button#remove-all-redact.btn.btn-danger type="button"
-                        | remove all redact
+                        | Remove all labels 
                     button#add-redact.btn.btn-success type="button" 
-                        | add redact
+                        | Add label
                     button#submit-redact.btn.btn-primary type="submit"
-                        | update
+                        | Update
 
 
 javascript:
@@ -166,11 +134,8 @@ javascript:
     const modifyModalForManageApplicationredact = event => {
         let appName = getApplicationNameFromClickedButtonRedact(event)
         modifyFormActionRedact(getApplicationURLFromClickedButtonRedact(event))
-
-        // change the title
         modifyTitleRedact(`Manage redact #{app_group}: ${appName}`)
 
-        // add app_name field
         $('tbody#redact-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
 
         return appName
@@ -199,11 +164,3 @@ javascript:
     $('body').on('click', '#manage-redact-modal button.btn', onModalButtonClickedRedact)
     $('#manage-redact-modal').on('show.bs.modal', onModalOpenRedact)
 
-    $('body').on('click', '#submit-redact', function(event){
-      event.preventDefault();
-      console.log("Another form submitted");
-      const form = $('#update-redact');
-      const formData = form.serializeArray();
-      console.log("This is the form data: ", formData)
-      // Add your form submission logic here
-    });

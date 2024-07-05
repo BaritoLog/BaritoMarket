@@ -2,25 +2,25 @@ div.modal.fade id="manage-label-modal" tabindex="-1" role="dialog" aria-labelled
     div.modal-dialog role="document"
         div.modal-content
             = form_with(url: update_labels_app_group_path, method: 'patch', local: true, id: 'update-labels')
-            div.modal-header
-                h5.modal-title#manage-label-modal-title
-                    = "Manage Labels #{app_group}"
-                button.close data-dismiss="modal" aria-label="close" type="button"
-                    span aria-hidden=true
-                        | &times;
-            div.modal-body
-                table.table
-                  thead
-                    tr
-                      th[scope="col"]
-                        | Key
-                      th[scope="col"]
-                        | Value
-                      - if @allow_manage_labels
+              div.modal-header
+                  h5.modal-title#manage-label-modal-title
+                      = "Manage Labels #{app_group}"
+                  button.close data-dismiss="modal" aria-label="close" type="button"
+                      span aria-hidden=true
+                          | &times;
+              div.modal-body
+                  table.table
+                    thead
+                      tr
                         th[scope="col"]
-                            | Actions
-                  tbody#label-body
-            div.modal-footer
+                          | Key
+                        th[scope="col"]
+                          | Value
+                        - if @allow_manage_labels
+                          th[scope="col"]
+                              | Actions
+                    tbody#label-body
+              div.modal-footer
                 - if @allow_manage_labels
                     button#remove-all-labels.btn.btn-danger type="button"
                         | remove all labels
