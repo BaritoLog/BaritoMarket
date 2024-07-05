@@ -90,7 +90,6 @@ class AppsController < ApplicationController
   end
 
   def update_redact_labels
-    puts("inside barito apps controller update redact ")
     from_labels = @app.redact_labels
     redact_labels = {}
 
@@ -104,10 +103,10 @@ class AppsController < ApplicationController
     @app.update(redact_labels: redact_labels)
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
 
-    # audit_log :update_labels, {
-    #   "from_labels" => from_labels,
-    #   "to_labels" => labels
-    # }
+    audit_log :update_redact_labels, {
+      "from_labels" => from_labels,
+      "to_labels" => redact_labels
+    }
 
     redirect_to request.referer
   end
