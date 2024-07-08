@@ -215,10 +215,10 @@ class AppGroupsController < ApplicationController
     from_labels = @app_group.redact_labels
     redact_labels = {}
 
-    if params[:keys].present? && params[:values].present?
-      params[:keys].zip(params[:values]).each do |key,val|
-        unless val.empty? || key.empty?
-          redact_labels.store(key, val)
+    if params[:keys].present? && params[:values].present? && params[:types].present? && params[:hintCharStart].present? && params[:hintCharEnd].present?
+      params[:keys].zip(params[:values], params[:types], params[:hintCharStart], params[:hintCharEnd]).each do |key,val,type,hintCharStart,hintCharEnd|
+        unless val.empty? || key.empty? || type.empty?
+          redact_labels.store(key,{value: val, type: type, hintCharStart: hintCharStart, hintCharEnd: hintCharEnd})
         end
       end
     end

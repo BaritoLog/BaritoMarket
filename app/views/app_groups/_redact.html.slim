@@ -13,9 +13,16 @@ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelle
                   thead
                     tr
                       th[scope="col"]
+                        | Rule Type
+                      th[scope="col"]
                         | Key to redact
                       th[scope="col"]
-                        | Static/JsonPath rule
+                        | Rule
+                      th[scope="col"]
+                        | Hint Charater Start
+                      th[scope="col"]
+                        | Hint Charater End
+
                       - if @allow_manage_redact
                         th[scope="col"]
                             | Actions
@@ -50,7 +57,7 @@ javascript:
         row[0].remove()
     }
 
-    const generateRowRedact = (key, val, idx) => {
+    const generateRowRedact = (key, val, idx, type, start, end) => {
             let delete_button = ""
             if (allow_manage_redact) {
                 delete_button = ` <td>
@@ -61,10 +68,22 @@ javascript:
             }
             return `<tr data-idx="${idx}">
                 <td>
+                    <select class="form-control" name=types[] id="type" value="${type}" ${allow_manage_redact ? "" : "disabled"}>
+                      <option value="jsonPath">Json Path</option>
+                      <option value="static">Static Rule</option>
+                    </select>
+                </td>
+                <td>
                     <input class="form-control" name=keys[] value="${key}" ${allow_manage_redact ? "" : "disabled"}>
                 </td>
                 <td>
                     <input class="form-control" name=values[] value="${val}" ${allow_manage_redact ? "" : "disabled"}>
+                </td>
+                <td>
+                    <input class="form-control" name=hintCharStart[] value="${start}" ${allow_manage_redact ? "" : "disabled"}>
+                </td>
+                <td>
+                    <input class="form-control" name=hintCharEnd[] value="${end}" ${allow_manage_redact ? "" : "disabled"}>
                 </td>
                 ${delete_button}          
             </tr>`
@@ -74,8 +93,12 @@ javascript:
         let tbody = $('tbody#redact-body')
         let lastIdx = idx || Number($(tbody.children().last()).attr('data-idx'))+1
         let lastKey = key || ""
-        let lastVal = val || ""
-        tbody.append(generateRowRedact(lastKey, lastVal, lastIdx))
+        let lastVal = val?.value || ""
+        let lastType = val?.type || ""
+        let lastHintCharStart = val?.hintCharStart || ""
+        let lastHintCharEnd = val?.hintCharEnd || ""
+
+        tbody.append(generateRowRedact(lastKey, lastVal, lastIdx, lastType, lastHintCharStart, lastHintCharEnd))
     }
 
     const getIdFromClickedButtonRedact = event => {
@@ -109,7 +132,7 @@ javascript:
     const resetModalFieldsRedact = () => {
         removeAllredact()
         removeAppNameFieldRedact()
-        modifyTitleRedact(`Manage redact #{app_group}`)
+        modifyTitleRedact(`Redact PII data: #{app_group}`)
         modifyFormActionRedact(`#{update_redact_labels_app_group_path}`)
     }
 
@@ -134,7 +157,7 @@ javascript:
     const modifyModalForManageApplicationredact = event => {
         let appName = getApplicationNameFromClickedButtonRedact(event)
         modifyFormActionRedact(getApplicationURLFromClickedButtonRedact(event))
-        modifyTitleRedact(`Manage redact #{app_group}: ${appName}`)
+        modifyTitleRedact(`Redact PII data: #{app_group}: ${appName}`)
 
         $('tbody#redact-body').append(`<input type="hidden" name="app_name" value="${appName}">`)
 

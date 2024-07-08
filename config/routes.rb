@@ -88,6 +88,9 @@ Rails.application.routes.draw do
       get :profile_app,
         to: 'app_groups#profile_app',
         defaults: {format: :json}
+      get :fetch_redact_labels,
+        to: 'app_groups#fetch_redact_labels',
+        defaults: {format: :json}
       get :check_app_group,
         to: 'app_groups#check_app_group',
         defaults: {format: :json}

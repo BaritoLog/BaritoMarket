@@ -205,11 +205,44 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     }, status: :ok and return
   end
 
+  def fetch_redact_labels
+    valid, error_response = validate_required_keys(
+      [:app_group_secret])
+    render json: error_response, status: error_response[:code] and return unless valid
+
+    all_labels = []
+    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    if app_group.blank? || !app_group.available?
+      render json: {
+        success: false,
+        errors: ['AppGroup not found or inactive'],
+        code: 404
+      }, status: :not_found and return
+    end
+
+    barito_apps =[]
+    app_group.barito_apps.where(status:"ACTIVE").each do |barito_app|
+      redact_labels = barito_app.redact_labels
+      barito_apps << {
+        barito_app: barito_app.redact_labels,
+        app_name: barito_app.name,
+      }
+    end
+
+    all_labels << {
+      default: app_group.redact_labels,
+      app_group: barito_apps,
+    }
+
+   render json: all_labels
+  end
+
   private
 
   def app_group_params
     params.permit(:name, :cluster_template_id, :environment,
       labels: {},
+      redact_labels: {},
     )
   end
 end
