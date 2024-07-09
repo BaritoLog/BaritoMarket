@@ -210,7 +210,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       [:app_group_secret])
     render json: error_response, status: error_response[:code] and return unless valid
 
-    all_labels = []
+    all_labels = {}
     app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
     if app_group.blank? || !app_group.available?
       render json: {
@@ -219,20 +219,23 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         code: 404
       }, status: :not_found and return
     end
+    
+    static, jsonPath = accumulate_rules(app_group)
+    all_labels['default'] = {
+      StaticRules: static,
+      JsonPathRules: jsonPath,
+    }
 
     barito_apps =[]
     app_group.barito_apps.where(status:"ACTIVE").each do |barito_app|
-      redact_labels = barito_app.redact_labels
-      barito_apps << {
-        barito_app: barito_app.redact_labels,
-        app_name: barito_app.name,
-      }
+      static, jsonPath = accumulate_rules(barito_app)
+      if !static.empty? || !jsonPath.empty?
+        all_labels[barito_app.name] = {
+          StaticRules: static,
+          JsonPathRules: jsonPath,
+        }
+      end
     end
-
-    all_labels << {
-      default: app_group.redact_labels,
-      app_group: barito_apps,
-    }
 
    render json: all_labels
   end
@@ -244,5 +247,29 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       labels: {},
       redact_labels: {},
     )
+  end
+
+  def accumulate_rules(obj)
+    static_rule = []
+    json_path_rule = []
+    
+    obj.redact_labels&.each do |key, val| 
+      if val['type'] == 'jsonPath'
+        json_path_rule << {
+          Name: key,
+          Path: val['value'],
+          HintCharsStart: val['hintCharStart'],
+          HintCharsEnd: val['hintCharEnd']
+        }
+      elsif val['type'] == 'static'
+        static_rule << {
+          Name: key,
+          Regex: val['value'],
+          HintCharsStart: val['hintCharStart'],
+          HintCharsEnd: val['hintCharEnd']
+        }
+      end 
+    end
+    [static_rule, json_path_rule] 
   end
 end
