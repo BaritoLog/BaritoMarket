@@ -1,10 +1,10 @@
 div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelledby="manage-redact-modal-title" aria-hidden=true
-    div.modal-dialog role="document"
+    div.modal-dialog role="document" style="max-width: 65%;"
         div.modal-content
           = form_with(url: update_redact_labels_app_group_path, method: 'patch', local: true, id: 'update-redact' )
             div.modal-header
                 h5.modal-title#manage-redact-modal-title
-                    = "Redact PII data: #{app_group}"
+                    = "Redact PII Data: #{app_group}"
                 button.close data-dismiss="modal" aria-label="close" type="button"
                     span aria-hidden=true
                         | &times;
@@ -57,7 +57,7 @@ javascript:
         row[0].remove()
     }
 
-    const generateRowRedact = (key, val, idx, type, start, end) => {
+    const generateRowRedact = (key, val, idx, type, start = 0, end = 0) => {
             let delete_button = ""
             if (allow_manage_redact) {
                 delete_button = ` <td>
@@ -69,21 +69,21 @@ javascript:
             return `<tr data-idx="${idx}">
                 <td>
                     <select class="form-control" name=types[] id="type" value="${type}" ${allow_manage_redact ? "" : "disabled"}>
-                      <option value="jsonPath">Json Path</option>
-                      <option value="static">Static Rule</option>
+                      <option value="jsonPath" ${type === "jsonPath" ? "selected" : ""}>Json Path</option>
+                      <option value="static" ${type === "static" ? "selected" : ""}>Static Rule</option>
                     </select>
                 </td>
                 <td>
                     <input class="form-control" name=keys[] value="${key}" ${allow_manage_redact ? "" : "disabled"}>
                 </td>
                 <td>
-                    <input class="form-control" name=values[] value="${val}" ${allow_manage_redact ? "" : "disabled"}>
+                    <textarea class="form-control" name="values[]" ${allow_manage_redact ? "" : "disabled"}>${val}</textarea>
                 </td>
                 <td>
-                    <input class="form-control" name=hintCharStart[] value="${start}" ${allow_manage_redact ? "" : "disabled"}>
+                    <input class="form-control" type="number" name=hintCharStart[] value="${start}" min="0" step="1" oninput="this.value = Math.max(0, this.value)" ${allow_manage_redact ? "" : "disabled"}>
                 </td>
                 <td>
-                    <input class="form-control" name=hintCharEnd[] value="${end}" ${allow_manage_redact ? "" : "disabled"}>
+                    <input class="form-control" type="number" name=hintCharEnd[] value="${end}" min="0" step="1" oninput="this.value = Math.max(0, this.value)" ${allow_manage_redact ? "" : "disabled"}>
                 </td>
                 ${delete_button}          
             </tr>`
@@ -95,8 +95,8 @@ javascript:
         let lastKey = key || ""
         let lastVal = val?.value || ""
         let lastType = val?.type || ""
-        let lastHintCharStart = val?.hintCharStart || ""
-        let lastHintCharEnd = val?.hintCharEnd || ""
+        let lastHintCharStart = val?.hintCharStart || "0"
+        let lastHintCharEnd = val?.hintCharEnd || "0"
 
         tbody.append(generateRowRedact(lastKey, lastVal, lastIdx, lastType, lastHintCharStart, lastHintCharEnd))
     }
@@ -132,7 +132,7 @@ javascript:
     const resetModalFieldsRedact = () => {
         removeAllredact()
         removeAppNameFieldRedact()
-        modifyTitleRedact(`Redact PII data: #{app_group}`)
+        modifyTitleRedact(`Redact PII Data: #{app_group}`)
         modifyFormActionRedact(`#{update_redact_labels_app_group_path}`)
     }
 
@@ -186,4 +186,3 @@ javascript:
 
     $('body').on('click', '#manage-redact-modal button.btn', onModalButtonClickedRedact)
     $('#manage-redact-modal').on('show.bs.modal', onModalOpenRedact)
-

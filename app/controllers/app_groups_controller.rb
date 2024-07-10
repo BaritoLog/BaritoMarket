@@ -72,7 +72,11 @@ class AppGroupsController < ApplicationController
     @redact_labels.store('app-group', @app_group.redact_labels)
 
     @apps.each do |app|
-      @redact_labels.store(app.name, app.redact_labels)
+      app_label = {}
+      if !app.redact_labels.nil?
+        app_label = app.redact_labels
+      end
+      @redact_labels.store(app.name, app_label)
     end
   end
 
