@@ -1,6 +1,6 @@
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels toggle_redact_status)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -101,19 +101,6 @@ class AppGroupsController < ApplicationController
     else
       app_group_params[:labels] = {}
     end
-
-    # not sure if needed
-
-    # if app_group_params[:redact_labels].present?
-    #   app_group_params[:redact_labels].each do |key, val|
-    #     if val.empty?
-    #       flash[:messages] = ["Required #{key} values must be filled."]
-    #       return redirect_to new_app_group_path
-    #     end
-    #   end
-    # else
-    #   app_group_params[:redact_labels] = {}
-    # end
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
@@ -234,6 +221,27 @@ class AppGroupsController < ApplicationController
     }
 
     redirect_to request.referer
+  end
+
+  def toggle_redact_status
+    puts("inside toggle redact status")
+    statuses = AppGroup.redact_statuses
+    puts("this is the param comming from frontend ", params[:toggle_redact_status])
+
+    puts("this is the current status of app group ", @app_group.redact_status)
+
+    from_status = @app_group.redact_status
+    @app_group.redact_status = params[:toggle_redact_status] == 'true' ? statuses[:active] : statuses[:inactive]
+    @app_group.save!
+
+    audit_log :toggle_app_group_redact_status, { "from_status" => from_status, "to_status" => @app_group.redact_status }
+
+    if params[:app_group_id]
+      app_group = AppGroup.find(params[:app_group_id])
+      redirect_to app_group_path(app_group)
+    else
+      redirect_to app_groups_path
+    end
   end
 
   private

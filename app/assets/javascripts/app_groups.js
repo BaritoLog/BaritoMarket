@@ -31,6 +31,14 @@ var app_groups = {
       $form.submit();
     });
 
+    $("[id^='toggle_redact_status_']").change(function() {
+      var appGroupId = $(this).data("id");
+      var isChecked = $(this).prop("checked");
+      var $form = $("#form_toggle_redact_status_" + appGroupId);
+      $form.find("#toggle_redact_status").val(isChecked);
+      $form.submit();
+    });
+
     $("[id^='toggle_apps_list_']").hover(function() {
       var appGroupId = $(this).data("id");
       $("#toggle_apps_list_" + appGroupId).popover({

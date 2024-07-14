@@ -206,18 +206,21 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   end
 
   def fetch_redact_labels
-    valid, error_response = validate_required_keys(
-      [:app_group_secret])
-    render json: error_response, status: error_response[:code] and return unless valid
+    helm_infrastructure = HelmInfrastructure.find_by(
+      cluster_name: params[:cluster_name])
 
     all_labels = {}
-    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    app_group = AppGroup.find(helm_infrastructure.app_group_id)
     if app_group.blank? || !app_group.available?
       render json: {
         success: false,
         errors: ['AppGroup not found or inactive'],
         code: 404
       }, status: :not_found and return
+    end
+
+    if !app_group.redact_active?
+      render json: {} and return 
     end
     
     static, jsonPath = accumulate_rules(app_group)

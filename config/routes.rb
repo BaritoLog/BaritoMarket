@@ -140,6 +140,7 @@ Rails.application.routes.draw do
         patch :update_app_group_name
         patch :update_redact_labels
         patch :update_labels
+        patch :toggle_redact_status
       end
       collection do
         get :search

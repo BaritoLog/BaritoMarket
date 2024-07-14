@@ -16,6 +16,11 @@ class AppGroup < ApplicationRecord
     production: 'PRODUCTION',
   }
 
+  enum redact_statuses: {
+    inactive: 'INACTIVE',
+    active: 'ACTIVE',
+  }
+
   scope :active, -> {
     includes(:helm_infrastructure).
       includes(:barito_apps).
@@ -115,7 +120,8 @@ class AppGroup < ApplicationRecord
         log_retention_days: log_retention_days,
         environment: params[:environment],
         labels: labels,
-        redact_labels: redact_labels
+        redact_labels: redact_labels,
+        redact_status: "INACTIVE",
       )
 
       helm_infrastructure = HelmInfrastructure.setup(
@@ -125,6 +131,10 @@ class AppGroup < ApplicationRecord
 
       [app_group, helm_infrastructure]
     end
+  end
+
+  def redact_active?
+    self.redact_status == AppGroup.redact_statuses[:active]
   end
 
   def increase_log_count(new_count)

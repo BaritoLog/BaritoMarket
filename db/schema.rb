@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_04_071246) do
+ActiveRecord::Schema.define(version: 2024_07_12_053531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 2024_07_04_071246) do
     t.string "environment", default: "PRODUCTION"
     t.jsonb "labels", default: {}
     t.jsonb "redact_labels", default: {}
+    t.string "redact_status", default: "INACTIVE"
     t.index ["name"], name: "index_app_groups_on_name"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
   end

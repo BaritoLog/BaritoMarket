@@ -65,6 +65,14 @@
               = form_tag toggle_status_helm_infrastructure_path(@app_group.helm_infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_status
                 = hidden_field_tag :app_group_id, @app_group.id
+          
+          dt.col-sm-2 Redaction Status:
+          dd.col-sm-10
+            - if @allow_set_status
+              = check_box_tag "toggle_redact_status_#{@app_group.id}", true, @app_group.redact_active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+              = form_tag toggle_redact_status_app_group_path(@app_group), method: :patch, id: "form_toggle_redact_status_#{@app_group.id}" do
+                = hidden_field_tag :toggle_redact_status
+                = hidden_field_tag :app_group_id, @app_group.id
 
           - if @show_log_and_cost_col
             dt.col-sm-2 Total Daily Log Ingested:
