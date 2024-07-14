@@ -214,6 +214,8 @@ class AppGroupsController < ApplicationController
       end
     end
 
+    broadcast(:redact_labels_updated, @app_group.helm_infrastructure.cluster_name)
+
     @app_group.update(redact_labels: redact_labels)
     audit_log :update_redact_labels, {
       "from_labels" => from_labels,

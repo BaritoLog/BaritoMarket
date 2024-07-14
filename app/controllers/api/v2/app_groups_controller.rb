@@ -209,6 +209,12 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name])
 
+    redact_response_json = REDIS_CACHE.get(
+      "#{APP_GROUP_REDACT_LABELS}:#{params[:cluster_name]}")
+    if redact_response_json.present?
+      render json: JSON.parse(redact_response_json) and return
+    end
+
     all_labels = {}
     app_group = AppGroup.find(helm_infrastructure.app_group_id)
     if app_group.blank? || !app_group.available?
@@ -240,7 +246,9 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       end
     end
 
-   render json: all_labels
+    broadcast(:redact_response_updated, params[:cluster_name], all_labels)
+
+    render json: all_labels
   end
 
   private
