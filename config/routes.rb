@@ -35,6 +35,9 @@ Rails.application.routes.draw do
     get :profile_curator,
       to: 'infrastructures#profile_curator',
       defaults: { format: :json }
+    get :fetch_redact_labels,
+      to: 'app_groups#fetch_redact_labels',
+      defaults: {format: :json}
 
     namespace :v2 do
       post :increase_log_count,
