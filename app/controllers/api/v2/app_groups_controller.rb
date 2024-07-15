@@ -269,15 +269,15 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         json_path_rule << {
           Name: key,
           Path: val['value'],
-          HintCharsStart: val['hintCharStart'],
-          HintCharsEnd: val['hintCharEnd']
+          HintCharsStart: Integer(val['hintCharStart']),
+          HintCharsEnd: Integer(val['hintCharEnd'])
         }
       elsif val['type'] == 'static'
         static_rule << {
           Name: key,
           Regex: val['value'],
-          HintCharsStart: val['hintCharStart'],
-          HintCharsEnd: val['hintCharEnd']
+          HintCharsStart: Integer(val['hintCharStart']),
+          HintCharsEnd: Integer(val['hintCharEnd'])
         }
       end 
     end
