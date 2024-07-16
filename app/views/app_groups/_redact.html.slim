@@ -19,16 +19,24 @@ div.modal.fade id="manage-redact-modal" tabindex="-1" role="dialog" aria-labelle
                       th[scope="col"]
                         | Rule
                       th[scope="col"]
-                        | Hint Charater Start
+                        | Masking Start
+                        div#maskedcharstart
+                          | (?)
                       th[scope="col"]
-                        | Hint Charater End
-
+                        | Masking End
+                        div#maskedcharend
+                          | (?)
                       - if @allow_manage_redact
                         th[scope="col"]
                             | Actions
                   tbody#redact-body
-            div.modal-footer
-                - if @allow_manage_redact
+            div.modal-footer style="display: flex; justify-content: space-between; align-items: center;"
+                div#info
+                  | * JsonPath Rules: Provide exact json path of the key to be redacted. Eg: user.details.email
+                  br
+                  | * Static Rules: Provide the regex pattern to match your logs with. Eg: [a-z]+@[a-z]+\\.com
+                div#buttons style="display: flex; gap: 10px;"
+                  - if @allow_manage_redact
                     button#remove-all-redact.btn.btn-danger type="button"
                         | Remove all labels 
                     button#add-redact.btn.btn-success type="button" 

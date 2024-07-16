@@ -102,6 +102,11 @@
         .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-label-modal"
           i.fa.fa-tag.mr-1
           | Manage Labels
+        
+        - if @show_redact_pii
+          .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-redact-modal"
+            i.fa.fa-tag.mr-1
+            | Redact PII data
 
         - if @allow_manage_access
           .btn.btn-primary.btn-sm.mr-2
@@ -114,10 +119,7 @@
               = link_to 'Show Helm Infrastructure', helm_infrastructure_path(@app_group.helm_infrastructure), class: 'text-light', style: 'text-decoration: none'
             - else
               = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
-        - if @show_redact_pii
-          .btn.btn-primary.btn-sm.mr-2 data-toggle="modal" data-target="#manage-redact-modal"
-            i.fa.fa-tag.mr-1
-            | Redact PII data
+
         - if @allow_delete_helm_infrastructure
           div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{@app_group.helm_infrastructure.id}")
             i.far.fa-trash-alt.mr-1

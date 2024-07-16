@@ -51,6 +51,28 @@ var app_groups = {
         }
       });
     });
+
+    $("[id='maskedcharstart']").hover(function() {
+      $("#maskedcharstart").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+        content: function () {
+          return "Index from left where your masking would start";
+        }
+      });
+    });
+
+    $("[id='maskedcharend']").hover(function() {
+      $("#maskedcharend").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+        content: function () {
+          return "Index from right where your masking would end";
+        }
+      });
+    });
   }
 }
 
