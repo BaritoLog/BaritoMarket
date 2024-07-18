@@ -4,6 +4,15 @@ class Api::AppGroupsController < Api::BaseController
   include Wisper::Publisher
 
   def fetch_redact_labels
+
+    if Figaro.env.MARKET_CLIENT_KEY != params[:client_key]
+      render(json: {
+               success: false,
+               errors: ['Unauthorized'],
+               code: 401,
+             }, status: :not_found) && return
+    end
+
     helm_infrastructure = HelmInfrastructure.find_by(
       cluster_name: params[:cluster_name])
 
