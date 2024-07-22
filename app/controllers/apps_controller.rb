@@ -89,6 +89,30 @@ class AppsController < ApplicationController
     redirect_to request.referer
   end
 
+  def update_redact_labels
+    from_labels = @app.redact_labels
+    redact_labels = {}
+
+    if params[:keys].present? && params[:values].present? && params[:types].present? && params[:hintCharStart].present? && params[:hintCharEnd].present?
+      params[:keys].zip(params[:values], params[:types], params[:hintCharStart], params[:hintCharEnd]).each do |key,val,type,hintCharStart,hintCharEnd|
+        unless val.empty? || key.empty? || type.empty?
+          redact_labels.store(key,{value: val, type: type, hintCharStart: hintCharStart, hintCharEnd: hintCharEnd})
+        end
+      end
+    end
+    @app.update(redact_labels: redact_labels)
+
+    broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
+    broadcast(:redact_labels_updated, @app.app_group.helm_infrastructure.cluster_name)
+  
+    audit_log :update_redact_labels, {
+      "from_labels" => from_labels,
+      "to_labels" => redact_labels
+    }
+
+    redirect_to request.referer
+  end
+
   private
     def app_params
       params.require(:barito_app).permit(

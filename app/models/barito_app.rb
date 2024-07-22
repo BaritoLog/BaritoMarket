@@ -25,7 +25,8 @@ class BaritoApp < ApplicationRecord
       secret_key: BaritoApp.generate_key,
       max_tps: app_params[:max_tps].to_i,
       status: BaritoApp.statuses[:active],
-      labels: app_params[:labels]
+      labels: app_params[:labels],
+      redact_labels: app_params[:redact_labels]
     )
     app
   end

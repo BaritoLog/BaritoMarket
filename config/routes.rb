@@ -35,6 +35,9 @@ Rails.application.routes.draw do
     get :profile_curator,
       to: 'infrastructures#profile_curator',
       defaults: { format: :json }
+    get :fetch_redact_labels,
+      to: 'app_groups#fetch_redact_labels',
+      defaults: {format: :json}
 
     namespace :v2 do
       post :increase_log_count,
@@ -88,6 +91,9 @@ Rails.application.routes.draw do
       get :profile_app,
         to: 'app_groups#profile_app',
         defaults: {format: :json}
+      get :fetch_redact_labels,
+        to: 'app_groups#fetch_redact_labels',
+        defaults: {format: :json}
       get :check_app_group,
         to: 'app_groups#check_app_group',
         defaults: {format: :json}
@@ -135,7 +141,9 @@ Rails.application.routes.draw do
         get :manage_access
         post :bookmark
         patch :update_app_group_name
+        patch :update_redact_labels
         patch :update_labels
+        patch :toggle_redact_status
       end
       collection do
         get :search
@@ -146,6 +154,7 @@ Rails.application.routes.draw do
     defaults: { format: :html } do
       member do
         post :update_log_retention_days
+        patch :update_redact_labels
         patch :update_labels
       end
     end

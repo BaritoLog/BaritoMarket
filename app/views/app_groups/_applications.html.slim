@@ -69,6 +69,9 @@ h4.mb-3 All Applications
             .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-label-modal" data-app-name=app.name data-app-path=update_labels_app_path(app)
               i.fa.fa-tag.text-light
 
+            .btn.btn-primary.btn-sm data-toggle="modal" data-target="#manage-redact-modal" data-app-name=app.name data-app-path=update_redact_labels_app_path(app)
+              i.fa.fa-user-shield.text-light
+
             - if allow_delete
               .btn.btn-danger.btn-sm
                 = link_to "", app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, id: "delete_app_button_#{app.id}", class: 'far fa-trash-alt text-light'
