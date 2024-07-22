@@ -5,7 +5,7 @@ class Api::AppGroupsController < Api::BaseController
 
   def fetch_redact_labels
 
-    if Figaro.env.MARKET_CLIENT_KEY != params[:client_key]
+    if Figaro.env.MARKET_REDACT_CLIENT_KEY != params[:client_key]
       render(json: {
                success: false,
                errors: ['Unauthorized'],
