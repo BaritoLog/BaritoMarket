@@ -31,6 +31,14 @@ var app_groups = {
       $form.submit();
     });
 
+    $("[id^='toggle_redact_status_']").change(function() {
+      var appGroupId = $(this).data("id");
+      var isChecked = $(this).prop("checked");
+      var $form = $("#form_toggle_redact_status_" + appGroupId);
+      $form.find("#toggle_redact_status").val(isChecked);
+      $form.submit();
+    });
+
     $("[id^='toggle_apps_list_']").hover(function() {
       var appGroupId = $(this).data("id");
       $("#toggle_apps_list_" + appGroupId).popover({
@@ -40,6 +48,28 @@ var app_groups = {
         html: true,
         content: function () {
           return $("#toggle_apps_content_" + appGroupId).html();
+        }
+      });
+    });
+
+    $("[id='maskedcharstart']").hover(function() {
+      $("#maskedcharstart").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+        content: function () {
+          return "Index from left where your masking would start";
+        }
+      });
+    });
+
+    $("[id='maskedcharend']").hover(function() {
+      $("#maskedcharend").popover({
+        placement: 'right',
+        trigger: 'hover',
+        html: true,
+        content: function () {
+          return "Index from right where your masking would end";
         }
       });
     });

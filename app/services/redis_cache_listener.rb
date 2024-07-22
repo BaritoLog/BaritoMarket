@@ -7,6 +7,11 @@ class RedisCacheListener
       "#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}", profile_response.to_json)
   end
 
+  def redact_response_updated(cluster_name, all_labels)
+    REDIS_CACHE.set(
+      "#{APP_GROUP_REDACT_LABELS}:#{cluster_name}", all_labels.to_json)
+  end
+
   def app_group_profile_response_updated(app_group_secret, app_name, profile_response)
     REDIS_CACHE.set(
       "#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}", profile_response.to_json)
@@ -20,6 +25,10 @@ class RedisCacheListener
   def app_updated(app_group_secret, app_secret, app_name)
     REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
     REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")  
+  end
+
+  def redact_labels_updated(cluster_name)
+    REDIS_CACHE.del("#{APP_GROUP_REDACT_LABELS}:#{cluster_name}")
   end
 
   def app_group_updated(app_group_id)

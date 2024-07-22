@@ -49,9 +49,11 @@ DEFAULT_MAX_TPS:             '5000'
 MONITORING_LINK_FORMAT:      '%s'
 DEFAULT_REQUIRED_LABELS:     ''
 SHOW_LOG_AND_COST_COL:       'true'
+SHOW_REDACT_PII:             'true'
 PRICE_PER_GB:                '0.01'
 STANDARD_RETENTION:          '7'
 STANDARD_REPLICATION:        '1'
+MARKET_CLIENT_KEY:           ''
 
 development:
   RAILS_ENV:                 'development'
