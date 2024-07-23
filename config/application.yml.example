@@ -59,6 +59,9 @@ ARGOCD_URL:                   ''
 ARGOCD_TOKEN:                 ''
 ARGOCD_PROJECT_NAME:          'barito'
 ARGOCD_DESTINATION_NAMESPACE: 'barito-worker'
+HELM_CHART_VERSION:           ''
+HELM_REPOSITORY:              ''
+HELM_CHART_NAME:              ''
 
 development:
   RAILS_ENV:                 'development'
