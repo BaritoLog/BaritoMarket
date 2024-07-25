@@ -1,3 +1,5 @@
+require 'argocd_client'
+
 class HelmInfrastructuresController < ApplicationController
   include Wisper::Publisher
 
@@ -43,6 +45,10 @@ class HelmInfrastructuresController < ApplicationController
         "to_attributes" => @data_attributes.slice(:helm_cluster_template_id, :override_values, :is_active, :use_k8s_kibana)
       }
       broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
+      
+      client = ArgoCDClient.new
+      response = client.create_application(@helm_infrastructure.cluster_name, @data_attributes.slice(:override_values)['override_values'])
+
       redirect_to helm_infrastructure_path(@helm_infrastructure)
     else
       flash[:messages] = @helm_infrastructure.errors.full_messages
@@ -53,7 +59,9 @@ class HelmInfrastructuresController < ApplicationController
   def synchronize
     authorize @helm_infrastructure
     @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
-    @helm_infrastructure.synchronize_async
+    client = ArgoCDClient.new
+    response = client.sync_application(@helm_infrastructure.cluster_name)
+
     redirect_to helm_infrastructure_path(@helm_infrastructure)
   end
 
