@@ -47,7 +47,7 @@ class HelmInfrastructuresController < ApplicationController
       broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
       
       client = ArgoCDClient.new
-      response = client.create_application(@helm_infrastructure.cluster_name, @data_attributes.slice(:override_values)['override_values'])
+      response = client.create_application(@helm_infrastructure.cluster_name, @helm_infrastructure.values)
 
       redirect_to helm_infrastructure_path(@helm_infrastructure)
     else
