@@ -53,7 +53,6 @@ class HelmInfrastructure < ApplicationRecord
     end
   end
 
-  # removing this
   def synchronize_async
     HelmSyncWorker.perform_async id
   end

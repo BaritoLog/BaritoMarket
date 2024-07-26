@@ -1,5 +1,3 @@
-require 'argocd_client'
-
 class HelmInfrastructuresController < ApplicationController
   include Wisper::Publisher
 
@@ -45,9 +43,10 @@ class HelmInfrastructuresController < ApplicationController
         "to_attributes" => @data_attributes.slice(:helm_cluster_template_id, :override_values, :is_active, :use_k8s_kibana)
       }
       broadcast(:app_group_updated, @helm_infrastructure.app_group.id)
-      
-      client = ArgoCDClient.new
-      response = client.create_application(@helm_infrastructure.cluster_name, @helm_infrastructure.values)
+
+      if Figaro.env.ARGOCD_ENABLED == 'true'
+        response = ARGOCD_CLIENT.create_application(@helm_infrastructure.cluster_name, @helm_infrastructure.values, Figaro.env.argocd_default_destination_name)
+      end
 
       redirect_to helm_infrastructure_path(@helm_infrastructure)
     else
@@ -59,9 +58,20 @@ class HelmInfrastructuresController < ApplicationController
   def synchronize
     authorize @helm_infrastructure
     @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
-    client = ArgoCDClient.new
-    response = client.sync_application(@helm_infrastructure.cluster_name)
 
+    if Figaro.env.ARGOCD_ENABLED == 'true'
+      response = ARGOCD_CLIENT.sync_application(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+      response_body = response.env[:body]
+      status = response.env[:status]
+      reason_phrase = response.env[:reason_phrase]
+
+      parsed_body = JSON.parse(response_body)
+      message = parsed_body['message']
+      @helm_infrastructure.update!(last_log: "#{reason_phrase}: #{status}: #{message}")
+    else
+      @helm_infrastructure.synchronize_async
+    end
+    
     redirect_to helm_infrastructure_path(@helm_infrastructure)
   end
 
