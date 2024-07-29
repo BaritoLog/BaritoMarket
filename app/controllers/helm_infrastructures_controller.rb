@@ -57,18 +57,12 @@ class HelmInfrastructuresController < ApplicationController
 
   def synchronize
     authorize @helm_infrastructure
-    @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
 
     if Figaro.env.ARGOCD_ENABLED == 'true'
-      response = ARGOCD_CLIENT.sync_application(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
-      response_body = response.env[:body]
-      status = response.env[:status]
-      reason_phrase = response.env[:reason_phrase]
-
-      parsed_body = JSON.parse(response_body)
-      message = parsed_body['message']
-      @helm_infrastructure.update!(last_log: "#{reason_phrase}: #{status}: #{message}")
+      @helm_infrastructure.update!(last_log: "Argo Application sync will be scheduled.")
+      @helm_infrastructure.argo_synchronize_async
     else
+      @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
       @helm_infrastructure.synchronize_async
     end
     
