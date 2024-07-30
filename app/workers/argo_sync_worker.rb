@@ -5,6 +5,14 @@ class ArgoSyncWorker
   def perform(helm_infrastructure_id)
     infrastructure = HelmInfrastructure.find(helm_infrastructure_id)
 
+    if infrastructure.blank? || !infrastructure.active?
+      render json: {
+        success: false,
+        errors: ["Infrastructure not found"],
+        code: 404
+      }, status: :not_found and return
+    end
+
     release_name = infrastructure.cluster_name
     repository = Figaro.env.HELM_REPOSITORY.to_s
     chart_name = Figaro.env.HELM_CHART_NAME.to_s
@@ -32,28 +40,14 @@ class ArgoSyncWorker
     )
     infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
+    terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
     response = ARGOCD_CLIENT.sync_application(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
-
-    response_body = response.env[:body]
     status = response.env[:status]
-    reason_phrase = response.env[:reason_phrase]
-
-    parsed_body = JSON.parse(response_body)
-    message = parsed_body['message']
-
-    if status == 200
-      infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
-      infrastructure.update_status('ACTIVE')
-      out = "#{reason_phrase}: #{status}"
-    else
-      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
-      out = "#{reason_phrase}: #{status}: #{message}"
-    end
-
+    out = "#{response.env[:reason_phrase]}: #{status}"
     infrastructure.update!(last_log:
       (
         <<~EOS
-          Argo Application sync #{status == 200 ? "was initiated successfully" : "initiation was failed"}.
+          Argo Application sync #{status == 200 ? "was initiated successfully, soon it will be synced." : "initiation was failed"}.
 
           #{invocation_info}
 
@@ -62,5 +56,86 @@ class ArgoSyncWorker
         EOS
       ).strip
     )
+    if status != 200
+      return
+    end
+
+    timeout = 2 * 60 # 2 minutes by default
+    interval = 15
+
+    counter = timeout / interval
+    lastPhase = ''
+    lastMessage = ''
+
+    for i in 1..counter do
+      lastMessage, lastPhase = ARGOCD_CLIENT.check_sync_operation_status(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+      if lastPhase == 'Succeeded' 
+        break
+      end
+      sleep interval
+    end
+
+    if lastPhase == 'Running'
+      terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
+      if terminate_response.env[:status] == 200
+        infrastructure.update!(last_log:
+          (
+            <<~EOS
+              The Argo Application was not able to sync in 5 mins. Terminating the sync operation. \nReason: #{lastMessage}
+    
+              #{invocation_info}
+            EOS
+          ).strip
+        )
+      else
+        infrastructure.update!(last_log:
+          (
+            <<~EOS
+              The Argo Application was not able to sync in 5 mins. Sync process termination was not successful. \nReason: #{lastMessage}
+    
+              #{invocation_info}
+            EOS
+          ).strip
+        )
+      end
+      
+    elsif lastPhase == 'Failed'
+      terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
+      if terminate_response.env[:status] == 200
+        infrastructure.update!(last_log:
+          (
+            <<~EOS
+              The Argo Application sync was failed to sync. Terminating the sync operation. \nReason: #{lastMessage}
+    
+              #{invocation_info}
+            EOS
+          ).strip
+        )
+      else
+        infrastructure.update!(last_log:
+          (
+            <<~EOS
+              The Argo Application sync was failed to sync. Sync process termination was not successful. \nReason: #{lastMessage}
+    
+              #{invocation_info}
+            EOS
+          ).strip
+        )
+      end
+      
+    elsif lastPhase == 'Succeeded'
+      infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
+      infrastructure.update!(last_log:
+        (
+          <<~EOS
+            The Argo Application was synced successfully. Happy.
+  
+            #{invocation_info}
+          EOS
+        ).strip
+      )
+    end
   end
 end

@@ -67,4 +67,17 @@ class ArgoCDClient
       req.path = "/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}/sync"
     end
   end
+
+  def terminate_operation(app_group_name, argocd_destination_cluster)
+    return @conn.delete do | req |
+      req.path = "/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}/operation"
+    end
+  end
+
+  def check_sync_operation_status(app_group_name, argocd_destination_cluster)
+    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}").body)['status']
+    return app_status['operationState']['message'], app_status['operationState']['phase']
+    #  phase = Failed, Running, Succeeded
+    #  message = Operation terminated, any, successfully synced (all tasks run)
+  end
 end

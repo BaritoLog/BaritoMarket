@@ -46,6 +46,17 @@ class HelmInfrastructuresController < ApplicationController
 
       if Figaro.env.ARGOCD_ENABLED == 'true'
         response = ARGOCD_CLIENT.create_application(@helm_infrastructure.cluster_name, @helm_infrastructure.values, Figaro.env.argocd_default_destination_name)
+        response_body = response.env[:body]
+        status = response.env[:status]
+        reason_phrase = response.env[:reason_phrase]
+
+        parsed_body = JSON.parse(response_body)
+        message = parsed_body['message']
+
+        if status != 200
+          flash[:messages] = "#{reason_phrase}: #{status}: #{message}"
+          render :edit
+        end
       end
 
       redirect_to helm_infrastructure_path(@helm_infrastructure)
