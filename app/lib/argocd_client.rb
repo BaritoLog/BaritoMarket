@@ -1,3 +1,5 @@
+require 'time'
+
 class ArgoCDClient
   attr_accessor :url,
                 :token,
@@ -84,5 +86,23 @@ class ArgoCDClient
   def check_application_health_status(app_group_name, argocd_destination_cluster)
     app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}").body)['status']
     return app_status['health']['status']
+  end
+
+  def sync_duration(app_group_name, argocd_destination_cluster)
+    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}").body)['status']
+    start_time = Time.parse(app_status['operationState']['startedAt'])
+    end_time = ''
+    if !app_status.dig("operationState", "finishedAt")
+      return 'Still running'
+    else
+      end_time = Time.parse(app_status['operationState']['finishedAt'])
+      difference_in_seconds = end_time - start_time
+
+      hours = (difference_in_seconds / 3600).to_i
+      minutes = ((difference_in_seconds % 3600) / 60).to_i
+      seconds = (difference_in_seconds % 60).to_i
+
+      return "#{hours}:#{minutes}:#{seconds}"
+    end
   end
 end

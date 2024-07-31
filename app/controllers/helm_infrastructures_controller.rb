@@ -29,6 +29,8 @@ class HelmInfrastructuresController < ApplicationController
     @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
     @argo_operation_message, @argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
     @argo_application_health = ARGOCD_CLIENT.check_application_health_status(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    @argo_sync_duration = ARGOCD_CLIENT.sync_duration(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    @argo_application_url = "#{Figaro.env.ARGOCD_URL}/applications/#{Figaro.env.argocd_project_name}-#{@helm_infrastructure.cluster_name}-#{Figaro.env.argocd_default_destination_name}"
   end
 
   def edit

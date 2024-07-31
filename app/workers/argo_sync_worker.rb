@@ -42,7 +42,7 @@ class ArgoSyncWorker
         EOS
       ).strip
     )
-    infrastructure.update_provisioning_status('INTEGRATING_TO_ARGOCD')
+    infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
     terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
 
@@ -50,7 +50,7 @@ class ArgoSyncWorker
 
     status = response.env[:status]
     if status == 200 
-      infrastructure.update_provisioning_status('INTEGRATED_TO_ARGOCD')
+      infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
       infrastructure.update!(last_log:
         (
           <<~EOS
@@ -64,7 +64,7 @@ class ArgoSyncWorker
         ).strip
       )
     else
-      infrastructure.update_provisioning_status('ARGOCD_INTEGRATION_FAILED')
+      infrastructure.update_provisioning_status('DEPLOYMENT_ERROR')
       infrastructure.update!(last_log:
         (
           <<~EOS

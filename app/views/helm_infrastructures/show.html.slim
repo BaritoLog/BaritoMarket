@@ -41,6 +41,15 @@
             dd.col-sm-10
               = @argo_application_health
 
+            dt.col-sm-2 Argo Sync duration:
+            dd.col-sm-10
+              = @argo_sync_duration
+
+            dt.col-sm-2 ArgoCD URL:
+            dd.col-sm-10
+              - url = @argo_application_url
+              a href=url Link
+
           dt.col-sm-2 Last Log:
           dd.col-sm-10
             pre
