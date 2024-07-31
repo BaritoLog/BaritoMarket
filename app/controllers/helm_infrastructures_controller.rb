@@ -108,8 +108,13 @@ class HelmInfrastructuresController < ApplicationController
     barito_apps.each do |app|
       app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
-    @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
-    DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
+
+    if Figaro.env.ARGOCD_ENABLED == 'true'
+      ArgoDeleteWorker.perform_async(@helm_infrastructure.id)
+    else
+      @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
+      DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
+    end
 
     audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => @helm_infrastructure.id }
     redirect_to app_groups_path
