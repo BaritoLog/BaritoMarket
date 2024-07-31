@@ -29,9 +29,7 @@ class ArgoSyncWorker
       EOS
     ).strip
 
-    # sleep to prevent mass sync on argo 
-    interval = 10
-    sleep interval
+    sleep Figaro.env.argocd_worker_sync_interval.to_i
 
     infrastructure.update!(last_log:
       (
