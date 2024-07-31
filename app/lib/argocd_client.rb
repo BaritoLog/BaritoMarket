@@ -27,9 +27,18 @@ class ArgoCDClient
       }
     )
   end
-def get_application_name(app_group_name, argocd_destination_cluster)
+
+  def get_application_name(app_group_name, argocd_destination_cluster)
     return "#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}"
-end
+  end
+
+  def delete_application(app_group_name, argocd_destination_cluster)
+    return @conn.delete do | req |
+      req.params['project'] = Figaro.env.ARGOCD_PROJECT_NAME
+      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}"
+    end
+  end
+
   def get_cluster_map()
     return JSON.parse(@conn.get('/api/v1/clusters').body)['items'].select { |i| i['connectionState']['status'] == 'Successful' }.map { |i| [i['name'], i['server']] }.to_h
   end
