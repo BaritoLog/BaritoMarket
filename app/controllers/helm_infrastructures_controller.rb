@@ -26,6 +26,9 @@ class HelmInfrastructuresController < ApplicationController
   def show
     authorize @helm_infrastructure
     @values = YAML.dump(@helm_infrastructure.values)
+    @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
+    @argo_operation_message, @argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    @argo_application_health = ARGOCD_CLIENT.check_application_health_status(@helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
   end
 
   def edit

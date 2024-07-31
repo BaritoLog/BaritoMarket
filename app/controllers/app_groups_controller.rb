@@ -54,6 +54,10 @@ class AppGroupsController < ApplicationController
     @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
     @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
     @show_redact_pii = Figaro.env.SHOW_REDACT_PII == "true"
+    @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
+
+    @argo_operation_message, @argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@app_group.helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    @argo_application_health = ARGOCD_CLIENT.check_application_health_status(@app_group.helm_infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
 
     @labels = {}
     if @app_group.labels.nil?
@@ -225,11 +229,7 @@ class AppGroupsController < ApplicationController
   end
 
   def toggle_redact_status
-    puts("inside toggle redact status")
     statuses = AppGroup.redact_statuses
-    puts("this is the param comming from frontend ", params[:toggle_redact_status])
-
-    puts("this is the current status of app group ", @app_group.redact_status)
 
     from_status = @app_group.redact_status
     @app_group.redact_status = params[:toggle_redact_status] == 'true' ? statuses[:active] : statuses[:inactive]

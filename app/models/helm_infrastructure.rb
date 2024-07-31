@@ -18,6 +18,9 @@ class HelmInfrastructure < ApplicationRecord
     delete_error: 'DELETE_ERROR',
     deleted: 'DELETED',
     finished: 'FINISHED',
+    integrating_to_argocd: 'INTEGRATING_TO_ARGOCD',
+    integrated_to_argocd: 'INTEGRATED_TO_ARGOCD',
+    argocd_integration_failed: 'ARGOCD_INTEGRATION_FAILED',
   }
 
   class << self

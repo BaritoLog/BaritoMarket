@@ -80,4 +80,9 @@ class ArgoCDClient
     #  phase = Failed, Running, Succeeded
     #  message = Operation terminated, any, successfully synced (all tasks run)
   end
+
+  def check_application_health_status(app_group_name, argocd_destination_cluster)
+    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}").body)['status']
+    return app_status['health']['status']
+  end
 end
