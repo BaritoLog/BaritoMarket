@@ -5,11 +5,6 @@ class ArgoSyncWorker
   def perform(helm_infrastructure_id)
     infrastructure = HelmInfrastructure.find(helm_infrastructure_id)
 
-    if infrastructure.blank? || !infrastructure.active?
-      logger.warn "helm_infrastructure with id #{helm_infrastructure_id} is not found or is inactive"
-      return
-    end
-
     release_name = infrastructure.cluster_name
     repository = Figaro.env.HELM_REPOSITORY.to_s
     chart_name = Figaro.env.HELM_CHART_NAME.to_s
@@ -46,6 +41,7 @@ class ArgoSyncWorker
     status = response.env[:status]
     if status == 200 
       infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
+      infrastructure.update_status('ACTIVE')
       infrastructure.update!(last_log:
         (
           <<~EOS

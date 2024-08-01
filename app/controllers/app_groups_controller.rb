@@ -111,24 +111,6 @@ class AppGroupsController < ApplicationController
       audit_log :create_new_app_group, { "app_group_id" => @app_group.id, "app_group_name" => @app_group.name, "app_group" => @helm_infrastructure.cluster_name }
       broadcast(:team_count_changed)
 
-      if Figaro.env.ARGOCD_ENABLED == 'true'
-        response = ARGOCD_CLIENT.create_application(@helm_infrastructure.cluster_name, @helm_infrastructure.values, Figaro.env.argocd_default_destination_name)
-        response_body = response.env[:body]
-        status = response.env[:status]
-        reason_phrase = response.env[:reason_phrase]
-
-        parsed_body = JSON.parse(response_body)
-        message = parsed_body['message']
-
-        if status != 200
-          flash[:messages] = "#{reason_phrase}: #{status}: #{message}"
-          return redirect_to new_app_group_path
-        end
-
-        @helm_infrastructure.update!(last_log: "Argo Application sync will be scheduled.")
-        @helm_infrastructure.argo_synchronize_async
-      end
-
       return redirect_to root_path
     else
       flash[:messages] = @app_group.errors.full_messages
