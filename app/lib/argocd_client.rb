@@ -88,32 +88,56 @@ class ArgoCDClient
   end
 
   def check_sync_operation_status(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
-    return app_status['operationState']['message'], app_status['operationState']['phase']
+    response = @conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    if response.env[:status] == 200
+      app_status = JSON.parse(response.body)['status']
+
+      if !app_status.dig("operationState", "message") || !app_status.dig("operationState", "phase")
+        return 'Argo Application not synced.', 'Argo Application is not synced'
+      end
+
+      return app_status['operationState']['message'], app_status['operationState']['phase']
+    else
+      return 'Argo Application is not created.', 'Argo Application is not created'
+    end
+    
     #  phase = Failed, Running, Succeeded
     #  message = Operation terminated, any, successfully synced (all tasks run)
   end
 
   def check_application_health_status(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
-    return app_status['health']['status']
+    response = @conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    if response.env[:status] == 200
+      app_status = JSON.parse(response.body)['status']
+      return app_status['health']['status']
+    else
+      return 'Argo Application is not created.'
+    end
   end
 
   def sync_duration(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
-    start_time = Time.parse(app_status['operationState']['startedAt'])
-    end_time = ''
-    if !app_status.dig("operationState", "finishedAt")
-      return 'Still running'
+    response = @conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    if response.env[:status] == 200
+      app_status = JSON.parse(response.body)['status']
+      if !app_status.dig("operationState", "startedAt")
+        return 'Argo application was not synced'
+      end
+      start_time = Time.parse(app_status['operationState']['startedAt'])
+      end_time = ''
+      if !app_status.dig("operationState", "finishedAt")
+        return 'Argo application still syncing'
+      else
+        end_time = Time.parse(app_status['operationState']['finishedAt'])
+        difference_in_seconds = end_time - start_time
+  
+        hours = (difference_in_seconds / 3600).to_i
+        minutes = ((difference_in_seconds % 3600) / 60).to_i
+        seconds = (difference_in_seconds % 60).to_i
+  
+        return "#{hours} hours, #{minutes} minutes, and #{seconds} seconds"
+      end
     else
-      end_time = Time.parse(app_status['operationState']['finishedAt'])
-      difference_in_seconds = end_time - start_time
-
-      hours = (difference_in_seconds / 3600).to_i
-      minutes = ((difference_in_seconds % 3600) / 60).to_i
-      seconds = (difference_in_seconds % 60).to_i
-
-      return "#{hours}:#{minutes}:#{seconds}"
+      return 'Argo Application is not created.'
     end
   end
 end
