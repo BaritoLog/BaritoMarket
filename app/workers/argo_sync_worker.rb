@@ -6,11 +6,8 @@ class ArgoSyncWorker
     infrastructure = HelmInfrastructure.find(helm_infrastructure_id)
 
     if infrastructure.blank? || !infrastructure.active?
-      render json: {
-        success: false,
-        errors: ["Infrastructure not found"],
-        code: 404
-      }, status: :not_found and return
+      logger.warn "helm_infrastructure with id #{helm_infrastructure_id} is not found or is inactive"
+      return
     end
 
     release_name = infrastructure.cluster_name
@@ -29,8 +26,6 @@ class ArgoSyncWorker
       EOS
     ).strip
 
-    sleep Figaro.env.argocd_worker_sync_interval.to_i
-
     infrastructure.update!(last_log:
       (
         <<~EOS
@@ -45,6 +40,8 @@ class ArgoSyncWorker
     terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
 
     response = ARGOCD_CLIENT.sync_application(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+
+    sleep Figaro.env.argocd_worker_sync_interval.to_i
 
     status = response.env[:status]
     if status == 200 
