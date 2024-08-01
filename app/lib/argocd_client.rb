@@ -88,19 +88,19 @@ class ArgoCDClient
   end
 
   def check_sync_operation_status(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
+    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
     return app_status['operationState']['message'], app_status['operationState']['phase']
     #  phase = Failed, Running, Succeeded
     #  message = Operation terminated, any, successfully synced (all tasks run)
   end
 
   def check_application_health_status(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
+    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
     return app_status['health']['status']
   end
 
   def sync_duration(app_group_name, argocd_destination_cluster)
-    app_status = JSON.parse(@conn.get("#{@url}/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
+    app_status = JSON.parse(@conn.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}").body)['status']
     start_time = Time.parse(app_status['operationState']['startedAt'])
     end_time = ''
     if !app_status.dig("operationState", "finishedAt")
