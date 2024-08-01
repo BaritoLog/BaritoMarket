@@ -56,6 +56,10 @@ class HelmInfrastructure < ApplicationRecord
   def synchronize_async
     HelmSyncWorker.perform_async id
   end
+  
+  def argo_synchronize_async
+    ArgoSyncWorker.perform_async id
+  end
 
   def producer_address
     producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT

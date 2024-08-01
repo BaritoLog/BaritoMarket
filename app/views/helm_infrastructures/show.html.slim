@@ -27,6 +27,28 @@
           dt.col-sm-2 Last updated (UTC):
           dd.col-sm-10
             = @helm_infrastructure.updated_at.strftime('%d %B %Y, %T')
+          
+          - if @argocd_enabled
+            dt.col-sm-2 Argo Sync Status:
+            dd.col-sm-10
+              = @argo_operation_phase
+            
+            dt.col-sm-2 Argo Sync last message:
+            dd.col-sm-10
+              = @argo_operation_message
+
+            dt.col-sm-2 Argo Application health:
+            dd.col-sm-10
+              = @argo_application_health
+
+            dt.col-sm-2 Argo Sync duration:
+            dd.col-sm-10
+              = @argo_sync_duration
+
+            dt.col-sm-2 ArgoCD URL:
+            dd.col-sm-10
+              - url = @argo_application_url
+              a href=url Link
 
           dt.col-sm-2 Last Log:
           dd.col-sm-10
