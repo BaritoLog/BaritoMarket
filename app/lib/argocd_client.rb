@@ -82,8 +82,10 @@ class ArgoCDClient
   end
 
   def terminate_operation(app_group_name, argocd_destination_cluster)
+    path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
+    logger.info "debug terminate_operation: #{path}"
     return @conn.delete do | req |
-      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
+      req.path = path
     end
   end
 
