@@ -32,14 +32,14 @@ class ArgoSyncWorker
     )
     infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
-    terminate_response_code, terminate_err = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
 
-    response_code, err = ARGOCD_CLIENT.sync_application(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    response = ARGOCD_CLIENT.sync_application(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
 
     sleep Figaro.env.argocd_worker_sync_interval.to_i
 
-    # status = response.env[:status]
-    if response_code == 200 
+    status = response.env[:status]
+    if status == 200 
       infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
       infrastructure.update_status('ACTIVE')
       infrastructure.update!(last_log:
@@ -50,7 +50,7 @@ class ArgoSyncWorker
             #{invocation_info}
   
             Output:
-            #{response_code}: OK
+            #{response.env[:reason_phrase]}: #{status}
           EOS
         ).strip
       )
@@ -64,7 +64,7 @@ class ArgoSyncWorker
             #{invocation_info}
   
             Output:
-            #{response_code}: #{err}
+            #{response.env[:reason_phrase]}: #{status}
           EOS
         ).strip
       )
