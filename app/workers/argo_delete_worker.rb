@@ -20,7 +20,7 @@ class ArgoDeleteWorker
      ).strip
     )
 
-    infrastructure.update_privisioning_status('DELETE_STARTED')
+    infrastructure.update_provisioning_status('DELETE_STARTED')
     ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.ARGOCD_DEFAULT_DESTINATION_NAME)
     response = ARGOCD_CLIENT.delete_application(infrastructure.cluster_name, Figaro.env.ARGOCD_DEFAULT_DESTINATION_NAME)
 
