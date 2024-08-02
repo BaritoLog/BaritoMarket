@@ -10,11 +10,6 @@ class ArgoDeleteWorker
       return
     end
 
-    if !infrastructure.allow_delete?
-      logger.warn "helm_infrastructure with id #{helm_infrastructure_id} is not allowed to be deleted. status #{infrastructure.status}, provisioning_status #{infrastructure.provisioning_status}"
-      return
-    end
-
     release_name = infrastructure.cluster_name
 
     infrastructure.update!(last_log:
@@ -53,6 +48,5 @@ class ArgoDeleteWorker
         ).strip
       )
     end
-
   end
 end
