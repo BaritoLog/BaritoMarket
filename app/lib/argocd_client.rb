@@ -92,6 +92,8 @@ class ArgoCDClient
 
     req.run
 
+    puts("create application response: ", req.inspect)
+
     if req.response.success?
       return respond_success(req.response)
     else
@@ -121,11 +123,18 @@ class ArgoCDClient
 
     req.run
 
-    if req.response.success?
-      return respond_success(req.response)
+    puts("sync_application response: ", req.inspect)
+
+    if req.response.response_code == 200
+      return req.response.response_code, nil
     else
-      return respond_error(req.response)
+      return req.response.response_code, "error occured"
     end
+    # if req.response.success?
+    #   return respond_success(req.response)
+    # else
+    #   return respond_error(req.response)
+    # end
   end
 
   def terminate_operation(app_group_name, argocd_destination_cluster)
@@ -142,7 +151,7 @@ class ArgoCDClient
     )
 
     req.run
-    puts("req response: ", req.response)
+    puts("terminate response: ", req.inspect)
     return req.response.response_code, nil
   end
 
