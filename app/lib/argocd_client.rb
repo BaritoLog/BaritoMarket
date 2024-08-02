@@ -142,12 +142,8 @@ class ArgoCDClient
     )
 
     req.run
-
-    if req.response.success?
-      return respond_success(req.response)
-    else
-      return respond_error(req.response)
-    end
+    puts("req response: ", req.response)
+    return req.response.response_code, nil
   end
 
   def check_sync_operation_status(app_group_name, argocd_destination_cluster)
@@ -268,7 +264,9 @@ private
   end
 
   def respond_error(response)
+    puts("before parsing response body: ", response.body)
     body = JSON.parse(response.body)
+    puts("After parsing response body: ", body)
     return response.response_code, body['error']
   end
 end
