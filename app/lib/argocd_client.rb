@@ -85,7 +85,7 @@ class ArgoCDClient
 
   def terminate_operation(app_group_name, argocd_destination_cluster)
     return create_connection().delete do | req |
-      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
+      req.path = "#{@url}/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
     end
   end
 
