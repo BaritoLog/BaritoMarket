@@ -108,7 +108,7 @@ class Api::AppsController < Api::BaseController
       labels: app.labels,
       consul_host: "",
       consul_hosts: [],
-      producer_address: app.app_group.helm_infrastructure&.producer_address,
+      producer_address: app.app_group&.producer_address,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {

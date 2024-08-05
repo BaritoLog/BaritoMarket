@@ -3,5 +3,6 @@ FactoryBot.define do
     association :group
     association :user
     association :role, factory: :app_group_role
+    expiration_date Time.now..Float::INFINITY
   end
 end

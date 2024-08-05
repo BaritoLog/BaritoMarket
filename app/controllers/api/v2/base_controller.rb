@@ -2,7 +2,7 @@ class Api::V2::BaseController < ActionController::Base
   include Pundit
   include Traceable
 
-  around_action :with_audit_logger
+  around_action :with_audit_logger, unless: -> { Rails.env.test? }
   before_action :authenticate!
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

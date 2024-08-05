@@ -34,7 +34,7 @@
 
           dt.col-sm-2 Cluster Name:
           dd.col-sm-10
-            = @app_group.helm_infrastructure.cluster_name
+            = @app_group.cluster_name
 
           dt.col-sm-2 Capacity:
           dd.col-sm-10
@@ -102,6 +102,54 @@
             dd.col-sm-10
               - if (@labels['app-group'].present?)
                 = @labels['app-group'][label]
+
+          hr.solid
+          - @app_group.helm_infrastructures.sort.each do |hi|
+            dd.col-sm-6.row
+              .col-sm-12
+                h4= hi.infrastructure_location.name.upcase
+              .col-sm-4 Capacity
+              .col-sm-8= "#{hi.helm_cluster_template.name.camelcase} (#{hi.max_tps} TPS)"
+              .col-sm-4 TPS:
+              .col-sm-8
+                - if @allow_edit_metadata
+                  = form_for @app_group do |f|
+                    = hidden_field_tag :helm_infrastructure_id, hi.id
+                    = f.fields_for :helm_infrastructure, hi do |hi_fields|
+                      .input-group.col-sm-8(style="padding-left:0px;")
+                          = hi_fields.number_field :max_tps, id: 'app_group_helm_infrastructure_max_tps', class: 'form-control'
+                          .input-group-append
+                            = f.button(:class => 'btn btn-outline-secondary btn-sm')
+                              i.fas.fa-check
+                - else
+                  = hi.max_tps
+              .col-sm-4 Provisioning Status:
+              .col-sm-8
+                = hi.provisioning_status
+
+              .col-sm-4 Status:
+              .col-sm-8
+                - if @allow_set_status
+                  = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+                  = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
+                    = hidden_field_tag :toggle_status
+                    = hidden_field_tag :app_group_id, @app_group.id
+
+              - if @allow_see_helm_infrastructure
+                .col-sm-6
+                  .btn.btn-primary.btn-sm.mr-2
+                    i.fas.fa-server.mr-1
+                    - if hi
+                      = link_to 'Show Helm Infrastructure', helm_infrastructure_path(hi), class: 'text-light', style: 'text-decoration: none'
+                    - else
+                      = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
+
+              - if @allow_delete_helm_infrastructure
+                div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{hi.id}")
+                  i.far.fa-trash-alt.mr-1
+                  = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(hi.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
+
+
 
 
       .card-footer

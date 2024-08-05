@@ -1,4 +1,4 @@
-class Api::V2::AppsController < Api::V2::BaseController
+class Api::V3::AppsController < Api::V3::BaseController
   include Wisper::Publisher
 
   def profile

@@ -1,14 +1,17 @@
 class HelmInfrastructure < ApplicationRecord
   belongs_to :app_group, required: true
   belongs_to :helm_cluster_template, required: true
+  belongs_to :infrastructure_location, required: true
 
   validates :override_values, helm_values: true
-  validates :cluster_name, uniqueness: true
 
   enum statuses: {
     inactive: 'INACTIVE',
     active: 'ACTIVE',
   }
+  scope :inactive, -> { where(status: statuses[:inactive]) }
+  scope :active, -> { where(status: statuses[:active]) }
+
   enum provisioning_statuses: {
     pending: 'PENDING',
     deployment_started: 'DEPLOYMENT_STARTED',
@@ -24,11 +27,12 @@ class HelmInfrastructure < ApplicationRecord
     def setup(params)
       helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
       helm_infrastructure = HelmInfrastructure.new(
-        cluster_name:               Rufus::Mnemo.from_i(HelmInfrastructure.generate_cluster_index),
+        cluster_name:               params[:cluster_name],
         app_group_id:               params[:app_group_id],
         helm_cluster_template_id:   helm_cluster_template.id,
         is_active:                  true,
         use_k8s_kibana:             true,
+        infrastructure_location_id: params[:infrastructure_location_id],
         override_values:            YAML.safe_load('{}'),
         provisioning_status:        HelmInfrastructure.provisioning_statuses[:pending],
         status:                     HelmInfrastructure.statuses[:inactive],
@@ -63,16 +67,34 @@ class HelmInfrastructure < ApplicationRecord
       end
       helm_infrastructure
     end
-
-    def generate_cluster_index
-      column = 'cluster_index'
-      query = "SELECT nextval('cluster_index_seq') AS #{column}"
-      connection.execute(query).first[column]
-    end
   end
 
   def synchronize_async
-    HelmSyncWorker.perform_async id
+    worker = HelmSyncWorker.new
+    worker.perform id
+  end
+
+  def is_elastalert_enabled
+    get_override_values_path('elastalert.enabled')
+  end
+
+  def is_kafka_ext_listener_enabled
+    get_override_values_path('kafka.externalListener.enable')
+  end
+
+  def is_cold_storage_enabled
+    get_override_values_path('elasticsearch.archival.enabled')
+  end
+
+  def get_override_values_path(path)
+    keys = path.split('.')
+    keys.reduce(override_values) do |hash, key|
+      hash[key] if hash.is_a?(Hash)
+    end
+  end
+
+  def release_name
+    sprintf(infrastructure_location.release_name_format, app_group.cluster_name)
   end
   
   def argo_synchronize_async
@@ -80,13 +102,21 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def producer_address
-    producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
-    is_active.presence and sprintf(producer_address_format, cluster_name)
+    if infrastructure_location.nil?
+      producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
+      is_active.presence and sprintf(producer_address_format, cluster_name)
+    else
+      sprintf(infrastructure_location.producer_address_format, cluster_name)
+    end
   end
 
   def kibana_address
-    kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
-    use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
+    if infrastructure_location.nil?
+      kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
+      use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
+    else
+      sprintf(infrastructure_location.kibana_address_format, cluster_name)
+    end
   end
 
   def elasticsearch_address

@@ -56,6 +56,7 @@ group :development, :test do
   gem 'webmock', '<= 3.4.1'
   gem 'fakeredis'
   gem 'pry', '<= 0.11.3'
+  gem 'pry-nav'
 end
 
 group :development do
@@ -63,4 +64,5 @@ group :development do
   gem 'spring', '<= 2.0.2'
   gem 'spring-watcher-listen', '<= 2.0.1'
   gem 'web-console', '<= 3.6.2'
+  gem 'awesome_print'
 end

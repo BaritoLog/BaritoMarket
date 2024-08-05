@@ -13,7 +13,9 @@ class HelmSyncWorker
     chart_name = Figaro.env.HELM_CHART_NAME.to_s
     chart_version = Figaro.env.HELM_CHART_VERSION.to_s
 
-    cmd = ["helm", "upgrade", release_name, chart_name, "--install", "--repo", repository, "--version", chart_version, "-f", "-"]
+    # TODO: revert this before deploy
+    cmd = ["helm", "upgrade", release_name, "--install", "/Users/beni/jek/repo/kube-charts/stable/barito-worker", "-f", "-"]
+    #cmd = ["helm", "upgrade", release_name, chart_name, "--install", "--repo", repository, "--version", chart_version, "-f", "-"]
     stdin_data = YAML.dump(infrastructure.values)
 
     invocation_info = (

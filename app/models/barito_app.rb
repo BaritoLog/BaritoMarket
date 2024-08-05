@@ -36,7 +36,7 @@ class BaritoApp < ApplicationRecord
   end
 
   def available?
-    active? && app_group.helm_infrastructure.active?
+    active? && app_group.ACTIVE?
   end
 
   def update_status(status)
@@ -65,6 +65,6 @@ class BaritoApp < ApplicationRecord
   end
 
   def cluster_name
-    app_group&.helm_infrastructure&.cluster_name
+    app_group&.cluster_name
   end
 end

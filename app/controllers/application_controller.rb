@@ -50,8 +50,8 @@ class ApplicationController < ActionController::Base
           req_audit["app"] = @app.name
         end
 
-        unless @app_group.nil? or @app_group.helm_infrastructure.nil?
-          req_audit["app_group"] = @app_group.helm_infrastructure.cluster_name
+        unless @app_group.nil?
+          req_audit["app_group"] = @app_group.cluster_name
         end
 
         unless @audit_payload.nil? or @audit_payload.empty?

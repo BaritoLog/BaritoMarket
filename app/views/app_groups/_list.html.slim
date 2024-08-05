@@ -10,7 +10,8 @@ table.table.table-hover.table-sm
   thead
     tr.d-flex
       th.col-3 =filterrific_sorting_link(@filterrific, :name)
-      th.col-2 Cluster Name
+      th.col-1 Cluster Name
+      th.col-1 Location
       th.col-2 Capacity
       th.col-2 Provisioning Status
       th.col-1 Status
@@ -30,49 +31,47 @@ table.table.table-hover.table-sm
 
         - else
           td.col-3= app_group.name
-        td.col-2
-          = app_group.helm_infrastructure.cluster_name
-          - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elastalert"].present?
-            - if app_group.helm_infrastructure.override_values["elastalert"]["enabled"] == true
-              span class="apps-badge badge badge-barito" 
-                span(style="float: left; color:#ea4848")
-                  i.fa.fa-exclamation-circle (title="elastalert")            
-            - else
-              |
+        td.col-1
+          = app_group.cluster_name
+          - if app_group.helm_infrastructures.any? { |hi| hi.is_elastalert_enabled }
+            span class="apps-badge badge badge-barito" 
+              span(style="float: left; color:#ea4848")
+                i.fa.fa-exclamation-circle (title="elastalert")            
           - else
             |
-          - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["kafka"].present?
-            - if app_group.helm_infrastructure.override_values["kafka"]["externalListener"].present?
-              - if app_group.helm_infrastructure.override_values["kafka"]["externalListener"]["enable"] == true
-                span(class="apps-badge badge badge-barito")
-                  span(style="float: left; color:#29d423;")
-                    = image_tag("kafka.png", title: "externalListener", style:"width: 10px; height: 10px;")
-              - else
-                |
-            - else
-              |
+          - if app_group.helm_infrastructures.any? { |hi| hi.is_kafka_ext_listener_enabled }
+            span(class="apps-badge badge badge-barito")
+              span(style="float: left; color:#29d423;")
+                = image_tag("kafka.png", title: "externalListener", style:"width: 10px; height: 10px;")
           - else
             |
-          - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elasticsearch"].present?
-            - if app_group.helm_infrastructure.override_values.present? && app_group.helm_infrastructure.override_values["elasticsearch"]["plugins"].present?
-              - if app_group.helm_infrastructure.override_values["elasticsearch"]["plugins"].include?("repository-gcs")
-                span class="apps-badge badge badge-barito"
-                  span(style="float: left; color:#4869ea; ")
-                    = image_tag("cloud.png", title: "cloud storage", style: "width: 12px; height: 8px;")
-              - else
-                |
-            - else
-              |
+          - if app_group.helm_infrastructures.any? { |hi| hi.is_cold_storage_enabled }
+            span class="apps-badge badge badge-barito"
+              span(style="float: left; color:#4869ea; ")
+                = image_tag("cloud.png", title: "cloud storage", style: "width: 12px; height: 8px;")
           - else
             | 
-        td.col-2= app_group.helm_infrastructure.helm_cluster_template.name.camelcase
-        td.col-2= app_group.helm_infrastructure.provisioning_status
-        td.col-1= app_group.helm_infrastructure.status
+        td.col-1
+          - app_group.helm_infrastructures.each do |hi|
+            = hi.infrastructure_location.try(:name)
+            br
+        td.col-2
+          - app_group.helm_infrastructures.each do |hi|
+            = hi.helm_cluster_template.name.camelcase
+            br
+        td.col-2
+          - app_group.helm_infrastructures.each do |hi|
+            = hi.provisioning_status
+            br
+        td.col-1
+          - app_group.helm_infrastructures.each do |hi|
+            = hi.status
+            br
         td.col-2 class="d-flex"
           - if policy(app_group).see_app_groups?
             .btn.btn-primary.btn-sm
               i.fas.fa-search.mr-1
-              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.helm_infrastructure.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
             = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|
               = hidden_field_tag(:app_group_id, app_group.id)
               = f.button class: 'btn btn-sm bg-transparent text-warning'
