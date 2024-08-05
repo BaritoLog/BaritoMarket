@@ -26,7 +26,7 @@ class ArgoDeleteWorker
 
     status = response.env[:status]
     if status == 200
-      infrastructure.update!(lastlog:
+      infrastructure.update!(last_log:
         (
           <<~EOS
             Argo Application deleted.
@@ -36,7 +36,7 @@ class ArgoDeleteWorker
       infrastructure.update_provisioning_status('DELETED')
       infrastructure.update_status('INACTIVE')
     else
-      infrastructure.update!(lastlog:
+      infrastructure.update!(last_log:
         (
           <<~EOS
             Argo Application delete initiation was failed.
