@@ -26,8 +26,6 @@ class ArgoDeleteWorker
 
     status = response.env[:status]
     if status == 200
-      infrastructure.update_provisioning_status('DELETED')
-      infrastructure.update_status('INACTIVE')
       infrastructure.update!(lastlog:
         (
           <<~EOS
@@ -35,8 +33,9 @@ class ArgoDeleteWorker
           EOS
         ).strip
       )
+      infrastructure.update_provisioning_status('DELETED')
+      infrastructure.update_status('INACTIVE')
     else
-      infrastructure.update_provisioning_status('DELETE_ERROR')
       infrastructure.update!(lastlog:
         (
           <<~EOS
@@ -47,6 +46,7 @@ class ArgoDeleteWorker
           EOS
         ).strip
       )
+      infrastructure.update_provisioning_status('DELETE_ERROR')
     end
   end
 end
