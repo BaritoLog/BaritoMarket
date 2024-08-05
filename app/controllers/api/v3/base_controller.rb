@@ -1,4 +1,4 @@
-class Api::V2::BaseController < ActionController::Base
+class Api::V3::BaseController < ActionController::Base
   include Pundit
   include Traceable
 

@@ -10,14 +10,14 @@ RSpec.describe 'App API', type: :request do
     @ext_app.destroy
   end
 
+  let(:default_infrastructure_location) { create(:infrastructure_location, name: Figaro.env.default_infrastructure_location) }
+
   describe 'List Profile' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
 
     it 'should return list profile information of registered appgroups' do
-      HelmInfrastructure.delete_all
-
       app_group = create(:app_group)
       helm_infrastructure = create(
         :helm_infrastructure,
@@ -36,7 +36,7 @@ RSpec.describe 'App API', type: :request do
       %w[cluster_name status provisioning_status].
         each do |key|
           expect(j.key?(key)).to eq(true)
-          expect(j[key]).to eq(app_group.helm_infrastructure.send(key.to_sym))
+          expect(j[key]).to eq(app_group.helm_infrastructures.first.send(key.to_sym))
         end
         expect(j['name']).to eq(helm_infrastructure.app_group_name)
         expect(j['app_group_name']).to eq(helm_infrastructure.app_group_name)
@@ -83,8 +83,9 @@ RSpec.describe 'App API', type: :request do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
 
+    let(:app_group) { create(:app_group) }
+
     it 'should return profile information of registered app when supplied cluster name' do
-      app_group = create(:app_group)
       helm_infrastructure = create(
         :helm_infrastructure,
         app_group: app_group,
@@ -107,15 +108,13 @@ RSpec.describe 'App API', type: :request do
       expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
       expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
       expect(json_response.key?('updated_at')).to eq(true)
-      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
+      expect(json_response['kibana_address']).to eq(app_group.kibana_address)
     end
 
     it 'should return K8s Kibana if activated' do
-      app_group = create(:app_group)
       helm_infrastructure = create(:helm_infrastructure,
         app_group: app_group,
         status: HelmInfrastructure.statuses[:active],
-        cluster_name: 'haza',
       )
 
       get api_v2_profile_by_cluster_name_path,
@@ -123,14 +122,12 @@ RSpec.describe 'App API', type: :request do
         headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response['kibana_address']).to eq("#{helm_infrastructure.cluster_name}-kb-http.barito-worker.svc:5601")
-      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
+      expect(json_response['kibana_address']).to eq(app_group.kibana_address)
     end
 
     context 'when infrastructure inactive' do
       it 'should return 404' do
         error_msg = 'Infrastructure not found'
-        app_group = create(:app_group)
         helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
 
         get api_v2_profile_by_cluster_name_path,
@@ -143,6 +140,31 @@ RSpec.describe 'App API', type: :request do
         expect(json_response['errors']).to eq [error_msg]
       end
     end
+
+    context 'when there multiple helm infrastructures' do
+      it 'should return the one on default location' do
+        2.times do
+          create(:helm_infrastructure, app_group: app_group,
+            status: HelmInfrastructure.statuses[:active]
+          )
+        end
+        helm_infrastructure = create(:helm_infrastructure, infrastructure_location_id: default_infrastructure_location.id,
+          app_group: app_group, status: HelmInfrastructure.statuses[:active]
+        )
+
+        get api_v2_profile_by_cluster_name_path,
+          params: { access_token: @access_token, cluster_name: app_group.cluster_name },
+          headers: headers
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['name']).to eq(helm_infrastructure.app_group_name)
+        expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
+        expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
+        expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
+        expect(json_response.key?('updated_at')).to eq(true)
+        expect(json_response['kibana_address']).to eq(app_group.kibana_address)
+      end
+    end
   end
 
   describe 'Profile by App Group Name API' do
@@ -150,54 +172,31 @@ RSpec.describe 'App API', type: :request do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
 
-    it 'should return profile information of registered app when supplied cluster name' do
+    it 'should return profile information of registered app group when supplied app group name' do
       app_group = create(:app_group)
-      helm_infrastructure = create(
-        :helm_infrastructure,
-        app_group: app_group,
-        status: HelmInfrastructure.statuses[:active]
-      )
+      create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
 
       get api_v2_profile_by_app_group_name_path,
         params: { access_token: @access_token, app_group_name: app_group.name },
         headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[cluster_name status provisioning_status].
+      %w[cluster_name status].
         each do |key|
-          expect(json_response.key?(key)).to eq(true)
-          expect(json_response[key]).to eq(helm_infrastructure.send(key.to_sym))
+          expect(json_response.key?(key)).to eq(true), key
+          expect(json_response[key]).to eq(app_group.send(key.to_sym))
         end
 
-      expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
-      expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
-      expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
+      expect(json_response['app_group_name']).to eq(app_group.name)
+      expect(json_response['app_group_secret']).to eq(app_group.secret_key)
       expect(json_response.key?('updated_at')).to eq(true)
-      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
+      expect(json_response['kibana_address']).to eq(app_group.kibana_address)
     end
 
-    it 'should return K8s Kibana if activated' do
-      app_group = create(:app_group)
-      helm_infrastructure = create(:helm_infrastructure,
-        app_group: app_group,
-        status: HelmInfrastructure.statuses[:active],
-        cluster_name: 'haza',
-      )
-
-      get api_v2_profile_by_app_group_name_path,
-        params: { access_token: @access_token, app_group_name: app_group.name },
-        headers: headers
-      json_response = JSON.parse(response.body)
-
-      expect(json_response['kibana_address']).to eq("#{helm_infrastructure.cluster_name}-kb-http.barito-worker.svc:5601")
-      expect(json_response['kibana_address']).to eq(helm_infrastructure.kibana_address)
-    end
-
-    context 'when App Group unavailable' do
+    context 'when AppGroup inactive' do
       it 'should return 404' do
         error_msg = 'App Group not found'
-        app_group = create(:app_group)
-        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
+        app_group = create(:app_group, status: :INACTIVE)
 
         get api_v2_profile_by_app_group_name_path,
           params: { access_token: @access_token, app_group_name: app_group.name },
@@ -218,9 +217,13 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return list of all active App with its retention policy for curator' do
       app_group = create(:app_group)
-      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
       app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      helm_infrastructure = create(:helm_infrastructure, app_group: app_group, provisioning_status: HelmInfrastructure.provisioning_statuses[:finished])
+      helm_infrastructure = create( :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:finished],
+        cluster_name: app_group.cluster_name
+      )
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
@@ -228,7 +231,7 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
-          ipaddress: helm_infrastructure.elasticsearch_address,
+          ipaddress: app_group.elasticsearch_address,
           log_retention_days: app_group.log_retention_days,
           log_retention_days_per_topic: {
             app2.topic_name => app2.log_retention_days
@@ -237,33 +240,31 @@ RSpec.describe 'App API', type: :request do
       ].to_json
     end
 
-    it 'should return K8s Elasticsearch address' do
+    it "should not return appgroup that didn't have finished helm_infrastructure provisioning_status" do
       app_group = create(:app_group)
-      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group)
-      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
       helm_infrastructure = create(
         :helm_infrastructure,
         app_group: app_group,
-        provisioning_status: HelmInfrastructure.provisioning_statuses[:finished]
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:pending],
+        cluster_name: app_group.cluster_name
       )
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
         headers: headers
 
-      expect(JSON.parse(response.body)).to include({
-        "ipaddress" => "#{helm_infrastructure.cluster_name}-es-http.barito-worker.svc",
-        "log_retention_days" => app_group.log_retention_days,
-        "log_retention_days_per_topic" => {
-          app2.topic_name => app2.log_retention_days
-        },
-      })
+
+      expect(JSON.parse(response.body)).to eq([])
     end
 
-    it 'should works for DEPLOYMENT_FINISHED infrastructures' do
+    it 'should also works for DEPLOYMENT_FINISHED infrastructures' do
       app_group = create(:app_group)
-      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-      helm_infrastructure = create(:helm_infrastructure, app_group: app_group, provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished])
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
+      helm_infrastructure = create( :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
+        cluster_name: app_group.cluster_name
+      )
 
       get api_v2_profile_curator_path,
         params: { access_token: @access_token, client_key: 'abcd1234' },
@@ -271,11 +272,9 @@ RSpec.describe 'App API', type: :request do
 
       expect(response.body).to eq [
         {
-          ipaddress: helm_infrastructure.elasticsearch_address,
+          ipaddress: app_group.elasticsearch_address,
           log_retention_days: app_group.log_retention_days,
-          log_retention_days_per_topic: {
-            app2.topic_name => app2.log_retention_days
-          },
+          log_retention_days_per_topic: {},
         }
       ].to_json
     end
@@ -330,34 +329,71 @@ RSpec.describe 'App API', type: :request do
       patch api_v2_update_helm_manifest_by_cluster_name_path,
         params: {
           access_token: @access_token,
-          cluster_name: helm_infrastructure.cluster_name
+          cluster_name: app_group.cluster_name
         },
         headers: headers
       expect(response.status).to eq 400
     end
 
-    it 'should update the override_values' do
-      app_group = create(:app_group)
-      helm_infrastructure = create(
-        :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
-      )
+    context 'when the AppGroup has 1 HelmInfrastructure' do
+      it 'should update the override_values' do
+        app_group = create(:app_group)
+        helm_infrastructure = create(
+          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+        )
 
-      override_values = {
-        "producer" => {
-          "number_of_replicas" => "1",
+        override_values = {
+          "producer" => {
+            "number_of_replicas" => "1",
+          }
         }
-      } 
 
-      patch api_v2_update_helm_manifest_by_cluster_name_path,
-        params: {
-          access_token: @access_token,
-          cluster_name: helm_infrastructure.cluster_name,
-          override_values: override_values,
-        },
-        headers: headers
-      expect(response.status).to eq 200
-      update_object =  HelmInfrastructure.find_by(cluster_name: helm_infrastructure.cluster_name)
-      expect(update_object.override_values).to eq override_values
+        patch api_v2_update_helm_manifest_by_cluster_name_path,
+          params: {
+            access_token: @access_token,
+            cluster_name: app_group.cluster_name,
+            override_values: override_values,
+          },
+          headers: headers
+        expect(response.status).to eq 200
+        update_object =  app_group.reload.helm_infrastructures.first
+        expect(update_object.override_values).to eq override_values
+      end
+    end
+
+    context 'when the AppGroup has multiple HelmInfrastructure' do
+      it 'should update the override_values, for the HelmInfrastructure in the default location' do
+        app_group = create(:app_group)
+        2.times do
+          create(
+            :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+          )
+        end
+        helm_infrastructure = create(
+            :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+            infrastructure_location_id: default_infrastructure_location.id
+          )
+
+        override_values = {
+          "producer" => {
+            "number_of_replicas" => "1",
+          }
+        }
+
+        patch api_v2_update_helm_manifest_by_cluster_name_path,
+          params: {
+            access_token: @access_token,
+            cluster_name: app_group.cluster_name,
+            override_values: override_values,
+          },
+          headers: headers
+        expect(response.status).to eq 200
+        update_object =  helm_infrastructure.reload
+        expect(update_object.override_values).to eq override_values
+        app_group.helm_infrastructures.where.not(infrastructure_location_id: default_infrastructure_location.id).each do |hi|
+          expect(hi.override_values).to eq({}), "Expecting override_values to be empty for HelmInfrastructure in non-default location"
+        end
+      end
     end
 
   end
@@ -376,52 +412,177 @@ RSpec.describe 'App API', type: :request do
       expect(response.status).to eq 404
     end
 
-    it 'should return specific helm infrastructure based on cluster_name' do
+    context 'when the AppGroup has 1 Helm infrastructure' do
+      it 'should return 200, with its attributes ' do
         app_group = create(:app_group)
         helm_infrastructure = create(
-          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
+          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+          cluster_name: app_group.cluster_name
         )
-      get api_v2_helm_infrastructure_by_cluster_name_path,
-        params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name},
-        headers: headers
+        get api_v2_helm_infrastructure_by_cluster_name_path,
+          params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name},
+          headers: headers
 
-      json_response = JSON.parse(response.body)
-      expect(response.status).to eq 200
-      expect(json_response["cluster_name"]).to eq helm_infrastructure.cluster_name
+        json_response = JSON.parse(response.body)
+
+        expect(response.status).to eq 200
+        expect(json_response["cluster_name"]).to eq app_group.cluster_name
+        %w[cluster_name status provisioning_status app_group_id]. each do |key|
+          expect(json_response.key?(key)).to eq(true), "Expecting `#{key}` field in the response"
+          expect(json_response[key]).to eq(helm_infrastructure.send(key.to_sym))
+        end
+      end
     end
+
+    context 'when the AppGroup has multiple Helminfrastructure' do
+      it 'should return 200, for HelmInfrastructure in default InfrastructureLocation' do
+        app_group = create(:app_group)
+        2.times do
+          create(
+            :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+            cluster_name: app_group.cluster_name
+          )
+        end
+        hi_in_default_location = create(
+          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+          cluster_name: app_group.cluster_name, infrastructure_location_id: default_infrastructure_location.id
+        )
+
+        get api_v2_helm_infrastructure_by_cluster_name_path,
+          params: { access_token: @access_token, cluster_name: app_group.cluster_name},
+          headers: headers
+
+        json_response = JSON.parse(response.body)
+
+        expect(response.status).to eq 200
+        expect(json_response["cluster_name"]).to eq app_group.cluster_name
+        %w[id cluster_name infrastructure_location_id status provisioning_status app_group_id]. each do |key|
+          expect(json_response.key?(key)).to eq(true), "Expecting `#{key}` field in the response"
+          expect(json_response[key]).to eq(hi_in_default_location.send(key.to_sym))
+        end
+      end
+    end
+
   end
 
   describe 'Authorize API' do
     let(:user_a) { create(:user) }
+    let(:role) { AppGroupRole.create(name: 'admin') }
 
-    context 'when valid username and valid cluster_name' do
+    it 'should return 403 if appgroup not exists' do
+      login_as user_a
+
+      get api_v2_authorize_path, params: {
+        access_token: @access_token,
+        cluster_name: 'some-random-name',
+        username: user_a[:username],
+      }, headers: headers
+
+      expect(response.status).to eq 403
+    end
+
+    context 'when using barito-superadmin group' do
+      let!(:group_user) { GroupUser.create(user: user_a, group: Group.find_by_name('barito-superadmin'), role: role, expiration_date: (Time.now + 1.days)) }
       it 'should return 200' do
-        set_check_user_groups('groups': ['barito-superadmin'])
-        login_as user_a
-        create(:group, name: 'barito-superadmin')
         app_group = create(:app_group)
-        helm_infrastructure = create(
-          :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active]
-        )
 
         get api_v2_authorize_path, params: {
           access_token: @access_token,
-          cluster_name: helm_infrastructure.cluster_name,
+          cluster_name: app_group.cluster_name,
           username: user_a[:username],
         }, headers: headers
 
         expect(response.status).to eq 200
       end
-    end
 
-    context 'when invalid username or invalid cluster_name' do
-      it 'should return 403' do
-        app_group = create(:app_group)
-        create(:helm_infrastructure, app_group: app_group)
+      it 'should return 403 if the AppGroup are Inactive' do
+        app_group = create(:app_group, status: :INACTIVE)
 
         get api_v2_authorize_path, params: {
           access_token: @access_token,
-          cluster_name: 'some-random-name',
+          cluster_name: app_group.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 403
+      end
+
+      it 'should return 403 if expired' do
+        user_a.group_users.first.update(expiration_date: (Time.now - 1.days))
+        app_group = create(:app_group)
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 403
+      end
+    end
+
+    context 'when username are included in the AppGroupUser' do
+      it 'should return 200' do
+        app_group = create(:app_group)
+        AppGroupUser.create(app_group: app_group, user: user_a, role: role, expiration_date: Time.now..Float::INFINITY)
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 200
+      end
+
+      it 'should return 403 if the AppGroup are Inactive' do
+        app_group = create(:app_group, status: :INACTIVE)
+        AppGroupUser.create(app_group: app_group, user: user_a, role: role, expiration_date: Time.now..Float::INFINITY)
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 403
+      end
+
+      it 'should return 403 if expired' do
+        app_group = create(:app_group)
+        AppGroupUser.create(app_group: app_group, user: user_a, role: role, expiration_date: (Time.now - 1.days))
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 403
+      end
+
+      it 'should return 403 if used different app_group cluster_name' do
+        app_group = create(:app_group)
+        app_group2 = create(:app_group)
+        AppGroupUser.create(app_group: app_group, user: user_a, role: role, expiration_date: (Time.now - 1.days))
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group2.cluster_name,
+          username: user_a[:username],
+        }, headers: headers
+
+        expect(response.status).to eq 403
+      end
+    end
+
+    context 'when invalid username' do
+      it 'should return 403' do
+        app_group = create(:app_group)
+
+        get api_v2_authorize_path, params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
           username: 'some-user',
         }, headers: headers
 
@@ -429,19 +590,22 @@ RSpec.describe 'App API', type: :request do
       end
     end
 
-    context 'when valid username and cluster name but with inactive infrastructure' do
-      it 'should return 403' do
-        app_group = create(:app_group)
-        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
+  end
 
-        get api_v2_authorize_path, params: {
-          access_token: @access_token,
-          cluster_name: helm_infrastructure.cluster_name,
-          username: user_a.username,
-        }, headers: headers
+  describe 'Sync Helm Infrastructures' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+    let(:app_group) { create(:app_group) }
+    let(:default_location) { create(:infrastructure_location)}
 
-        expect(response.status).to eq 403
-      end
+    it 'should return 404 if cluster_name does not exists' do
+      post api_v2_sync_helm_infrastructure_by_cluster_name_path,
+        params: { access_token: @access_token},
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 404
     end
   end
 end

@@ -103,8 +103,8 @@ class AppsController < ApplicationController
     @app.update(redact_labels: redact_labels)
 
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
-    broadcast(:redact_labels_updated, @app.app_group.helm_infrastructure.cluster_name)
-  
+    broadcast(:redact_labels_updated, @app.app_group.cluster_name)
+
     audit_log :update_redact_labels, {
       "from_labels" => from_labels,
       "to_labels" => redact_labels

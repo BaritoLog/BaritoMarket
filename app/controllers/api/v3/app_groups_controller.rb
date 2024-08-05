@@ -1,43 +1,8 @@
-class Api::V2::AppGroupsController < Api::V2::BaseController
+class Api::V3::AppGroupsController < Api::V3::BaseController
   include Wisper::Publisher
 
   def create_app_group
     errors = []
-
-    # ToDo(clavinjune) disable DEFAULT_REQUIRED_LABELS on API
-    # required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
-    #
-    # # force request to have labels if DEFAULT_REQUIRED_LABELS is defined
-    # if required_labels.present?
-    #   if app_group_params[:labels].nil? || app_group_params[:labels].empty?
-    #     errors << "labels attributes are required for #{required_labels}"
-    #   end
-    #
-    #   unless errors.empty?
-    #     return render json: {
-    #       success: false,
-    #       errors: errors,
-    #       code: 400
-    #     }, status: :bad_request
-    #   end
-    #
-    #   labels = app_group_params[:labels]
-    #
-    #   required_labels.each do |label|
-    #     val = labels[label]
-    #     if val.nil? || val.strip.empty?
-    #       errors << "labels attributes are required for #{label}"
-    #     end
-    #   end
-    #
-    #   unless errors.empty?
-    #     return render json: {
-    #       success: false,
-    #       errors: errors,
-    #       code: 400
-    #     }, status: :bad_request
-    #   end
-    # end
 
     if not app_group_params.blank?
       begin
@@ -69,9 +34,9 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       [:app_group_secret])
     render json: error_response, status: error_response[:code] and return unless valid
 
-    app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
+    @app_group = AppGroup.find_by(secret_key: params[:app_group_secret])
 
-    if app_group.blank?
+    if @app_group.blank?
       render json: {
         success: false,
         errors: ["AppGroup is not found"],
@@ -79,10 +44,17 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :not_found and return
     end
 
-    @helm_infrastructure = app_group.helm_infrastructure_in_default_location
-    @helm_infrastructure = app_group.helm_infrastructures.first unless @helm_infrastructure.present?
-
-    render json: @helm_infrastructure
+    render json: {
+      id: @app_group.id,
+      name: @app_group.name,
+      secret_key: @app_group.secret_key,
+      cluster_name: @app_group.cluster_name,
+      kibana_address: @app_group.kibana_address,
+      status: @app_group.status,
+      created_at: @app_group.created_at.strftime(Figaro.env.timestamp_format),
+      updated_at: @app_group.updated_at.strftime(Figaro.env.timestamp_format),
+      infrastructures: @app_group.helm_infrastructures
+    }
   end
 
   def cluster_templates
@@ -105,7 +77,6 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def profile_app
     profiles = []
     AppGroup.ACTIVE.all.each do |app_group|
-      environment = app_group.environment
 
       if app_group.environment.downcase.include?"production"
         replication_factor = 2
@@ -138,6 +109,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         app_group_replication_factor: replication_factor,
       }
     end
+
     render json: profiles
   end
 
@@ -203,15 +175,10 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
 
-    if Figaro.env.ARGOCD_ENABLED == 'true'
-      app_group.helm_infrastructures.each do |helm_infrastructure|
-        ArgoDeleteWorker.perform_async(helm_infrastructure.id)
-      end
-    else
-      app_group.helm_infrastructures.each do |helm_infrastructure|
-        helm_infrastructure.update_provisioning_status('DELETE_STARTED')
-        DeleteHelmInfrastructureWorker.perform_async(helm_infrastructure.id)
-      end
+    # delete all the HelmInfra, and mark as DELETE_STARTED
+    app_group.helm_infrastructures.each do |hi|
+      hi.update_provisioning_status('DELETE_STARTED')
+      DeleteHelmInfrastructureWorker.perform_async(hi.id)
     end
 
     render json: {
@@ -220,82 +187,11 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     }, status: :ok and return
   end
 
-  def fetch_redact_labels
-    helm_infrastructure = HelmInfrastructure.find_by(
-      cluster_name: params[:cluster_name])
-
-    redact_response_json = REDIS_CACHE.get(
-      "#{APP_GROUP_REDACT_LABELS}:#{params[:cluster_name]}")
-    if redact_response_json.present?
-      render json: JSON.parse(redact_response_json) and return
-    end
-
-    all_labels = {}
-    app_group = AppGroup.find(helm_infrastructure.app_group_id)
-    if app_group.blank? || !app_group.available?
-      render json: {
-        success: false,
-        errors: ['AppGroup not found or inactive'],
-        code: 404
-      }, status: :not_found and return
-    end
-
-    if !app_group.redact_active?
-      render json: {} and return
-    end
-
-    static, jsonPath = accumulate_rules(app_group)
-    all_labels['default'] = {
-      StaticRules: static,
-      JsonPathRules: jsonPath,
-    }
-
-    barito_apps =[]
-    app_group.barito_apps.where(status:"ACTIVE").each do |barito_app|
-      static, jsonPath = accumulate_rules(barito_app)
-      if !static.empty? || !jsonPath.empty?
-        all_labels[barito_app.name] = {
-          StaticRules: static,
-          JsonPathRules: jsonPath,
-        }
-      end
-    end
-
-    broadcast(:redact_response_updated, params[:cluster_name], all_labels)
-
-    render json: all_labels
-  end
-
   private
 
   def app_group_params
     params.permit(:name, :cluster_template_id, :environment, :infrastructure_location_name,
       labels: {},
-      redact_labels: {},
     )
-  end
-
-  def accumulate_rules(obj)
-    static_rule = []
-    json_path_rule = []
-
-    obj.redact_labels&.each do |key, val|
-      if val['type'] == 'jsonPath'
-        json_path_rule << {
-          Name: key,
-          Path: val['value'],
-          HintCharsStart: Integer(val['hintCharStart']),
-          HintCharsEnd: Integer(val['hintCharEnd'])
-        }
-      elsif val['type'] == 'static'
-        static_rule << {
-          Name: key,
-          Regex: val['value'],
-          HintCharsStart: Integer(val['hintCharStart']),
-          HintCharsEnd: Integer(val['hintCharEnd'])
-        }
-      end
-    end
-    [static_rule, json_path_rule]
   end
 end

@@ -12,6 +12,10 @@
           dd.col-sm-10
             = @helm_infrastructure.cluster_name
 
+          dt.col-sm-2 Location:
+          dd.col-sm-10
+            = @helm_infrastructure.infrastructure_location.name
+
           dt.col-sm-2 Helm Cluster Template:
           dd.col-sm-10
             = @helm_infrastructure.helm_cluster_template.name
@@ -19,10 +23,6 @@
           dt.col-sm-2 Is Active?
           dd.col-sm-10
             = @helm_infrastructure.is_active? ? "Yes" : "No"
-
-          dt.col-sm-2 Use K8s Kibana?
-          dd.col-sm-10
-            = @helm_infrastructure.use_k8s_kibana? ? "Yes" : "No"
 
           dt.col-sm-2 Last updated (UTC):
           dd.col-sm-10

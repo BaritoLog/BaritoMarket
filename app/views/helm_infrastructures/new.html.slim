@@ -1,6 +1,7 @@
 .row.justify-content-center
   .col-md-6
     h3 Create Helm Infrastructure
+    h4= @app_group.cluster_name + " - "  + @app_group.name 
     - if flash.key?(:messages)
       .alert.alert-danger
         b Issue creating helm infrastructure

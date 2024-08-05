@@ -44,6 +44,7 @@ Capybara.register_driver :custom_headless_chrome do |app|
 end
 Capybara.javascript_driver = :custom_headless_chrome
 
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include Warden::Test::Helpers

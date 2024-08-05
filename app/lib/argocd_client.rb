@@ -46,17 +46,21 @@ class ArgoCDClient
     return JSON.parse(create_connection().get('/api/v1/clusters').body)['items'].select { |i| i['connectionState']['status'] == 'Successful' }.map { |i| [i['name'], i['server']] }.to_h
   end
 
-  def create_application(app_group_name, override_values, argocd_destination_cluster)
+  def create_application(app_group_name, override_values, argocd_destination_cluster_name, argocd_destination_server)
     return create_connection().post do | req |
       req.body = {
         metadata: {
-          name: get_application_name(app_group_name, argocd_destination_cluster),
-          namespace: Figaro.env.argocd_namespace
+          name: get_application_name(app_group_name, argocd_destination_cluster_name),
+          namespace: Figaro.env.argocd_namespace,
+          # labels: {
+          #   "barito-destination-cluster": argocd_destination_cluster,
+          #   "barito-cluster-name": app_group_name,
+          # }
         },
         spec: {
           destination: {
-            server: Figaro.env.argocd_default_destination_server,
-            namespace: Figaro.env.argocd_destination_namespace
+            server: argocd_destination_server,
+            namespace: Figaro.env.argocd_destination_namespace,
           },
           project: Figaro.env.argocd_project_name,
           source: {
@@ -104,7 +108,7 @@ class ArgoCDClient
     else
       return 'Argo Application is not created.', 'Argo Application is not created'
     end
-    
+
     #  phase = Failed, Running, Succeeded
     #  message = Operation terminated, any, successfully synced (all tasks run)
   end
@@ -133,11 +137,11 @@ class ArgoCDClient
       else
         end_time = Time.parse(app_status['operationState']['finishedAt'])
         difference_in_seconds = end_time - start_time
-  
+
         hours = (difference_in_seconds / 3600).to_i
         minutes = ((difference_in_seconds % 3600) / 60).to_i
         seconds = (difference_in_seconds % 60).to_i
-  
+
         return "#{hours} hours, #{minutes} minutes, and #{seconds} seconds"
       end
     else

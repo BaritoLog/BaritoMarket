@@ -7,7 +7,7 @@ class Api::BaseController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   around_action :traced
-  around_action :with_audit_logger
+  around_action :with_audit_logger, unless: -> { Rails.env.test? }
 
   def build_errors(code, errors = [])
     { success: false, errors: errors, code: code }

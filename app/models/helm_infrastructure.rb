@@ -1,14 +1,18 @@
 class HelmInfrastructure < ApplicationRecord
   belongs_to :app_group, required: true
   belongs_to :helm_cluster_template, required: true
+  belongs_to :infrastructure_location, required: true
 
   validates :override_values, helm_values: true
-  validates :cluster_name, uniqueness: true
+  validates :infrastructure_location_id, uniqueness: { scope: :app_group_id }
 
   enum statuses: {
     inactive: 'INACTIVE',
     active: 'ACTIVE',
   }
+  scope :inactive, -> { where(status: statuses[:inactive]) }
+  scope :active, -> { where(status: statuses[:active]) }
+
   enum provisioning_statuses: {
     pending: 'PENDING',
     deployment_started: 'DEPLOYMENT_STARTED',
@@ -24,12 +28,13 @@ class HelmInfrastructure < ApplicationRecord
     def setup(params)
       helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
       helm_infrastructure = HelmInfrastructure.new(
-        cluster_name:               Rufus::Mnemo.from_i(HelmInfrastructure.generate_cluster_index),
+        cluster_name:               params[:cluster_name],
         app_group_id:               params[:app_group_id],
         helm_cluster_template_id:   helm_cluster_template.id,
         is_active:                  true,
         use_k8s_kibana:             true,
-        override_values:            YAML.safe_load('{}'),
+        infrastructure_location_id: params[:infrastructure_location_id],
+        override_values:            params[:override_values].present? ? YAML.safe_load(params[:override_values]) : YAML.safe_load('{}'),
         provisioning_status:        HelmInfrastructure.provisioning_statuses[:pending],
         status:                     HelmInfrastructure.statuses[:inactive],
         max_tps:                    Figaro.env.DEFAULT_MAX_TPS
@@ -40,6 +45,8 @@ class HelmInfrastructure < ApplicationRecord
         helm_infrastructure.update_provisioning_status('PENDING')
         helm_infrastructure.reload
 
+        infra_location = helm_infrastructure.infrastructure_location
+
         if Figaro.env.ARGOCD_ENABLED == 'true'
           helm_infrastructure.argo_upsert_and_sync
         else
@@ -49,25 +56,52 @@ class HelmInfrastructure < ApplicationRecord
       end
       helm_infrastructure
     end
-
-    def generate_cluster_index
-      column = 'cluster_index'
-      query = "SELECT nextval('cluster_index_seq') AS #{column}"
-      connection.execute(query).first[column]
-    end
   end
 
   def synchronize_async
-    HelmSyncWorker.perform_async id
+    worker = HelmSyncWorker.new
+    worker.perform id
   end
-  
+
+  def is_elastalert_enabled
+    get_override_values_path('elastalert.enabled')
+  end
+
+  def is_kafka_ext_listener_enabled
+    get_override_values_path('kafka.externalListener.enable')
+  end
+
+  def is_cold_storage_enabled
+    get_override_values_path('elasticsearch.archival.enabled')
+  end
+
+  def get_override_values_path(path)
+    keys = path.split('.')
+    keys.reduce(override_values) do |hash, key|
+      hash[key] if hash.is_a?(Hash)
+    end
+  end
+
+  def cluster_name
+    app_group.cluster_name
+  end
+
   def argo_synchronize_async
-    ArgoSyncWorker.perform_async id
+    # ArgoSyncWorker.perform_async id
+    w = ArgoSyncWorker.new
+    w.perform id
+  end
+
+  def argo_application_url
+    "#{Figaro.env.ARGOCD_URL}/applications/argocd/#{Figaro.env.argocd_project_name}-#{cluster_name}-#{location_name}"
   end
 
   # call this during mass sync of app groups or when new app group is created
   def argo_upsert_and_sync
-    response = ARGOCD_CLIENT.create_application(cluster_name, self.values, Figaro.env.argocd_default_destination_name)
+    response = ARGOCD_CLIENT.create_application(
+      cluster_name, self.values,
+      self.location_name, self.location_server
+    )
     status = response.env[:status]
     reason_phrase = response.env[:reason_phrase]
 
@@ -83,13 +117,23 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def producer_address
-    producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
-    is_active.presence and sprintf(producer_address_format, cluster_name)
+    if infrastructure_location.nil?
+      # TODO: remove this after all helm_infrastructure has infrastructure_location
+      producer_address_format = Figaro.env.PRODUCER_ADDRESS_FORMAT
+      is_active.presence and sprintf(producer_address_format, cluster_name)
+    else
+      sprintf(infrastructure_location.producer_address_format, cluster_name)
+    end
   end
 
   def kibana_address
-    kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
-    use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
+    if infrastructure_location.nil?
+      # TODO: remove this after all helm_infrastructure has infrastructure_location
+      kibana_address_format = Figaro.env.KIBANA_ADDRESS_FORMAT
+      use_k8s_kibana.presence and sprintf(kibana_address_format, cluster_name)
+    else
+      sprintf(infrastructure_location.kibana_address_format, cluster_name)
+    end
   end
 
   def elasticsearch_address
@@ -98,7 +142,17 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def values
-    helm_cluster_template.values.deep_merge(override_values)
+    helm_cluster_template.values.deep_merge(override_values).deep_merge({
+      "clusterNameLocation" => location_name
+    })
+  end
+
+  def location_name
+    infrastructure_location.name
+  end
+
+  def location_server
+    infrastructure_location.destination_server
   end
 
   def app_group_name

@@ -22,10 +22,10 @@ RSpec.feature 'Application Group Management', type: :feature do
         create(:app_group_role)
         login_as admin
         visit app_group_path(@app_group_a)
-        expect(@app_group_a.helm_infrastructure.status).to eq HelmInfrastructure.statuses[:inactive]
+        expect(@app_group_a.helm_infrastructures.first.status).to eq HelmInfrastructure.statuses[:inactive]
 
-        expect(page).to have_content(@app_group_a.helm_infrastructure.cluster_name)
-        expect(page).to have_css("#delete_helm_infrastructure_#{@app_group_a.helm_infrastructure.id}")
+        expect(page).to have_content(@app_group_a.helm_infrastructures.first.cluster_name)
+        expect(page).to have_css("#delete_helm_infrastructure_#{@app_group_a.helm_infrastructures.first.id}")
 
         accept_alert do
           click_link 'Delete Helm Infrastructure'
@@ -40,12 +40,12 @@ RSpec.feature 'Application Group Management', type: :feature do
 
         login_as user_b
         visit app_group_path(@app_group_a)
-        expect(@app_group_a.helm_infrastructure.status).to eq HelmInfrastructure.statuses[:inactive]
+        expect(@app_group_a.helm_infrastructures.first.status).to eq HelmInfrastructure.statuses[:inactive]
 
-        expect(page).to have_content(@app_group_a.helm_infrastructure.cluster_name)
+        expect(page).to have_content(@app_group_a.cluster_name)
 
-        expect(page).not_to have_css("#delete_helm_infrastructure_#{@app_group_a.helm_infrastructure.id}")
-        expect(page).not_to have_selector(:css, "a[href='/app_groups/#{@app_group_a.id}/delete_helm_infrastructure/#{@app_group_a.helm_infrastructure.id}']")
+        expect(page).not_to have_css("#delete_helm_infrastructure_#{@app_group_a.helm_infrastructures.first.id}")
+        expect(page).not_to have_selector(:css, "a[href='/app_groups/#{@app_group_a.id}/delete_helm_infrastructure/#{@app_group_a.helm_infrastructures.first.id}']")
       end
     end
   end

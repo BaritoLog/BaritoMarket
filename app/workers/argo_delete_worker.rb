@@ -10,8 +10,6 @@ class ArgoDeleteWorker
       return
     end
 
-    release_name = infrastructure.cluster_name
-
     infrastructure.update!(last_log:
      (
        <<~EOS

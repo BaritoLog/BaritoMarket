@@ -39,6 +39,80 @@ Rails.application.routes.draw do
       to: 'app_groups#fetch_redact_labels',
       defaults: {format: :json}
 
+    namespace :v3 do
+      # Infrastructures
+      get :helm_infrastructures_by_cluster_name,
+        to: 'infrastructures#helm_infrastructures_by_cluster_name',
+        defaults: { format: :json }
+      patch :update_helm_manifest_by_cluster_name,
+        to: 'infrastructures#update_helm_manifest_by_cluster_name',
+        defaults: { format: :json }
+      post :sync_helm_infrastructure_by_cluster_name,
+        to: 'infrastructures#sync_helm_infrastructure_by_cluster_name',
+        defaults: { format: :json }
+      get :profile_by_cluster_name,
+        to: 'infrastructures#profile_by_cluster_name',
+        defaults: { format: :json }
+      get :profile_index,
+        to: 'infrastructures#profile_index',
+        defaults: { format: :json }
+      get :authorize,
+        to: 'infrastructures#authorize_by_username',
+        defaults: { format: :json }
+      get :profile_by_app_group_name,
+        to: 'infrastructures#profile_by_app_group_name',
+        defaults: { format: :json }
+      get :profile_curator,
+        to: 'infrastructures#profile_curator',
+        defaults: { format: :json }
+      get :profile_prometheus_exporter,
+        to: 'infrastructures#profile_prometheus_exporter',
+        defaults: { format: :json }
+      get :profile_prometheus_exporter,
+        to: 'infrastructures#profile_prometheus_exporter',
+        defaults: { format: :json }
+
+      # Appgroups
+      post :create_app_group,
+        to: 'app_groups#create_app_group',
+        defaults: {format: :json}
+      patch :update_cost,
+        to: 'app_groups#update_cost',
+        defaults: {format: :json}
+      get :profile_app,
+        to: 'app_groups#profile_app',
+        defaults: {format: :json}
+      get :check_app_group,
+        to: 'app_groups#check_app_group',
+        defaults: {format: :json}
+      get :cluster_templates,
+        to: 'app_groups#cluster_templates',
+        defaults: {format: :json}
+      post :create_app_group_user,
+        to: 'app_group_users#create',
+        defaults: {format: :json}
+      post :deactivated_by_cluster_name,
+        to: 'app_groups#deactivated_by_cluster_name',
+        defaults: { format: :json }
+      # Apps Controller
+      post :increase_log_count,
+        to: 'apps#increase_log_count',
+        defaults: { format: :json }
+      get :profile,
+        to: 'apps#profile',
+        defaults: { format: :json }
+      get :profile_by_app_group,
+        to: 'apps#profile_by_app_group',
+        defaults: { format: :json }
+      patch :update_barito_app,
+        to: 'apps#update_barito_app',
+        defaults: { format: :json }
+      patch :update_barito_app_labels,
+        to: 'apps#update_barito_app_labels',
+        defaults: {format: :json}
+
+    end
+
     namespace :v2 do
       post :increase_log_count,
         to: 'apps#increase_log_count',

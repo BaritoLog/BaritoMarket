@@ -34,51 +34,32 @@
 
           dt.col-sm-2 Cluster Name:
           dd.col-sm-10
-            = @app_group.helm_infrastructure.cluster_name
+            = @app_group.cluster_name
 
-          dt.col-sm-2 Capacity:
-          dd.col-sm-10
-            = "#{@app_group.helm_infrastructure.helm_cluster_template.name.camelcase} (#{@app_group.helm_infrastructure.max_tps} TPS)"
+          - if @allow_see_infrastructure and @app_group.helm_infrastructures.length > 1
+            dt.col-sm-2 Kibana routing address:
+            dd.col-sm-10
+              = @app_group.kibana_address
 
+          - if @allow_see_infrastructure and @app_group.helm_infrastructures.length > 1
+            dt.col-sm-2 Producer routing address:
+            dd.col-sm-10
+              = @app_group.producer_address
+          
           dt.col-sm-2 TPS:
           dd.col-sm-10
             - if @allow_edit_metadata
               = form_for @app_group do |f|
-                = f.fields_for :helm_infrastructure, @app_group.helm_infrastructure do |helm_infrastructure_fields|
+                = f.fields_for :app_group, @app_group do |app_group_fields|
                   .input-group.col-sm-5(style="padding-left:0px;")
-                      = helm_infrastructure_fields.number_field :max_tps, id: 'app_group_helm_infrastructure_max_tps', class: 'form-control'
+                      = app_group_fields.number_field :max_tps, id: 'app_group_max_tps', class: 'form-control'
                       .input-group-append
                         = f.button(:class => 'btn btn-outline-secondary btn-sm')
                           i.fas.fa-check
 
             - else
-              = @app_group.helm_infrastructure.max_tps
+              = @app_group.max_tps
 
-          dt.col-sm-2 Provisioning Status:
-          dd.col-sm-10
-            = @app_group.helm_infrastructure.provisioning_status
-
-          - if @argocd_enabled
-            dt.col-sm-2 Argo Sync Status:
-            dd.col-sm-10
-              = @argo_operation_phase
-            
-            dt.col-sm-2 Argo Sync last message:
-            dd.col-sm-10
-              = @argo_operation_message
-            
-            dt.col-sm-2 Argo Application health:
-            dd.col-sm-10
-              = @argo_application_health
-
-          dt.col-sm-2 Status:
-          dd.col-sm-10
-            - if @allow_set_status
-              = check_box_tag "toggle_infra_status_#{@app_group.id}", true, @app_group.helm_infrastructure.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
-              = form_tag toggle_status_helm_infrastructure_path(@app_group.helm_infrastructure), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
-                = hidden_field_tag :toggle_status
-                = hidden_field_tag :app_group_id, @app_group.id
-          
           dt.col-sm-2 Redaction Status:
           dd.col-sm-10
             - if @allow_set_status
@@ -103,6 +84,78 @@
               - if (@labels['app-group'].present?)
                 = @labels['app-group'][label]
 
+          hr.solid
+          - @app_group.helm_infrastructures.sort.each do |hi|
+            dd.col-sm-6.row
+              .col-sm-12
+                h4= hi.infrastructure_location.name.upcase
+              .col-sm-4 Capacity
+              .col-sm-8= "#{hi.helm_cluster_template.name.camelcase} (#{hi.max_tps} TPS)"
+              .col-sm-4 Provisioning Status:
+              .col-sm-8
+                = hi.provisioning_status
+
+              .col-sm-4 ArgoCD URL:
+              .col-sm-8
+                - url = hi.argo_application_url
+                a href=url Link
+
+              - if @argocd_enabled
+                .col-sm-4 Argo Sync Status:
+                .col-sm-8
+                  = @argo_informations[hi.id][:operation_phase]
+                
+                .col-sm-4 Argo Sync last message:
+                .col-sm-8
+                  = @argo_informations[hi.id][:operation_message]
+                
+                .col-sm-4 Argo Application health:
+                .col-sm-8
+                  = @argo_informations[hi.id][:application_health]
+
+              .col-sm-4 Status:
+              .col-sm-8
+                - if @allow_set_status
+                  = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+                  = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
+                    = hidden_field_tag :toggle_status
+                    = hidden_field_tag :app_group_id, @app_group.id
+
+              - if @allow_see_helm_infrastructure
+                .col-sm-6
+                  .btn.btn-primary.btn-sm.mr-2
+                    i.fas.fa-server.mr-1
+                    - if hi
+                      = link_to 'Show Helm Infrastructure', helm_infrastructure_path(hi), class: 'text-light', style: 'text-decoration: none'
+                    - else
+                      = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
+
+              - if @allow_delete_helm_infrastructure
+                .col-sm-6
+                  div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{hi.id}")
+                    i.far.fa-trash-alt.mr-1
+                    = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(hi.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
+
+              - if @allow_delete_helm_infrastructure and @app_group.kibana_helm_infrastructure_id != hi.id 
+                .col-sm-6
+                  = form_for @app_group do |f|
+                    = f.fields_for :app_group, @app_group do |app_group_fields|
+                      = app_group_fields.hidden_field :kibana_helm_infrastructure_id, value: hi.id
+                      .input-group-append
+                        = f.button(:class => 'btn btn-outline-primary btn-sm')
+                          i Use this Kibana
+              - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id 
+                .col-sm-6
+                  = form_for @app_group do |f|
+                    = f.fields_for :app_group, @app_group do |app_group_fields|
+                      = app_group_fields.hidden_field :producer_helm_infrastructure_id, value: hi.id
+                      .input-group-append
+                        = f.button(:class => 'btn btn-outline-primary btn-sm')
+                          i Use this Producer
+
+
+
+
 
       .card-footer
         .btn.btn-primary.btn-sm.mr-2
@@ -125,18 +178,12 @@
           .btn.btn-primary.btn-sm.mr-2
             i.fas.fa-key.mr-1
             = link_to 'Manage Access', manage_access_app_group_path(@app_group), class: 'text-light', style: 'text-decoration: none'
-        - if @allow_see_helm_infrastructure
-          .btn.btn-primary.btn-sm.mr-2
-            i.fas.fa-server.mr-1
-            - if @app_group.helm_infrastructure.present?
-              = link_to 'Show Helm Infrastructure', helm_infrastructure_path(@app_group.helm_infrastructure), class: 'text-light', style: 'text-decoration: none'
-            - else
-              = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
 
         - if @allow_delete_helm_infrastructure
-          div class=("btn btn-danger btn-sm text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{@app_group.helm_infrastructure.id}")
-            i.far.fa-trash-alt.mr-1
-            = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(@app_group.helm_infrastructure.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
+          .btn.btn-primary.btn-sm.mr-2
+            i.fas.fa-server.mr-1
+            = link_to 'Create Infra', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
+            
 
 br
 br

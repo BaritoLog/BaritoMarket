@@ -16,6 +16,11 @@
               dt.col-sm-3 Name
               dd.col-sm-9
                 = f.text_field :name, class: 'form-control', placeholder: 'Please enter the name of your application group'
+              dt.col-sm-3 Location
+              dd.col-sm-9
+                = select_tag 'app_group[infrastructure_location_name]', options_from_collection_for_select(InfrastructureLocation.active, :name, :name), { class: 'form-control' }
+                small.form-text.text-muted
+                  | Please choose your Location
               dt.col-sm-3 Helm Cluster Template
               dd.col-sm-9
                 = select_tag 'app_group[cluster_template_id]', options_from_collection_for_select(HelmClusterTemplate.all, :id, :name), { class: 'form-control' }

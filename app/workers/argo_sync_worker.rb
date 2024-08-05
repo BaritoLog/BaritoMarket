@@ -5,7 +5,7 @@ class ArgoSyncWorker
   def perform(helm_infrastructure_id)
     infrastructure = HelmInfrastructure.find(helm_infrastructure_id)
 
-    release_name = infrastructure.cluster_name
+    release_name = infrastructure.app_group.cluster_name
     repository = Figaro.env.HELM_REPOSITORY.to_s
     chart_name = Figaro.env.HELM_CHART_NAME.to_s
     chart_version = Figaro.env.HELM_CHART_VERSION.to_s
@@ -32,9 +32,9 @@ class ArgoSyncWorker
     )
     infrastructure.update_provisioning_status('DEPLOYMENT_STARTED')
 
-    terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    terminate_response = ARGOCD_CLIENT.terminate_operation(infrastructure.app_group.cluster_name, infrastructure.infrastructure_location.name)
 
-    response = ARGOCD_CLIENT.sync_application(infrastructure.cluster_name, Figaro.env.argocd_default_destination_name)
+    response = ARGOCD_CLIENT.sync_application(infrastructure.app_group.cluster_name, infrastructure.infrastructure_location.name)
 
     sleep Figaro.env.argocd_worker_sync_interval.to_i
 
@@ -42,16 +42,16 @@ class ArgoSyncWorker
     parsed_body = JSON.parse(response.env[:body])
     message = parsed_body['message']
 
-    if status == 200 
+    if status == 200
       infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
       infrastructure.update_status('ACTIVE')
       infrastructure.update!(last_log:
         (
           <<~EOS
             Argo Application sync was initiated successfully, Check Argo Sync Status for current status.
-  
+
             #{invocation_info}
-  
+
             Output:
             #{response.env[:reason_phrase]}: #{status}
           EOS
@@ -63,9 +63,9 @@ class ArgoSyncWorker
         (
           <<~EOS
             Argo Application sync initiation was failed.
-  
+
             #{invocation_info}
-  
+
             Output:
             #{response.env[:reason_phrase]}: #{status}: #{message}
           EOS

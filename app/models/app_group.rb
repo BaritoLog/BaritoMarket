@@ -9,7 +9,9 @@ class AppGroup < ApplicationRecord
   has_many :app_group_teams
   has_many :groups, through: :app_group_teams
   has_one :infrastructure
-  has_one :helm_infrastructure
+  belongs_to :producer_helm_infrastructure, class_name: 'HelmInfrastructure', foreign_key: 'producer_helm_infrastructure_id'
+  belongs_to :kibana_helm_infrastructure, class_name: 'HelmInfrastructure', foreign_key: 'kibana_helm_infrastructure_id'
+  has_many :helm_infrastructures
 
   enum environment: {
     staging: 'STAGING',
@@ -20,12 +22,15 @@ class AppGroup < ApplicationRecord
     inactive: 'INACTIVE',
     active: 'ACTIVE',
   }
+  enum status: { ACTIVE: 0, INACTIVE: 1 }
 
   scope :active, -> {
-    includes(:helm_infrastructure).
+    includes(:helm_infrastructures).
       includes(:barito_apps).
       where.not(helm_infrastructures: { provisioning_status: 'DELETED' })
   }
+
+  after_update :expire_cache
 
   filterrific default_filter_params: { sorted_by: 'created_at_desc' },
               available_filters: %w[
@@ -114,20 +119,35 @@ class AppGroup < ApplicationRecord
     end
 
     ActiveRecord::Base.transaction do
+      cluster_name = AppGroup.generate_cluster_name
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
         environment: params[:environment],
+        cluster_name: cluster_name,
         labels: labels,
         redact_labels: redact_labels,
         redact_status: "INACTIVE",
+        status: :ACTIVE,
+        max_tps: Figaro.env.DEFAULT_MAX_TPS
       )
+
+      infrastructure_location = InfrastructureLocation.active.find_by(name: Figaro.env.default_infrastructure_location)
+      if params[:infrastructure_location_name].present?
+        infrastructure_location = InfrastructureLocation.active.find_by(name: params[:infrastructure_location_name])
+      end
 
       helm_infrastructure = HelmInfrastructure.setup(
         app_group_id: app_group.id,
         helm_cluster_template_id: params[:cluster_template_id],
+        infrastructure_location_id: infrastructure_location.id,
+        cluster_name: cluster_name
       )
+
+      app_group.kibana_helm_infrastructure_id = helm_infrastructure.id
+      app_group.producer_helm_infrastructure_id = helm_infrastructure.id
+      app_group.save!
 
       [app_group, helm_infrastructure]
     end
@@ -135,6 +155,18 @@ class AppGroup < ApplicationRecord
 
   def redact_active?
     self.redact_status == AppGroup.redact_statuses[:active]
+  end
+
+  def self.generate_cluster_name
+    column = 'cluster_index'
+    query = "SELECT nextval('cluster_index_seq') AS #{column}"
+    cluster_index = connection.execute(query).first[column]
+    Rufus::Mnemo.from_i(cluster_index)
+  end
+
+  def helm_infrastructure_in_default_location
+    infrastructure_location = InfrastructureLocation.active.find_by(name: Figaro.env.default_infrastructure_location)
+    self.helm_infrastructures.where(infrastructure_location_id: infrastructure_location.id).first if infrastructure_location.present?
   end
 
   def increase_log_count(new_count)
@@ -146,11 +178,7 @@ class AppGroup < ApplicationRecord
   end
 
   def available?
-    helm_infrastructure.nil? ? false : helm_infrastructure.active?
-  end
-
-  def max_tps
-    helm_infrastructure.nil? ? 0 : helm_infrastructure.max_tps
+    helm_infrastructures.active.first.present?
   end
 
   def latest_total_cost
@@ -163,5 +191,50 @@ class AppGroup < ApplicationRecord
 
   def new_total_tps(diff_tps)
     barito_apps.sum(:max_tps) + diff_tps
+  end
+
+  def get_producer_helm_infrastructure
+    if producer_helm_infrastructure_id.nil?
+      helm_infrastructure = helm_infrastructure_in_default_location if helm_infrastructure.nil?
+      helm_infrastructure = helm_infrastructures.active.first if helm_infrastructure.nil?
+    else
+      helm_infrastructure = producer_helm_infrastructure
+    end
+    helm_infrastructure
+  end
+
+  def producer_mtls_enabled?
+    get_producer_helm_infrastructure&.infrastructure_location.is_mtls_enabled ? true : false
+  end
+
+  def producer_address
+    get_producer_helm_infrastructure&.producer_address
+  end
+
+  def get_kibana_helm_infrastructure
+    if kibana_helm_infrastructure_id.nil?
+      helm_infrastructure = helm_infrastructure_in_default_location if helm_infrastructure.nil?
+      helm_infrastructure = helm_infrastructures.active.first if helm_infrastructure.nil?
+    else
+      helm_infrastructure = kibana_helm_infrastructure
+    end
+    helm_infrastructure
+  end
+
+  def kibana_mtls_enabled?
+    get_kibana_helm_infrastructure&.infrastructure_location.is_mtls_enabled ? true : false
+  end
+
+  def kibana_address
+    get_kibana_helm_infrastructure&.kibana_address
+  end
+
+  def elasticsearch_address
+    elasticsearch_address_format = Figaro.env.ES_ADDRESS_FORMAT
+    sprintf(elasticsearch_address_format, cluster_name)
+  end
+
+  def expire_cache
+    CacheHelper.expire_app_group_profile(id)
   end
 end
