@@ -58,6 +58,19 @@
           dd.col-sm-10
             = @app_group.helm_infrastructure.provisioning_status
 
+          - if @argocd_enabled
+            dt.col-sm-2 Argo Sync Status:
+            dd.col-sm-10
+              = @argo_operation_phase
+            
+            dt.col-sm-2 Argo Sync last message:
+            dd.col-sm-10
+              = @argo_operation_message
+            
+            dt.col-sm-2 Argo Application health:
+            dd.col-sm-10
+              = @argo_application_health
+
           dt.col-sm-2 Status:
           dd.col-sm-10
             - if @allow_set_status
