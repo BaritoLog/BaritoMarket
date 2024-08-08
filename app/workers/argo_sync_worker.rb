@@ -39,6 +39,9 @@ class ArgoSyncWorker
     sleep Figaro.env.argocd_worker_sync_interval.to_i
 
     status = response.env[:status]
+    parsed_body = JSON.parse(response.env[:body])
+    message = parsed_body['message']
+
     if status == 200 
       infrastructure.update_provisioning_status('DEPLOYMENT_FINISHED')
       infrastructure.update_status('ACTIVE')
@@ -64,7 +67,7 @@ class ArgoSyncWorker
             #{invocation_info}
   
             Output:
-            #{response.env[:reason_phrase]}: #{status}
+            #{response.env[:reason_phrase]}: #{status}: #{message}
           EOS
         ).strip
       )

@@ -79,6 +79,7 @@ class ArgoCDClient
     return create_connection().post do | req |
       req.body = {
         project: Figaro.env.argocd_project_name,
+        prune: true,
       }.to_json
       req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/sync"
     end

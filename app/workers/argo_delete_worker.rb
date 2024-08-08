@@ -25,6 +25,8 @@ class ArgoDeleteWorker
     response = ARGOCD_CLIENT.delete_application(infrastructure.cluster_name, Figaro.env.ARGOCD_DEFAULT_DESTINATION_NAME)
 
     status = response.env[:status]
+    parsed_body = JSON.parse(response.env[:body])
+    message = parsed_body['message']
     if status == 200
       infrastructure.update!(last_log:
         (
@@ -42,7 +44,7 @@ class ArgoDeleteWorker
             Argo Application delete initiation was failed.
 
             Outout:
-            #{response.env[:reason_phrase]}: #{status}
+            #{response.env[:reason_phrase]}: #{status}: #{message}
           EOS
         ).strip
       )

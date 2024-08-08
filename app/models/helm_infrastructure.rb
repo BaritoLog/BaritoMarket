@@ -41,21 +41,7 @@ class HelmInfrastructure < ApplicationRecord
         helm_infrastructure.reload
 
         if Figaro.env.ARGOCD_ENABLED == 'true'
-          response = ARGOCD_CLIENT.create_application(helm_infrastructure.cluster_name, helm_infrastructure.values, Figaro.env.argocd_default_destination_name)
-          response_body = response.env[:body]
-          status = response.env[:status]
-          reason_phrase = response.env[:reason_phrase]
-  
-          parsed_body = JSON.parse(response_body)
-          message = parsed_body['message']
-  
-          if status != 200
-            flash[:messages] = "#{reason_phrase}: #{status}: #{message}"
-            return redirect_to new_app_group_path
-          end
-  
-          helm_infrastructure.update!(last_log: "Argo Application sync will be scheduled.")
-          helm_infrastructure.argo_synchronize_async
+          helm_infrastructure.argo_upsert_and_sync
         else
           helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
           helm_infrastructure.synchronize_async
@@ -77,6 +63,23 @@ class HelmInfrastructure < ApplicationRecord
   
   def argo_synchronize_async
     ArgoSyncWorker.perform_async id
+  end
+
+  # call this during mass sync of app groups or when new app group is created
+  def argo_upsert_and_sync
+    response = ARGOCD_CLIENT.create_application(cluster_name, self.values, Figaro.env.argocd_default_destination_name)
+    status = response.env[:status]
+    reason_phrase = response.env[:reason_phrase]
+
+    parsed_body = JSON.parse(response.env[:body])
+    message = parsed_body['message']
+
+    if status != 200
+      puts("Error in application manifest update: #{reason_phrase}: #{status}: #{message}")
+    else
+      self.update!(last_log: "Argo Application sync will be scheduled.")
+      self.argo_synchronize_async
+    end
   end
 
   def producer_address
