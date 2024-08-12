@@ -75,8 +75,7 @@ class HelmInfrastructuresController < ApplicationController
     authorize @helm_infrastructure
 
     if Figaro.env.ARGOCD_ENABLED == 'true'
-      @helm_infrastructure.update!(last_log: "Argo Application sync will be scheduled.")
-      @helm_infrastructure.argo_synchronize_async
+      @helm_infrastructure.argo_upsert_and_sync
     else
       @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
       @helm_infrastructure.synchronize_async
