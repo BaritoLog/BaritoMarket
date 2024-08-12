@@ -1,9 +1,11 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import variables from "@/app/ui/variables.module.scss";
 
 export default function Home() {
   return (
     <main className={styles.main}>
+      <h1 style={{color: variables.primaryColor}}>HALO</h1>
       <div className={styles.description}>
         <p>
           Get started by editing&nbsp;
