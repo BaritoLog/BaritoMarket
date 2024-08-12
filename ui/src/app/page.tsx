@@ -1,23 +1,7 @@
 'use client';
 
-import { AppbarHead, AppbarBody, AppbarTail, BaseAppbar } from '@asphalt-react/appbar';
-import variables from './page.module.scss';
-
 export default function Page() {
-  return <main>
-    <BaseAppbar>
-      <AppbarHead>
-        <a href="/" style={{color: variables.primaryColor}}>Barito Log</a>
-      </AppbarHead>
-      <AppbarBody>
-        body
-      </AppbarBody>
-      <AppbarTail>
-        <div>Username</div>
-        <div>Sign Out</div>
-      </AppbarTail>
-    </BaseAppbar>
-  </main>
+  return <main>root</main>
 }
 // import Image from "next/image";
 // import styles from "./page.module.css";
