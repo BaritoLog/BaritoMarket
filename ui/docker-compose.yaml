@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  ui:
+  barito-market-ui:
     build:
       context: .
       dockerfile: Dockerfile
