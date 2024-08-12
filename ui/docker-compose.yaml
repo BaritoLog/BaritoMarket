@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: barito-market-ui
+    ports:
+      - 3000:3000
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
