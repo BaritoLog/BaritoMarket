@@ -7,7 +7,6 @@ import {
   NavItemIcon,
   NavItemCaption,
   NavLink,
-  useAppbar,
 } from "@asphalt-react/appbar"
 import { Button } from '@asphalt-react/button';
 import {
@@ -18,7 +17,7 @@ import {
 	Person,
 } from "@asphalt-react/iconpack"
 import { Modal } from "@asphalt-react/modal"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from './wrapper.module.scss';
 
 export default function Wrapper({
@@ -26,6 +25,14 @@ export default function Wrapper({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	useEffect(() => {
+		window.document.addEventListener('keyup', e => {
+			if (e.key !== '/') {
+				return
+			}
+			setOpen(true)
+		})
+	})
 	const [isOpen, setOpen] = useState(false)
 	const routes = [
 		{
@@ -50,13 +57,6 @@ export default function Wrapper({
 		},
 	]
 
-	document.addEventListener('keyup', e => {
-		if (e.key !== '/') {
-			return
-		}
-		setOpen(true)
-
-	})
 	return <>
 		<Modal
 			open={isOpen}
