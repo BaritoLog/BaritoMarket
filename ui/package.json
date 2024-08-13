@@ -12,6 +12,7 @@
     "@asphalt-react/appbar": "^2.0.0-rc.0",
     "@asphalt-react/button": "^2.0.0-rc.0",
     "@asphalt-react/iconpack": "^2.0.0-rc.0",
+    "@asphalt-react/modal": "^2.0.0-rc.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"

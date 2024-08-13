@@ -17,6 +17,8 @@ import {
 	Mugshot,
 	Person,
 } from "@asphalt-react/iconpack"
+import { Modal } from "@asphalt-react/modal"
+import { useState } from "react";
 import styles from './wrapper.module.scss';
 
 export default function Wrapper({
@@ -24,6 +26,7 @@ export default function Wrapper({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const [isOpen, setOpen] = useState(false)
 	const routes = [
 		{
 			href: '/users',
@@ -47,7 +50,22 @@ export default function Wrapper({
 		},
 	]
 
+	document.addEventListener('keyup', e => {
+		if (e.key !== '/') {
+			return
+		}
+		setOpen(true)
+
+	})
 	return <>
+		<Modal
+			open={isOpen}
+			onClose={() => {
+				setOpen(false)
+			}}
+		>
+			<span>Are you sure</span>
+		</Modal>
 		<Appbar
 			head={
 				<Button link asProps={{href: "/"}} nude system size="s" underline={false}>
