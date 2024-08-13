@@ -1,7 +1,48 @@
 'use client';
 
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableHeadRow,
+  TableBodyRow,
+  TableHeadCell,
+  TableBodyCell,
+} from "@asphalt-react/table"
+
 export default function Page() {
-  return <main>root</main>
+  return <main>
+    <Table contentFit>
+      <TableHead>
+        <TableHeadRow sticky>
+          <TableHeadCell>Name</TableHeadCell>
+          <TableHeadCell>Cluster Name</TableHeadCell>
+          <TableHeadCell>Capacity</TableHeadCell>
+          <TableHeadCell>Provisioning Status</TableHeadCell>
+          <TableHeadCell>Status</TableHeadCell>
+          <TableHeadCell>Actions</TableHeadCell>
+        </TableHeadRow>
+      </TableHead>
+      <TableBody>
+        <TableBodyRow>
+          <TableBodyCell>Lorem ipsum dolor sit amet lorem ipsum dolor sit amet</TableBodyCell>
+          <TableBodyCell>Cluster Name</TableBodyCell>
+          <TableBodyCell>Capacity</TableBodyCell>
+          <TableBodyCell>Provisioning Status</TableBodyCell>
+          <TableBodyCell>Status</TableBodyCell>
+          <TableBodyCell>Actions</TableBodyCell>
+        </TableBodyRow>
+        <TableBodyRow>
+          <TableBodyCell>Lorem ipsum dolor sit amet lorem ipsum dolor sit amet</TableBodyCell>
+          <TableBodyCell>Cluster Name</TableBodyCell>
+          <TableBodyCell>Capacity</TableBodyCell>
+          <TableBodyCell>Provisioning Status</TableBodyCell>
+          <TableBodyCell>Status</TableBodyCell>
+          <TableBodyCell>Actions</TableBodyCell>
+        </TableBodyRow>
+      </TableBody>
+    </Table>
+  </main>
 }
 // import Image from "next/image";
 // import styles from "./page.module.css";
