@@ -3,7 +3,7 @@ const nextConfig = {
 	output: 'export',
 	webpack: (config, context) => {
 		config.watchOptions = {
-			poll: 1000,
+			poll: 500,
 			aggregateTimeout: 300,
 		}
 		return config
