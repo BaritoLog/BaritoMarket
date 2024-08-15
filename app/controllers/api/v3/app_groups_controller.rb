@@ -50,6 +50,7 @@ class Api::V3::AppGroupsController < Api::V3::BaseController
       secret_key: @app_group.secret_key,
       cluster_name: @app_group.cluster_name,
       kibana_address: @app_group.kibana_address,
+      kibana_mtls_enabled: @app_group&.kibana_mtls_enabled?,
       status: @app_group.status,
       created_at: @app_group.created_at.strftime(Figaro.env.timestamp_format),
       updated_at: @app_group.updated_at.strftime(Figaro.env.timestamp_format),
