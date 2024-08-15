@@ -16,9 +16,10 @@ import {
 	Mugshot,
 	Person,
 } from "@asphalt-react/iconpack"
+import { Logo } from "@asphalt-react/logo";
 import { Modal } from "@asphalt-react/modal"
+import { Search } from "@asphalt-react/textfield"
 import { useEffect, useState } from "react";
-import styles from './wrapper.module.scss';
 
 export default function Wrapper({
 	children,
@@ -64,12 +65,12 @@ export default function Wrapper({
 				setOpen(false)
 			}}
 		>
-			<span>Are you sure</span>
+			<Search size="l" placeholder="Search..." />
 		</Modal>
 		<Appbar
 			head={
 				<Button link asProps={{href: "/"}} nude system size="s" underline={false}>
-					Barito Log
+					<Logo product="Barito Log" symbol={false} size="m" />
 				</Button>
 			}
 			tail={

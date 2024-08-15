@@ -10,3 +10,5 @@ services:
     volumes:
       - ./src:/app/src
       - ./public:/app/public
+      - ./node_modules:/app/node_modules
+      - ./.eslintrc.json:/app/.eslintrc.json

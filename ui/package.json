@@ -11,9 +11,15 @@
   "dependencies": {
     "@asphalt-react/appbar": "^2.0.0-rc.0",
     "@asphalt-react/button": "^2.0.0-rc.0",
+    "@asphalt-react/card": "^2.0.0-rc.1",
+    "@asphalt-react/crater": "^2.0.0-rc.0",
     "@asphalt-react/iconpack": "^2.0.0-rc.0",
+    "@asphalt-react/logo": "^2.0.0-rc.0",
     "@asphalt-react/modal": "^2.0.0-rc.0",
+    "@asphalt-react/stack": "^2.0.0-rc.0",
     "@asphalt-react/table": "^2.0.0-rc.0",
+    "@asphalt-react/textfield": "^2.0.0-rc.0",
+    "@asphalt-react/typography": "^2.0.0-rc.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"
