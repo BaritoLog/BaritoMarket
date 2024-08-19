@@ -19,7 +19,11 @@ import {
 import { Logo } from "@asphalt-react/logo";
 import { Modal } from "@asphalt-react/modal"
 import { Search } from "@asphalt-react/textfield"
-import { useEffect, useState } from "react";
+import {
+	Suspense,
+	useEffect,
+	useState,
+} from "react";
 
 export default function Wrapper({
 	children,
@@ -88,6 +92,6 @@ export default function Wrapper({
 				</NavItem>)}
 			</Nav>
 		</Appbar>
-		{children}
+		<Suspense>{children}</Suspense>
 	</>
 }
