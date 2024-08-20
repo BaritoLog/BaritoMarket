@@ -141,10 +141,39 @@ class HelmInfrastructure < ApplicationRecord
     sprintf(elasticsearch_address_format, cluster_name)
   end
 
+  def producer_mtls_enabled?
+    infrastructure_location.is_mtls_enabled ? true : false
+  end
+
+  def kibana_mtls_enabled?
+    infrastructure_location.is_mtls_enabled ? true : false
+  end
+
   def values
-    helm_cluster_template.values.deep_merge(override_values).deep_merge({
-      "clusterNameLocation" => location_name
-    })
+    inject_values = {
+      "clusterNameLocation" => location_name,
+    }
+
+    if producer_mtls_enabled? || kibana_mtls_enabled?
+      inject_values["istio"] = {
+        "gateway" => {
+          "enabled" => "true",
+        },
+        "authorizationPolicy" => {
+          "enabled" => "true",
+        }
+      }
+    end
+
+    if app_group.producer_mtls_enabled?
+      inject_values["producer"] = { "virtualService" => { "enabled" => "true" } }
+    end
+
+    if app_group.kibana_mtls_enabled?
+      inject_values["kibana"] = { "virtualService" => { "enabled" => "true" } }
+    end
+
+    inject_values.deep_merge(helm_cluster_template.values).deep_merge(override_values)
   end
 
   def location_name
