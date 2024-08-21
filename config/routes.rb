@@ -39,6 +39,12 @@ Rails.application.routes.draw do
       to: 'app_groups#fetch_redact_labels',
       defaults: {format: :json}
 
+    namespace :v3 do
+      get :foo,
+        to: 'app_groups#foo',
+        defaults: { format: :json }
+    end
+
     namespace :v2 do
       post :increase_log_count,
         to: 'apps#increase_log_count',

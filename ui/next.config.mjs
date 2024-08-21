@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	// basePath: '/ui/v2',
 	output: 'export',
 	// https://nextjs.org/docs/app/api-reference/next-config-js/trailingSlash
 	trailingSlash: true,

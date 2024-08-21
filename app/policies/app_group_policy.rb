@@ -1,4 +1,8 @@
 class AppGroupPolicy < ApplicationPolicy
+  def foo?
+    see_app_groups?
+  end
+
   def show?
     barito_superadmin? || user.can_access_app_group?(record)
   end

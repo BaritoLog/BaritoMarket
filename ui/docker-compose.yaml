@@ -9,7 +9,7 @@ services:
       - 3000:3000
     restart: always
     volumes:
-      - ./src:/app/src
-      - ./public:/app/public
-      - ./node_modules:/app/node_modules
       - ./.eslintrc.json:/app/.eslintrc.json
+      - ./node_modules:/app/node_modules
+      - ./public:/app/public
+      - ./src:/app/src
