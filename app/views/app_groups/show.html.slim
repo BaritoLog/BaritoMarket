@@ -115,7 +115,7 @@
 
               .col-sm-4 Status:
               .col-sm-8
-                - if @allow_set_status
+                - if @allow_set_app_group_status
                   = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
                   = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
                     = hidden_field_tag :toggle_status

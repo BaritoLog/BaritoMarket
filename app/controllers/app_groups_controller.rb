@@ -40,6 +40,7 @@ class AppGroupsController < ApplicationController
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
       @app_group.cluster_name.to_s + "/"
     @open_katulampa_url = sprintf(Figaro.env.MONITORING_LINK_FORMAT, @app_group.cluster_name.to_s)
+    @allow_set_app_group_status = policy(@app_group).toggle_status?
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
