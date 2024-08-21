@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: june-testing-barito-market-ui
+  name: june-testing-barito-market-ui
+  namespace: barito-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: june-testing-barito-market-ui
+  template:
+    metadata:
+      labels:
+        app: june-testing-barito-market-ui
+    spec:
+      containers:
+      - image: juneardoc/barito-market-ui:dev
+        name: barito-market-ui
+        ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: june-testing-barito-market-ui
+  name: june-testing-barito-market-ui
+  namespace: barito-core
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: june-testing-barito-market-ui
+  type: ClusterIP
