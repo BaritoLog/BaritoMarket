@@ -181,11 +181,11 @@ class HelmInfrastructure < ApplicationRecord
       }
     end
 
-    if app_group.producer_mtls_enabled?
+    if producer_mtls_enabled?
       inject_values["producer"] = { "virtualService" => { "enabled" => "true" } }
     end
 
-    if app_group.kibana_mtls_enabled?
+    if kibana_mtls_enabled?
       inject_values["kibana"] = { "virtualService" => { "enabled" => "true" } }
     end
 
