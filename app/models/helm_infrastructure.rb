@@ -146,7 +146,7 @@ class HelmInfrastructure < ApplicationRecord
     if app_group.kibana_helm_infrastructure_id == self.id
       app_group.update(kibana_helm_infrastructure_id: nil)
     end
-    ArgoDeleteWorker.perform_async(@helm_infrastructure.id)
+    ArgoDeleteWorker.perform_async(self.id)
   end
 
   def elasticsearch_address
