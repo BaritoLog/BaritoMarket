@@ -158,6 +158,9 @@ class HelmInfrastructure < ApplicationRecord
       inject_values["istio"] = {
         "gateway" => {
           "enabled" => "true",
+          "tls" => {
+            "enabled" => "true",
+          }
         },
         "authorizationPolicy" => {
           "enabled" => "true",
