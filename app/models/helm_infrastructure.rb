@@ -136,6 +136,19 @@ class HelmInfrastructure < ApplicationRecord
     end
   end
 
+  def delete
+    self.update_provisioning_status('DELETE_STARTED')
+    DeleteInfrastructureWorker.perform_async(self.id)
+    app_group = self.app_group
+    if app_group.producer_helm_infrastructure_id == self.id
+      app_group.update(producer_helm_infrastructure_id: nil)
+    end
+
+    if app_group.kibana_helm_infrastructure_id == self.id
+      app_group.update(kibana_helm_infrastructure_id: nil)
+    end
+  end
+
   def elasticsearch_address
     elasticsearch_address_format = Figaro.env.ES_ADDRESS_FORMAT
     sprintf(elasticsearch_address_format, cluster_name)
