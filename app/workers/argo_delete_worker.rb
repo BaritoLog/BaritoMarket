@@ -19,8 +19,8 @@ class ArgoDeleteWorker
     )
 
     infrastructure.update_provisioning_status('DELETE_STARTED')
-    ARGOCD_CLIENT.terminate_operation(infrastructure.cluster_name, Figaro.env.ARGOCD_DEFAULT_DESTINATION_NAME)
-    response = ARGOCD_CLIENT.delete_application(infrastructure.cluster_name, Figaro.env.ARGOCD_DEFAULT_DESTINATION_NAME)
+    ARGOCD_CLIENT.terminate_operation(infrastructure.app_group.cluster_name, infrastructure.infrastructure_location.name)
+    response = ARGOCD_CLIENT.delete_application(infrastructure.cluster_name, infrastructure.infrastructure_location.name)
 
     status = response.env[:status]
     parsed_body = JSON.parse(response.env[:body])

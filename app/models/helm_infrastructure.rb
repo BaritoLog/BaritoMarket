@@ -138,7 +138,6 @@ class HelmInfrastructure < ApplicationRecord
 
   def delete
     self.update_provisioning_status('DELETE_STARTED')
-    DeleteInfrastructureWorker.perform_async(self.id)
     app_group = self.app_group
     if app_group.producer_helm_infrastructure_id == self.id
       app_group.update(producer_helm_infrastructure_id: nil)
@@ -147,6 +146,7 @@ class HelmInfrastructure < ApplicationRecord
     if app_group.kibana_helm_infrastructure_id == self.id
       app_group.update(kibana_helm_infrastructure_id: nil)
     end
+    ArgoDeleteWorker.perform_async(@helm_infrastructure.id)
   end
 
   def elasticsearch_address

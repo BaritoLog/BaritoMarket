@@ -125,7 +125,7 @@ class HelmInfrastructuresController < ApplicationController
     end
 
     if Figaro.env.ARGOCD_ENABLED == 'true'
-      ArgoDeleteWorker.perform_async(@helm_infrastructure.id)
+      @helm_infrastructure.delete
     else
       @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
       DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
