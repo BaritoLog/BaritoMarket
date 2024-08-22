@@ -16,6 +16,8 @@ export default function Page() {
   if (sp.get("id") === null) {
     router.push('/')
   }
+  console.log('url', `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/app-groups/${sp.get('id')}/`)
+  fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/app-groups/${sp.get('id')}/`).then(x => x.json()).then(x => console.log(x))
 
   return (
     <main>

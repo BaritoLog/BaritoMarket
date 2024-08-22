@@ -38,25 +38,27 @@ export default function Wrapper({
 			setOpen(true)
 		})
 	})
+	const getLink = (p) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/${p}`
+
 	const [isOpen, setOpen] = useState(false)
 	const routes = [
 		{
-			href: '/users',
+			href: getLink('users'),
 			caption: 'Users',
 			icon: <Person />,
 		},
 		{
-			href: '/groups',
+			href: getLink('groups'),
 			caption: 'Groups',
 			icon: <Mugshot />,
 		},
 		{
-			href: '/external-applications',
+			href: getLink('external-applications'),
 			caption: 'External Apps',
 			icon: <Applications />,
 		},
 		{
-			href: '/price-calculator',
+			href: getLink('price-calculator'),
 			caption: 'Price Calculator',
 			icon: <Calculator />,
 		},
@@ -73,7 +75,7 @@ export default function Wrapper({
 		</Modal>
 		<Appbar
 			head={
-				<Button link asProps={{href: "/"}} nude system size="s" underline={false}>
+				<Button link asProps={{href: getLink('/')}} nude system size="s" underline={false}>
 					<Logo product="Barito Log" symbol={false} size="m" />
 				</Button>
 			}
