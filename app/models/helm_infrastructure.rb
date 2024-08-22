@@ -96,9 +96,9 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def argo_synchronize_async
-    # ArgoSyncWorker.perform_async id
-    w = ArgoSyncWorker.new
-    w.perform id
+    ArgoSyncWorker.perform_async id
+    # w = ArgoSyncWorker.new
+    # w.perform id
   end
 
   def argo_application_url
