@@ -27,6 +27,7 @@ class HelmInfrastructure < ApplicationRecord
   class << self
     def setup(params)
       helm_cluster_template = HelmClusterTemplate.find(params[:helm_cluster_template_id])
+      puts "HelmClusterTemplate: #{helm_cluster_template.id}"
       helm_infrastructure = HelmInfrastructure.new(
         cluster_name:               params[:cluster_name],
         app_group_id:               params[:app_group_id],
@@ -40,15 +41,23 @@ class HelmInfrastructure < ApplicationRecord
         max_tps:                    Figaro.env.DEFAULT_MAX_TPS
       )
 
+      puts "HelmInfrastructure: #{helm_infrastructure.cluster_name}"
+
       if helm_infrastructure.valid?
         helm_infrastructure.save
         helm_infrastructure.update_provisioning_status('PENDING')
         helm_infrastructure.reload
 
+        puts "HelmInfrastructure: #{helm_infrastructure.id}"
+
         infra_location = helm_infrastructure.infrastructure_location
 
+        puts "HelmInfrastructure: infra_location: #{infra_location.id}"
+
         if Figaro.env.ARGOCD_ENABLED == 'true'
+          puts "HelmInfrastructure: ArgoCD before upsert"
           helm_infrastructure.argo_upsert_and_sync
+          puts "HelmInfrastructure: ArgoCD after upsert"
         else
           helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
           helm_infrastructure.synchronize_async
