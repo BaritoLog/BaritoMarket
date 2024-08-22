@@ -101,19 +101,16 @@ class AppGroup < ApplicationRecord
 
   def self.setup(params)
     log_retention_days = nil
-    puts "AppGroup: params: #{params}"
     unless Figaro.env.default_log_retention_days.blank?
       log_retention_days = Figaro.env.default_log_retention_days.to_i
     end
     log_retention_days = params[:log_retention_days].to_i unless params[:log_retention_days].blank?
 
-    puts "AppGroup: log_retention_days: #{log_retention_days}"
     if params[:labels].nil? || params[:labels].empty?
       labels = {}
     else
       labels = params[:labels]
     end
-    puts "AppGroup: labels: #{labels}"
 
     if params[:redact_labels].nil? || params[:redact_labels].empty?
       redact_labels = {}
@@ -121,7 +118,6 @@ class AppGroup < ApplicationRecord
       redact_labels = params[:redact_labels]
     end
 
-    puts "AppGroup: redact_labels: #{redact_labels}"
     ActiveRecord::Base.transaction do
       cluster_name = AppGroup.generate_cluster_name
       app_group = AppGroup.create(
@@ -136,13 +132,11 @@ class AppGroup < ApplicationRecord
         status: :ACTIVE,
         max_tps: Figaro.env.DEFAULT_MAX_TPS
       )
-      puts "AppGroup: app_group: #{app_group.id}"
 
       infrastructure_location = InfrastructureLocation.active.find_by(name: Figaro.env.default_infrastructure_location)
       if params[:infrastructure_location_name].present?
         infrastructure_location = InfrastructureLocation.active.find_by(name: params[:infrastructure_location_name])
       end
-      puts "AppGroup: infrastructure_location: #{infrastructure_location.id}"
 
       helm_infrastructure = HelmInfrastructure.setup(
         app_group_id: app_group.id,
@@ -151,13 +145,11 @@ class AppGroup < ApplicationRecord
         cluster_name: cluster_name
       )
 
-      puts "AppGroup: helm_infrastructure: #{helm_infrastructure.id}"
 
       app_group.kibana_helm_infrastructure_id = helm_infrastructure.id
       app_group.producer_helm_infrastructure_id = helm_infrastructure.id
       app_group.save!
 
-      puts "AppGroup: app_group: #{app_group.id}"
 
       [app_group, helm_infrastructure]
     end
