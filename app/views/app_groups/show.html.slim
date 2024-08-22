@@ -111,76 +111,76 @@
             i.fas.fa-server.mr-1
             = link_to 'Create Infra', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
             
+    br
+    - if @show_infra_details 
+      .card
+        h5.card-header Infrastructure Details
+        .card-body
+          .accordion#accordionParent
+            - @app_group.helm_infrastructures.sort.each_with_index do |hi, index|
+              .card
+                .card-header id="heading#{index}"
+                  h5.mb-0
+                    button.btn.btn-link.collapsed type="button" data-toggle="collapse" data-target="#collapse#{index}" aria-expanded="true" aria-controls="collapse#{index}"
+                      | #{hi.infrastructure_location.name.upcase}
+                .panel.collapse aria-labelledby="heading#{index}" id="collapse#{index}"
+                  .card-body    
+                    dl.row style="margin:0;"         
+                      dt.col-sm-2 Provisioning Status:
+                      dd.col-sm-10 
+                        = hi.provisioning_status
 
-    br 
-    .card
-      h5.card-header Infrastructure Details
-      .card-body
-        .accordion#accordionParent
-          - @app_group.helm_infrastructures.sort.each_with_index do |hi, index|
-            .card
-              .card-header id="heading#{index}"
-                h5.mb-0
-                  button.btn.btn-link.collapsed type="button" data-toggle="collapse" data-target="#collapse#{index}" aria-expanded="true" aria-controls="collapse#{index}"
-                    | #{hi.infrastructure_location.name.upcase}
-              .panel.collapse aria-labelledby="heading#{index}" id="collapse#{index}"
-                .card-body    
-                  dl.row style="margin:0;"         
-                    dt.col-sm-2 Provisioning Status:
-                    dd.col-sm-10 
-                      = hi.provisioning_status
+                      - if @argocd_enabled
+                        dt.col-sm-2 Argo Sync Status:
+                        dd.col-sm-10
+                          = @argo_informations[hi.id][:operation_phase]
+                        
+                        dt.col-sm-2 Argo Sync last message:
+                        dd.col-sm-10
+                          = @argo_informations[hi.id][:operation_message]
+                        
+                        dt.col-sm-2 Argo Application health:
+                        dd.col-sm-10
+                          = @argo_informations[hi.id][:application_health]
 
-                    - if @argocd_enabled
-                      dt.col-sm-2 Argo Sync Status:
-                      dd.col-sm-10
-                        = @argo_informations[hi.id][:operation_phase]
-                      
-                      dt.col-sm-2 Argo Sync last message:
-                      dd.col-sm-10
-                        = @argo_informations[hi.id][:operation_message]
-                      
-                      dt.col-sm-2 Argo Application health:
-                      dd.col-sm-10
-                        = @argo_informations[hi.id][:application_health]
+                        dt.col-sm-2 Status:
+                        dd.col-sm-10
+                          - if @allow_set_status
+                            = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+                            = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
+                              = hidden_field_tag :toggle_status
+                              = hidden_field_tag :app_group_id, @app_group.id
 
-                      dt.col-sm-2 Status:
-                      dd.col-sm-10
-                        - if @allow_set_status
-                          = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
-                          = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
-                            = hidden_field_tag :toggle_status
-                            = hidden_field_tag :app_group_id, @app_group.id
+                      ul.list-groups.list-group-flush.col-sm-12
+                        li.list-group-item
+                          - if @allow_see_helm_infrastructure
+                            .btn.btn-primary.btn-sm.mr-2
+                              i.fas.fa-server.mr-1
+                              - if hi
+                                = link_to 'Show Helm Infrastructure', helm_infrastructure_path(hi), class: 'text-light', style: 'text-decoration: none'
+                              - else
+                                = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
 
-                    ul.list-groups.list-group-flush.col-sm-12
-                      li.list-group-item
-                        - if @allow_see_helm_infrastructure
-                          .btn.btn-primary.btn-sm.mr-2
-                            i.fas.fa-server.mr-1
-                            - if hi
-                              = link_to 'Show Helm Infrastructure', helm_infrastructure_path(hi), class: 'text-light', style: 'text-decoration: none'
-                            - else
-                              = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
+                          - if @allow_delete_helm_infrastructure
+                              div class=("btn btn-danger btn-sm mr-2 text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{hi.id}")
+                                i.far.fa-trash-alt.mr-1
+                                = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(hi.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
-                        - if @allow_delete_helm_infrastructure
-                            div class=("btn btn-danger btn-sm mr-2 text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{hi.id}")
-                              i.far.fa-trash-alt.mr-1
-                              = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(hi.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
-
-                        - if @allow_delete_helm_infrastructure and @app_group.kibana_helm_infrastructure_id != hi.id 
-                          = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
-                            = f.fields_for :app_group, @app_group do |app_group_fields|
-                              = app_group_fields.hidden_field :kibana_helm_infrastructure_id, value: hi.id
-                              .input-group-append
-                                = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none')
-                                  | Use this Kibana
-                      
-                        - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id 
-                          = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
-                            = f.fields_for :app_group, @app_group do |app_group_fields|
-                              = app_group_fields.hidden_field :producer_helm_infrastructure_id, value: hi.id
-                              .input-group-append
-                                = f.button(:class => 'btn btn-primary btn-sm mr-2')
-                                  | Use this Producer
+                          - if @allow_delete_helm_infrastructure and @app_group.kibana_helm_infrastructure_id != hi.id 
+                            = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
+                              = f.fields_for :app_group, @app_group do |app_group_fields|
+                                = app_group_fields.hidden_field :kibana_helm_infrastructure_id, value: hi.id
+                                .input-group-append
+                                  = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none')
+                                    | Use this Kibana
+                        
+                          - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id 
+                            = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
+                              = f.fields_for :app_group, @app_group do |app_group_fields|
+                                = app_group_fields.hidden_field :producer_helm_infrastructure_id, value: hi.id
+                                .input-group-append
+                                  = f.button(:class => 'btn btn-primary btn-sm mr-2')
+                                    | Use this Producer
 
 = render 'app_groups/applications', new_app: @new_app, app_group: @app_group, apps: @apps, allow_delete: @allow_delete_barito_app, allow_add: @allow_add_barito_app
 

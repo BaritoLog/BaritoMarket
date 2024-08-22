@@ -58,6 +58,7 @@ class AppGroupsController < ApplicationController
     @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
     @show_redact_pii = Figaro.env.SHOW_REDACT_PII == "true"
     @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
+    @show_infra_details = policy(@app_group).show_infra_details?
 
     @argo_informations = {}
     @app_group.helm_infrastructures.each do |helm_infrastructure|

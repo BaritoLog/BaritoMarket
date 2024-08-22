@@ -19,6 +19,10 @@ class AppGroupPolicy < ApplicationPolicy
     barito_superadmin?
   end
 
+  def show_infra_details?
+    barito_superadmin?
+  end
+
   def update_app_group_name?
     barito_superadmin? || user.can_access_app_group?(record, roles: %i(owner admin))
   end
