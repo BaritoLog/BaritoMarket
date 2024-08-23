@@ -1,7 +1,7 @@
 
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels toggle_redact_status)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels toggle_redact_status toggle_app_group_status)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -246,6 +246,21 @@ class AppGroupsController < ApplicationController
 
     from_status = @app_group.redact_status
     @app_group.redact_status = params[:toggle_redact_status] == 'true' ? statuses[:active] : statuses[:inactive]
+    @app_group.save!
+
+    audit_log :toggle_app_group_redact_status, { "from_status" => from_status, "to_status" => @app_group.redact_status }
+
+    if params[:app_group_id]
+      app_group = AppGroup.find(params[:app_group_id])
+      redirect_to app_group_path(app_group)
+    else
+      redirect_to app_groups_path
+    end
+  end
+
+  def toggle_app_group_status
+    from_status = @app_group.status
+    @app_group.status = params[:toggle_app_group_status] == 'true' ? :ACTIVE : :INACTIVE
     @app_group.save!
 
     audit_log :toggle_app_group_redact_status, { "from_status" => from_status, "to_status" => @app_group.redact_status }

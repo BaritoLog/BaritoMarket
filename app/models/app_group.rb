@@ -159,6 +159,10 @@ class AppGroup < ApplicationRecord
     self.redact_status == AppGroup.redact_statuses[:active]
   end
 
+  def app_group_active?
+    self.status == "ACTIVE"
+  end
+
   def self.generate_cluster_name
     column = 'cluster_index'
     query = "SELECT nextval('cluster_index_seq') AS #{column}"

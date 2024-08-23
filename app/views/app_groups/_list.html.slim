@@ -9,9 +9,9 @@
 table.table.table-hover.table-sm
   thead
     tr.d-flex
-      th.col-3 =filterrific_sorting_link(@filterrific, :name)
+      th.col-2 =filterrific_sorting_link(@filterrific, :name)
       th.col-1 Cluster Name
-      th.col-1 Location
+      th.col-2 Location
       th.col-2 Capacity
       th.col-2 Provisioning Status
       th.col-1 Status
@@ -20,7 +20,7 @@ table.table.table-hover.table-sm
     - app_groups.each do |app_group|
       tr.d-flex
         - if policy(app_group).see_app_groups?
-          td.col-3
+          td.col-2
             = link_to app_group.name, app_group_path(app_group)
 
             span class="apps-badge badge badge-barito" id="toggle_apps_list_#{app_group.id}" data={ toggle: "popover", id: app_group.id, html: "true" }
@@ -30,7 +30,7 @@ table.table.table-hover.table-sm
               = app_group.barito_apps.any? ? app_group.barito_apps.map(&:name).join(", ").truncate(160, omission: '...') : "No app yet"
 
         - else
-          td.col-3= app_group.name
+          td.col-2= app_group.name
         td.col-1
           = app_group.cluster_name
           - if app_group.helm_infrastructures.any? { |hi| hi.is_elastalert_enabled }
@@ -51,7 +51,7 @@ table.table.table-hover.table-sm
                 = image_tag("cloud.png", title: "cloud storage", style: "width: 12px; height: 8px;")
           - else
             | 
-        td.col-1
+        td.col-2
           - app_group.helm_infrastructures.each do |hi|
             = hi.infrastructure_location.try(:name)
             br
@@ -69,7 +69,7 @@ table.table.table-hover.table-sm
             br
         td.col-2 class="d-flex"
           - if policy(app_group).see_app_groups?
-            .btn.btn-primary.btn-sm
+            .btn.btn-primary.btn-sm style="height: fit-content;"
               i.fas.fa-search.mr-1
               = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
             = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|

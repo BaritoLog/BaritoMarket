@@ -67,6 +67,18 @@
               = form_tag toggle_redact_status_app_group_path(@app_group), method: :patch, id: "form_toggle_redact_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_redact_status
                 = hidden_field_tag :app_group_id, @app_group.id
+            - else
+              = @app_group.redact_status
+          
+          dt.col-sm-2 App Group Status: 
+          dd.col-sm-10
+            - if @allow_set_app_group_status
+                = check_box_tag "toggle_app_group_status_#{@app_group.id}", true, @app_group.app_group_active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
+                = form_tag toggle_app_group_status_app_group_path(@app_group), method: :patch, id: "form_toggle_app_group_status_#{@app_group.id}" do
+                  = hidden_field_tag :toggle_app_group_status
+                  = hidden_field_tag :app_group_id, @app_group.id
+            - else
+              = @app_group.status
 
           - if @show_log_and_cost_col
             dt.col-sm-2 Total Daily Log Ingested:
@@ -145,11 +157,10 @@
 
                         dt.col-sm-2 Status:
                         dd.col-sm-10
-                          - if @allow_set_status
-                            = check_box_tag "toggle_infra_status_#{@app_group.id}", true, hi.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
-                            = form_tag toggle_status_helm_infrastructure_path(hi), method: :patch, id: "form_toggle_infra_status_#{@app_group.id}" do
-                              = hidden_field_tag :toggle_status
-                              = hidden_field_tag :app_group_id, @app_group.id
+                          - if hi.active?
+                            | Active 
+                          - else 
+                            | Inactive
 
                       ul.list-groups.list-group-flush.col-sm-12
                         li.list-group-item
@@ -171,7 +182,7 @@
                               = f.fields_for :app_group, @app_group do |app_group_fields|
                                 = app_group_fields.hidden_field :kibana_helm_infrastructure_id, value: hi.id
                                 .input-group-append
-                                  = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none')
+                                  = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none', 'data-confirm' => 'Are you sure?')
                                     | Use this Kibana
                         
                           - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id 
@@ -179,7 +190,7 @@
                               = f.fields_for :app_group, @app_group do |app_group_fields|
                                 = app_group_fields.hidden_field :producer_helm_infrastructure_id, value: hi.id
                                 .input-group-append
-                                  = f.button(:class => 'btn btn-primary btn-sm mr-2')
+                                  = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none', 'data-confirm' => 'Are you sure?')
                                     | Use this Producer
 
 = render 'app_groups/applications', new_app: @new_app, app_group: @app_group, apps: @apps, allow_delete: @allow_delete_barito_app, allow_add: @allow_add_barito_app
