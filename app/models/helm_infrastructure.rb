@@ -91,12 +91,10 @@ class HelmInfrastructure < ApplicationRecord
 
   def argo_synchronize_async
     ArgoSyncWorker.perform_async id
-    # w = ArgoSyncWorker.new
-    # w.perform id
   end
 
   def argo_application_url
-    "#{Figaro.env.ARGOCD_URL}/applications/argocd/#{Figaro.env.argocd_project_name}-#{cluster_name}-#{location_name}"
+    "#{Figaro.env.ARGOCD_URL}/applications/#{Figaro.env.argocd_namespace}/#{Figaro.env.argocd_project_name}-#{cluster_name}-#{location_name}"
   end
 
   # call this during mass sync of app groups or when new app group is created

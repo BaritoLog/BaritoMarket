@@ -79,8 +79,9 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :not_found and return
     end
 
-    @helm_infrastructure = app_group.helm_infrastructure_in_default_location
-    @helm_infrastructure = app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+    @helm_infrastructure = app_group.helm_infrastructure_in_default_location.present? ?
+      app_group.helm_infrastructure_in_default_location :
+      app_group.helm_infrastructures.first
 
     render json: @helm_infrastructure
   end
