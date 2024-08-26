@@ -290,6 +290,7 @@ class AppGroupsController < ApplicationController
         :max_tps,
         :kibana_helm_infrastructure_id,
         :producer_helm_infrastructure_id,
+        :log_retention_days,
       ],
       labels: {},
       redact_labels: {},

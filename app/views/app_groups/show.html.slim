@@ -20,11 +20,12 @@
           dd.col-sm-10
             - if @allow_edit_metadata
               = form_for @app_group do |f|
-                .input-group.col-sm-5(style="padding-left:0px;")
-                  = f.number_field :log_retention_days, class: 'form-control'
-                  .input-group-append
-                    = f.button(:class => 'btn btn-outline-secondary btn-sm')
-                      i.fas.fa-check
+                = f.fields_for :app_group, @app_group do |app_group_fields|
+                  .input-group.col-sm-5(style="padding-left:0px;")
+                    = app_group_fields.number_field :log_retention_days, class: 'form-control'
+                    .input-group-append
+                      = f.button(:class => 'btn btn-outline-secondary btn-sm')
+                        i.fas.fa-check
             - else
               = @app_group.log_retention_days
 
