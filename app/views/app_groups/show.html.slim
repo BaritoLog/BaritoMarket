@@ -138,25 +138,31 @@
                 .panel.collapse aria-labelledby="heading#{index}" id="collapse#{index}"
                   .card-body    
                     dl.row style="margin:0;"         
-                      dt.col-sm-2 Provisioning Status:
-                      dd.col-sm-10 
+                      dt.col-sm-4 Provisioning Status:
+                      dd.col-sm-8 
                         = hi.provisioning_status
 
                       - if @argocd_enabled
-                        dt.col-sm-2 Argo Sync Status:
-                        dd.col-sm-10
+                        dt.col-sm-4 Argo Sync Status:
+                        dd.col-sm-8
                           = @argo_informations[hi.id][:operation_phase]
                         
-                        dt.col-sm-2 Argo Sync last message:
-                        dd.col-sm-10
+                        dt.col-sm-4 Argo Sync last message:
+                        dd.col-sm-8
                           = @argo_informations[hi.id][:operation_message]
                         
-                        dt.col-sm-2 Argo Application health:
-                        dd.col-sm-10
+                        dt.col-sm-4 Argo Application health:
+                        dd.col-sm-8
                           = @argo_informations[hi.id][:application_health]
 
-                        dt.col-sm-2 Status:
-                        dd.col-sm-10
+                        - if @allow_see_infrastructure
+                          dt.col-sm-4 ArgoCD Link
+                          dd.col-sm-8
+                            - url = @argo_informations[hi.id][:application_url]
+                            a href=url target="_blank" Link
+
+                        dt.col-sm-4 Status:
+                        dd.col-sm-8
                           - if hi.active?
                             | Active 
                           - else 

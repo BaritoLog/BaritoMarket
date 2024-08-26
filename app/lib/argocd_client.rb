@@ -31,6 +31,10 @@ class ArgoCDClient
     )
   end
 
+  def get_application_url(helm_infrastructure)
+    "#{Figaro.env.ARGOCD_URL}/applications/#{Figaro.env.argocd_namespace}/#{Figaro.env.argocd_project_name}-#{helm_infrastructure.cluster_name}-#{helm_infrastructure.location_name}"
+  end
+
   def get_application_name(app_group_name, argocd_destination_cluster)
     return "#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}"
   end

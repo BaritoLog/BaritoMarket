@@ -64,10 +64,12 @@ class AppGroupsController < ApplicationController
     @app_group.helm_infrastructures.each do |helm_infrastructure|
       argo_operation_message, argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@app_group.cluster_name, helm_infrastructure.location_name)
       argo_application_health = ARGOCD_CLIENT.check_application_health_status(@app_group.cluster_name, helm_infrastructure.location_name)
+      argo_application_url = ARGOCD_CLIENT.get_application_url(helm_infrastructure)
       @argo_informations[helm_infrastructure.id] = {
         operation_message: argo_operation_message,
         operation_phase: argo_operation_phase,
-        application_health: argo_application_health
+        application_health: argo_application_health,
+        application_url: argo_application_url
       }
     end
 
