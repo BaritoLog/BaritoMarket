@@ -7,16 +7,21 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     .limit(params.fetch(:limit, 10).to_i)
 
     app_groups.each do |app_group|
-      infra = app_group.helm_infrastructure_in_default_location if app_group.present?
-      infra = app_group.helm_infrastructures.active.first unless infra.present?
+      if app_group.helm_infrastructures.length == 0
+        next
+      end
+
+      infra = app_group.helm_infrastructure_in_default_location.present? ?
+        app_group.helm_infrastructure_in_default_location :
+        app_group.helm_infrastructures.first
 
       profiles << {
-        name: infra.app_group_name,
-        app_group_name: infra.app_group_name,
-        app_group_secret: infra.app_group_secret,
-        cluster_name: infra.cluster_name,
+        name: app_group.name,
+        app_group_name: app_group.name,
+        app_group_secret: app_group.secret_key,
+        cluster_name: app_group.cluster_name,
         consul_hosts: [],
-        status: infra.status,
+        status: app_group.status,
         provisioning_status: infra.provisioning_status,
         meta: {
           service_names: infra.default_service_names
@@ -29,8 +34,10 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
   def helm_infrastructure_by_cluster_name
     app_group = AppGroup.find_by(cluster_name: params[:cluster_name])
     if app_group.present?
-      @helm_infrastructure = app_group.helm_infrastructure_in_default_location if app_group.present?
-      @helm_infrastructure = app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+      @helm_infrastructure = app_group.helm_infrastructure_in_default_location.present? ?
+        app_group.helm_infrastructure_in_default_location :
+        app_group.helm_infrastructures.first
+
     end
 
     if @helm_infrastructure.blank?
