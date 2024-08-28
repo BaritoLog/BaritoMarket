@@ -262,6 +262,30 @@ class AppGroupsController < ApplicationController
 
   def toggle_app_group_status
     from_status = @app_group.status
+
+    if params[:toggle_app_group_status] == 'false'
+      @app_group.helm_infrastructures.each do |hi|
+        if Figaro.env.ARGOCD_ENABLED == 'true'
+          hi.delete
+        else
+          hi.update_provisioning_status('DELETE_STARTED')
+          DeleteHelmInfrastructureWorker.perform_async(hi.id)
+        end
+    
+        audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => hi.id }
+      end
+    else
+      @app_group.helm_infrastructures.each do |hi|
+        if Figaro.env.ARGOCD_ENABLED == 'true'
+          hi.update!(last_log: "Argo Application sync will be scheduled.")
+          hi.argo_upsert_and_sync
+        else
+          hi.update!(last_log: "Helm invocation job will be scheduled.")
+          hi.synchronize_async
+        end
+      end
+    end
+
     @app_group.status = params[:toggle_app_group_status] == 'true' ? :ACTIVE : :INACTIVE
     @app_group.save!
 
