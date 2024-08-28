@@ -181,11 +181,11 @@ RSpec.describe 'App API', type: :request do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
     end
-    let(:app_group) { create(:app_group) }
+    let!(:app_group) { create(:app_group) }
 
     it 'should return profile information of registered app when supplied appgroup name' do
       3.times do
-        create(:helm_infrastructure, app_group: app_group)
+        create(:helm_infrastructure, :active, app_group: app_group)
       end
       get api_v3_profile_by_app_group_name_path,
         params: { access_token: @access_token, app_group_name: app_group.name },
@@ -299,7 +299,7 @@ RSpec.describe 'App API', type: :request do
 
     it 'should return profile information of registered app when supplied cluster name' do
       3.times do
-        create(:helm_infrastructure, app_group: app_group)
+        create(:helm_infrastructure, :active, app_group: app_group)
       end
       get api_v3_profile_by_cluster_name_path,
         params: { access_token: @access_token, cluster_name: app_group.cluster_name },
@@ -524,7 +524,7 @@ RSpec.describe 'App API', type: :request do
                                    status: InfrastructureComponent.statuses[:finished]
       )
 
-      get api_v2_profile_prometheus_exporter_path,
+      get api_v3_profile_prometheus_exporter_path,
         params: { access_token: @access_token }, headers: headers
 
       expect(response.body).to eq [

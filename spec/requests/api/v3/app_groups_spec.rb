@@ -152,7 +152,7 @@ RSpec.describe 'App Groups API', type: :request do
 
     it 'should return app status information' do
       3.times do
-        create(:helm_infrastructure, app_group: app_group)
+        create(:helm_infrastructure, :active, app_group: app_group)
       end
 
       get api_v3_check_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers

@@ -1,4 +1,4 @@
-class Api::V3::InfrastructuresController < Api::V2::BaseController
+class Api::V3::InfrastructuresController < Api::V3::BaseController
   def helm_infrastructures_by_cluster_name
     @helm_infrastructures = HelmInfrastructure.where(
       cluster_name: params[:cluster_name],
