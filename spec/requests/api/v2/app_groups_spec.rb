@@ -141,7 +141,7 @@ RSpec.describe 'Create App Groups API', type: :request do
   end
 
   it 'should create appgroup w/ HelmInfrastructure in default location' do
-    infrastructure_location = InfrastructureLocation.create(name: Figaro.env.default_infrastructure_location, is_active: true, destination_server: '')
+    infrastructure_location = create(:infrastructure_location, name: Figaro.env.default_infrastructure_location)
 
     create_params = {
       access_token: @access_token, name: app_group_name, cluster_template_id: helm_cluster_template.id,
@@ -159,7 +159,7 @@ RSpec.describe 'Create App Groups API', type: :request do
   end
 
   it 'should create appgroup w/ HelmInfrastructure in selected location' do
-    infrastructure_location = InfrastructureLocation.create(name: "new-location", is_active: true, destination_server: '')
+    infrastructure_location = create(:infrastructure_location, name: "new-location")
 
     create_params = {
       access_token: @access_token, name: app_group_name, cluster_template_id: helm_cluster_template.id, infrastructure_location_name: infrastructure_location.name,
@@ -188,7 +188,7 @@ RSpec.describe 'Create App Groups API', type: :request do
   end
 
   it 'should not create appgroup if location is not active' do
-    infrastructure_location = InfrastructureLocation.create(name: "new-location", is_active: false, destination_server: '')
+    infrastructure_location = create(:infrastructure_location, :inactive)
 
     create_params = {
       access_token: @access_token, name: app_group_name, cluster_template_id: helm_cluster_template.id, infrastructure_location_name: infrastructure_location.name,

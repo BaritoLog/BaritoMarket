@@ -5,5 +5,9 @@ FactoryBot.define do
     destination_server { '' }
     kibana_address_format { 'http://%s-kibana.barito' }
     producer_address_format { 'http://%s-producer.barito' }
+
+    trait :inactive do
+      is_active false
+    end
   end
 end

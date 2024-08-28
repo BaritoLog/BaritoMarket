@@ -17,5 +17,9 @@ FactoryBot.define do
       status HelmInfrastructure.statuses[:active]
       provisioning_status HelmInfrastructure.provisioning_statuses[:finished]
     end
+    trait :inactive do
+      status HelmInfrastructure.statuses[:inactive]
+      provisioning_status HelmInfrastructure.provisioning_statuses[:pending]
+    end
   end
 end

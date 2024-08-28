@@ -128,7 +128,7 @@ RSpec.describe 'App API', type: :request do
     context 'when infrastructure inactive' do
       it 'should return 404' do
         error_msg = 'Infrastructure not found'
-        helm_infrastructure = create(:helm_infrastructure, app_group: app_group)
+        helm_infrastructure = create(:helm_infrastructure, :inactive, app_group: app_group)
 
         get api_v2_profile_by_cluster_name_path,
           params: { access_token: @access_token, cluster_name: helm_infrastructure.cluster_name },

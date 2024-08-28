@@ -62,8 +62,7 @@ class HelmInfrastructure < ApplicationRecord
   end
 
   def synchronize_async
-    worker = HelmSyncWorker.new
-    worker.perform id
+    HelmSyncWorker.perform_async id
   end
 
   def is_elastalert_enabled
