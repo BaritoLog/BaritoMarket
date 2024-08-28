@@ -19,16 +19,14 @@ class ArgoCDClient
     @helm_chart_name = Figaro.env.HELM_CHART_NAME
     @helm_chart_version = Figaro.env.HELM_CHART_VERSION
     @helm_chart_repository = Figaro.env.HELM_CHART_REPOSITORY
-  end
-
-  def create_connection()
-    return Faraday.new(
+    @faraday_client = Faraday.new(
       url: @url,
       headers: {
           "Content-Type" => "application/json",
           "Authorization": "Bearer " + @token
       }
     )
+
   end
 
   def get_application_url(helm_infrastructure)
@@ -40,18 +38,18 @@ class ArgoCDClient
   end
 
   def delete_application(app_group_name, argocd_destination_cluster)
-    return create_connection().delete do | req |
+    return @faraday_client.delete do | req |
       req.params['project'] = Figaro.env.ARGOCD_PROJECT_NAME
       req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}"
     end
   end
 
   def get_cluster_map()
-    return JSON.parse(create_connection().get('/api/v1/clusters').body)['items'].select { |i| i['connectionState']['status'] == 'Successful' }.map { |i| [i['name'], i['server']] }.to_h
+    return JSON.parse(@faraday_client.get('/api/v1/clusters').body)['items'].select { |i| i['connectionState']['status'] == 'Successful' }.map { |i| [i['name'], i['server']] }.to_h
   end
 
   def create_application(app_group_name, override_values, argocd_destination_cluster_name, argocd_destination_server)
-    return create_connection().post do | req |
+    return @faraday_client.post do | req |
       req.body = {
         metadata: {
           name: get_application_name(app_group_name, argocd_destination_cluster_name),
@@ -84,7 +82,7 @@ class ArgoCDClient
   end
 
   def sync_application(app_group_name, argocd_destination_cluster)
-    return create_connection().post do | req |
+    return @faraday_client.post do | req |
       req.body = {
         project: Figaro.env.argocd_project_name,
         prune: true,
@@ -94,13 +92,13 @@ class ArgoCDClient
   end
 
   def terminate_operation(app_group_name, argocd_destination_cluster)
-    return create_connection().delete do | req |
+    return @faraday_client.delete do | req |
       req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
     end
   end
 
   def check_sync_operation_status(app_group_name, argocd_destination_cluster)
-    response = create_connection().get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
 
@@ -118,7 +116,7 @@ class ArgoCDClient
   end
 
   def check_application_health_status(app_group_name, argocd_destination_cluster)
-    response = create_connection().get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
       return app_status['health']['status']
@@ -128,7 +126,7 @@ class ArgoCDClient
   end
 
   def sync_duration(app_group_name, argocd_destination_cluster)
-    response = create_connection().get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
       if !app_status.dig("operationState", "startedAt")
