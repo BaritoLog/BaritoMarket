@@ -109,6 +109,7 @@ RSpec.describe AppGroup, type: :model do
   context 'Setup Application' do
     let(:app_group_props) { build(:app_group) }
     let(:helm_cluster_template) { create(:helm_cluster_template) }
+    let!(:default_infrastructure_location) { create(:infrastructure_location, name: Figaro.env.default_infrastructure_location) }
 
     it 'should create the app_group and helm_infra' do
       app_group, helm_infrastructure = AppGroup.setup(
