@@ -178,8 +178,7 @@ class Api::V3::AppGroupsController < Api::V3::BaseController
 
     # delete all the HelmInfra, and mark as DELETE_STARTED
     app_group.helm_infrastructures.each do |hi|
-      hi.update_provisioning_status('DELETE_STARTED')
-      DeleteHelmInfrastructureWorker.perform_async(hi.id)
+      hi.delete
     end
 
     render json: {
