@@ -132,7 +132,7 @@ class HelmInfrastructuresController < ApplicationController
     end
 
     audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => @helm_infrastructure.id }
-    redirect_to app_groups_path
+    redirect_to app_group_path(app_group)
   end
 
   private

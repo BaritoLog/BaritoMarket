@@ -135,7 +135,8 @@
                 .card-header id="heading#{index}"
                   h5.mb-0
                     button.btn.btn-link.collapsed type="button" data-toggle="collapse" data-target="#collapse#{index}" aria-expanded="true" aria-controls="collapse#{index}"
-                      | #{hi.infrastructure_location.name.upcase}
+                      | #{hi.infrastructure_location.name.upcase}  
+                      | (#{hi.status.downcase == 'active' ? 'Active Infra' : 'Inactive Infra'}#{@app_group.kibana_helm_infrastructure_id == hi.id ? ' - Active Kibana' : ''}#{@app_group.producer_helm_infrastructure_id == hi.id  ? ' - Active Producer' : ''})
                 .panel.collapse aria-labelledby="heading#{index}" id="collapse#{index}"
                   .card-body    
                     dl.row style="margin:0;"         
@@ -165,7 +166,7 @@
                         dt.col-sm-4 Status:
                         dd.col-sm-8
                           - if hi.active?
-                            | Active 
+                            | Active
                           - else 
                             | Inactive
 
@@ -179,12 +180,12 @@
                               - else
                                 = link_to 'Create Helm Infrastructure', new_app_group_helm_infrastructure_path(@app_group), class: 'text-light', style: 'text-decoration: none'
 
-                          - if @allow_delete_helm_infrastructure
+                          - if @allow_delete_helm_infrastructure && hi.status == 'ACTIVE'
                               div class=("btn btn-danger btn-sm mr-2 text-light #{!@allow_delete_helm_infrastructure ? 'disabled' : ''}") id=("delete_helm_infrastructure_#{hi.id}")
                                 i.far.fa-trash-alt.mr-1
                                 = link_to "Delete Helm Infrastructure", delete_helm_infrastructure_path(hi.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-light', style: 'text-decoration: none'
 
-                          - if @allow_delete_helm_infrastructure and @app_group.kibana_helm_infrastructure_id != hi.id 
+                          - if @allow_delete_helm_infrastructure and @app_group.kibana_helm_infrastructure_id != hi.id and hi.status == 'ACTIVE'
                             = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
                               = f.fields_for :app_group, @app_group do |app_group_fields|
                                 = app_group_fields.hidden_field :kibana_helm_infrastructure_id, value: hi.id
@@ -192,7 +193,7 @@
                                   = f.button(:class => 'btn btn-primary btn-sm mr-2', :style => 'text-decoration: none', 'data-confirm' => 'Are you sure?')
                                     | Use this Kibana
                         
-                          - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id 
+                          - if @allow_delete_helm_infrastructure and @app_group.producer_helm_infrastructure_id != hi.id and hi.status == 'ACTIVE'
                             = form_for @app_group, html:{ style: 'display: inline-block;' } do |f|
                               = f.fields_for :app_group, @app_group do |app_group_fields|
                                 = app_group_fields.hidden_field :producer_helm_infrastructure_id, value: hi.id
