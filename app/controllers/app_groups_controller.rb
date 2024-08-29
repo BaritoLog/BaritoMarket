@@ -265,13 +265,7 @@ class AppGroupsController < ApplicationController
 
     if params[:toggle_app_group_status] == 'false'
       @app_group.helm_infrastructures.each do |hi|
-        if Figaro.env.ARGOCD_ENABLED == 'true'
-          hi.delete
-        else
-          hi.update_provisioning_status('DELETE_STARTED')
-          DeleteHelmInfrastructureWorker.perform_async(hi.id)
-        end
-    
+        hi.delete    
         audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => hi.id }
       end
     else
