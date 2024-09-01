@@ -43,41 +43,48 @@ export default function Page() {
     <main>
       <div className={styles.container}>
         <Card elevated>
-          <Text bold size="xxl">Application Group Details</Text>
-          <Stack spacing="extraLoose">
-            <Stack vertical>
+          <Text bold size="l">Application Group Details</Text>
+          <div className={styles.grid}>
               <Text bold>Application Group Name</Text>
+              <Textfield
+                stretch
+                placeholder="Application Group Name"
+                value={appGroupData.name}
+                onChange={(e) => {
+                  setAppGroupData({
+                    ...appGroupData,
+                    name: e.target.value,
+                  })
+                }}
+                addOnEnd={
+                  <Button icon nude compact system>
+                    <Edit />
+                  </Button>
+                }
+              />
               <Text bold>Log Retention Days</Text>
+              <Textfield
+                type="number"
+                stretch
+                placeholder="Log Retention Days"
+                value={appGroupData.log_retention_days}
+                onChange={(e) => {
+                  setAppGroupData({
+                    ...appGroupData,
+                    log_retention_days: e.target.value,
+                  })
+                }}
+                addOnEnd={
+                  <Button icon nude compact system>
+                    <Edit />
+                  </Button>
+                }
+              />
               <Text bold>App Group Secret</Text>
-            </Stack>
-
-            <div className={styles.textfield}>
-              <Stack vertical>
-                <Textfield
-                  stretch
-                  placeholder="Application Group Name"
-                  value={appGroupData.name}
-                  addOnEnd={
-                    <Button icon nude compact system>
-                      <Edit />
-                    </Button>
-                  }
-                />
-                <Textfield
-                  type="number"
-                  stretch
-                  placeholder="Log Retention Days"
-                  value={appGroupData.log_retention_days}
-                  addOnEnd={
-                    <Button icon nude compact system>
-                      <Edit />
-                    </Button>
-                  }
-                />
-                <ReadOnlyPassword initialValue={appGroupData.secret}/>
-              </Stack>
-            </div>
-          </Stack>
+              <ReadOnlyPassword initialValue={appGroupData.secret}/>
+              <Text bold>Cluster Name</Text>
+              <Text bold>{appGroupData.cluster_name}</Text>
+          </div>
         </Card>
       </div>
     </main>
