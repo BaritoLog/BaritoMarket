@@ -11,12 +11,12 @@ COPY tsconfig.json .
 COPY src ./src
 COPY public ./public
 
-FROM node:20.16.0-alpine3.20 AS development
+FROM base AS development
 WORKDIR /app
 COPY --from=base /app /app
 CMD npm run dev
 
-FROM node:20.16.0-alpine3.20 AS build
+FROM base AS build
 WORKDIR /app
 COPY --from=base /app /app
 RUN npm run build

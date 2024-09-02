@@ -1,8 +1,11 @@
+export .env
+EXEC := docker compose exec -it barito-market-ui
+
 dev:
 	@docker compose up --build
 lint:
-	@docker compose exec barito-market-ui npm run lint
+	@$(EXEC) npm run lint
 build:
-	@docker compose exec barito-market-ui npm run build
+	@$(EXEC) npm run build
 containerize:
-	@docker build -t barito-market-ui:local --target=final-image .
+	@docker build -t barito-market-ui:dev --target=final-image .

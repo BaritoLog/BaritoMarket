@@ -4,9 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
+      tags:
+        - barito-market-ui:dev
     container_name: barito-market-ui
-    environment:
-      - "NEXT_PUBLIC_BASE_PATH=/ui/v2"
+    env_file:
+      - .env
     ports:
       - 3000:3000
     restart: always
