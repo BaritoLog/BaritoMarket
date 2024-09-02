@@ -4,8 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from "@asphalt-react/button";
 import { Card } from "@asphalt-react/card";
 import { Edit } from "@asphalt-react/iconpack";
-import { Stack } from "@asphalt-react/stack";
-import { Password, Textfield } from "@asphalt-react/textfield";
+import { Loader } from "@asphalt-react/loader";
+import { Textfield } from "@asphalt-react/textfield";
+import { ToggleSwitch } from "@asphalt-react/toggle-switch";
 import { Text } from "@asphalt-react/typography";
 import styles from './page.module.scss';
 import { useEffect, useState } from 'react';
@@ -36,7 +37,7 @@ export default function Page() {
   }, [sp, router])
 
   if (!appGroupData) {
-    return <div>Loading...</div>
+    return <div className={styles.loader}><Loader/></div>
   }
 
   return (
@@ -45,9 +46,10 @@ export default function Page() {
         <Card elevated>
           <Text bold size="l">Application Group Details</Text>
           <div className={styles.grid}>
-              <Text bold>Application Group Name</Text>
+              <Text bold size="s">Application Group Name</Text>
+              <div>
               <Textfield
-                stretch
+                size="s"
                 placeholder="Application Group Name"
                 value={appGroupData.name}
                 onChange={(e) => {
@@ -62,10 +64,13 @@ export default function Page() {
                   </Button>
                 }
               />
-              <Text bold>Log Retention Days</Text>
+</div>
+
+              <Text bold size="s">Log Retention Days</Text>
+              <div>
               <Textfield
                 type="number"
-                stretch
+                size="s"
                 placeholder="Log Retention Days"
                 value={appGroupData.log_retention_days}
                 onChange={(e) => {
@@ -79,11 +84,66 @@ export default function Page() {
                     <Edit />
                   </Button>
                 }
-              />
-              <Text bold>App Group Secret</Text>
-              <ReadOnlyPassword initialValue={appGroupData.secret}/>
-              <Text bold>Cluster Name</Text>
-              <Text bold>{appGroupData.cluster_name}</Text>
+              /></div>
+              <Text bold size="s">App Group Secret</Text>
+              <div><ReadOnlyPassword initialValue={appGroupData.secret}/></div>
+              <Text bold size="s">Cluster Name</Text>
+              <Text size="s">{appGroupData.cluster_name}</Text>
+              <Text bold size="s">TPS</Text>
+              <div>
+              <Textfield
+                type="number"
+                size="s"
+                placeholder="TPS"
+                value={appGroupData.tps}
+                onChange={(e) => {
+                  setAppGroupData({
+                    ...appGroupData,
+                    tps: e.target.value,
+                  })
+                }}
+                addOnEnd={
+                  <Button icon nude compact system>
+                    <Edit />
+                  </Button>
+                }
+              /></div>
+              <Text bold size="s">Redaction Status</Text>
+              <div className={styles.toggleSwitch}>
+                <ToggleSwitch
+                  size="s"
+                  on={appGroupData.is_redaction_active}
+                  onToggle={({on}) => {
+                    setAppGroupData({
+                      ...appGroupData,
+                      is_redaction_active: on,
+                    })
+                  }}
+                />
+              </div>
+              <Text bold size="s">App Group Status</Text>
+              <div className={styles.toggleSwitch}>
+                <ToggleSwitch
+                  size="s"
+                  on={appGroupData.is_active}
+                  onToggle={({on}) => {
+                    setAppGroupData({
+                      ...appGroupData,
+                      is_active: on,
+                    })
+                  }}
+                />
+              </div>
+              <Text bold size="s">Total Daily Log Ingested</Text>
+              <Text size="s">{appGroupData.total_daily_log_ingested}</Text>
+              <Text bold size="s">Total Daily Cost</Text>
+              <Text size="s">${appGroupData.total_daily_cost}</Text>
+              {
+                Object.entries(appGroupData.labels).map(k => (<>
+                  <Text bold size="s">{k[0]}</Text>
+                  <Text size="s">{k[1]}</Text>
+                </>))
+              }
           </div>
         </Card>
       </div>
