@@ -106,9 +106,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def profile_app
     profiles = []
     AppGroup.ACTIVE.all.each do |app_group|
-      environment = app_group.environment
 
-      if app_group.environment.downcase.include?"production"
+      if app_group.environment&.downcase&.include?"production"
         replication_factor = 2
       else
         replication_factor = 1
