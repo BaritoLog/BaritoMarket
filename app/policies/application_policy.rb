@@ -56,8 +56,8 @@ class ApplicationPolicy
   def get_user_groups
     return false if user.nil?
     user_groups = []
-    user.groups.each do |group|
-      user_groups << group.name
+    user.group_users.all.select { |gu| gu.expiration_date.nil? || (gu.expiration_date >= Time.now) }.each do |group_user|
+      user_groups << group_user.group.name
     end
     return user_groups
   end

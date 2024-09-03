@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_12_053531) do
+ActiveRecord::Schema.define(version: 2024_08_14_014955) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,16 @@ ActiveRecord::Schema.define(version: 2024_07_12_053531) do
     t.jsonb "labels", default: {}
     t.jsonb "redact_labels", default: {}
     t.string "redact_status", default: "INACTIVE"
+    t.string "cluster_name"
+    t.integer "max_tps"
+    t.integer "status"
+    t.bigint "kibana_helm_infrastructure_id"
+    t.bigint "producer_helm_infrastructure_id"
+    t.index ["kibana_helm_infrastructure_id"], name: "index_app_groups_on_kibana_helm_infrastructure_id"
     t.index ["name"], name: "index_app_groups_on_name"
+    t.index ["producer_helm_infrastructure_id"], name: "index_app_groups_on_producer_helm_infrastructure_id"
     t.index ["secret_key"], name: "index_app_groups_on_secret_key"
+    t.index ["status"], name: "index_app_groups_on_status"
   end
 
   create_table "barito_apps", force: :cascade do |t|
@@ -168,8 +176,10 @@ ActiveRecord::Schema.define(version: 2024_07_12_053531) do
     t.string "status"
     t.string "provisioning_status"
     t.integer "max_tps"
+    t.bigint "infrastructure_location_id"
     t.index ["app_group_id"], name: "index_helm_infrastructures_on_app_group_id"
     t.index ["helm_cluster_template_id"], name: "index_helm_infrastructures_on_helm_cluster_template_id"
+    t.index ["infrastructure_location_id"], name: "index_helm_infrastructures_on_infrastructure_location_id"
   end
 
   create_table "infrastructure_components", force: :cascade do |t|
@@ -185,6 +195,18 @@ ActiveRecord::Schema.define(version: 2024_07_12_053531) do
     t.jsonb "bootstrappers", default: {}, null: false
     t.jsonb "source"
     t.index ["infrastructure_id"], name: "index_infrastructure_components_on_infrastructure_id"
+  end
+
+  create_table "infrastructure_locations", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "destination_server", null: false
+    t.string "kibana_address_format", null: false
+    t.string "producer_address_format", null: false
+    t.boolean "is_active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_mtls_enabled"
+    t.index ["name"], name: "index_infrastructure_locations_on_name", unique: true
   end
 
   create_table "infrastructures", force: :cascade do |t|
@@ -227,9 +249,12 @@ ActiveRecord::Schema.define(version: 2024_07_12_053531) do
   add_foreign_key "app_group_bookmarks", "users"
   add_foreign_key "app_group_teams", "app_groups"
   add_foreign_key "app_group_teams", "groups"
+  add_foreign_key "app_groups", "helm_infrastructures", column: "kibana_helm_infrastructure_id"
+  add_foreign_key "app_groups", "helm_infrastructures", column: "producer_helm_infrastructure_id"
   add_foreign_key "ext_apps", "users", column: "created_by_id"
   add_foreign_key "group_users", "app_group_roles", column: "role_id"
   add_foreign_key "helm_infrastructures", "app_groups"
   add_foreign_key "helm_infrastructures", "helm_cluster_templates"
+  add_foreign_key "helm_infrastructures", "infrastructure_locations"
   add_foreign_key "infrastructures", "cluster_templates"
 end

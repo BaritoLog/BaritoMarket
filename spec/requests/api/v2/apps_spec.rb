@@ -38,7 +38,6 @@ RSpec.describe 'Apps API', type: :request do
       create(:helm_infrastructure,
         app_group: app_group,
         status: HelmInfrastructure.statuses[:active],
-        cluster_name: 'haza'
       )
 
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
@@ -53,23 +52,22 @@ RSpec.describe 'Apps API', type: :request do
         expect(json_response[key]).to eq(app.send(key.to_sym))
       end
 
-      expect(json_response['producer_address']).to eq(app_group.helm_infrastructure.producer_address)
+      expect(json_response['producer_address']).to eq(app_group.producer_address)
       expect(json_response.key?('updated_at')).to eq(true)
     end
 
     it 'should returns K8s producer address if available' do
       app_group = create(:app_group)
       create(:helm_infrastructure,
-        app_group: app_group, 
+        app_group: app_group,
         status: HelmInfrastructure.statuses[:active],
-        cluster_name: 'haza'
       )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
       get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
-      
-      expect(json_response['producer_address']).to match app.app_group.helm_infrastructure.producer_address
+
+      expect(json_response['producer_address']).to match app.app_group.producer_address
     end
 
     context 'when invalid token' do
@@ -113,11 +111,10 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when app_secret is provided and valid, app is active but helm infrastructure is inactive' do
+    context 'when app_secret is provided and valid, app is active but appgroup is inactive' do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
-        app_group = create(:app_group)
-        create(:helm_infrastructure, app_group: app_group)
+        app_group = create(:app_group, status: :INACTIVE)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
         get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
@@ -132,8 +129,8 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_secret is provided and valid, app is active and infrastructure is active' do
       it 'should return appropriate app' do
         app_group = create(:app_group)
-        create(:helm_infrastructure, 
-          app_group: app_group, 
+        create(:helm_infrastructure,
+          app_group: app_group,
           status: HelmInfrastructure.statuses[:active]
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
@@ -185,8 +182,8 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 404' do
         error_msg = 'App is inactive'
         app_group = create(:app_group)
-        create(:helm_infrastructure, 
-          app_group: app_group, 
+        create(:helm_infrastructure,
+          app_group: app_group,
           status: HelmInfrastructure.statuses[:active]
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:inactive])
@@ -203,8 +200,8 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is provided and valid and params[:app_name] is provided and app is active' do
       it 'should return appropriate app' do
         app_group = create(:app_group)
-        create(:helm_infrastructure, 
-          app_group: app_group, 
+        create(:helm_infrastructure,
+          app_group: app_group,
           status: HelmInfrastructure.statuses[:active]
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
@@ -220,8 +217,8 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is provided and valid and params[:app_name] is provided and app is blank' do
       it 'should create new app with params[:app_name]' do
         app_group = create(:app_group)
-        create(:helm_infrastructure, 
-          app_group: app_group, 
+        create(:helm_infrastructure,
+          app_group: app_group,
           status: HelmInfrastructure.statuses[:active]
         )
 

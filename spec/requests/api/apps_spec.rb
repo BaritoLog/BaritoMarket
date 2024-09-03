@@ -34,7 +34,6 @@ RSpec.describe 'Apps API', type: :request do
       create(:helm_infrastructure,
         app_group: app_group,
         status: HelmInfrastructure.statuses[:active],
-        cluster_name: 'haza'
       )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
@@ -49,24 +48,23 @@ RSpec.describe 'Apps API', type: :request do
       end
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['updated_at']).to eq(app_updated_at)
-      expect(json_response['cluster_name']).to eq(app_group.helm_infrastructure.cluster_name)
+      expect(json_response['cluster_name']).to eq(app_group.cluster_name)
     end
 
     it 'should returns K8s producer address if available' do
       app_group = create(:app_group)
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
-      create(:helm_infrastructure, 
-        app_group: app_group, 
+      create(:helm_infrastructure,
+        app_group: app_group,
         status: HelmInfrastructure.statuses[:active],
-        is_active: true, 
-        cluster_name: 'haza',
+        is_active: true,
         use_k8s_kibana: true
       )
 
       get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
-      expect(json_response['producer_address']).to match "haza-producer.barito-worker.svc:8080"
+      expect(json_response['producer_address']).to match app_group.producer_address
     end
 
     context 'when invalid token' do
@@ -110,10 +108,10 @@ RSpec.describe 'Apps API', type: :request do
       end
     end
 
-    context 'when app_secret is provided and valid, app is active but infrastructure is inactive' do
+    context 'when app_secret is provided and valid, app is active but app group is inactive' do
       it 'should return 404' do
         error_msg = 'App not found or inactive'
-        app_group = create(:app_group)
+        app_group = create(:app_group, :inactive)
         create(:helm_infrastructure, app_group: app_group)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 

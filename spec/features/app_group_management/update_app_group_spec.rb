@@ -65,8 +65,8 @@ RSpec.feature 'Application Group Management', type: :feature do
         fill_in 'app_group_helm_infrastructure_max_tps', with: '200'
         find('input#app_group_helm_infrastructure_max_tps').native.send_keys :enter
 
-        helm_infrastructure.reload
-        expect(helm_infrastructure.max_tps).to eq 200
+        @app_group.reload
+        expect(@app_group.max_tps).to eq 200
       end
     end
 

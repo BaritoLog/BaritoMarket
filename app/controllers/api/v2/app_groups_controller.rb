@@ -40,7 +40,12 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     # end
 
     if not app_group_params.blank?
-      @app_group, @infrastructure = AppGroup.setup(app_group_params)
+      begin
+        @app_group, @infrastructure = AppGroup.setup(app_group_params)
+      rescue StandardError => e
+        errors << e.message
+      end
+
       if @app_group.blank?
         errors << "No new app group was created"
       end
@@ -74,7 +79,11 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
       }, status: :not_found and return
     end
 
-    render json: app_group.helm_infrastructure
+    @helm_infrastructure = app_group.helm_infrastructure_in_default_location.present? ?
+      app_group.helm_infrastructure_in_default_location :
+      app_group.helm_infrastructures.first
+
+    render json: @helm_infrastructure
   end
 
   def cluster_templates
@@ -96,23 +105,19 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
   def profile_app
     profiles = []
-    AppGroup.active.all.each do |appGroup|
-      environment = appGroup.environment
-      helm_infra = appGroup.helm_infrastructure
+    AppGroup.ACTIVE.all.each do |app_group|
 
-      template = HelmClusterTemplate.find_by(id: helm_infra.helm_cluster_template_id)
-
-      if template.name.downcase.include?"production"
+      if app_group.environment&.downcase&.include?"production"
         replication_factor = 2
       else
         replication_factor = 1
       end
 
       barito_apps =[]
-      appGroup.barito_apps.where(status:"ACTIVE").each do |barito_app|
+      app_group.barito_apps.where(status:"ACTIVE").each do |barito_app|
         days = barito_app.log_retention_days
         if days == nil
-          days = appGroup.log_retention_days
+          days = app_group.log_retention_days
         end
         barito_apps << {
           app_labels: barito_app.labels,
@@ -124,12 +129,12 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
 
       profiles << {
         app_group_barito_apps: barito_apps,
-        app_group_cluster_name: helm_infra.cluster_name,
-        app_group_environment: appGroup.environment,
-        app_group_labels: appGroup.labels,
-        app_group_log_retention: appGroup.log_retention_days,
-        app_group_max_tps: appGroup.helm_infrastructure.max_tps,
-        app_group_name: appGroup.name,
+        app_group_cluster_name: app_group.cluster_name,
+        app_group_environment: app_group.environment,
+        app_group_labels: app_group.labels,
+        app_group_log_retention: app_group.log_retention_days,
+        app_group_max_tps: app_group.max_tps,
+        app_group_name: app_group.name,
         app_group_replication_factor: replication_factor,
       }
     end
@@ -170,7 +175,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def deactivated_by_cluster_name
     cluster_name = params[:cluster_name]
     app_group_name = params[:app_group_name]
-  
+
     # Validate presence of both cluster_name and app_group_name
     unless cluster_name.present? && app_group_name.present?
       render(json: {
@@ -179,25 +184,35 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         code: 400,
       }, status: :bad_request) && return
     end
-  
-    @helm_infrastructure = HelmInfrastructure.joins(:app_group).find_by(cluster_name: cluster_name, app_groups: { name: app_group_name })
-  
-    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+
+    app_group = AppGroup.find_by(cluster_name: cluster_name, name: app_group_name, status: :ACTIVE)
+    # if not found
+    if app_group.blank?
       render(json: {
         success: false,
-        errors: ['Helm Infrastructure not found'],
+        errors: ['App Group not found'],
         code: 404,
       }, status: :not_found) && return
     end
-    
-    app_group = @helm_infrastructure.app_group
-    barito_apps = app_group.barito_apps 
-    barito_apps.each do |app|
+
+    # set the appgroup to INACTIVE
+    app_group.update!(status: :INACTIVE)
+
+    # set each app as INACTIVE
+    app_group.barito_apps.each do |app|
       app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
-  
-    @helm_infrastructure.update_provisioning_status('DELETE_STARTED')
-    DeleteHelmInfrastructureWorker.perform_async(@helm_infrastructure.id)
+
+    if Figaro.env.ARGOCD_ENABLED == 'true'
+      app_group.helm_infrastructures.each do |helm_infrastructure|
+        ArgoDeleteWorker.perform_async(helm_infrastructure.id)
+      end
+    else
+      app_group.helm_infrastructures.each do |helm_infrastructure|
+        helm_infrastructure.update_provisioning_status('DELETE_STARTED')
+        DeleteHelmInfrastructureWorker.perform_async(helm_infrastructure.id)
+      end
+    end
 
     render json: {
       success: true,
@@ -226,9 +241,9 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
     end
 
     if !app_group.redact_active?
-      render json: {} and return 
+      render json: {} and return
     end
-    
+
     static, jsonPath = accumulate_rules(app_group)
     all_labels['default'] = {
       StaticRules: static,
@@ -254,7 +269,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   private
 
   def app_group_params
-    params.permit(:name, :cluster_template_id, :environment,
+    params.permit(:name, :cluster_template_id, :environment, :infrastructure_location_name,
       labels: {},
       redact_labels: {},
     )
@@ -263,8 +278,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
   def accumulate_rules(obj)
     static_rule = []
     json_path_rule = []
-    
-    obj.redact_labels&.each do |key, val| 
+
+    obj.redact_labels&.each do |key, val|
       if val['type'] == 'jsonPath'
         json_path_rule << {
           Name: key,
@@ -279,8 +294,8 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
           HintCharsStart: Integer(val['hintCharStart']),
           HintCharsEnd: Integer(val['hintCharEnd'])
         }
-      end 
+      end
     end
-    [static_rule, json_path_rule] 
+    [static_rule, json_path_rule]
   end
 end

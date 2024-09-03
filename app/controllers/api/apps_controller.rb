@@ -108,11 +108,12 @@ class Api::AppsController < Api::BaseController
       labels: app.labels,
       consul_host: "",
       consul_hosts: [],
-      producer_address: app.app_group.helm_infrastructure&.producer_address,
+      producer_address: app.app_group&.producer_address,
+      producer_mtls_enabled: app.app_group&.producer_mtls_enabled?,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
-        service_names: app.app_group.helm_infrastructure.default_service_names,
+        service_names: app.app_group.helm_infrastructures.first.default_service_names,
         kafka:{
           topic_name: app.topic_name,
           partition: 50,

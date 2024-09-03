@@ -99,7 +99,7 @@ class Api::V2::AppsController < Api::V2::BaseController
         code: 404
       }, status: :not_found and return
     end
-    
+
     app = BaritoApp.find_by(
       app_group: app_group,
       name: params[:app_name]
@@ -151,7 +151,7 @@ class Api::V2::AppsController < Api::V2::BaseController
         code: 404
       }, status: :not_found and return
     end
-    
+
     app = BaritoApp.find_by(
       app_group: app_group,
       name: params[:app_name]
@@ -161,7 +161,7 @@ class Api::V2::AppsController < Api::V2::BaseController
         success: false,
         errors: ['App not found or inactive'],
         code: 404
-      }, status: :not_found and return 
+      }, status: :not_found and return
     elsif !app.available?
       render json: {
         success: false,
@@ -196,7 +196,10 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def generate_profile_response(app)
-    helm_infrastructure = app.app_group.helm_infrastructure
+    helm_infrastructure = app.app_group.helm_infrastructure_in_default_location.present? ?
+      app.app_group.helm_infrastructure_in_default_location :
+      app.app_group.helm_infrastructures.active.first
+
     environment = app.app_group&.environment
     replication_factor = environment == "production" ? 3 : 1
 
@@ -211,11 +214,12 @@ class Api::V2::AppsController < Api::V2::BaseController
       labels: app.labels,
       consul_host: '',
       consul_hosts: [],
-      producer_address: helm_infrastructure&.producer_address,
+      producer_address: app.app_group&.producer_address,
+      producer_mtls_enabled: app.app_group&.producer_mtls_enabled?,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
-        service_names: app.app_group.helm_infrastructure.default_service_names,
+        service_names: helm_infrastructure.default_service_names,
         kafka:{
           topic_name: app.topic_name,
           partition: 50,
