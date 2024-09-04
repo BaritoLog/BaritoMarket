@@ -1,16 +1,17 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react';
+import ReadOnlyPassword from '@/lib/readonly-password/ReadOnlyPassword';
+import styles from './page.module.scss';
 import { Button } from "@asphalt-react/button";
 import { Card } from "@asphalt-react/card";
-import { Edit } from "@asphalt-react/iconpack";
+import { Cloud, Key, SeriesSearch, Search, Tag, Tick } from "@asphalt-react/iconpack";
 import { Loader } from "@asphalt-react/loader";
 import { Textfield } from "@asphalt-react/textfield";
 import { ToggleSwitch } from "@asphalt-react/toggle-switch";
 import { Text } from "@asphalt-react/typography";
-import styles from './page.module.scss';
-import { useEffect, useState } from 'react';
-import ReadOnlyPassword from '@/lib/readonly-password/ReadOnlyPassword';
+import { Stack } from "@asphalt-react/stack";
 
 export default function Page() {
   const sp = useSearchParams()
@@ -44,33 +45,30 @@ export default function Page() {
     <main>
       <div className={styles.container}>
         <Card elevated>
-          <Text bold size="l">Application Group Details</Text>
+          <Text bold size="l">App Group Details: {appGroupData.cluster_name}</Text>
+          <hr/>
           <div className={styles.grid}>
-              <Text bold size="s">Application Group Name</Text>
-              <div>
-              <Textfield
-                size="s"
-                placeholder="Application Group Name"
-                value={appGroupData.name}
-                onChange={(e) => {
-                  setAppGroupData({
-                    ...appGroupData,
-                    name: e.target.value,
-                  })
-                }}
-                addOnEnd={
-                  <Button icon nude compact system>
-                    <Edit />
-                  </Button>
-                }
-              />
-</div>
+              <Text bold >Application Group Name</Text>
+              <div><Textfield
+                  placeholder="Application Group Name"
+                  value={appGroupData.name}
+                  onChange={(e) => {
+                    setAppGroupData({
+                      ...appGroupData,
+                      name: e.target.value,
+                    })
+                  }}
+                  addOnEnd={
+                    <Button icon nude compact system>
+                      <Tick />
+                    </Button>
+                  }
+                />
+              </div>
 
-              <Text bold size="s">Log Retention Days</Text>
-              <div>
-              <Textfield
+              <Text bold >Log Retention Days</Text>
+              <div><Textfield
                 type="number"
-                size="s"
                 placeholder="Log Retention Days"
                 value={appGroupData.log_retention_days}
                 onChange={(e) => {
@@ -81,19 +79,15 @@ export default function Page() {
                 }}
                 addOnEnd={
                   <Button icon nude compact system>
-                    <Edit />
+                    <Tick />
                   </Button>
                 }
               /></div>
-              <Text bold size="s">App Group Secret</Text>
+              <Text bold >App Group Secret</Text>
               <div><ReadOnlyPassword initialValue={appGroupData.secret}/></div>
-              <Text bold size="s">Cluster Name</Text>
-              <Text size="s">{appGroupData.cluster_name}</Text>
-              <Text bold size="s">TPS</Text>
-              <div>
-              <Textfield
+              <Text bold >TPS</Text>
+              <div><Textfield
                 type="number"
-                size="s"
                 placeholder="TPS"
                 value={appGroupData.tps}
                 onChange={(e) => {
@@ -104,27 +98,12 @@ export default function Page() {
                 }}
                 addOnEnd={
                   <Button icon nude compact system>
-                    <Edit />
+                    <Tick />
                   </Button>
                 }
               /></div>
-              <Text bold size="s">Redaction Status</Text>
-              <div className={styles.toggleSwitch}>
-                <ToggleSwitch
-                  size="s"
-                  on={appGroupData.is_redaction_active}
-                  onToggle={({on}) => {
-                    setAppGroupData({
-                      ...appGroupData,
-                      is_redaction_active: on,
-                    })
-                  }}
-                />
-              </div>
-              <Text bold size="s">App Group Status</Text>
-              <div className={styles.toggleSwitch}>
-                <ToggleSwitch
-                  size="s"
+              <Text bold >App Group Status</Text>
+              <div className={styles.toggleSwitch}><ToggleSwitch
                   on={appGroupData.is_active}
                   onToggle={({on}) => {
                     setAppGroupData({
@@ -132,18 +111,41 @@ export default function Page() {
                       is_active: on,
                     })
                   }}
-                />
-              </div>
-              <Text bold size="s">Total Daily Log Ingested</Text>
-              <Text size="s">{appGroupData.total_daily_log_ingested}</Text>
-              <Text bold size="s">Total Daily Cost</Text>
-              <Text size="s">${appGroupData.total_daily_cost}</Text>
+                /></div>
+              <Text bold >Redaction Status</Text>
+              <div className={styles.toggleSwitch}><ToggleSwitch
+                  on={appGroupData.is_redaction_active}
+                  onToggle={({on}) => {
+                    setAppGroupData({
+                      ...appGroupData,
+                      is_redaction_active: on,
+                    })
+                  }}
+                /></div>
+              <Text bold >Total Daily Log Ingested</Text>
+              <Text >{appGroupData.total_daily_log_ingested}</Text>
+              <Text bold >Total Daily Cost</Text>
+              <Text >${appGroupData.total_daily_cost}</Text>
+            </div>
+
+          <Text bold>App Group Labels</Text>
+          <hr/>
+          <div className={styles.grid}>
               {
                 Object.entries(appGroupData.labels).map(k => (<>
-                  <Text bold size="s">{k[0]}</Text>
-                  <Text size="s">{k[1]}</Text>
+                  <Text bold >{k[0]}</Text>
+                  <Text >{k[1]}</Text>
                 </>))
               }
+          </div>
+          <hr/>
+          <div>
+            <Button size="s" qualifier={<Search/>} primary>Open Kibana</Button>
+            <Button size="s" qualifier={<SeriesSearch/>} primary>Open Katulampa</Button>
+            <Button size="s" qualifier={<Tag/>} primary>Manage Labels</Button>
+            <Button size="s" qualifier={<Tag/>} primary>Redact PII Data</Button>
+            <Button size="s" qualifier={<Key/>} primary>Manage Access</Button>
+            <Button size="s" qualifier={<Cloud/>} primary>Manage Infra</Button>
           </div>
         </Card>
       </div>

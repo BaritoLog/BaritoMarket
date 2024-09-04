@@ -14,7 +14,6 @@ const ReadOnlyPassword: React.FC<ReadOnlyPasswordProps> = ({ initialValue }) => 
     return (
         <InputWrapper disabled>
             <Input
-                size="s"
                 type={isPasswordHidden ? "password" : "text"}
                 value={initialValue}
                 enclosed={false}

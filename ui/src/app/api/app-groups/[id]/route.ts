@@ -11,7 +11,7 @@ export async function GET(
 		id: params.id,
 		name: "liyue",
 		log_retention_days: 7,
-		secret: "foobar",
+		secret: "2edd6baf88834e149dcfaec2f40658f8",
 		cluster_name: "shina",
 		capacity: "Production - Small - 16 - 24",
 		tps: 5000,
