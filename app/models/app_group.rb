@@ -101,6 +101,7 @@ class AppGroup < ApplicationRecord
 
   def self.setup(params)
     log_retention_days = nil
+    environment = "staging"
     unless Figaro.env.default_log_retention_days.blank?
       log_retention_days = Figaro.env.default_log_retention_days.to_i
     end
@@ -118,13 +119,17 @@ class AppGroup < ApplicationRecord
       redact_labels = params[:redact_labels]
     end
 
+    if params[:environment]&.downcase&.include?"production"
+      environment = "production"
+    end
+
     ActiveRecord::Base.transaction do
       cluster_name = AppGroup.generate_cluster_name
       app_group = AppGroup.create(
         name: params[:name],
         secret_key: AppGroup.generate_key,
         log_retention_days: log_retention_days,
-        environment: params[:environment],
+        environment: environment,
         cluster_name: cluster_name,
         labels: labels,
         redact_labels: redact_labels,
