@@ -1,4 +1,4 @@
-class Api::V2::AppsController < Api::V2::BaseController
+class Api::V3::AppsController < Api::V3::BaseController
   include Wisper::Publisher
 
   def profile
@@ -196,10 +196,8 @@ class Api::V2::AppsController < Api::V2::BaseController
   end
 
   def generate_profile_response(app)
-    helm_infrastructure = app.app_group.helm_infrastructure_in_default_location.present? ?
-      app.app_group.helm_infrastructure_in_default_location :
-      app.app_group.helm_infrastructures.active.first
-
+    helm_infrastructure = app.app_group.helm_infrastructure_in_default_location
+    helm_infrastructure = app.app_group.helm_infrastructures.active.first unless helm_infrastructure.present?
     environment = app.app_group&.environment
     replication_factor = environment == "production" ? 3 : 1
 

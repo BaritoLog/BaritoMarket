@@ -1,6 +1,7 @@
+
 class AppGroupsController < ApplicationController
   include Wisper::Publisher
-  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels toggle_redact_status)
+  before_action :set_app_group, only: %i(show update update_app_group_name manage_access update_labels update_redact_labels toggle_redact_status toggle_app_group_status)
 
   def index
     @allow_create_app_group = policy(AppGroup).new?
@@ -37,8 +38,9 @@ class AppGroupsController < ApplicationController
     @new_app = BaritoApp.new(app_group_id: @app_group.id)
     @barito_router_url = "#{Figaro.env.router_protocol}://#{Figaro.env.router_domain}/produce_batch"
     @open_kibana_url = "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/" +
-      @app_group.helm_infrastructure.cluster_name.to_s + "/"
-    @open_katulampa_url = sprintf(Figaro.env.MONITORING_LINK_FORMAT, @app_group.helm_infrastructure.cluster_name.to_s)
+      @app_group.cluster_name.to_s + "/"
+    @open_katulampa_url = sprintf(Figaro.env.MONITORING_LINK_FORMAT, @app_group.cluster_name.to_s)
+    @allow_set_app_group_status = policy(@app_group).toggle_status?
     @allow_set_status = policy(@new_app).toggle_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
@@ -48,12 +50,28 @@ class AppGroupsController < ApplicationController
     @allow_edit_barito_app_log_retention_days = policy(@new_app).update_log_retention_days?
     @allow_edit_metadata = policy(@app_group).update?
     @allow_edit_app_group_name = policy(@app_group).update_app_group_name?
-    @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructure).delete?
+    @allow_delete_helm_infrastructure = policy(@app_group.helm_infrastructures).delete?
+    @allow_create_helm_infrastructure = policy(@app_group.helm_infrastructures).create?
     @allow_manage_labels = policy(@app_group).update_labels?
     @allow_manage_redact = policy(@app_group).update_redact_labels?
     @required_labels = Figaro.env.DEFAULT_REQUIRED_LABELS.split(',', -1)
     @show_log_and_cost_col = Figaro.env.SHOW_LOG_AND_COST_COL == "true"
     @show_redact_pii = Figaro.env.SHOW_REDACT_PII == "true"
+    @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
+    @show_infra_details = policy(@app_group).show_infra_details?
+
+    @argo_informations = {}
+    @app_group.helm_infrastructures.each do |helm_infrastructure|
+      argo_operation_message, argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@app_group.cluster_name, helm_infrastructure.location_name)
+      argo_application_health = ARGOCD_CLIENT.check_application_health_status(@app_group.cluster_name, helm_infrastructure.location_name)
+      argo_application_url = ARGOCD_CLIENT.get_application_url(helm_infrastructure)
+      @argo_informations[helm_infrastructure.id] = {
+        operation_message: argo_operation_message,
+        operation_phase: argo_operation_phase,
+        application_health: argo_application_health,
+        application_url: argo_application_url
+      }
+    end
 
     @labels = {}
     if @app_group.labels.nil?
@@ -104,8 +122,9 @@ class AppGroupsController < ApplicationController
 
     @app_group, @helm_infrastructure = AppGroup.setup(app_group_params)
     if @app_group.valid? && @helm_infrastructure.valid?
-      audit_log :create_new_app_group, { "app_group_id" => @app_group.id, "app_group_name" => @app_group.name, "app_group" => @helm_infrastructure.cluster_name }
+      audit_log :create_new_app_group, { "app_group_id" => @app_group.id, "app_group_name" => @app_group.name, "app_group" => @app_group.cluster_name }
       broadcast(:team_count_changed)
+
       return redirect_to root_path
     else
       flash[:messages] = @app_group.errors.full_messages
@@ -117,11 +136,11 @@ class AppGroupsController < ApplicationController
   def update
     authorize @app_group
 
+
     app_group_params = permitted_params
     helm_infrastructure_params = app_group_params.delete(:helm_infrastructure) || {}
 
-    @app_group.update_attributes(app_group_params)
-    @app_group.helm_infrastructure.update_attributes(helm_infrastructure_params)
+    @app_group.update_attributes(app_group_params["app_group"])
 
     audit_log :update_app_group, { "app_group_params" => app_group_params.to_h, "helm_infrastructure_params" => helm_infrastructure_params.to_h }
     broadcast(:app_group_updated, @app_group.id)
@@ -220,19 +239,48 @@ class AppGroupsController < ApplicationController
       "to_labels" => redact_labels
     }
 
-    broadcast(:redact_labels_updated, @app_group.helm_infrastructure.cluster_name)
+    broadcast(:redact_labels_updated, @app_group.cluster_name)
     redirect_to request.referer
   end
 
   def toggle_redact_status
-    puts("inside toggle redact status")
     statuses = AppGroup.redact_statuses
-    puts("this is the param comming from frontend ", params[:toggle_redact_status])
-
-    puts("this is the current status of app group ", @app_group.redact_status)
 
     from_status = @app_group.redact_status
     @app_group.redact_status = params[:toggle_redact_status] == 'true' ? statuses[:active] : statuses[:inactive]
+    @app_group.save!
+
+    audit_log :toggle_app_group_redact_status, { "from_status" => from_status, "to_status" => @app_group.redact_status }
+
+    if params[:app_group_id]
+      app_group = AppGroup.find(params[:app_group_id])
+      redirect_to app_group_path(app_group)
+    else
+      redirect_to app_groups_path
+    end
+  end
+
+  def toggle_app_group_status
+    from_status = @app_group.status
+
+    if params[:toggle_app_group_status] == 'false'
+      @app_group.helm_infrastructures.each do |hi|
+        hi.delete    
+        audit_log :delete_helm_infrastructure, { "helm_infrastructure_id" => hi.id }
+      end
+    else
+      @app_group.helm_infrastructures.each do |hi|
+        if Figaro.env.ARGOCD_ENABLED == 'true'
+          hi.update!(last_log: "Argo Application sync will be scheduled.")
+          hi.argo_upsert_and_sync
+        else
+          hi.update!(last_log: "Helm invocation job will be scheduled.")
+          hi.synchronize_async
+        end
+      end
+    end
+
+    @app_group.status = params[:toggle_app_group_status] == 'true' ? :ACTIVE : :INACTIVE
     @app_group.save!
 
     audit_log :toggle_app_group_redact_status, { "from_status" => from_status, "to_status" => @app_group.redact_status }
@@ -252,9 +300,15 @@ class AppGroupsController < ApplicationController
       :name,
       :log_retention_days,
       :cluster_template_id,
+      :infrastructure_location_id,
+      :infrastructure_location_name,
       :environment,
-      helm_infrastructure: [
+      :max_tps,
+      app_group: [
         :max_tps,
+        :kibana_helm_infrastructure_id,
+        :producer_helm_infrastructure_id,
+        :log_retention_days,
       ],
       labels: {},
       redact_labels: {},

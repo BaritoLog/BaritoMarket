@@ -66,17 +66,17 @@ class InfrastructuresController < ApplicationController
     container_hostname = params[:infrastructure_container_hostname]
     container_source = params[:infrastructure_component_source]
     container_bootstrappers = params[:infrastructure_component_bootstrappers]
-    
+
     set_provisioner
     @provisioner.reprovision_container!(container_hostname, container_source, container_bootstrappers)
-    
+
     redirect_to infrastructure_path(@infrastructure.id)
   end
 
   def retry_bootstrap_container
     container_hostname = params[:infrastructure_container_hostname]
     container_bootstrappers = params[:infrastructure_component_bootstrappers]
-    
+
     set_provisioner
     @provisioner.rebootstrap_container!(container_hostname, container_bootstrappers)
 
@@ -85,7 +85,7 @@ class InfrastructuresController < ApplicationController
 
   def schedule_delete_container
     container_hostname = params[:infrastructure_container_hostname]
-    
+
     set_provisioner
     @provisioner.schedule_delete_container!(container_hostname)
 
@@ -111,8 +111,7 @@ class InfrastructuresController < ApplicationController
     barito_apps.each do |app|
       app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
-    @infrastructure.update_provisioning_status('DELETE_STARTED')
-    DeleteInfrastructureWorker.perform_async(@infrastructure.id)
+    @infrastructure.delete
 
     redirect_to app_groups_path
   end
@@ -141,7 +140,7 @@ class InfrastructuresController < ApplicationController
 
   def get_containers
     set_pathfinder_provisioner
-    
+
     containers = []
     @infrastructure.manifests.each do |manifest|
       deployment = @pathfinder_provisioner.index_containers!(manifest['name'], manifest['cluster_name'])
@@ -149,7 +148,7 @@ class InfrastructuresController < ApplicationController
         next
       end
       deployment_containers = deployment['data']['containers']
-      containers += deployment_containers unless deployment_containers == nil 
+      containers += deployment_containers unless deployment_containers == nil
     end
     containers
   end

@@ -90,7 +90,7 @@ RSpec.describe BaritoApp, type: :model do
     end
     it 'should return the cluster name' do
       expect(barito_app.cluster_name).
-        to eq(barito_app.app_group.helm_infrastructure.cluster_name)
+        to eq(barito_app.app_group.cluster_name)
     end
   end
 end

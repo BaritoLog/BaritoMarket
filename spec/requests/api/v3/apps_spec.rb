@@ -43,7 +43,7 @@ RSpec.describe 'Apps API', type: :request do
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
       app_updated_at = app.updated_at.strftime(Figaro.env.timestamp_format)
 
-      get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+      get api_v3_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
 
@@ -64,7 +64,7 @@ RSpec.describe 'Apps API', type: :request do
       )
       app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
-      get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+      get api_v3_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
       json_response = JSON.parse(response.body)
 
       expect(json_response['producer_address']).to match app.app_group.producer_address
@@ -75,7 +75,7 @@ RSpec.describe 'Apps API', type: :request do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
         error_msg = "App not found or inactive"
 
-        get api_v2_profile_path, params: { access_token: @access_token, app_secret: secret_key }, headers: headers
+        get api_v3_profile_path, params: { access_token: @access_token, app_secret: secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(404)
@@ -87,7 +87,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_secret is a required parameter'
 
-        get api_v2_profile_path, params: { access_token: @access_token, app_secret: '' }, headers: headers
+        get api_v3_profile_path, params: { access_token: @access_token, app_secret: '' }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
@@ -102,7 +102,7 @@ RSpec.describe 'Apps API', type: :request do
         create(:helm_infrastructure, app_group: app_group, status: Infrastructure.statuses[:active])
         app = create(:barito_app, app_group: app_group)
 
-        get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+        get api_v3_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
@@ -117,7 +117,7 @@ RSpec.describe 'Apps API', type: :request do
         app_group = create(:app_group, status: :INACTIVE)
         app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active])
 
-        get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+        get api_v3_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
@@ -135,7 +135,7 @@ RSpec.describe 'Apps API', type: :request do
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
 
-        get api_v2_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+        get api_v3_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)
@@ -146,7 +146,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is not provided' do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_group_secret is a required parameter'
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
@@ -159,7 +159,7 @@ RSpec.describe 'Apps API', type: :request do
         error_msg = 'Invalid Params: app_name is a required parameter'
         app_group = create(:app_group)
 
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key }, headers: headers
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
@@ -170,7 +170,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'when app_group_secret is provided and have tracing headers' do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_group_secret is a required parameter'
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers_with_tracing
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: '', app_name: "test-app-01" }, headers: headers_with_tracing
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq(422)
@@ -188,7 +188,7 @@ RSpec.describe 'Apps API', type: :request do
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:inactive])
 
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['success']).to eq false
@@ -206,7 +206,7 @@ RSpec.describe 'Apps API', type: :request do
         )
         app = create(:barito_app, app_group: app_group, name: "test-app-01", status: BaritoApp.statuses[:active])
 
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-01" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)
@@ -222,7 +222,7 @@ RSpec.describe 'Apps API', type: :request do
           status: HelmInfrastructure.statuses[:active]
         )
 
-        get api_v2_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-02" }, headers: headers
+        get api_v3_profile_by_app_group_path, params: { access_token: @access_token, app_group_secret: app_group.secret_key, app_name: "test-app-02" }, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response.key?('app_group_name')).to eq(true)
@@ -234,7 +234,7 @@ RSpec.describe 'Apps API', type: :request do
   describe 'Increase Log count API' do
     context 'when empty application_groups metrics' do
       it 'should return 404', :skip do
-        post api_v2_increase_log_count_path, params: {access_token: @access_token, application_groups: []}, headers: headers
+        post api_v3_increase_log_count_path, params: {access_token: @access_token, application_groups: []}, headers: headers
 
         expect(response.status).to eq 404
       end
@@ -245,7 +245,7 @@ RSpec.describe 'Apps API', type: :request do
         app_group = create(:app_group)
         app = create(:barito_app, app_group: app_group, log_count: 0)
 
-        post api_v2_increase_log_count_path, params: {access_token: @access_token, application_groups: [{token: app.secret_key, new_log_count: 10}]}, headers: headers
+        post api_v3_increase_log_count_path, params: {access_token: @access_token, application_groups: [{token: app.secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(response.status).to eq 200
@@ -258,7 +258,7 @@ RSpec.describe 'Apps API', type: :request do
         secret_key = SecureRandom.uuid.gsub(/\-/, '')
         error_msg = "#{secret_key} : is not a valid App Secret"
 
-        post api_v2_increase_log_count_path, params: {access_token: @access_token, application_groups: [{token: secret_key, new_log_count: 10}]}, headers: headers
+        post api_v3_increase_log_count_path, params: {access_token: @access_token, application_groups: [{token: secret_key, new_log_count: 10}]}, headers: headers
         json_response = JSON.parse(response.body)
 
         expect(json_response['code']).to eq 404
@@ -295,7 +295,7 @@ RSpec.describe 'Apps API', type: :request do
         expect(@app.max_tps).to eq 50
         expect(@app.log_retention_days).to eq 7
 
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
           params: {
             access_token: @access_token,
             app_group_secret: @app_group.secret_key,
@@ -318,7 +318,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'Should return 422' do
         error_msg = 'Invalid Params: app_group_secret is a required parameter'
 
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
           params: {
             access_token: @access_token,
             app_group_secret: '',
@@ -337,7 +337,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_name is a required parameter'
 
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
           params: {
             access_token: @access_token,
             app_group_secret: @app_group.secret_key,
@@ -353,7 +353,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'Should return 404' do
         error_msg = 'AppGroup not found or inactive'
 
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
         params: {
           access_token: @access_token,
           app_group_secret: "fake_secret",
@@ -370,7 +370,7 @@ RSpec.describe 'Apps API', type: :request do
 
     context 'When app_group_secret is provided and valid BaritoApp is not found' do
       it 'Should create new app' do
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
         params: {
           access_token: @access_token,
           app_group_secret: @app_group.secret_key,
@@ -403,7 +403,7 @@ RSpec.describe 'Apps API', type: :request do
           status: BaritoApp.statuses[:inactive]
         )
 
-        patch api_v2_update_barito_app_path,
+        patch api_v3_update_barito_app_path,
         params: {
           access_token: @access_token,
           app_group_secret: @app_group.secret_key,
@@ -438,7 +438,7 @@ RSpec.describe 'Apps API', type: :request do
     context 'When all params is provided' do
       it 'Should update BaritoApp label information' do
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
           params: {
             access_token: @access_token,
             app_group_secret: @app_group.secret_key,
@@ -462,7 +462,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'Should return 422' do
         error_msg = 'Invalid Params: app_group_secret is a required parameter'
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
           params: {
             access_token: @access_token,
             app_group_secret: '',
@@ -483,7 +483,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'should return 422' do
         error_msg = 'Invalid Params: app_name is a required parameter'
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
           params: {
             access_token: @access_token,
             app_group_secret: @app_group.secret_key,
@@ -499,7 +499,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'Should return 404' do
         error_msg = 'AppGroup not found or inactive'
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
         params: {
           access_token: @access_token,
           app_group_secret: "fake_secret",
@@ -516,7 +516,7 @@ RSpec.describe 'Apps API', type: :request do
       it 'Should return 404' do
         error_msg = 'App not found or inactive'
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
         params: {
           access_token: @access_token,
           app_group_secret: @app_group.secret_key,
@@ -540,7 +540,7 @@ RSpec.describe 'Apps API', type: :request do
           status: BaritoApp.statuses[:inactive]
         )
 
-        patch api_v2_update_barito_app_labels_path,
+        patch api_v3_update_barito_app_labels_path,
         params: {
           access_token: @access_token,
           app_group_secret: @app_group.secret_key,

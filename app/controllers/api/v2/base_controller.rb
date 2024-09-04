@@ -2,7 +2,7 @@ class Api::V2::BaseController < ActionController::Base
   include Pundit
   include Traceable
 
-  around_action :with_audit_logger
+  around_action :with_audit_logger, unless: -> { Rails.env.test? }
   before_action :authenticate!
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -70,8 +70,8 @@ class Api::V2::BaseController < ActionController::Base
           req_audit["app"] = @app.name
         end
 
-        unless @app_group.nil? or @app_group.helm_infrastructure.nil?
-          req_audit["app_group"] = @app_group.helm_infrastructure.cluster_name
+        unless @app_group.nil?
+          req_audit["app_group"] = @app_group.cluster_name
         end
 
         unless @audit_payload.nil? or @audit_payload.empty?

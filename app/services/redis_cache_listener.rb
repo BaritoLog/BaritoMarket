@@ -19,24 +19,33 @@ class RedisCacheListener
 
   def app_destroyed(app_group_secret, app_secret, app_name)
     REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
-    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")  
+    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")
   end
 
   def app_updated(app_group_secret, app_secret, app_name)
     REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app_secret}")
-    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")  
+    REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group_secret}:#{app_name}")
   end
 
   def redact_labels_updated(cluster_name)
     REDIS_CACHE.del("#{APP_GROUP_REDACT_LABELS}:#{cluster_name}")
   end
 
+  def expire_app_group_profile(app_group_id)
+    app_group = AppGroup.find(app_group_id)
+    apps = app_group.barito_apps
+    apps.each do |app|
+      REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app.secret_key}")
+      REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group.secret_key}:#{app.name}")
+    end
+  end
+
   def app_group_updated(app_group_id)
     app_group = AppGroup.find(app_group_id)
     apps = app_group.barito_apps
     apps.each do |app|
-      REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app.secret_key}")  
-      REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group.secret_key}:#{app.name}")  
+      REDIS_CACHE.del("#{APP_PROFILE_CACHE_PREFIX}:#{app.secret_key}")
+      REDIS_CACHE.del("#{APP_GROUP_PROFILE_CACHE_PREFIX}:#{app_group.secret_key}:#{app.name}")
     end
   end
 

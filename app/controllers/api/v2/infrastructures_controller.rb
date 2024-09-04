@@ -1,21 +1,27 @@
 class Api::V2::InfrastructuresController < Api::V2::BaseController
   def profile_index
     profiles = []
-    helm_infrastructures = HelmInfrastructure.where(
-      status: HelmInfrastructure.statuses[:active],
-      provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished]
-    )
+
+    app_groups = AppGroup.ACTIVE.all
     .offset((params.fetch(:page, 1).to_i - 1) * params.fetch(:limit, 10).to_i)
     .limit(params.fetch(:limit, 10).to_i)
 
-    helm_infrastructures.each do |infra|
+    app_groups.each do |app_group|
+      if app_group.helm_infrastructures.length == 0
+        next
+      end
+
+      infra = app_group.helm_infrastructure_in_default_location.present? ?
+        app_group.helm_infrastructure_in_default_location :
+        app_group.helm_infrastructures.first
+
       profiles << {
-        name: infra.app_group_name,
-        app_group_name: infra.app_group_name,
-        app_group_secret: infra.app_group_secret,
-        cluster_name: infra.cluster_name,
+        name: app_group.name,
+        app_group_name: app_group.name,
+        app_group_secret: app_group.secret_key,
+        cluster_name: app_group.cluster_name,
         consul_hosts: [],
-        status: infra.status,
+        status: app_group.status,
         provisioning_status: infra.provisioning_status,
         meta: {
           service_names: infra.default_service_names
@@ -26,10 +32,15 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
   end
 
   def helm_infrastructure_by_cluster_name
-    @helm_infrastructure = HelmInfrastructure.find_by(
-      cluster_name: params[:cluster_name],
-    )
-    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+    app_group = AppGroup.find_by(cluster_name: params[:cluster_name])
+    if app_group.present?
+      @helm_infrastructure = app_group.helm_infrastructure_in_default_location.present? ?
+        app_group.helm_infrastructure_in_default_location :
+        app_group.helm_infrastructures.first
+
+    end
+
+    if @helm_infrastructure.blank?
       render(json: {
                success: false,
                errors: ['Infrastructure not found'],
@@ -41,9 +52,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
   end
 
   def update_helm_manifest_by_cluster_name
-    @helm_infrastructure = HelmInfrastructure.find_by(
-      cluster_name: params[:cluster_name],
-    )
+    @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
+
+    if @app_group.present?
+      @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
+      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+    end
+
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
                success: false,
@@ -73,9 +88,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
   end
 
   def sync_helm_infrastructure_by_cluster_name
-    @helm_infrastructure = HelmInfrastructure.find_by(
-      cluster_name: params[:cluster_name],
-    )
+    @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
+
+    if @app_group.present?
+      @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
+      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+    end
+
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
                success: false,
@@ -89,9 +108,12 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
   end
 
   def profile_by_cluster_name
-    @helm_infrastructure = HelmInfrastructure.find_by(
-      cluster_name: params[:cluster_name],
-    )
+    @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
+
+    if @app_group.present?
+      @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
+      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+    end
 
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
@@ -110,7 +132,8 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       cluster_name: @helm_infrastructure.cluster_name,
       consul_host: '',
       consul_hosts: [],
-      kibana_address: @helm_infrastructure&.kibana_address,
+      kibana_address: @app_group&.kibana_address,
+      kibana_mtls_enabled: @app_group&.kibana_mtls_enabled?,
       status: @helm_infrastructure.status,
       provisioning_status: @helm_infrastructure.provisioning_status,
       created_at: @helm_infrastructure.created_at.strftime(Figaro.env.timestamp_format),
@@ -123,11 +146,11 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
 
   def profile_by_app_group_name
-    @app_group = AppGroup.active.find_by(
-      name: params[:app_group_name],
+    @app_group = AppGroup.find_by(
+      name: params[:app_group_name]
     )
 
-    if @app_group.blank? || !@app_group.available?
+    if @app_group.blank? || !@app_group.ACTIVE?
       render(json: {
                success: false,
                errors: ['App Group not found'],
@@ -135,14 +158,16 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
-    @helm_infrastructure = @app_group.helm_infrastructure
+    @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
+    @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.present?
 
     render json: {
       app_group_name: @app_group.name,
       app_group_secret: @app_group.secret_key,
       capacity: @helm_infrastructure.helm_cluster_template.name,
       cluster_name: @helm_infrastructure.cluster_name,
-      kibana_address: @helm_infrastructure&.kibana_address,
+      kibana_address: @app_group&.kibana_address,
+      kibana_mtls_enabled: @app_group&.kibana_mtls_enabled?,
       status: @helm_infrastructure.status,
       provisioning_status: @helm_infrastructure.provisioning_status,
       updated_at: @helm_infrastructure.updated_at.strftime(Figaro.env.timestamp_format),
@@ -163,24 +188,19 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     profiles = []
     AppGroup.all.each do |app_group|
-      next if app_group.helm_infrastructure == nil
-      next unless [
+      next if app_group.helm_infrastructures.where(provisioning_status: [
         HelmInfrastructure.provisioning_statuses[:finished],
-        HelmInfrastructure.provisioning_statuses[:deployment_finished]
-      ].include? app_group.helm_infrastructure.provisioning_status
+        HelmInfrastructure.provisioning_statuses[:deployment_finished]]
+      ).empty?
 
-      if app_group.helm_infrastructure.present?
-        es_address = app_group.helm_infrastructure.elasticsearch_address
-
-        profiles << {
-          ipaddress: es_address,
-          log_retention_days: app_group.log_retention_days,
-          log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
-            app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
-            app_map
-          end
-        }
-      end
+      profiles << {
+        ipaddress: app_group.elasticsearch_address,
+        log_retention_days: app_group.log_retention_days,
+        log_retention_days_per_topic: app_group.barito_apps.inject({}) do |app_map, app|
+          app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
+          app_map
+        end
+      }
     end
 
     render json: profiles
@@ -205,11 +225,11 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def authorize_by_username
     @current_user = User.find_by_username_or_email(params[:username])
-    @helm_infrastructure = HelmInfrastructure.
-      find_by_cluster_name(params[:cluster_name])
+    @app_group = AppGroup.find_by_cluster_name(params[:cluster_name])
 
-    if @current_user.blank? || @helm_infrastructure.blank? || !@helm_infrastructure.active? ||
-        !HelmInfrastructurePolicy.new(@current_user, @helm_infrastructure).exists?
+    if @current_user.blank? || @app_group.blank? || @app_group.INACTIVE? ||
+        !AppGroupPolicy.new(@current_user, @app_group).see_app_groups?
+
       render(json: {
                success: false,
                errors: ['Forbidden'],
