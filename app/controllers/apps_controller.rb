@@ -78,9 +78,7 @@ class AppsController < ApplicationController
         end
       end
     end
-
-
-    @app.update(labels: labels)
+    @app.update_attributes(labels: labels)
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
 
     audit_log :update_labels, {
@@ -102,8 +100,6 @@ class AppsController < ApplicationController
         end
       end
     end
-
-
     @app.update_attributes(redact_labels: redact_labels)
 
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
