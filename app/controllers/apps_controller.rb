@@ -78,7 +78,7 @@ class AppsController < ApplicationController
         end
       end
     end
-    @app.update(labels: labels)
+    @app.update_attributes(labels: labels)
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
 
     audit_log :update_labels, {
@@ -86,7 +86,7 @@ class AppsController < ApplicationController
       "to_labels" => labels
     }
 
-    redirect_to request.referer
+    redirect_to app_group_path(@app.app_group)
   end
 
   def update_redact_labels
@@ -100,7 +100,7 @@ class AppsController < ApplicationController
         end
       end
     end
-    @app.update(redact_labels: redact_labels)
+    @app.update_attributes(redact_labels: redact_labels)
 
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
     broadcast(:redact_labels_updated, @app.app_group.cluster_name)
@@ -110,7 +110,7 @@ class AppsController < ApplicationController
       "to_labels" => redact_labels
     }
 
-    redirect_to request.referer
+    redirect_to app_group_path(@app.app_group)
   end
 
   private
