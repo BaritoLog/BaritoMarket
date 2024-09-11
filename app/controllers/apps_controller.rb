@@ -106,7 +106,7 @@ class AppsController < ApplicationController
 
     puts("before update: ", @app.inspect)
 
-    @app.update(redact_labels: redact_labels)
+    @app.update_attributes(redact_labels: redact_labels)
 
     puts("this is apps cluster name: ", @app.app_group.cluster_name)
     puts("this is apps secret key: ", @app.secret_key)
@@ -123,7 +123,9 @@ class AppsController < ApplicationController
       "to_labels" => redact_labels
     }
 
-    redirect_to request.referer
+    redirect_to app_group_path(@app.app_group)
+
+    # redirect_to request.referer
   end
 
   private
