@@ -220,6 +220,7 @@ class AppGroupsController < ApplicationController
   end
 
   def update_redact_labels
+    puts("inside app group update_redact_labels")
     authorize @app_group
 
     from_labels = @app_group.redact_labels

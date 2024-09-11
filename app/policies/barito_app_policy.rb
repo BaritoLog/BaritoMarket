@@ -16,7 +16,7 @@ class BaritoAppPolicy < ApplicationPolicy
   end
 
   def update?
-    puts("inside update: user: ", user)
+    puts("inside update: user: ", user.inspect)
     create?
   end
 
@@ -34,7 +34,7 @@ class BaritoAppPolicy < ApplicationPolicy
 
   # only applicable for admin and owner roles, need to revisit later
   def update_redact_labels?
-    puts("user: ", user)
+    puts("user: ", user.inspect)
     barito_superadmin? || user.can_access_app_group?(record, roles: %i(admin owner))
   end
 end
