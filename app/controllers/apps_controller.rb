@@ -78,6 +78,8 @@ class AppsController < ApplicationController
         end
       end
     end
+
+
     @app.update(labels: labels)
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
 
@@ -90,6 +92,7 @@ class AppsController < ApplicationController
   end
 
   def update_redact_labels
+    puts("inside app update_redact_labels")
     from_labels = @app.redact_labels
     redact_labels = {}
 
@@ -100,10 +103,20 @@ class AppsController < ApplicationController
         end
       end
     end
+
+    puts("before update: ", @app.inspect)
+
     @app.update(redact_labels: redact_labels)
+
+    puts("this is apps cluster name: ", @app.app_group.cluster_name)
+    puts("this is apps secret key: ", @app.secret_key)
+    puts("this is apps app grroup secret key: ", @app.app_group.secret_key)
+    puts("this is apps name: ", @app.name)
 
     broadcast(:app_updated, @app.app_group.secret_key, @app.secret_key, @app.name)
     broadcast(:redact_labels_updated, @app.app_group.cluster_name)
+    
+
 
     audit_log :update_redact_labels, {
       "from_labels" => from_labels,
