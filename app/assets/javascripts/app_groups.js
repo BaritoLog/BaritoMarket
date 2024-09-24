@@ -38,7 +38,15 @@ var app_groups = {
       $form.find("#toggle_redact_status").val(isChecked);
       $form.submit();
     });
-
+   
+    $("[id^='toggle_elasticsearch_status_']").change(function() {
+      var appGroupId = $(this).data("id");
+      var isChecked = $(this).prop("checked");
+      var $form = $("#form_toggle_elasticsearch_status_" + appGroupId);
+      $form.find("#toggle_elasticsearch_status").val(isChecked);
+      $form.submit();
+    });
+    
     $("[id^='toggle_app_group_status_']").change(function() {
       var appGroupId = $(this).data("id");
       var isChecked = $(this).prop("checked");
