@@ -262,13 +262,15 @@ class AppGroupsController < ApplicationController
   end
 
   def toggle_elasticsearch_status
-    from_status = @app_group.elasticsearch_status
+    statuses = AppGroup.elasticsearch_statuses
 
-    @app_group.elasticsearch_status = params[:toggle_elasticsearch_status] == 'true' ? :active : :inactive
+    from_status = @app_group.elasticsearch_status
+  
+    @app_group.elasticsearch_status = params[:toggle_elasticsearch_status] == 'true' ? statuses[:es_active] : statuses[:es_inactive]
     @app_group.save!
 
-    audit_log :toggle_app_group_elasticsearch_status, { "from_status" => from_status, "to_status" => @app_group.elasticsearch_status }
-
+    audit_log :toggle_app_group_elasticsearch_status, { "from_status" => from_status, "to_status" => @app_group.elasticsearch_status }  
+    
     if params[:app_group_id]
       app_group = AppGroup.find(params[:app_group_id])
       redirect_to app_group_path(app_group)

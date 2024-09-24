@@ -134,6 +134,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       consul_hosts: [],
       kibana_address: @app_group&.kibana_address,
       elasticsearch_address: @app_group&.elasticsearch_address,
+      elasticsearch_status: @app_group&.elasticsearch_status,
       kibana_mtls_enabled: @app_group&.kibana_mtls_enabled?,
       status: @helm_infrastructure.status,
       provisioning_status: @helm_infrastructure.provisioning_status,

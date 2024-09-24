@@ -76,7 +76,7 @@
             - if @allow_set_elasticsearch_status
               - checked = @app_group.elasticsearch_active?
               = check_box_tag "toggle_elasticsearch_status_#{@app_group.id}", true, @app_group.elasticsearch_active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: @app_group.id, style: 'slow', size: 'small' }
-              = form_tag toggle_elasticsearch_status_app_group_path(@app_group), method: :patch, data: { confirm: checked ? "Are you sure you want to deactivate this App Group?" : "Are you sure you want to activate this App Group?" }, id: "form_toggle_elasticsearch_status_#{@app_group.id}" do
+              = form_tag toggle_elasticsearch_status_app_group_path(@app_group), method: :patch, data: { confirm: checked ? "Are you sure you want to deactivate this Elasticsearch API ?" : "Are you sure you want to activate this Elasticsearch API ?" }, id: "form_toggle_elasticsearch_status_#{@app_group.id}" do
                 = hidden_field_tag :toggle_elasticsearch_status
                 = hidden_field_tag :app_group_id, @app_group.id
             - else

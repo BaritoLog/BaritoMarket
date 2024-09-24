@@ -171,7 +171,7 @@ class AppGroup < ApplicationRecord
   end
 
   def elasticsearch_active?
-    self.elasticsearch_status == AppGroup.elasticsearch_statuses[:active]
+    self.elasticsearch_status == AppGroup.elasticsearch_statuses[:es_active]
   end
 
   def app_group_active?
