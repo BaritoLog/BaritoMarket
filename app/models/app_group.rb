@@ -22,6 +22,11 @@ class AppGroup < ApplicationRecord
     inactive: 'INACTIVE',
     active: 'ACTIVE',
   }
+
+  enum elasticsearch_statuses: {
+    es_inactive: 'INACTIVE',
+    es_active: 'ACTIVE',
+  }
   enum status: { ACTIVE: 0, INACTIVE: 1 }
 
   scope :active, -> {
@@ -134,6 +139,7 @@ class AppGroup < ApplicationRecord
         labels: labels,
         redact_labels: redact_labels,
         redact_status: "INACTIVE",
+        elasticsearch_status: "INACTIVE",
         status: :ACTIVE,
         max_tps: Figaro.env.DEFAULT_MAX_TPS
       )
@@ -162,6 +168,10 @@ class AppGroup < ApplicationRecord
 
   def redact_active?
     self.redact_status == AppGroup.redact_statuses[:active]
+  end
+
+  def elasticsearch_active?
+    self.elasticsearch_status == AppGroup.elasticsearch_statuses[:active]
   end
 
   def app_group_active?
