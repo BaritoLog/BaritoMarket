@@ -7,7 +7,7 @@
 	width: 30vw;
 }
 
-.grid {
+.appGroupInfo {
 	display: grid;
 	grid-template-columns: 2fr 3fr 2fr 3fr;
 	grid-row-gap: 1px;
@@ -22,4 +22,25 @@
 	position: absolute;
 	top: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.appGroupAction {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+	& > button {
+		cursor: pointer;
+	}
+}
+
+
+.appAction {
+	display: grid;
+	grid-gap: 1px;
+	grid-template-columns: 1fr 1fr 1fr;
+
+	& > button {
+		cursor: pointer;
+	}
 }
