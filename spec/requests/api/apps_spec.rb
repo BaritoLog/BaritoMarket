@@ -49,6 +49,7 @@ RSpec.describe 'Apps API', type: :request do
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['updated_at']).to eq(app_updated_at)
       expect(json_response['cluster_name']).to eq(app_group.cluster_name)
+      expect(json_response['disable_app_tps']).to eq(false)
     end
 
     it 'should returns K8s producer address if available' do
@@ -77,6 +78,22 @@ RSpec.describe 'Apps API', type: :request do
 
         expect(json_response['code']).to eq(404)
         expect(json_response['errors']).to eq([error_msg])
+      end
+    end
+
+    context 'when appgroup.disable_app_tps is true' do
+      it 'should return disable_app_tps true' do
+        app_group = create(:app_group, disable_app_tps: true, max_tps: 100)
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
+        app = create(:barito_app, app_group: app_group, status: BaritoApp.statuses[:active], max_tps: 20)
+
+        get api_profile_path, params: { access_token: @access_token, app_secret: app.secret_key }, headers: headers
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['max_tps']).to eq(20)
+        expect(json_response['app_group_max_tps']).to eq(100)
+        expect(json_response['disable_app_tps']).to eq(true)
       end
     end
 

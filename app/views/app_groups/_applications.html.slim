@@ -4,14 +4,14 @@ h4.mb-3 All Applications
   table.table.table-hover.table-sm
     thead
       tr.d-flex
-        - if @show_log_and_cost_col
-            th.col-1 Name
+        - if @show_log_and_cost_col || !@app_group.disable_app_tps
+            th.col-5 Name
         - else
-            th.col-2 Name
-        th.col-1 Topic Name
-        th.col-3 App Secret
+            th.col-6 Name
+        th.col-1 App Secret
         th.col-1 Retention Days
-        th.col-1 Max TPS
+        - unless @app_group.disable_app_tps
+          th.col-1 Max TPS
         th.col-1 Status
         - if @show_log_and_cost_col
             th.col-1 Created At (UTC)
@@ -23,12 +23,13 @@ h4.mb-3 All Applications
     tbody
       - apps.each do |app|
         tr.d-flex
-          - if @show_log_and_cost_col
-              td.col-1= app.name
+          - if @show_log_and_cost_col || !@app_group.disable_app_tps
+              td.col-5= app.name
           - else
-              td.col-2= app.name
-          td.col-1= app.topic_name
-          td.col-3= app.secret_key
+              td.col-6= app.name
+          td.col-1
+            .btn.btn-outline-secondary.btn-sm data-toggle="tooltip" title="Copy to clipboard" onclick="navigator.clipboard.writeText('#{app.secret_key}')"
+              i.fas.fa-copy
           td.col-1
             - if @allow_edit_barito_app_log_retention_days
               = form_for(app, url: update_log_retention_days_app_path(app), method: 'post') do |f|
@@ -42,16 +43,17 @@ h4.mb-3 All Applications
                 b= app.log_retention_days
               - else
                 = @app_group.log_retention_days
-          td.col-1
-            - if allow_add
-              = form_for(app, url: app_path(app)) do |f|
-                .input-group(style="padding-left:0px;")
-                  = f.text_field :max_tps, class: 'form-control', id: "barito_app_#{app.id}_max_tps"
-                  .input-group-append
-                    = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update Max TPS value?' })
-                      i.fas.fa-check
-            - else
-              = app.max_tps
+          - unless @app_group.disable_app_tps
+            td.col-1
+              - if allow_add
+                = form_for(app, url: app_path(app)) do |f|
+                  .input-group(style="padding-left:0px;")
+                    = f.text_field :max_tps, class: 'form-control', id: "barito_app_#{app.id}_max_tps"
+                    .input-group-append
+                      = f.button(:class => 'btn btn-outline-secondary btn-sm', :data => { confirm: 'Are you sure want to update Max TPS value?' })
+                        i.fas.fa-check
+              - else
+                = app.max_tps
           td.col-1
             - if @allow_set_status
               = check_box_tag "toggle_app_status_#{app.id}", true, app.active?, data: { toggle: 'toggle', onstyle: 'success', on: 'Active', off: 'Inactive', id: app.id, style: 'slow', size: 'small' }
