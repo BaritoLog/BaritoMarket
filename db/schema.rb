@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_14_014955) do
+ActiveRecord::Schema.define(version: 2024_10_01_235943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 2024_08_14_014955) do
     t.integer "status"
     t.bigint "kibana_helm_infrastructure_id"
     t.bigint "producer_helm_infrastructure_id"
+    t.boolean "disable_app_tps", default: false
     t.index ["kibana_helm_infrastructure_id"], name: "index_app_groups_on_kibana_helm_infrastructure_id"
     t.index ["name"], name: "index_app_groups_on_name"
     t.index ["producer_helm_infrastructure_id"], name: "index_app_groups_on_producer_helm_infrastructure_id"

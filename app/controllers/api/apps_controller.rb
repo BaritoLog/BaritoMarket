@@ -102,6 +102,8 @@ class Api::AppsController < Api::BaseController
       name: app.name,
       app_secret: app.secret_key,
       app_group_name: app.app_group_name,
+      disable_app_tps: app.app_group.disable_app_tps,
+      app_group_max_tps: app.app_group.max_tps,
       max_tps: app.max_tps,
       log_retention_days: app.log_retention_days,
       cluster_name: app.cluster_name,
