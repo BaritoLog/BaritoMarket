@@ -218,6 +218,7 @@ Rails.application.routes.draw do
         patch :update_redact_labels
         patch :update_labels
         patch :toggle_redact_status
+        patch :toggle_disable_app_tps
         patch :toggle_elasticsearch_status
         patch :toggle_app_group_status
       end

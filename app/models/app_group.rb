@@ -258,4 +258,8 @@ class AppGroup < ApplicationRecord
   def expire_cache
     CacheHelper.expire_app_group_profile(id)
   end
+
+  def disable_app_tps?
+    disable_app_tps
+  end
 end

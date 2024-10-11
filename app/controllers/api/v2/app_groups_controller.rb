@@ -134,6 +134,7 @@ class Api::V2::AppGroupsController < Api::V2::BaseController
         app_group_labels: app_group.labels,
         app_group_log_retention: app_group.log_retention_days,
         app_group_max_tps: app_group.max_tps,
+        app_group_disable_app_tps: app_group.disable_app_tps,
         app_group_name: app_group.name,
         app_group_replication_factor: replication_factor,
       }
