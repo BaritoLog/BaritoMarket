@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 2024_10_01_235943) do
     t.integer "status"
     t.bigint "kibana_helm_infrastructure_id"
     t.bigint "producer_helm_infrastructure_id"
+    t.string "elasticsearch_status", default: "INACTIVE"
     t.boolean "disable_app_tps", default: false
     t.index ["kibana_helm_infrastructure_id"], name: "index_app_groups_on_kibana_helm_infrastructure_id"
     t.index ["name"], name: "index_app_groups_on_name"
