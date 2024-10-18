@@ -149,7 +149,8 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def profile_by_app_group_name
     @app_group = AppGroup.find_by(
-      name: params[:app_group_name]
+      name: params[:app_group_name], 
+      status: "ACTIVE"
     )
 
     if @app_group.blank? || !@app_group.ACTIVE?
