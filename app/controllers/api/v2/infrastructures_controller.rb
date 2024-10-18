@@ -153,7 +153,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
       status: "ACTIVE"
     )
 
-    if @app_group.blank? || !@app_group.ACTIVE?
+    if @app_group.blank? || @app_group.status != "ACTIVE"
       render(json: {
                success: false,
                errors: ['App Group not found'],
@@ -163,6 +163,14 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
     @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.present?
+
+    if @helm_infrastructure.blank?
+      render json: {
+        success: false,
+        errors: ['Helm infrastructure not found'],
+        code: 404,
+      }, status: :not_found and return
+    end
 
     render json: {
       app_group_name: @app_group.name,
