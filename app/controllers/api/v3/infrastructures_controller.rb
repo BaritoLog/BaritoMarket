@@ -69,7 +69,12 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
              }, status: :not_found) && return
     end
 
-    @helm_infrastructure.synchronize_async
+    if Figaro.env.ARGOCD_ENABLED == 'true'
+      @helm_infrastructure.update!(last_log: "Argo Application sync will be scheduled.")
+      @helm_infrastructure.argo_upsert_and_sync
+    else
+      @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
+      @helm_infrastructure.synchronize_async
     render json: @helm_infrastructure
   end
 
