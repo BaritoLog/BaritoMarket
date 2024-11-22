@@ -75,6 +75,7 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
     else
       @helm_infrastructure.update!(last_log: "Helm invocation job will be scheduled.")
       @helm_infrastructure.synchronize_async
+    end
     render json: @helm_infrastructure
   end
 
