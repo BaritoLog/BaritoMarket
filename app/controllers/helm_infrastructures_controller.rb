@@ -119,9 +119,9 @@ class HelmInfrastructuresController < ApplicationController
 
   def delete
     app_group = @helm_infrastructure.app_group
-    barito_apps = app_group.barito_apps
-    barito_apps.each do |app|
-      app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
+    # barito_apps = app_group.barito_apps
+    # barito_apps.each do |app|
+    #   app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
     end
 
     if Figaro.env.ARGOCD_ENABLED == 'true'
