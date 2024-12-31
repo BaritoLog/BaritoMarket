@@ -122,7 +122,7 @@ class HelmInfrastructuresController < ApplicationController
     # barito_apps = app_group.barito_apps
     # barito_apps.each do |app|
     #   app.update_status('INACTIVE') if app.status == BaritoApp.statuses[:active]
-    end
+    # end
 
     if Figaro.env.ARGOCD_ENABLED == 'true'
       @helm_infrastructure.delete
