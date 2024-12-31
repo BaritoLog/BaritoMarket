@@ -90,7 +90,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
     end
 
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
@@ -116,7 +116,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
     end
 
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
@@ -165,7 +165,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     end
 
     @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-    @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.present?
+    @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
 
     render json: {
       app_group_name: @app_group.name,
