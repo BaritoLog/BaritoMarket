@@ -53,12 +53,10 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def update_helm_manifest_by_cluster_name
     @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
-
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.first unless @helm_infrastructure.present?
+      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
     end
-
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
                success: false,
