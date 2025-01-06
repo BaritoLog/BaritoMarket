@@ -55,8 +55,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
+
+      # Check if @helm_infrastructure is present before calling .active?
+      if @helm_infrastructure.nil? || !@helm_infrastructure.active?
+        @helm_infrastructure = @app_group.helm_infrastructures.active.first
+      end
     end
+
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
       render(json: {
                success: false,
@@ -87,10 +92,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def sync_helm_infrastructure_by_cluster_name
     @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
-
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
+
+      # Check if @helm_infrastructure is present before calling .active?
+      if @helm_infrastructure.nil? || !@helm_infrastructure.active?
+        @helm_infrastructure = @app_group.helm_infrastructures.active.first
+      end
     end
 
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
@@ -113,10 +121,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
 
   def profile_by_cluster_name
     @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
-
     if @app_group.present?
       @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-      @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
+
+      # Check if @helm_infrastructure is present before calling .active?
+      if @helm_infrastructure.nil? || !@helm_infrastructure.active?
+        @helm_infrastructure = @app_group.helm_infrastructures.active.first
+      end
     end
 
     if @helm_infrastructure.blank? || !@helm_infrastructure.active?
@@ -164,8 +175,13 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
              }, status: :not_found) && return
     end
 
+
     @helm_infrastructure = @app_group.helm_infrastructure_in_default_location
-    @helm_infrastructure = @app_group.helm_infrastructures.active.first unless @helm_infrastructure.active?
+    # Check if @helm_infrastructure is present before calling .active?
+    if @helm_infrastructure.nil? || !@helm_infrastructure.active?
+      @helm_infrastructure = @app_group.helm_infrastructures.active.first
+    end
+
 
     render json: {
       app_group_name: @app_group.name,
