@@ -205,6 +205,8 @@ RSpec.describe 'Apps API', type: :request do
 
         expect(json_response.key?('app_group_name')).to eq(true)
         expect(json_response['name']).to eq "test-app-01"
+        expect(json_response['producer_location']).to eq app_group.producer_location
+        expect(json_response['kibana_location']).to eq app_group.kibana_location
       end
     end
 
