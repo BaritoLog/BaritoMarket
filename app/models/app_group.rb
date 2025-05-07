@@ -232,6 +232,10 @@ class AppGroup < ApplicationRecord
     get_producer_helm_infrastructure&.producer_address
   end
 
+  def producer_location
+    get_producer_helm_infrastructure&.infrastructure_location&.name
+  end
+
   def get_kibana_helm_infrastructure
     if kibana_helm_infrastructure_id.nil?
       helm_infrastructure = helm_infrastructure_in_default_location if helm_infrastructure.nil?
@@ -244,6 +248,10 @@ class AppGroup < ApplicationRecord
 
   def kibana_mtls_enabled?
     get_kibana_helm_infrastructure&.infrastructure_location.is_mtls_enabled ? true : false
+  end
+
+  def kibana_location
+    get_kibana_helm_infrastructure&.infrastructure_location&.name
   end
 
   def kibana_address

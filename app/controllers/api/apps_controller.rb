@@ -112,6 +112,8 @@ class Api::AppsController < Api::BaseController
       consul_hosts: [],
       producer_address: app.app_group&.producer_address,
       producer_mtls_enabled: app.app_group&.producer_mtls_enabled?,
+      producer_location: app.app_group&.producer_location,
+      kibana_location: app.app_group&.kibana_location,
       status: app.status,
       updated_at: app.updated_at.strftime(Figaro.env.timestamp_format),
       meta: {
