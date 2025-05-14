@@ -306,7 +306,7 @@ RSpec.describe 'App API', type: :request do
         headers: headers
       json_response = JSON.parse(response.body)
 
-      %w[name id secret_key cluster_name kibana_address status]
+      %w[name id secret_key cluster_name kibana_address status producer_location kibana_location]
         .each do |key|
           expect(json_response.key?(key)).to eq(true)
           expect(json_response[key]).to eq(app_group.send(key.to_sym))
