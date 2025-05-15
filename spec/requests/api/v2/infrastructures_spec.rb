@@ -107,6 +107,8 @@ RSpec.describe 'App API', type: :request do
       expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
       expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
       expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
+      expect(json_response['producer_location']).to eq(app_group.producer_location)
+      expect(json_response['kibana_location']).to eq(app_group.kibana_location)
       expect(json_response.key?('updated_at')).to eq(true)
       expect(json_response['kibana_address']).to eq(app_group.kibana_address)
     end
@@ -161,6 +163,8 @@ RSpec.describe 'App API', type: :request do
         expect(json_response['app_group_name']).to eq(helm_infrastructure.app_group_name)
         expect(json_response['app_group_secret']).to eq(helm_infrastructure.app_group_secret)
         expect(json_response['capacity']).to eq(helm_infrastructure.helm_cluster_template.name)
+        expect(json_response['producer_location']).to eq(app_group.producer_location)
+        expect(json_response['kibana_location']).to eq(app_group.kibana_location)
         expect(json_response.key?('updated_at')).to eq(true)
         expect(json_response['kibana_address']).to eq(app_group.kibana_address)
       end
