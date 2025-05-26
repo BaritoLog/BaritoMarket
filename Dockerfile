@@ -1,9 +1,9 @@
-FROM ruby:2.5.1-slim AS base
+FROM ruby:2.5.9-slim-buster AS base
 
 ENV BUNDLER_VERSION 2.1.4
 ENV RAILS_LOG_TO_STDOUT true
 
-RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
 RUN apt-get -y update && \
   apt-get -y install apt-transport-https curl gnupg libpq5 shared-mime-info && \
   (curl https://baltocdn.com/helm/signing.asc | apt-key add -) && \
