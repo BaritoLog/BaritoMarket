@@ -65,6 +65,9 @@ Rails.application.routes.draw do
       get :profile_curator,
         to: 'infrastructures#profile_curator',
         defaults: { format: :json }
+      get :profile_curator_by_cluster_name,
+        to: 'infrastructures#profile_curator_by_cluster_name',
+        defaults: { format: :json }
       get :profile_prometheus_exporter,
         to: 'infrastructures#profile_prometheus_exporter',
         defaults: { format: :json }
