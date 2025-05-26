@@ -209,33 +209,6 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
     render json: profiles
   end
 
-  def profile_curator_by_cluster_name
-    if Figaro.env.es_curator_client_key != params[:client_key]
-      render(json: {
-               success: false,
-               errors: ['Unauthorized'],
-               code: 401,
-             }, status: :not_found) && return
-    end
-
-    @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
-    if @app_group.blank?
-      render(json: {
-               success: false,
-               errors: ['App Group not found'],
-               code: 404,
-             }, status: :not_found) && return
-    end
-
-    render json: {
-      log_retention_days: @app_group.log_retention_days,
-      log_retention_days_per_topic: @app_group.barito_apps.inject({}) do |app_map, app|
-        app_map[app.topic_name] = app.log_retention_days if app.log_retention_days
-        app_map
-      end
-    }
-  end
-
   def profile_prometheus_exporter
     infrastructure_components = InfrastructureComponent.joins(infrastructure: :app_group).where(
       status: InfrastructureComponent.statuses[:finished],
