@@ -219,75 +219,6 @@ RSpec.describe 'App API', type: :request do
       end
     end
 
-    describe 'Profile for Curator' do
-      let(:headers) do
-        { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
-      end
-
-      it 'should return list of all active App with its retention policy for curator' do
-        app_group = create(:app_group)
-        app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
-        app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
-        helm_infrastructure = create( :helm_infrastructure,
-          app_group: app_group,
-          provisioning_status: HelmInfrastructure.provisioning_statuses[:finished],
-          cluster_name: app_group.cluster_name
-        )
-
-        get api_v3_profile_curator_path,
-          params: { access_token: @access_token, client_key: 'abcd1234' },
-          headers: headers
-
-        expect(response.body).to eq [
-          {
-            ipaddress: app_group.elasticsearch_address,
-            log_retention_days: app_group.log_retention_days,
-            log_retention_days_per_topic: {
-              app2.topic_name => app2.log_retention_days
-            },
-          }
-        ].to_json
-      end
-
-      it "should not return appgroup that didn't have finished helm_infrastructure provisioning_status" do
-        app_group = create(:app_group)
-        helm_infrastructure = create(
-          :helm_infrastructure,
-          app_group: app_group,
-          provisioning_status: HelmInfrastructure.provisioning_statuses[:pending],
-          cluster_name: app_group.cluster_name
-        )
-
-        get api_v3_profile_curator_path,
-          params: { access_token: @access_token, client_key: 'abcd1234' },
-          headers: headers
-
-
-        expect(JSON.parse(response.body)).to eq([])
-      end
-
-      it 'should also works for DEPLOYMENT_FINISHED infrastructures' do
-        app_group = create(:app_group)
-        app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
-        helm_infrastructure = create( :helm_infrastructure,
-          app_group: app_group,
-          provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
-          cluster_name: app_group.cluster_name
-        )
-
-        get api_v3_profile_curator_path,
-          params: { access_token: @access_token, client_key: 'abcd1234' },
-          headers: headers
-
-        expect(response.body).to eq [
-          {
-            ipaddress: app_group.elasticsearch_address,
-            log_retention_days: app_group.log_retention_days,
-            log_retention_days_per_topic: {},
-          }
-        ].to_json
-      end
-    end
 
   end
 
@@ -509,6 +440,121 @@ RSpec.describe 'App API', type: :request do
       end
     end
 
+  end
+
+  describe 'Profile for Curator' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return list of all active App with its retention policy for curator' do
+      app_group = create(:app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
+      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
+      helm_infrastructure = create( :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:finished],
+        cluster_name: app_group.cluster_name
+      )
+
+      get api_v3_profile_curator_path,
+        params: { access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+      expect(response.body).to eq [
+        {
+          ipaddress: app_group.elasticsearch_address,
+          log_retention_days: app_group.log_retention_days,
+          log_retention_days_per_topic: {
+            app2.topic_name => app2.log_retention_days
+          },
+        }
+      ].to_json
+    end
+
+    it "should not return appgroup that didn't have finished helm_infrastructure provisioning_status" do
+      app_group = create(:app_group)
+      helm_infrastructure = create(
+        :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:pending],
+        cluster_name: app_group.cluster_name
+      )
+
+      get api_v3_profile_curator_path,
+        params: { access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+
+      expect(JSON.parse(response.body)).to eq([])
+    end
+
+    it 'should also works for DEPLOYMENT_FINISHED infrastructures' do
+      app_group = create(:app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
+      helm_infrastructure = create( :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:deployment_finished],
+        cluster_name: app_group.cluster_name
+      )
+
+      get api_v3_profile_curator_path,
+        params: { access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+      expect(response.body).to eq [
+        {
+          ipaddress: app_group.elasticsearch_address,
+          log_retention_days: app_group.log_retention_days,
+          log_retention_days_per_topic: {},
+        }
+      ].to_json
+    end
+  end
+
+  describe 'Profile for Curator by cluster_name' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    it 'should return retention policy for the requested ap group' do
+      app_group = create(:app_group)
+      app1 = create(:barito_app, topic_name: 'topic1', app_group: app_group, log_retention_days: nil)
+      app2 = create(:barito_app, topic_name: 'topic2', app_group: app_group, log_retention_days: 1200)
+      helm_infrastructure = create( :helm_infrastructure,
+        app_group: app_group,
+        provisioning_status: HelmInfrastructure.provisioning_statuses[:finished],
+        cluster_name: app_group.cluster_name
+      )
+
+      get api_v3_profile_curator_by_cluster_name_path,
+        params: { cluster_name: app_group.cluster_name, access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+      expected_response = {
+        log_retention_days: app_group.log_retention_days,
+        log_retention_days_per_topic: {
+          app2.topic_name => app2.log_retention_days
+        },
+      }
+      expect(response.status).to eq 200
+      expect(response.content_type).to eq 'application/json'
+      expect(response.body).to eq expected_response.to_json
+    end
+
+    it 'should return 404 if the appgroup not exists ' do
+      get api_v3_profile_curator_by_cluster_name_path,
+        params: {cluster_name: 'no-exists', access_token: @access_token, client_key: 'abcd1234' },
+        headers: headers
+
+      expect(response.status).to eq 404
+      expect(response.content_type).to eq 'application/json'
+      expect(JSON.parse(response.body)).to eq({
+        'success' => false,
+        'errors' => ['App Group not found'],
+        'code' => 404
+      })
+    end
   end
 
   describe 'Profile for Prometheus Exporters' do
