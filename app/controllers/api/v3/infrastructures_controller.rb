@@ -150,9 +150,10 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
   def profile_by_app_group_name
     @app_group = AppGroup.find_by(
       name: params[:app_group_name],
+      status: "ACTIVE"
     )
 
-    if @app_group.blank? || !@app_group.ACTIVE?
+    if @app_group.blank?
       render(json: {
                success: false,
                errors: ['App Group not found'],
