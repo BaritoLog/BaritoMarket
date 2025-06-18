@@ -36,7 +36,7 @@ class Api::V2::InfrastructuresController < Api::V2::BaseController
     if app_group.present?
       @helm_infrastructure = app_group.helm_infrastructure_in_default_location.present? ?
         app_group.helm_infrastructure_in_default_location :
-        app_group.helm_infrastructures.first
+        app_group.helm_infrastructures.active.first
 
     end
 
