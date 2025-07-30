@@ -1,13 +1,29 @@
-<!--- [![Build Status](https://travis-ci.org/BaritoLog/BaritoMarket.svg?branch=master)](https://travis-ci.org/BaritoLog/BaritoMarket) --->
-<!--- [![Maintainability](https://api.codeclimate.com/v1/badges/4d6f74ccfd69065d5fa6/maintainability)](https://codeclimate.com/github/BaritoLog/BaritoMarket/maintainability) --->
-
 # Barito Market
-### Transports logs to where it should be
 
----
-Inspired by [Barito River](https://en.wikipedia.org/wiki/Barito_River), this app will handle logs management, service discovery & log stream provisioning.
+## Centralized Log Management Platform
 
-Read the details on our wiki, [here](https://github.com/BaritoLog/wiki)
+**Barito Market** is a web-based platform for managing log infrastructure, service discovery, and log stream provisioning. Named after the [Barito River](https://en.wikipedia.org/wiki/Barito_River), this application handles the complex task of log management in distributed systems.
+
+## Overview
+
+Barito Market serves as the central control plane for the Barito logging ecosystem, providing:
+
+- **Infrastructure Provisioning**: Automated setup of logging clusters
+- **Service Discovery**: Application registration and cluster assignment  
+- **User Management**: Role-based access control and authentication
+- **Monitoring**: Dashboard for cluster health and log statistics
+- **API Gateway**: RESTful APIs for integration with other Barito components
+
+For detailed architecture and concepts, visit our [wiki](https://github.com/BaritoLog/wiki).
+
+## Features
+
+- 🏗️ **Automated Cluster Provisioning** - Deploy logging infrastructure on-demand
+- 🔍 **Service Discovery** - Automatic application to cluster mapping
+- 👥 **Multi-tenancy** - Isolated logging environments per application group
+- 📊 **Monitoring Dashboard** - Real-time cluster and application metrics
+- 🔐 **Authentication** - SSO integration and role-based access
+- 🔌 **API-First** - Complete REST API for automation and integration
 
 ## Quick Development Setup
 
@@ -24,9 +40,11 @@ and Pathfinder Container Manager at `http://192.168.20.10:8080` (username: `admi
 
 Run `vagrant ssh` if you want to login into virtual machine that was just created.
 
-#### Newrelic Support
+### Newrelic Support
+
 If you want to enable Newrelic monitoring on your BaritoMarket deployment, you just have to create these additional keys on your environment variables:
-```
+
+```bash
 NEWRELIC_LICENSE_KEY                - Your Newrelic license key
 NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
 NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to runs
