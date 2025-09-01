@@ -4,7 +4,9 @@ h4.mb-3 All Applications
   table.table.table-hover.table-sm
     thead
       tr.d-flex
-        - if @show_log_and_cost_col || !@app_group.disable_app_tps
+        - if @show_log_and_cost_col && !@app_group.disable_app_tps
+            th.col-4 Name
+        - elsif @show_log_and_cost_col || !@app_group.disable_app_tps
             th.col-5 Name
         - else
             th.col-6 Name
@@ -23,7 +25,9 @@ h4.mb-3 All Applications
     tbody
       - apps.each do |app|
         tr.d-flex
-          - if @show_log_and_cost_col || !@app_group.disable_app_tps
+          - if @show_log_and_cost_col && !@app_group.disable_app_tps
+              td.col-4= app.name
+          - elsif @show_log_and_cost_col || !@app_group.disable_app_tps
               td.col-5= app.name
           - else
               td.col-6= app.name

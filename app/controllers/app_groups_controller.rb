@@ -45,6 +45,7 @@ class AppGroupsController < ApplicationController
     @allow_set_elasticsearch_status = policy(@app_group).toggle_elasticsearch_status?
     @allow_manage_access = policy(@app_group).manage_access?
     @allow_see_infrastructure = policy(Infrastructure).show?
+    @allow_disable_app_tps = policy(@app_group).update?
     @allow_see_helm_infrastructure = policy(HelmInfrastructure).show?
     @allow_delete_barito_app = policy(@new_app).delete?
     @allow_add_barito_app = policy(@new_app).create?
@@ -245,6 +246,10 @@ class AppGroupsController < ApplicationController
   end
 
   def toggle_disable_app_tps
+    unless policy(@app_group).update?
+      return redirect_to app_group_path(@app_group)
+    end
+
     @app_group.disable_app_tps = !@app_group.disable_app_tps
     @app_group.save!
 
