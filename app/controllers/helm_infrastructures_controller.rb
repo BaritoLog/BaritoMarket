@@ -39,10 +39,18 @@ class HelmInfrastructuresController < ApplicationController
     authorize @helm_infrastructure
     @values = YAML.dump(@helm_infrastructure.values)
     @argocd_enabled = Figaro.env.ARGOCD_ENABLED == "true"
-    @argo_operation_message, @argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
-    @argo_application_health = ARGOCD_CLIENT.check_application_health_status(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
-    @argo_sync_duration = ARGOCD_CLIENT.sync_duration(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
-    @argo_application_url = ARGOCD_CLIENT.get_application_url(@helm_infrastructure)
+    @argo_operation_message = nil
+    @argo_operation_phase = nil
+    @argo_application_health = nil
+    @argo_sync_duration = nil
+    @argo_application_url = nil
+
+    if @argocd_enabled
+      @argo_operation_message, @argo_operation_phase = ARGOCD_CLIENT.check_sync_operation_status(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
+      @argo_application_health = ARGOCD_CLIENT.check_application_health_status(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
+      @argo_sync_duration = ARGOCD_CLIENT.sync_duration(@helm_infrastructure.cluster_name, @helm_infrastructure.location_name)
+      @argo_application_url = ARGOCD_CLIENT.get_application_url(@helm_infrastructure)
+    end
   end
 
   def edit
