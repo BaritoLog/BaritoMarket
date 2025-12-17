@@ -22,7 +22,7 @@ class ArgoCDClient
     @helm_chart_repository = Figaro.env.HELM_CHART_REPOSITORY
     @faraday_client = Faraday.new(
       url: @url,
-      ssl: { verify: ssl_verify_enabled? },
+      ssl: { verify: @ssl_verify_enabled },
       headers: {
         "Content-Type" => "application/json",
         "Authorization" => "Bearer #{@token}"
