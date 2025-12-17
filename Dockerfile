@@ -1,7 +1,7 @@
 FROM ruby:2.5.9-slim-buster AS base
 
-ENV BUNDLER_VERSION 2.1.4
-ENV RAILS_LOG_TO_STDOUT true
+ENV BUNDLER_VERSION=2.1.4
+ENV RAILS_LOG_TO_STDOUT=true
 
 RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
 RUN apt-get -y update && \
@@ -32,7 +32,7 @@ RUN bundle config --local deployment 'true' && \
   bundle install && \
   rm -vf /usr/local/bundle/ruby/*/cache/*.gem
 
-ENV DB_NAME barito_production
+ENV DB_NAME=barito_production
 ARG NODE_ENV=${RAILS_ENV}
 ENV NODE_ENV=${NODE_ENV}
 
