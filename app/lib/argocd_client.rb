@@ -28,7 +28,11 @@ class ArgoCDClient
         "Authorization" => "Bearer #{@token}"
       }
     )
-
+    
+    Rails.logger.info("ArgoCDClient initialized for URL: #{@url}")
+  rescue => e
+    Rails.logger.error("ArgoCDClient initialization failed: #{e.class}")
+    raise
   end
 
   def get_application_url(helm_infrastructure)
@@ -36,30 +40,50 @@ class ArgoCDClient
   end
 
   def get_application_name(app_group_name, argocd_destination_cluster)
-    return "#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}"
+    "#{Figaro.env.argocd_project_name}-#{app_group_name}-#{argocd_destination_cluster}"
   end
 
   def delete_application(app_group_name, argocd_destination_cluster)
-    return @faraday_client.delete do | req |
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Deleting ArgoCD application: #{app_name}")
+    
+    response = @faraday_client.delete do | req |
       req.params['project'] = Figaro.env.ARGOCD_PROJECT_NAME
-      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}"
+      req.path = "/api/v1/applications/#{app_name}"
     end
+    
+    Rails.logger.info("Delete application response status: #{response.status}")
+    response
+  rescue => e
+    Rails.logger.error("Failed to delete application #{app_name}: #{e.class}")
+    raise
   end
 
-  def get_cluster_map()
-    return JSON.parse(@faraday_client.get('/api/v1/clusters').body)['items'].select { |i| i['connectionState']['status'] == 'Successful' }.map { |i| [i['name'], i['server']] }.to_h
+  def get_cluster_map
+    Rails.logger.info("Fetching ArgoCD cluster map")
+    
+    response = @faraday_client.get('/api/v1/clusters')
+    cluster_map = JSON.parse(response.body)['items']
+      .select { |i| i['connectionState']['status'] == 'Successful' }
+      .map { |i| [i['name'], i['server']] }
+      .to_h
+    
+    Rails.logger.info("Cluster map retrieved with #{cluster_map.size} clusters")
+    cluster_map
+  rescue => e
+    Rails.logger.error("Failed to get cluster map: #{e.class}")
+    raise
   end
 
   def create_application(app_group_name, override_values, argocd_destination_cluster_name, argocd_destination_server)
-    return @faraday_client.post do | req |
+    app_name = get_application_name(app_group_name, argocd_destination_cluster_name)
+    Rails.logger.info("Creating ArgoCD application: #{app_name}")
+    
+    response = @faraday_client.post do | req |
       req.body = {
         metadata: {
-          name: get_application_name(app_group_name, argocd_destination_cluster_name),
+          name: app_name,
           namespace: Figaro.env.argocd_namespace,
-          # labels: {
-          #   "barito-destination-cluster": argocd_destination_cluster,
-          #   "barito-cluster-name": app_group_name,
-          # }
         },
         spec: {
           destination: {
@@ -81,62 +105,114 @@ class ArgoCDClient
       req.params['upsert'] = true
       req.path = '/api/v1/applications'
     end
+    
+    Rails.logger.info("Create application response status: #{response.status}")
+    response
+  rescue => e
+    Rails.logger.error("Failed to create application #{app_name}: #{e.class}")
+    raise
   end
 
   def sync_application(app_group_name, argocd_destination_cluster)
-    return @faraday_client.post do | req |
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Syncing ArgoCD application: #{app_name}")
+    
+    response = @faraday_client.post do | req |
       req.body = {
         project: Figaro.env.argocd_project_name,
         prune: true,
       }.to_json
-      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/sync"
+      req.path = "/api/v1/applications/#{app_name}/sync"
     end
+    
+    Rails.logger.info("Sync application response status: #{response.status}")
+    response
+  rescue => e
+    Rails.logger.error("Failed to sync application #{app_name}: #{e.class}")
+    raise
   end
 
   def terminate_operation(app_group_name, argocd_destination_cluster)
-    return @faraday_client.delete do | req |
-      req.path = "/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}/operation"
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Terminating operation for application: #{app_name}")
+    
+    response = @faraday_client.delete do | req |
+      req.path = "/api/v1/applications/#{app_name}/operation"
     end
+    
+    Rails.logger.info("Terminate operation response status: #{response.status}")
+    response
+  rescue => e
+    Rails.logger.error("Failed to terminate operation for #{app_name}: #{e.class}")
+    raise
   end
 
   def check_sync_operation_status(app_group_name, argocd_destination_cluster)
-    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Checking sync operation status for: #{app_name}")
+    
+    response = @faraday_client.get("/api/v1/applications/#{app_name}")
+    
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
 
       if !app_status.dig("operationState", "message") || !app_status.dig("operationState", "phase")
+        Rails.logger.warn("Application #{app_name} not synced")
         return 'Argo Application not synced.', 'Argo Application is not synced'
       end
 
-      return app_status['operationState']['message'], app_status['operationState']['phase']
+      phase = app_status['operationState']['phase']
+      message = app_status['operationState']['message']
+      Rails.logger.info("Sync status for #{app_name}: phase=#{phase}")
+      
+      return message, phase
     else
+      Rails.logger.warn("Application #{app_name} not found, status: #{response.env[:status]}")
       return 'Argo Application is not created.', 'Argo Application is not created'
     end
-
-    #  phase = Failed, Running, Succeeded
-    #  message = Operation terminated, any, successfully synced (all tasks run)
+  rescue => e
+    Rails.logger.error("Failed to check sync status for #{app_name}: #{e.class}")
+    raise
   end
 
   def check_application_health_status(app_group_name, argocd_destination_cluster)
-    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Checking health status for: #{app_name}")
+    
+    response = @faraday_client.get("/api/v1/applications/#{app_name}")
+    
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
-      return app_status['health']['status']
+      health_status = app_status['health']['status']
+      Rails.logger.info("Health status for #{app_name}: #{health_status}")
+      return health_status
     else
+      Rails.logger.warn("Application #{app_name} not found, status: #{response.env[:status]}")
       return 'Argo Application is not created.'
     end
+  rescue => e
+    Rails.logger.error("Failed to check health status for #{app_name}: #{e.class}")
+    raise
   end
 
   def sync_duration(app_group_name, argocd_destination_cluster)
-    response = @faraday_client.get("/api/v1/applications/#{get_application_name(app_group_name, argocd_destination_cluster)}")
+    app_name = get_application_name(app_group_name, argocd_destination_cluster)
+    Rails.logger.info("Calculating sync duration for: #{app_name}")
+    
+    response = @faraday_client.get("/api/v1/applications/#{app_name}")
+    
     if response.env[:status] == 200
       app_status = JSON.parse(response.body)['status']
+      
       if !app_status.dig("operationState", "startedAt")
+        Rails.logger.info("Application #{app_name} was not synced")
         return 'Argo application was not synced'
       end
+      
       start_time = Time.parse(app_status['operationState']['startedAt'])
-      end_time = ''
+      
       if !app_status.dig("operationState", "finishedAt")
+        Rails.logger.info("Application #{app_name} still syncing")
         return 'Argo application still syncing'
       else
         end_time = Time.parse(app_status['operationState']['finishedAt'])
@@ -146,10 +222,16 @@ class ArgoCDClient
         minutes = ((difference_in_seconds % 3600) / 60).to_i
         seconds = (difference_in_seconds % 60).to_i
 
-        return "#{hours} hours, #{minutes} minutes, and #{seconds} seconds"
+        duration = "#{hours} hours, #{minutes} minutes, and #{seconds} seconds"
+        Rails.logger.info("Sync duration for #{app_name}: #{duration}")
+        return duration
       end
     else
+      Rails.logger.warn("Application #{app_name} not found, status: #{response.env[:status]}")
       return 'Argo Application is not created.'
     end
+  rescue => e
+    Rails.logger.error("Failed to calculate sync duration for #{app_name}: #{e.class}")
+    raise
   end
 end
