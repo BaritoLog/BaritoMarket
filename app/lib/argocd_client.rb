@@ -16,14 +16,16 @@ class ArgoCDClient
     @namespace = Figaro.env.ARGOCD_NAMESPACE
     @project_name = Figaro.env.ARGOCD_PROJECT_NAME
     @default_destination_server = Figaro.env.ARGOCD_DEFAULT_DESTINATION_SERVER
+    @ssl_verify_enabled = Figaro.env.ARGOCD_SSL_VERIFY_ENABLED == 'true'
     @helm_chart_name = Figaro.env.HELM_CHART_NAME
     @helm_chart_version = Figaro.env.HELM_CHART_VERSION
     @helm_chart_repository = Figaro.env.HELM_CHART_REPOSITORY
     @faraday_client = Faraday.new(
       url: @url,
+      ssl: { verify: ssl_verify_enabled? },
       headers: {
-          "Content-Type" => "application/json",
-          "Authorization": "Bearer " + @token
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{@token}"
       }
     )
 
