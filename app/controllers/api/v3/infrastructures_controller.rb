@@ -52,6 +52,45 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
     end
   end
 
+  def patch_helm_manifest_by_cluster_name
+    @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
+    location = InfrastructureLocation.active.find_by(name: params[:location_name])
+
+    if @app_group.present? && location.present?
+      @helm_infrastructure = @app_group.helm_infrastructures.where(infrastructure_location_id: location.id).first
+    end
+
+    if @helm_infrastructure.blank? || !@helm_infrastructure.active?
+      render(json: {
+               success: false,
+               errors: ['Infrastructure not found'],
+               code: 404,
+             }, status: :not_found) && return
+    end
+
+    ov = params[:override_values]
+    if ov.nil?
+      render(json: {
+               success: false,
+               errors: ['Invalid payload'],
+               code: 400,
+             }, status: :bad_request) && return
+    end
+
+    current_values = @helm_infrastructure.override_values || {}
+    merged_values = current_values.deep_merge(ov)
+
+    if @helm_infrastructure.update({override_values: merged_values})
+      render json: @helm_infrastructure
+    else
+      render(json: {
+               success: false,
+               errors: ['Invalid payload'],
+               code: 400,
+             }, status: :bad_request) && return
+    end
+  end
+
   def sync_helm_infrastructure_by_cluster_name
     @app_group = AppGroup.ACTIVE.find_by(cluster_name: params[:cluster_name])
     location = InfrastructureLocation.active.find_by(name: params[:location_name])
