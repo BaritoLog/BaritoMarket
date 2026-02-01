@@ -78,7 +78,7 @@ class Api::V3::InfrastructuresController < Api::V3::BaseController
     end
 
     current_values = @helm_infrastructure.override_values || {}
-    merged_values = current_values.deep_merge(ov)
+    merged_values = current_values.deep_merge(ov.to_unsafe_h)
 
     if @helm_infrastructure.update({override_values: merged_values})
       render json: @helm_infrastructure

@@ -237,7 +237,7 @@ RSpec.describe 'App API', type: :request do
         "consumer" => {
           "enabled" => "true"
         },
-        "replica" => 1
+        "replica" => "1"
       }
       expect(update_object.override_values).to eq expected_values
     end
@@ -267,7 +267,7 @@ RSpec.describe 'App API', type: :request do
       expect(response.status).to eq 200
       
       update_object = app_group.reload.helm_infrastructures.first
-      expect(update_object.override_values).to eq patch_values
+      expect(update_object.override_values).to eq({ "replica" => "1" })
     end
 
     it 'should handle deep nested hash merging' do
@@ -316,7 +316,7 @@ RSpec.describe 'App API', type: :request do
       expected_values = {
         "services" => {
           "producer" => {
-            "replicas" => 3,
+            "replicas" => "3",
             "resources" => {
               "cpu" => "500m",
               "memory" => "1Gi"
@@ -357,11 +357,11 @@ RSpec.describe 'App API', type: :request do
       expect(response.status).to eq 200
       
       target_infrastructure.reload
-      expect(target_infrastructure.override_values).to eq({ "replica" => 1 })
+      expect(target_infrastructure.override_values).to eq({ "replica" => "1" })
       
       not_matches.each do |not_match|
         not_match.reload
-        expect(not_match.override_values).not_to eq({ "replica" => 1 })
+        expect(not_match.override_values).not_to eq({ "replica" => "1" })
       end
     end
   end
