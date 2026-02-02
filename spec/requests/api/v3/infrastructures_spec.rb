@@ -149,6 +149,223 @@ RSpec.describe 'App API', type: :request do
 
   end
 
+  describe 'Patch Helm Manifest' do
+    let(:headers) do
+      { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }
+    end
+
+    let!(:app_group) { create(:app_group) }
+    let!(:location) { create(:infrastructure_location, name: 'main-dc') }
+
+    it 'should return 404 if cluster_name does not exists' do
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: { access_token: @access_token, location_name: location.name, cluster_name: 'abc'},
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 404
+    end
+
+    it 'should return 404 if location does not exists' do
+      helm_infrastructure = create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active])
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: { access_token: @access_token, cluster_name: app_group.cluster_name, location_name: 'abc'},
+        headers: headers
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 404
+    end
+
+    it 'should return 400 if the payload is not a proper json' do
+      app_group = create(:app_group)
+      helm_infrastructure = create(
+        :helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active],
+        infrastructure_location_id: location.id
+      )
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: {
+          access_token: @access_token,
+          cluster_name: app_group.cluster_name,
+          location_name: location.name
+        },
+        headers: headers
+      expect(response.status).to eq 400
+    end
+
+    it 'should merge new values with existing override_values' do
+      app_group = create(:app_group)
+      existing_values = {
+        "producer" => {
+          "number_of_replicas" => "2",
+          "image_tag" => "v1.0"
+        },
+        "consumer" => {
+          "enabled" => "true"
+        }
+      }
+      helm_infrastructure = create(
+        :helm_infrastructure, 
+        app_group: app_group, 
+        status: HelmInfrastructure.statuses[:active], 
+        infrastructure_location_id: location.id,
+        override_values: existing_values
+      )
+
+      patch_values = {
+        "producer" => {
+          "number_of_replicas" => "1"
+        },
+        "replica" => 1
+      }
+
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: {
+          access_token: @access_token, 
+          cluster_name: app_group.cluster_name,
+          location_name: location.name, 
+          override_values: patch_values,
+        },
+        headers: headers
+      expect(response.status).to eq 200
+      
+      update_object = app_group.reload.helm_infrastructures.first
+      expected_values = {
+        "producer" => {
+          "number_of_replicas" => "1",
+          "image_tag" => "v1.0"
+        },
+        "consumer" => {
+          "enabled" => "true"
+        },
+        "replica" => "1"
+      }
+      expect(update_object.override_values).to eq expected_values
+    end
+
+    it 'should handle patching when override_values is empty' do
+      app_group = create(:app_group)
+      helm_infrastructure = create(
+        :helm_infrastructure, 
+        app_group: app_group, 
+        status: HelmInfrastructure.statuses[:active], 
+        infrastructure_location_id: location.id,
+        override_values: {}
+      )
+
+      patch_values = {
+        "replica" => 1
+      }
+
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: {
+          access_token: @access_token, 
+          cluster_name: app_group.cluster_name,
+          location_name: location.name, 
+          override_values: patch_values,
+        },
+        headers: headers
+      expect(response.status).to eq 200
+      
+      update_object = app_group.reload.helm_infrastructures.first
+      expect(update_object.override_values).to eq({ "replica" => "1" })
+    end
+
+    it 'should handle deep nested hash merging' do
+      app_group = create(:app_group)
+      existing_values = {
+        "services" => {
+          "producer" => {
+            "replicas" => 2,
+            "resources" => {
+              "cpu" => "500m",
+              "memory" => "512Mi"
+            }
+          }
+        }
+      }
+      helm_infrastructure = create(
+        :helm_infrastructure, 
+        app_group: app_group, 
+        status: HelmInfrastructure.statuses[:active], 
+        infrastructure_location_id: location.id,
+        override_values: existing_values
+      )
+
+      patch_values = {
+        "services" => {
+          "producer" => {
+            "replicas" => 3,
+            "resources" => {
+              "memory" => "1Gi"
+            }
+          }
+        }
+      }
+
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: {
+          access_token: @access_token, 
+          cluster_name: app_group.cluster_name,
+          location_name: location.name, 
+          override_values: patch_values,
+        },
+        headers: headers
+      expect(response.status).to eq 200
+      
+      update_object = app_group.reload.helm_infrastructures.first
+      expected_values = {
+        "services" => {
+          "producer" => {
+            "replicas" => "3",
+            "resources" => {
+              "cpu" => "500m",
+              "memory" => "1Gi"
+            }
+          }
+        }
+      }
+      expect(update_object.override_values).to eq expected_values
+    end
+
+    it 'should not update other helm infrastructures with different cluster_name or location_name' do
+      app_group = create(:app_group)
+      location2 = create(:infrastructure_location, name: 'secondary-dc')
+      
+      target_infrastructure = create(
+        :helm_infrastructure, 
+        app_group: app_group, 
+        status: HelmInfrastructure.statuses[:active], 
+        infrastructure_location_id: location.id,
+        override_values: { "replica" => 2 }
+      )
+      
+      not_matches = [
+        create(:helm_infrastructure, app_group: app_group, status: HelmInfrastructure.statuses[:active], infrastructure_location_id: location2.id, override_values: { "replica" => 3 }),
+        create(:helm_infrastructure, status: HelmInfrastructure.statuses[:active], infrastructure_location_id: location.id, override_values: { "replica" => 4 })
+      ]
+
+      patch_values = { "replica" => 1 }
+
+      patch api_v3_patch_helm_manifest_by_cluster_name_path,
+        params: {
+          access_token: @access_token, 
+          cluster_name: app_group.cluster_name,
+          location_name: location.name, 
+          override_values: patch_values,
+        },
+        headers: headers
+      expect(response.status).to eq 200
+      
+      target_infrastructure.reload
+      expect(target_infrastructure.override_values).to eq({ "replica" => "1" })
+      
+      not_matches.each do |not_match|
+        not_match.reload
+        expect(not_match.override_values).not_to eq({ "replica" => "1" })
+      end
+    end
+  end
+
   describe 'Sync Helm Manifest' do
     let(:headers) do
       { 'ACCEPT' => 'application/json', 'HTTP_ACCEPT' => 'application/json' }

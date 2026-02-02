@@ -6,8 +6,8 @@ ENV RAILS_LOG_TO_STDOUT true
 RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list
 RUN apt-get -y update && \
   apt-get -y install apt-transport-https curl gnupg libpq5 shared-mime-info && \
-  (curl https://baltocdn.com/helm/signing.asc | apt-key add -) && \
-  (echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list) && \
+  (curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null) && \
+  (echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | tee /etc/apt/sources.list.d/helm-stable-debian.list) && \
   apt-get -y update && \
   apt-get -y install helm && \
   rm -vrf /var/lib/apt/lists/* && \
