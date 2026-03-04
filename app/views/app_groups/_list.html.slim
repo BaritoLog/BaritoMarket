@@ -69,9 +69,12 @@ table.table.table-hover.table-sm
             br
         td.col-2 class="d-flex"
           - if policy(app_group).see_app_groups?
+            - location_name = app_group.kibana_helm_infrastructure&.infrastructure_location&.name
+            - override_map = ENV['BARITO_VIEWER_DOMAIN_OVERRIDED_MAP'].to_s.split(',').map { |pair| pair.split('=') }.to_h
+            - viewer_domain = override_map[location_name] || Figaro.env.viewer_domain
             .btn.btn-primary.btn-sm style="height: fit-content;"
               i.fas.fa-search.mr-1
-              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{Figaro.env.viewer_domain}/#{app_group.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
+              = link_to 'Open Kibana', "#{Figaro.env.viewer_protocol}://#{viewer_domain}/#{app_group.cluster_name}/", class: 'text-light', target: '_blank', rel: 'noopener noreferrer', style: 'text-decoration: none'
             = form_for(app_group, url: bookmark_app_group_path(app_group.id), method: :post, html: { class: 'ml-1' }) do |f|
               = hidden_field_tag(:app_group_id, app_group.id)
               = f.button class: 'btn btn-sm bg-transparent text-warning'
