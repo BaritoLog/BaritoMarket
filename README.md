@@ -61,11 +61,34 @@ These tools are required for developing in local machine:
 
 ### Run via Docker Compose
 
+1. Copy the example config files (only needed once — these are gitignored so each developer configures their own):
+   ```shell
+   cp config/application.yml.example config/application.yml
+   cp config/database.yml.example config/database.yml
+   cp config/tps_config.yml.example config/tps_config.yml
+   ```
+2. Start the stack:
+   ```shell
+   docker compose up --build
+   ```
+   The `web` service automatically creates the database and runs pending migrations on startup, so no manual `db:migrate` step is needed. `scheduler` (Sidekiq) waits for `web` to become healthy before starting.
+
+Barito Market will be available at `http://localhost:8080`.
+
+### Seeding the Database
+
+To populate the database with baseline data (roles, groups, master data, and demo users), run:
+
 ```shell
-docker compose up --build
-# migrate database if needed
-docker exec -it baritomarket-web-1 bundle exec rake db:migrate
+docker exec -it baritomarket-web-1 bundle exec rake db:seed
 ```
+
+With SSO disabled (the default in `config/application.yml.example`), this creates a superadmin account you can use to log in:
+
+- **Email**: `superadmin@barito.com`
+- **Password**: `123456`
+
+It also creates a few additional demo users (`user1@barito.com` through `user4@barito.com`, and `user8@barito.com`, all with password `123456`). See [db/seeds.rb](db/seeds.rb) for the full list of seeded data.
 
 ## Testing
 

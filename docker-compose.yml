@@ -1,4 +1,19 @@
-version: '3'
+x-app-environment: &app-environment
+  DB_USER: barito
+  DB_HOST: db
+  DB_NAME: barito
+  DB_PASSWORD: barito
+  REDIS_CACHE_HOST: redis:6379
+  RAILS_ENV: development
+  RACK_ENV: development
+  REDIS_URL: redis://redis:6379/0
+  DB_POOL: 5
+  DB_TIMEOUT: 60
+  CAS_BASE_URL: ""
+
+x-app-volumes: &app-volumes
+  - .:/app
+  - bundle_gems:/app/vendor/bundle
 
 services:
   web:
@@ -9,50 +24,55 @@ services:
       args:
         - RAILS_ENV=development
         - RACK_ENV=development
-    environment:
-      - DB_USER=barito
-      - DB_HOST=db
-      - DB_NAME=barito
-      - DB_PASSWORD=barito
-      - REDIS_CACHE_HOST=redis:6379
-      - RAILS_ENV=development
-      - RACK_ENV=development
-      - REDIS_URL=redis://redis:6379/0
-      - DB_POOL=5
-      - DB_TIMEOUT=60
-      - CAS_BASE_URL=""
-    volumes:
-      - .:/app
+    environment: *app-environment
+    volumes: *app-volumes
     ports:
       - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   scheduler:
     platform: linux/amd64
     image: baritomarket-web-dev:latest
-    depends_on:
-      - web
     command: ["sidekiq"]
-    environment:
-      - DB_USER=barito
-      - DB_HOST=db
-      - DB_NAME=barito
-      - DB_PASSWORD=barito
-      - REDIS_CACHE_HOST=redis:6379
-      - RAILS_ENV=development
-      - RACK_ENV=development
-      - REDIS_URL=redis://redis:6379/0
-      - DB_POOL=5
-      - DB_TIMEOUT=60
-      - CAS_BASE_URL=""
-    volumes:
-      - .:/app
+    environment: *app-environment
+    volumes: *app-volumes
+    depends_on:
+      web:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:12-alpine
     environment:
-      - POSTGRES_USER=barito
-      - POSTGRES_DB=barito
-      - POSTGRES_PASSWORD=barito
+      POSTGRES_USER: barito
+      POSTGRES_DB: barito
+      POSTGRES_PASSWORD: barito
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U barito -d barito"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:5-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bundle_gems:
