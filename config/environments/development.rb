@@ -9,6 +9,12 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+  # Use polling instead of the evented (Listen gem) file watcher. The evented
+  # watcher can hang indefinitely when the app directory is a Docker bind
+  # mount (e.g. macOS virtiofs), since it tries to set up inotify watches
+  # across the whole mounted tree.
+  config.file_watcher = ActiveSupport::FileUpdateChecker
+
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
