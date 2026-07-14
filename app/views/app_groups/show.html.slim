@@ -63,7 +63,7 @@
 
           dt.col-sm-2 Disable App TPS:
           dd.col-sm-10
-            - if @allow_set_status
+            - if @allow_disable_app_tps
               = check_box_tag "toggle_disable_app_tps_#{@app_group.id}", true, @app_group.disable_app_tps, data: { toggle: 'toggle', onstyle: 'success', on: 'Yes', off: 'No', id: @app_group.id, style: 'slow', size: 'small'}, onchange: "$('#form_toggle_disable_app_tps_#{@app_group.id}').submit();"
               = form_tag toggle_disable_app_tps_app_group_path(@app_group), method: :patch, data: {confirm: "Are you sure ?"}, id: "form_toggle_disable_app_tps_#{@app_group.id}" do
                 = hidden_field_tag :toggle_disable_app_tps
