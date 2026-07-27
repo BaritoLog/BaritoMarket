@@ -5,24 +5,44 @@ h4.mb-3 All Applications
     thead
       tr.d-flex
         - if @show_log_and_cost_col || !@app_group.disable_app_tps
-            th.col-5 Name
+            th.col-5.application-sortable tabindex="0" data-sort-column="name" data-sort-type="text" aria-sort="ascending"
+              | Name
+              i.fas.fa-sort-up.ml-1
         - else
-            th.col-6 Name
-        th.col-1 App Secret
-        th.col-1 Retention Days
+            th.col-6.application-sortable tabindex="0" data-sort-column="name" data-sort-type="text" aria-sort="ascending"
+              | Name
+              i.fas.fa-sort-up.ml-1
+        th.col-1.application-sortable tabindex="0" data-sort-column="secret" data-sort-type="text" aria-sort="none"
+          | App Secret
+          i.fas.fa-sort.ml-1
+        th.col-1.application-sortable tabindex="0" data-sort-column="retention" data-sort-type="number" aria-sort="none"
+          | Retention Days
+          i.fas.fa-sort.ml-1
         - unless @app_group.disable_app_tps
-          th.col-1 Max TPS
-        th.col-1 Status
+          th.col-1.application-sortable tabindex="0" data-sort-column="max-tps" data-sort-type="number" aria-sort="none"
+            | Max TPS
+            i.fas.fa-sort.ml-1
+        th.col-1.application-sortable tabindex="0" data-sort-column="status" data-sort-type="text" aria-sort="none"
+          | Status
+          i.fas.fa-sort.ml-1
         - if @show_log_and_cost_col
-            th.col-1 Created At (UTC)
-            th.col-1 Daily Log Ingested
-            th.col-1 Daily Cost
+            th.col-1.application-sortable tabindex="0" data-sort-column="created-at" data-sort-type="number" aria-sort="none"
+              | Created At (UTC)
+              i.fas.fa-sort.ml-1
+            th.col-1.application-sortable tabindex="0" data-sort-column="log-ingested" data-sort-type="number" aria-sort="none"
+              | Daily Log Ingested
+              i.fas.fa-sort.ml-1
+            th.col-1.application-sortable tabindex="0" data-sort-column="cost" data-sort-type="number" aria-sort="none"
+              | Daily Cost
+              i.fas.fa-sort.ml-1
         - else
-            th.col-2 Created At (UTC)
+            th.col-2.application-sortable tabindex="0" data-sort-column="created-at" data-sort-type="number" aria-sort="none"
+              | Created At (UTC)
+              i.fas.fa-sort.ml-1
         th.col-1 Actions
     tbody
       - apps.each do |app|
-        tr.d-flex
+        tr.d-flex.application-row data-sort-name=app.name.downcase data-sort-secret=app.secret_key.downcase data-sort-retention=(app.log_retention_days || @app_group.log_retention_days).to_i data-sort-max-tps=app.max_tps.to_i data-sort-status=app.status.downcase data-sort-created-at=app.created_at.to_i data-sort-log-ingested=app.latest_ingested_log_bytes.to_i data-sort-cost=app.latest_cost.to_f
           - if @show_log_and_cost_col || !@app_group.disable_app_tps
               td.col-5= app.name
           - else
@@ -81,7 +101,7 @@ h4.mb-3 All Applications
       - if allow_add
         = form_for(new_app, url: apps_path) do |f|
           = f.hidden_field :app_group_id, value: app_group.id
-          tr.d-flex
+          tr.d-flex.application-create-row
             - if @show_log_and_cost_col
               td.col-1= f.text_field :name, class: 'form-control'
             - else
