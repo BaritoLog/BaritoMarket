@@ -12,9 +12,7 @@ h4.mb-3 All Applications
             th.col-6.application-sortable tabindex="0" data-sort-column="name" data-sort-type="text" aria-sort="ascending"
               | Name
               i.fas.fa-sort-up.ml-1
-        th.col-1.application-sortable tabindex="0" data-sort-column="secret" data-sort-type="text" aria-sort="none"
-          | App Secret
-          i.fas.fa-sort.ml-1
+        th.col-1 App Secret
         th.col-1.application-sortable tabindex="0" data-sort-column="retention" data-sort-type="number" aria-sort="none"
           | Retention Days
           i.fas.fa-sort.ml-1
@@ -42,7 +40,7 @@ h4.mb-3 All Applications
         th.col-1 Actions
     tbody
       - apps.each do |app|
-        tr.d-flex.application-row data-sort-name=app.name.downcase data-sort-secret=app.secret_key.downcase data-sort-retention=(app.log_retention_days || @app_group.log_retention_days).to_i data-sort-max-tps=app.max_tps.to_i data-sort-status=app.status.downcase data-sort-created-at=app.created_at.to_i data-sort-log-ingested=app.latest_ingested_log_bytes.to_i data-sort-cost=app.latest_cost.to_f
+        tr.d-flex.application-row data-sort-name=app.name.downcase data-sort-retention=(app.log_retention_days || @app_group.log_retention_days).to_i data-sort-max-tps=app.max_tps.to_i data-sort-status=app.status.downcase data-sort-created-at=app.created_at.to_i data-sort-log-ingested=app.latest_ingested_log_bytes.to_i data-sort-cost=app.latest_cost.to_f
           - if @show_log_and_cost_col || !@app_group.disable_app_tps
               td.col-5= app.name
           - else
