@@ -106,3 +106,13 @@ pre {
 .word-wrap{
   word-break: break-all;
 }
+
+.application-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.application-sortable:focus {
+  outline: 2px solid #80bdff;
+  outline-offset: -2px;
+}

@@ -68,6 +68,55 @@ var app_groups = {
       });
     });
 
+    $(".application-sortable").on("click keydown", function(event) {
+      if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+
+      event.preventDefault();
+
+      var $header = $(this);
+      var $table = $header.closest("table");
+      var $tbody = $table.find("tbody");
+      var column = $header.data("sort-column");
+      var type = $header.data("sort-type");
+      var direction = $header.attr("aria-sort") === "ascending" ? "descending" : "ascending";
+      var multiplier = direction === "ascending" ? 1 : -1;
+      var rows = $tbody.find(".application-row").get();
+      var $createRow = $tbody.find(".application-create-row").first();
+
+      rows.sort(function(rowA, rowB) {
+        var valueA = $(rowA).attr("data-sort-" + column);
+        var valueB = $(rowB).attr("data-sort-" + column);
+
+        if (type === "number") {
+          valueA = Number(valueA);
+          valueB = Number(valueB);
+        }
+
+        if (valueA < valueB) {
+          return -1 * multiplier;
+        }
+        if (valueA > valueB) {
+          return multiplier;
+        }
+        return 0;
+      });
+
+      $.each(rows, function(_, row) {
+        if ($createRow.length) {
+          $(row).insertBefore($createRow);
+        } else {
+          $tbody.append(row);
+        }
+      });
+
+      $table.find(".application-sortable").attr("aria-sort", "none").
+        find("i").removeClass("fa-sort-up fa-sort-down").addClass("fa-sort");
+      $header.attr("aria-sort", direction).
+        find("i").removeClass("fa-sort").addClass(direction === "ascending" ? "fa-sort-up" : "fa-sort-down");
+    });
+
     $("[id='maskedcharstart']").hover(function() {
       $("#maskedcharstart").popover({
         placement: 'right',
