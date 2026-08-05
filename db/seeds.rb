@@ -16,6 +16,7 @@ GroupUser.create(user: user, group: global_viewer_group, role: AppGroupRole.find
 load "#{::Rails.root}/db/seeds/master_data/cluster_template.rb"
 load "#{::Rails.root}/db/seeds/master_data/deployment_template.rb"
 load "#{::Rails.root}/db/seeds/master_data/helm_cluster_template.rb"
+load "#{::Rails.root}/db/seeds/master_data/infrastructure_location.rb"
 
 User.create(email: 'user1@barito.com', username: 'user1', password: '123456', password_confirmation: '123456')
 User.create(email: 'user2@barito.com', username: 'user2', password: '123456', password_confirmation: '123456')

@@ -47,5 +47,5 @@ USER app
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --chown=app:app --from=build /app .
-ENTRYPOINT ["bundle", "exec"]
+ENTRYPOINT ["bin/docker-entrypoint.sh"]
 CMD ["puma", "--port", "8080"]
