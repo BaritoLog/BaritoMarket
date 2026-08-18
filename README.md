@@ -71,7 +71,7 @@ These tools are required for developing in local machine:
    ```shell
    docker compose up --build
    ```
-   The `web` service automatically creates the database and runs pending migrations on startup, so no manual `db:migrate` step is needed. `scheduler` (Sidekiq) waits for `web` to become healthy before starting.
+   A one-off `migrate` service creates the database and runs pending migrations before `web`/`scheduler` start, so no manual `db:migrate` step is needed.
 
 Barito Market will be available at `http://localhost:8080`.
 
