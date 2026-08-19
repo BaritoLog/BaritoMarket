@@ -16,6 +16,21 @@ x-app-volumes: &app-volumes
   - bundle_gems:/app/vendor/bundle
 
 services:
+  migrate:
+    platform: linux/amd64
+    image: baritomarket-web-dev:latest
+    build:
+      context: .
+      args:
+        - RAILS_ENV=development
+        - RACK_ENV=development
+    command: ["rake", "db:create", "db:migrate"]
+    environment: *app-environment
+    volumes: *app-volumes
+    depends_on:
+      db:
+        condition: service_healthy
+
   web:
     platform: linux/amd64
     image: baritomarket-web-dev:latest
@@ -29,6 +44,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
@@ -47,6 +64,8 @@ services:
     environment: *app-environment
     volumes: *app-volumes
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       web:
         condition: service_healthy
       db:
